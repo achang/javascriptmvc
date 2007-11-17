@@ -1,12 +1,12 @@
 /**
- * <p>Junction.Include is a class that loads various file types from the server onto the client machine</p>
+ * <p>JMVC.Include is a class that loads various file types from the server onto the client machine</p>
  * 
  * @constructor
  * @class
  * <p>Javascript Templates (.jst), css, and javascript files all can be loaded using this class</p>
  *
  * <p>Users can load their own javascript files, stylesheets, or template files using a single entry point: include.
- * Junction.Include.include is made accessible as window.include.  Users can use it as follows:</p>
+ * JMVC.Include.include is made accessible as window.include.  Users can use it as follows:</p>
  * <pre class='example'>
  *  include('javascripts/special_functions.js');
  *  include('stylesheets/my_style.css');
@@ -15,8 +15,8 @@
  * <p>The above examples show relative paths, and include will intelligently prepend the remainder of the file path using
  * the current application's client and project name.  Absolute paths also are handled correctly.</p>
  */
-Junction.Include = function(){
-    this.klass_name = 'Junction.Include'
+JMVC.Include = function(){
+    this.klass_name = 'JMVC.Include'
 
 };
 
@@ -32,36 +32,36 @@ Junction.Include = function(){
  * @return {Object} Object Parsed Template is returned if requested file has a .jst extension (or null if not found).  Otherwise,
  *      nothing is returned.
  */
-Junction.Include.include = function(path, options) {
+JMVC.Include.include = function(path, options) {
     if(!options) options = {};
     var cache = options.cache;
     var synchronous = options.synchronous;
     if(cache === undefined)
-        var cache = Junction.cache_templates || false;
+        var cache = JMVC.cache_templates || false;
     if(synchronous === undefined)
         var synchronous = false;
     var file = new JITS.File(path);
     if(file.is_absolute() == false && file.extension() == "js") // is a local javascript
-        Junction.Include.include_JS(JITS.File.join(APPLICATION_ROOT, 
+        JMVC.Include.include_JS(JITS.File.join(APPLICATION_ROOT, 
             path), synchronous);
     else if(file.is_absolute() == true && file.extension() == "js")  // is a non-local javascript
-        Junction.Include.include_JS(path+(cache == false ? "?"+Math.random(): ""), synchronous);
+        JMVC.Include.include_JS(path+(cache == false ? "?"+Math.random(): ""), synchronous);
     else if(file.is_absolute() == false && file.extension() == "jst") // is a local template
-        return Junction.Include.include_template(JITS.File.join(APPLICATION_ROOT, 
+        return JMVC.Include.include_template(JITS.File.join(APPLICATION_ROOT, 
             path), cache);
     else if(file.is_absolute() == true && file.extension() == "jst") // is a non-local template
-        return Junction.Include.include_template(path, cache);
+        return JMVC.Include.include_template(path, cache);
     else if(file.is_absolute() == false && file.extension() == "css") // is a local stylesheet
-        Junction.Include.include_CSS(JITS.File.join(APPLICATION_ROOT, path));
+        JMVC.Include.include_CSS(JITS.File.join(APPLICATION_ROOT, path));
     else if(file.is_absolute() == true && file.extension() == "css") // is a non-local stylesheet
-        Junction.Include.include_CSS(path, cache);
+        JMVC.Include.include_CSS(path, cache);
 }
 
 /**
  * array of file paths that have already been included (to prevent duplicates)
  * @private
  */ 
-Junction.Include._included_path_cache = {};
+JMVC.Include._included_path_cache = {};
 
 /**
  * <p>Determines if the given path has been loaded already.  If not, adds the path to the lookup cache, and returns false.</p>
@@ -72,10 +72,10 @@ Junction.Include._included_path_cache = {};
  */
 // returns true if the given URL has been included already
 // if not included already, adds the URL to the lookup cache
-Junction.Include.already_included = function(path) {
-    if(Junction.Include._included_path_cache[path] == true)
+JMVC.Include.already_included = function(path) {
+    if(JMVC.Include._included_path_cache[path] == true)
         return true;
-    Junction.Include._included_path_cache[path] = true;
+    JMVC.Include._included_path_cache[path] = true;
     return false;
 }
 
@@ -84,7 +84,7 @@ Junction.Include.already_included = function(path) {
  *
  * @param {String} path The path of the requested javascript file
  */
-Junction.Include.include_JS = function(path, synchronous) {
+JMVC.Include.include_JS = function(path, synchronous) {
     if(this.already_included(path) == false) {
         if(!synchronous)
             document.write('<script type="text/javascript" src="'+path+'"></script>');
@@ -102,13 +102,13 @@ Junction.Include.include_JS = function(path, synchronous) {
  *
  * @param {String} path The path of the requested stylesheet
  */
-Junction.Include.include_CSS = function(path) {
+JMVC.Include.include_CSS = function(path) {
     if(this.already_included(path) == false) {
         document.write('<link type="text/css" rel="stylesheet" href="'+path+'"></link>');
     }
 }
 
-var include = Junction.Include.include;
+var include = JMVC.Include.include;
 
 /**
  * <p>Attemps to load the file at the given path using an Ajax request.  If the file is found, it is parsed and returned.
@@ -119,9 +119,9 @@ var include = Junction.Include.include;
  *
  * @return {Object} Object Parsed template Object, if found.  null if nothing exists at this path.
  */
-Junction.Include.include_template = function(path, cache) {
+JMVC.Include.include_template = function(path, cache) {
 	// if this is a remote application, reroute the templates to grab processed templates
-	if(Junction.remote == true) {
+	if(JMVC.remote == true) {
 		path = path.replace(/\/views\//, '/processed_views/');
 		path = path.substring(0,path.length-1);
 		include(path);
@@ -134,7 +134,7 @@ Junction.Include.include_template = function(path, cache) {
     var responseText = response.transport.responseText;
     if (response.transport.status == 404) { // this means the template was not found
         if(cache) 
-            Junction.Template.update_suggestions(path, Junction.Template.InvalidPath);
+            JMVC.Template.update_suggestions(path, JMVC.Template.InvalidPath);
         return null;
     }
     var template = new EjsCompiler(responseText);
@@ -143,15 +143,15 @@ Junction.Include.include_template = function(path, cache) {
 		template.compile();
 		
 	} catch(e) {
-		var file_name = Junction.Error.file_name(e);
+		var file_name = JMVC.Error.file_name(e);
 		if(file_name && file_name == 'ejs.js') {
 			var message = 'Error while compiling '+path+': '+e.message+'\n<pre><code>'+template.source.replace_angle_brackets()+'</code></pre>'
-			throw new Junction.TemplateError(new Error(), message);
+			throw new JMVC.TemplateError(new Error(), message);
 		} else {
 			throw(e)
 		}
 	}
     if(cache) 
-        Junction.Template.update_suggestions(path, template);
+        JMVC.Template.update_suggestions(path, template);
     return template;
 }

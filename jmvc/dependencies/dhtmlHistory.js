@@ -931,7 +931,7 @@ outer:          while (next()) {
 
 /** Initialize all of our objects now. */
 
-//Junction.junction_startup_tasks.push(window.historyStorage.init)
+//JMVC.JMVC_startup_tasks.push(window.historyStorage.init)
 
 //window.historyStorage.init();
 //window.dhtmlHistory.create();

@@ -1,25 +1,25 @@
 /**
  * @fileoverview
- * Junction.js file contains functionality used across the MVC architecture.
+ * Framework.js file contains functionality used across the MVC architecture.
  */
  
-Junction.check_dependency('Prototype', 'Framework.js');
-Junction.check_dependency('Inflector', 'Framework.js');
-Junction.check_dependency('EjsScanner', 'Framework.js');
-Junction.check_dependency('Junction.Controller', 'Framework.js');
-Junction.check_dependency('Junction.Dispatcher', 'Framework.js');
-Junction.check_dependency('Junction.Template', 'Framework.js');
-Junction.check_dependency('Junction.Include', 'Framework.js');
-Junction.check_dependency('Junction.View', 'Framework.js');
+JMVC.check_dependency('Prototype', 'Framework.js');
+JMVC.check_dependency('Inflector', 'Framework.js');
+JMVC.check_dependency('EjsScanner', 'Framework.js');
+JMVC.check_dependency('JMVC.Controller', 'Framework.js');
+JMVC.check_dependency('JMVC.Dispatcher', 'Framework.js');
+JMVC.check_dependency('JMVC.Template', 'Framework.js');
+JMVC.check_dependency('JMVC.Include', 'Framework.js');
+JMVC.check_dependency('JMVC.View', 'Framework.js');
 
 /**
  * <b>NEVER CALL THIS CLASS' CONSRUCTOR</b>
  * @class This is the class
- * @throws Exception 'You should never create a junction framework'
+ * @throws Exception 'You should never create a JMVC framework'
  * @addon
  */
-Junction.Framework = function(){
-	throw new Junction.Error(new Error(), 'You should never create a junction framework');
+JMVC.Framework = function(){
+	throw new JMVC.Error(new Error(), 'You should never create a JMVC framework');
 }
 
 
@@ -37,23 +37,23 @@ Junction.Framework = function(){
  * <li>calls the first 'get' to start the application up</li>
  * </ol>
  */
-Junction.Framework.junction_startup = function() {
+JMVC.Framework.JMVC_startup = function() {
 	try {
-		Junction.junction_startup_tasks.each(function(task) { task(); })
+		JMVC.JMVC_startup_tasks.each(function(task) { task(); })
 	    if( location.pathname.startsWith('/project/console') ) { return }
-		if(!$(Junction.View.RENDER_TO)) new Insertion.Top(document.body, "<div id='"+Junction.View.RENDER_TO+"'></div>");
-		if(Junction.View.DOCUMENT_TITLE)
-			document.title = Junction.View.DOCUMENT_TITLE;
+		if(!$(JMVC.View.RENDER_TO)) new Insertion.Top(document.body, "<div id='"+JMVC.View.RENDER_TO+"'></div>");
+		if(JMVC.View.DOCUMENT_TITLE)
+			document.title = JMVC.View.DOCUMENT_TITLE;
         
-		if(Junction.Routes.params()['controller']!=null && Junction.Routes.params()['action']!=null){
-            return get(Junction.Routes.params());
+		if(JMVC.Routes.params()['controller']!=null && JMVC.Routes.params()['action']!=null){
+            return get(JMVC.Routes.params());
         }else if(typeof APPLICATION_ROOT != 'undefined'){
 			var response = new Ajax.Request(APPLICATION_ROOT+'public/welcome.html', {asynchronous: false, method: "get"});
 			document.body.innerHTML  = response.transport.responseText;
 		}
 	    
 	} catch(e) {
-		Junction.Framework.render_error(e);
+		JMVC.Framework.render_error(e);
 		return;
 	}
 }
@@ -61,7 +61,7 @@ Junction.Framework.junction_startup = function() {
  * Renders an error to the page.
  * @param {Object} e
  */
-Junction.Framework.render_error = function(e) {
+JMVC.Framework.render_error = function(e) {
 	var fileName = 'Unknown File Name'
 	var stack = '';
 	var lineNumber = '';
@@ -82,8 +82,8 @@ Junction.Framework.render_error = function(e) {
 	error_text.push('<h3>Execution Stack</h3>');
 	error_text.push('<pre><code>',stack,'</code></pre>');
 	// don't remove all javascripts if possible
-	if($(Junction.View.RENDER_TO))
-		$(Junction.View.RENDER_TO).innerHTML = error_text.join('');
+	if($(JMVC.View.RENDER_TO))
+		$(JMVC.View.RENDER_TO).innerHTML = error_text.join('');
 	else
 		document.body.innerHTML = error_text.join('');
 	document.title = 'Exception Thrown';
@@ -96,7 +96,7 @@ Junction.Framework.render_error = function(e) {
  * @param {String} render_container_id The element ID in the page where the rendered content will be placed
  * @param {String} content The rendered string to be placed into the page
  */
-Junction.Framework.display_content = function(render_container_id, content) {
+JMVC.Framework.display_content = function(render_container_id, content) {
     var el = $(render_container_id);
     if (el)
         el.innerHTML = content;
@@ -108,24 +108,24 @@ Junction.Framework.display_content = function(render_container_id, content) {
  * @param {String} render_container_id The element ID in the page where the rendered content will be placed
  * @param {String} content The rendered string to be placed into the page
  */
-Junction.Framework.get_session = function() {
-    if (!Junction.Framework.session)
-        Junction.Framework.session = {};
-    return Junction.Framework.session;
+JMVC.Framework.get_session = function() {
+    if (!JMVC.Framework.session)
+        JMVC.Framework.session = {};
+    return JMVC.Framework.session;
 }
 
 /**
  * 
- * @class This class is an Exception that gets thrown when something goes wrong in a Junction application.
- *      <p>If an error occurs during an application, a Junction.Error instance is created and then thrown.</p>
- *      <p>Here is an example of creating and throwing a Junction.Error that will also give you an approximate 
+ * @class This class is an Exception that gets thrown when something goes wrong in a JMVC application.
+ *      <p>If an error occurs during an application, a JMVC.Error instance is created and then thrown.</p>
+ *      <p>Here is an example of creating and throwing a JMVC.Error that will also give you an approximate 
  *          line number in Firefox: </p> 
  *      <pre class='example'>
  *          try {
  *               causeError();
  *           }
  *           catch (e) {
- *               thow(new Junction.Error(Junction.ErrorType.Request, e.lineNumber, "Framework.js"));
+ *               thow(new JMVC.Error(JMVC.ErrorType.Request, e.lineNumber, "Framework.js"));
  *           }</pre> 
  *
  *      <p>Users can define their own error handling in one of two ways:</p>
@@ -140,27 +140,27 @@ Junction.Framework.get_session = function() {
  * <li>Define their own error_handler controller action.  This action is called by default whenever an error occurs inside an action</li>
  *      <pre class='example'>
  *          error_handler : function(e) {
- *          if(e.type == Junction.ErrorType.Request) {
+ *          if(e.type == JMVC.ErrorType.Request) {
  *              alert('There has been an error in a request')
  *          }</pre>
  * </ol>
  *
- *  @param {Junction.ErrorType} type An integer specified by Junction.ErrorType corresponding to the type of error
+ *  @param {JMVC.ErrorType} type An integer specified by JMVC.ErrorType corresponding to the type of error
  * <p>The following ErrorType's are supported currently:</p>
  * <ul>
- * <li>Junction.ErrorType.Not_authenticated: used when the server determines the user is not authenticated in the application.</li>
- * <li>Junction.ErrorType.Request: used when there is an error while the server is processing a request.</li>
+ * <li>JMVC.ErrorType.Not_authenticated: used when the server determines the user is not authenticated in the application.</li>
+ * <li>JMVC.ErrorType.Request: used when there is an error while the server is processing a request.</li>
  * </ul>
  *  @param {int} lineNumber The line number of the error (this is currently only supported in Firefox)
  *  @param {string} fileName The name of the file that threw this error
  *
  * @addon
  */
-Junction.Error = Class.create({
+JMVC.Error = Class.create({
 	initialize: function(error, message, line_number) {
 		for(var attr in error)
 			this[attr] = error[attr]
-		this.name = 'JunctionError';
+		this.name = 'JMVCError';
 		this.message = message;
 		if(!this.lineNumber && line_number)
 			this.lineNumber = line_number;
@@ -168,10 +168,10 @@ Junction.Error = Class.create({
 	}
 });
 
-Junction.IncludeError = Class.create(Junction.Error)
-Junction.TemplateError = Class.create(Junction.Error)
+JMVC.IncludeError = Class.create(JMVC.Error)
+JMVC.TemplateError = Class.create(JMVC.Error)
 
-Junction.Error.file_name = function(e) {
+JMVC.Error.file_name = function(e) {
 	if(e && e.fileName) {
 		var file = new JITS.File(e.fileName)
 		
@@ -180,10 +180,10 @@ Junction.Error.file_name = function(e) {
 	return null;
 }
 
-Junction.DISPATCH_FUNCTION(Junction.Framework.junction_startup);
+JMVC.DISPATCH_FUNCTION(JMVC.Framework.JMVC_startup);
 
-Junction.library_loaded();
+JMVC.library_loaded();
 
-for(var i = 0; i < Junction.SETUP.included_libraries.length; i++) {
-	Junction.require(JUNCTION_ROOT+'lib/'+Junction.SETUP.included_libraries[i]+'/setup.js');
+for(var i = 0; i < JMVC.SETUP.included_libraries.length; i++) {
+	JMVC.require(JMVC_ROOT+'lib/'+JMVC.SETUP.included_libraries[i]+'/setup.js');
 }

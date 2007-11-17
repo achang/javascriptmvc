@@ -1,6 +1,6 @@
-Junction.check_dependency('Prototype', 'Helpers.js')
-Junction.check_dependency('Element', 'Helpers.js')
-Junction.check_dependency('Element.Methods', 'Helpers.js')
+JMVC.check_dependency('Prototype', 'Helpers.js')
+JMVC.check_dependency('Element', 'Helpers.js')
+JMVC.check_dependency('Element.Methods', 'Helpers.js')
 
 JITS = {};
 

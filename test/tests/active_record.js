@@ -1,6 +1,6 @@
-JunctionTest = {
+JMVCTest = {
 	APPLICATION_NAME : 'cookbook2',
-	TEST_DESCRIPTION : 'This test loads up a Junction application and tests that everything loaded correctly.  It also runs a test action and tests if the page was correctly rendered.',
+	TEST_DESCRIPTION : 'This test loads up a JMVC application and tests that everything loaded correctly.  It also runs a test action and tests if the page was correctly rendered.',
 	perform_test : function() {
 	  new Test.Unit.Runner({
 	  	

@@ -1,4 +1,4 @@
-CategoryController  = Class.create(Junction.Controller, {
+CategoryController  = Class.create(JMVC.Controller, {
 
     list : function(params) {
 		this.categories = Category.find('all');

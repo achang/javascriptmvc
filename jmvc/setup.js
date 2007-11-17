@@ -1,4 +1,4 @@
-Junction.include_order = ["/dependencies/prototype.js",
+JMVC.include_order = ["/dependencies/prototype.js",
 						  "/dependencies/Inflector.js",
 						  "/dependencies/Helpers.js",
 						  "/dependencies/ejs.js",
@@ -11,9 +11,9 @@ Junction.include_order = ["/dependencies/prototype.js",
 						  "/core/Routes.js"]
 //-----END
 
-for(var i = 0; i < Junction.include_order.length; i++)
+for(var i = 0; i < JMVC.include_order.length; i++)
 {
-	Junction.require(Junction.ENV.BASE_PATH+Junction.include_order[i]);
+	JMVC.require(JMVC.ENV.BASE_PATH+JMVC.include_order[i]);
 }
 
-Junction.require(Junction.ENV.BASE_PATH+"/core/Framework.js");
+JMVC.require(JMVC.ENV.BASE_PATH+"/core/Framework.js");

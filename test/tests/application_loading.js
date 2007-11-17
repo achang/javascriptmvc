@@ -1,6 +1,6 @@
-JunctionTest = {
+JMVCTest = {
 	APPLICATION_NAME : 'cookbook2',
-	TEST_DESCRIPTION : 'This test loads up a Junction application with associations, and makes sure the associations are created correctly.',
+	TEST_DESCRIPTION : 'This test loads up a JMVC application with associations, and makes sure the associations are created correctly.',
 	perform_test : function() {
 	  new Test.Unit.Runner({
 	  	

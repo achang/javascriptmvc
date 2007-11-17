@@ -2,7 +2,7 @@
  * @fileoverview
  * The View.js file contains an Javascript implementation of the 
  * active view design pattern and supporting functionality.
- * <p class='credits'>JavaScript Junction based off <a href='http://trimpath.com/'>TrimJunction framework</a>.
+ * <p class='credits'>JavaScript MVC based off <a href='http://trimpath.com/'>TrimJunction framework</a>.
  * @author Jupiter Information Technology Solutions - Brian Moschel, Justin Meyer.<br/>
  * @version 0.1
  */
@@ -19,10 +19,10 @@
  *          alert('get() called, this would normally direct you to a local action.')
  *    }
  * </script>
- * Junction.View provides a set of methods for easily creating links and html elements.  This class
+ * JMVC.View provides a set of methods for easily creating links and html elements.  This class
  * is added to window as view.  So instead of calling:
  * <pre class='example'>
- * Junction.View.link_to( {action: <span>'list'</span>} )</pre>
+ * JMVC.View.link_to( {action: <span>'list'</span>} )</pre>
  * you can call:
  * <pre class='example'>
  * view.link_to({action: <span>'list'</span>})</pre>
@@ -31,12 +31,12 @@
  * <pre class='example'>
  * &lt;p&gt;I am going to show a link&lt;/p&gt;
  * &lt;%=  link_to('Click Me', {action: 'list'} ) %></pre>
- * @see Junction.Controller
- * @see Junction.ActiveRecord
+ * @see JMVC.Controller
+ * @see JMVC.ActiveRecord
  */
 
-Junction.View = function() {
-    this.klass = 'Junction.View'
+JMVC.View = function() {
+    this.klass = 'JMVC.View'
 }
 /**
  * Creates a select box for selecting a record of a belongs_to association.
@@ -45,12 +45,12 @@ Junction.View = function() {
  * 
  * produces: <select 'Installation[computer_id]'><option value='1'>127.0.0.1</option><option value='2'>73.45.678.44</option></select>
  * 
- * @param {Junction.ActiveRecord} klass The active record class you are creating a form element for.
+ * @param {JMVC.ActiveRecord} klass The active record class you are creating a form element for.
  * @param {String} relationship_name The relationship for the active record class.
  * @param {String/Integer} value an optional default value.
  * @param {Object} html_options Optional html attributes
  */
-Junction.View.belongs_to_select = function(klass, relationship_name, value , html_options ){
+JMVC.View.belongs_to_select = function(klass, relationship_name, value , html_options ){
 	if(typeof klass == 'string') klass = window[klass]
 
 	html_options = html_options || {};
@@ -90,11 +90,11 @@ Junction.View.belongs_to_select = function(klass, relationship_name, value , htm
  * Returns a closure that calls a get action when called.
  * <p>This is useful for assigning onclick and other event handlers using javascript rather than html.</p>
  * <pre class='example'>
- * $('my_botton').onclick = Junction.View.closure_for({action: 'say_hi'})</pre>
+ * $('my_botton').onclick = JMVC.View.closure_for({action: 'say_hi'})</pre>
  * @param {Object} options A url hash.
  * @return {function} request function.
  */
-Junction.View.closure_for = function(options) {
+JMVC.View.closure_for = function(options) {
     return function() {
         get(options);
     };
@@ -114,7 +114,7 @@ Junction.View.closure_for = function(options) {
  * @param {Object} value  optional default date value.
  * @param {Object} html_options  optional html attributes.
  */
-Junction.View.date_tag = function(name, value , html_options) {
+JMVC.View.date_tag = function(name, value , html_options) {
     if(! (value instanceof Date))
 		value = new Date()
 	
@@ -142,7 +142,7 @@ Junction.View.date_tag = function(name, value , html_options) {
 }
 
 /**
- * Creates a file field that sets up the correct naming structure for Junction file types.
+ * Creates a file field that sets up the correct naming structure for JMVC file types.
  * <p>Example:</p>
  * <pre class='example'>
  *  view.file_tag('Task[document]')</pre>
@@ -155,10 +155,10 @@ Junction.View.date_tag = function(name, value , html_options) {
  * @param {String} value Default value
  * @param {Object} html_options Options used to create html attributes.
  *
- * @return {String} Text for an file element that will upload correctly into a Junction application
+ * @return {String} Text for an file element that will upload correctly into a JMVC application
  *
  */
-Junction.View.file_tag = function(name, value, html_options) {
+JMVC.View.file_tag = function(name, value, html_options) {
     return this.input_field_tag(name+'[file]', value , 'file', html_options)
 }
 
@@ -180,7 +180,7 @@ Junction.View.file_tag = function(name, value, html_options) {
  * @param {Boolean} post False if you want the form to submit as a get request, true if you want the form to submit as post.  Defaults to true.
  * @return {String} A begining form tag.
  */
-Junction.View.form_tag = function(url_for_options, html_options, post) {
+JMVC.View.form_tag = function(url_for_options, html_options, post) {
     url_for_options     = url_for_options                     || {};
     this.update_with_controller_and_action(url_for_options);
     
@@ -192,7 +192,7 @@ Junction.View.form_tag = function(url_for_options, html_options, post) {
         html_options.enctype = 'multipart/form-data';
     }
     
-    html_options.onsubmit = html_options.onsubmit+"return Junction.View.post_form(this, "+$H(url_for_options).toJSON()+");";
+    html_options.onsubmit = html_options.onsubmit+"return JMVC.View.post_form(this, "+$H(url_for_options).toJSON()+");";
     
     return this.start_tag_for('form', html_options)
 }
@@ -202,7 +202,7 @@ Junction.View.form_tag = function(url_for_options, html_options, post) {
  * Outputs "&lt;/form&gt;".
  * @return {String} "&lt;/form&gt;" .
  */
-Junction.View.form_tag_end = function() { return this.tag_end('form'); }
+JMVC.View.form_tag_end = function() { return this.tag_end('form'); }
 
 /**
  * Creates a external start form tag.
@@ -221,7 +221,7 @@ Junction.View.form_tag_end = function() { return this.tag_end('form'); }
  * @return {String} A begining form tag.
  *
  */
-Junction.View.form_tag_external = function(action, html_options) {
+JMVC.View.form_tag_external = function(action, html_options) {
     html_options     = html_options                     || {};
     html_options.action = action
     return this.start_tag_for('form', html_options)
@@ -243,7 +243,7 @@ Junction.View.form_tag_external = function(action, html_options) {
  * @return {String} Text for an hidden field element.
  *
  */
-Junction.View.hidden_field_tag   = function(name, value, html_options) { 
+JMVC.View.hidden_field_tag   = function(name, value, html_options) { 
     return this.input_field_tag(name, value, 'hidden', html_options); 
 }
 
@@ -272,7 +272,7 @@ Junction.View.hidden_field_tag   = function(name, value, html_options) {
  * @return {String} input field text.
  *
  */
-Junction.View.input_field_tag = function(name, value , inputType, html_options) {
+JMVC.View.input_field_tag = function(name, value , inputType, html_options) {
     
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
@@ -286,10 +286,10 @@ Junction.View.input_field_tag = function(name, value , inputType, html_options) 
  * Returns true if parameters in options match the parameters of the current page.
  * @param {Object} options
  */
-Junction.View.is_current_page = function(options) {
+JMVC.View.is_current_page = function(options) {
 	options = $H(options) || $H();
-	var options_extended = Object.extend(Object.clone(Junction.Routes.params()), options);
-	if(this.url_for(options_extended) == this.url_for(Junction.Routes.params()))
+	var options_extended = Object.extend(Object.clone(JMVC.Routes.params()), options);
+	if(this.url_for(options_extended) == this.url_for(JMVC.Routes.params()))
 		return true;
 	return false;
 }
@@ -320,7 +320,7 @@ Junction.View.is_current_page = function(options) {
  * @return {String} hyperlink text.
  *
  */
-Junction.View.link_to = function(name, options, html_options, post) {
+JMVC.View.link_to = function(name, options, html_options, post) {
     if(!name) var name = 'null';
     if(!html_options) var html_options = {}
     html_options.onclick = html_options.onclick  || '' ;
@@ -332,15 +332,15 @@ Junction.View.link_to = function(name, options, html_options, post) {
 	}
 	options = options || {}
 	if(!options.action)
-		options.action = Junction.Routes.params().action
+		options.action = JMVC.Routes.params().action
 		
     if(!options.controller)
-		options.controller = Junction.Routes.params().controller
+		options.controller = JMVC.Routes.params().controller
 
 	if(post)
 	    html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
 		
-    html_options.href='#'+(options ? Junction.Routes.url_for(options) : '')
+    html_options.href='#'+(options ? JMVC.Routes.url_for(options) : '')
     return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
 }
 /**
@@ -349,7 +349,7 @@ Junction.View.link_to = function(name, options, html_options, post) {
  * @param {Object} options
  * @param {Object} html_options
  */
-Junction.View.submit_link_to = function(name, options, html_options, post){
+JMVC.View.submit_link_to = function(name, options, html_options, post){
 	if(!name) var name = 'null';
     if(!html_options) var html_options = {}
     html_options.onclick = html_options.onclick  || '' ;
@@ -364,7 +364,7 @@ Junction.View.submit_link_to = function(name, options, html_options, post){
 	html_options.type = 'submit'
     html_options.onclick=html_options.onclick+
 		(options ? this.url_for(options, post) : '')+'return false;';
-    //html_options.href='#'+(options ? Junction.Routes.url_for(options) : '')
+    //html_options.href='#'+(options ? JMVC.Routes.url_for(options) : '')
 	return this.start_tag_for('input', html_options)
 }
 /**
@@ -390,7 +390,7 @@ Junction.View.submit_link_to = function(name, options, html_options, post){
  * @return {String} hyperlink text.
  *
  */
-Junction.View.link_to_external = function(text, path, html_options) {
+JMVC.View.link_to_external = function(text, path, html_options) {
     if(!html_options) var html_options = {}
     html_options.href=path
     return this.start_tag_for('a', html_options)+text+ this.tag_end('a');
@@ -409,7 +409,7 @@ Junction.View.link_to_external = function(text, path, html_options) {
  * @param {Object} block
  * @see #link_to_unless
  */
-Junction.View.link_to_if = function(condition, name, options, html_options, post, block) {
+JMVC.View.link_to_if = function(condition, name, options, html_options, post, block) {
 	return this.link_to_unless((condition == false), name, options, html_options, post, block);
 }
 
@@ -469,7 +469,7 @@ Junction.View.link_to_if = function(condition, name, options, html_options, post
  * @param {Object} block optional function that is called if the condition evaluates to true.  The block is called with 
  * 					name, options, html_options, and block.
  */
-Junction.View.link_to_unless = function(condition, name, options, html_options, post, block) {
+JMVC.View.link_to_unless = function(condition, name, options, html_options, post, block) {
 	options = options || {};
 	html_options = html_options || {};
 	if(condition) {
@@ -495,7 +495,7 @@ Junction.View.link_to_unless = function(condition, name, options, html_options, 
  * @param {Object} block
  * @see #link_to_unless
  */
-Junction.View.link_to_unless_current = function(name, options, html_options, post, block) {
+JMVC.View.link_to_unless_current = function(name, options, html_options, post, block) {
 	options = options || {};
 	html_options = html_options || {};
 	return this.link_to_unless(this.is_current_page(options), name, options, html_options, post, block)
@@ -534,7 +534,7 @@ Junction.View.link_to_unless_current = function(name, options, html_options, pos
  * @return {Object} Object containing packaged form data.
  */
 
-Junction.View.package_form = function(form_element, options, submit_button_name) {
+JMVC.View.package_form = function(form_element, options, submit_button_name) {
     if(!options) var options = {};
     if(typeof form_element == 'string') form_element = $(form_element)
     
@@ -544,10 +544,10 @@ Junction.View.package_form = function(form_element, options, submit_button_name)
             if (element.type != "submit" || element.name == submit_button_name) {
                 if(element.type == "radio") {
                     if (element.checked == true)
-                        Junction.View.set_map_tree_value(options, element.name, element.value);
+                        JMVC.View.set_map_tree_value(options, element.name, element.value);
                 } else {
                     var value = (element.type == "checkbox" ? element.checked : element.value);
-                    Junction.View.set_map_tree_value(options, element.name, value);
+                    JMVC.View.set_map_tree_value(options, element.name, value);
                 }
             }
         }
@@ -576,7 +576,7 @@ Junction.View.package_form = function(form_element, options, submit_button_name)
  * @return {String} password field text.
  *
  */
-Junction.View.password_field_tag = function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); }
+JMVC.View.password_field_tag = function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); }
 
 
 /**
@@ -591,17 +591,17 @@ Junction.View.password_field_tag = function(name, value, html_options) { return 
  * @param {String} submit_button_name Optional parameter used by package_form.
  * @see #package_form
  */
-Junction.View.post_form = function(form_element, options, submit_button_name) {
-    Junction.View.send_form_to_server = false;
+JMVC.View.post_form = function(form_element, options, submit_button_name) {
+    JMVC.View.send_form_to_server = false;
     // hash of file fields with their ids as the value
-    Junction.View.insert_id_into_form = true;
+    JMVC.View.insert_id_into_form = true;
     post( this.package_form( form_element, options, submit_button_name ) );
-    var insert_id_into_form = Junction.View.insert_id_into_form;
-    delete Junction.View.insert_id_into_form;
-    if(Junction.View.send_form_to_server == true) { // set up form for server
-        new Insertion.Top(document.body, "<iframe id='upload_frame' name='upload_frame' style='display:none' onload='Junction.Dispatcher.resume_execution();'></iframe>")
+    var insert_id_into_form = JMVC.View.insert_id_into_form;
+    delete JMVC.View.insert_id_into_form;
+    if(JMVC.View.send_form_to_server == true) { // set up form for server
+        new Insertion.Top(document.body, "<iframe id='upload_frame' name='upload_frame' style='display:none' onload='JMVC.Dispatcher.resume_execution();'></iframe>")
         form_element.setAttribute('target', 'upload_frame');
-        form_element.setAttribute('action', '/'+Junction.app_info.client.name+'/'+Junction.app_info.project.name+'/file_upload');
+        form_element.setAttribute('action', '/'+JMVC.app_info.client.name+'/'+JMVC.app_info.project.name+'/file_upload');
         // look for all file ids to place into the form
         if(insert_id_into_form)
             new Insertion.Top(form_element, '<input type="hidden" '+
@@ -636,7 +636,7 @@ Junction.View.post_form = function(form_element, options, submit_button_name) {
  *
  * @return {String} select tag text.
  */
-Junction.View.select_tag = function(name, value, choices, html_options) {     
+JMVC.View.select_tag = function(name, value, choices, html_options) {     
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
     html_options.value = value;
@@ -669,7 +669,7 @@ Junction.View.select_tag = function(name, value, choices, html_options) {
  * @param {String} path attributes seperated by [] that determine where you object will be inserted.
  * @param {} value value of final attribute.
  */
-Junction.View.set_map_tree_value = function(mapTree, path, value) { // Example path is 'order[customer][name]'.
+JMVC.View.set_map_tree_value = function(mapTree, path, value) { // Example path is 'order[customer][name]'.
     if (path != null) {
         var keys = path.replace(/\]/g, '').split('[');
         for (var k = 0; k < keys.length; k++) {
@@ -697,7 +697,7 @@ Junction.View.set_map_tree_value = function(mapTree, path, value) { // Example p
  *
  * @return {String} html markup for a tag
  */
-Junction.View.single_tag_for = function(tag, html_options) { return this.tag(tag, html_options, '/>');}
+JMVC.View.single_tag_for = function(tag, html_options) { return this.tag(tag, html_options, '/>');}
 
 /**
  * Creates tag that ends with '>'.  Use this to create html elements that have other markup or 
@@ -713,9 +713,9 @@ Junction.View.single_tag_for = function(tag, html_options) { return this.tag(tag
  *
  * @return {String} html markup for a tag
  */
-Junction.View.start_tag_for = function(tag, html_options)  { return this.tag(tag, html_options); }
+JMVC.View.start_tag_for = function(tag, html_options)  { return this.tag(tag, html_options); }
 
-Junction.View.submit_tag = function(name, html_options) {  
+JMVC.View.submit_tag = function(name, html_options) {  
     html_options = html_options || {};
     html_options.name  = html_options.id  || 'commit';
     html_options.type = html_options.type  || 'submit';
@@ -737,7 +737,7 @@ Junction.View.submit_tag = function(name, html_options) {
  *
  * @return {String} html markup for a tag
  */
-Junction.View.tag = function(tag, html_options, end) {
+JMVC.View.tag = function(tag, html_options, end) {
     if(!end) var end = '>'
     var txt = ' '
     for(var attr in html_options) { 
@@ -759,7 +759,7 @@ Junction.View.tag = function(tag, html_options, end) {
  * @param {String} tag Html tag type {'span', 'div', 'p', ...}
  * @return {String} '&lt;/'+tag+'&gt;'
  */
-Junction.View.tag_end = function(tag)             { return '</'+tag+'>'; }
+JMVC.View.tag_end = function(tag)             { return '</'+tag+'>'; }
 
 /**
  * Creates a textarea.
@@ -782,7 +782,7 @@ Junction.View.tag_end = function(tag)             { return '</'+tag+'>'; }
  * @return {String} password field text.
  *
  */
-Junction.View.text_area_tag = function(name, value, html_options) { 
+JMVC.View.text_area_tag = function(name, value, html_options) { 
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
     html_options.name  = html_options.name  || name;
@@ -798,7 +798,7 @@ Junction.View.text_area_tag = function(name, value, html_options) {
     
     return  this.start_tag_for('textarea', html_options)+value+this.tag_end('textarea')
 }
-Junction.View.text_tag = Junction.View.text_area_tag
+JMVC.View.text_tag = JMVC.View.text_area_tag
 /**
  * Creates a standard text field.
  * <p>Example:</p>
@@ -817,7 +817,7 @@ Junction.View.text_tag = Junction.View.text_area_tag
  * @return {String} password field text.
  *
  */
-Junction.View.text_field_tag     = function(name, value, html_options) { return this.input_field_tag(name, value, 'text', html_options); }
+JMVC.View.text_field_tag     = function(name, value, html_options) { return this.input_field_tag(name, value, 'text', html_options); }
 
 /**
  * Creates human readable text using basic types
@@ -825,7 +825,7 @@ Junction.View.text_field_tag     = function(name, value, html_options) { return 
  * @param {String} null_text The string to display in case the input is null
  * @return {String} a string representation of whatever was passed in
  */
-Junction.View.to_text = function(input, null_text) {
+JMVC.View.to_text = function(input, null_text) {
     if(input == null || input === undefined)
         return null_text || '';
     if(input instanceof Date)
@@ -841,13 +841,13 @@ Junction.View.to_text = function(input, null_text) {
  * @param {Object} A url hash.
  * @private
  */
-Junction.View.update_with_controller_and_action = function(options) {
+JMVC.View.update_with_controller_and_action = function(options) {
       if(!options)
         options= {};
       if(!options.controller)
-        options.controller = Junction.Routes.params()['controller'];
+        options.controller = JMVC.Routes.params()['controller'];
       if(!options.action)
-        options.action = Junction.Routes.params()['action'];
+        options.action = JMVC.Routes.params()['action'];
 }
 
 /**
@@ -855,13 +855,13 @@ Junction.View.update_with_controller_and_action = function(options) {
  * <p>This is primarly used by url_for to provide a default controller for actions.</p>
  * @param {Object} A url hash.
  */
-Junction.View.update_with_client_and_project = function(options) {
+JMVC.View.update_with_client_and_project = function(options) {
       if(!options)
         options= {};
       if(!options.action)
         options.action = 'index';
       if(!options.controller)
-        options.project = Junction.Routes.params()['controller'];
+        options.project = JMVC.Routes.params()['controller'];
 }
 /**
  * Returns javascript text that when run will call a controller action with parameters defined in params.
@@ -870,7 +870,7 @@ Junction.View.update_with_client_and_project = function(options) {
  * @param {Boolean} post true if a post request, false if otherwise.  Default is a get request.
  * @return {String} request function.
  */
-Junction.View.url_for = function(params, post) {
+JMVC.View.url_for = function(params, post) {
     this.update_with_controller_and_action(params);
     if(post == true)
         return 'post(' + $H(params).toJSON() + ');'
@@ -883,7 +883,7 @@ Junction.View.url_for = function(params, post) {
  * @param {Object} column_name
  * @param {Object} options
  */
-Junction.View.input = function(model_name, column_name, options) {
+JMVC.View.input = function(model_name, column_name, options) {
 	options = options || {};
 	options.value = options.value || '';
 	var type = window[model_name].columns_hash()[column_name].sql_type;
@@ -892,22 +892,22 @@ Junction.View.input = function(model_name, column_name, options) {
 	return this.text_field_tag(model_name+'['+column_name+']', options.value, options);	
 }
 
-Junction.View.img_tag = function(image_location, options){
+JMVC.View.img_tag = function(image_location, options){
 	options = options || {};
 	options.src = APPLICATION_ROOT+"/public/images/"+image_location
-	return Junction.View.single_tag_for('img', options)
+	return JMVC.View.single_tag_for('img', options)
 	//return "<img src='"+APPLICATION_ROOT+"/public/images/"+image_location+"'/>"
 }
 
-Junction.View.HandlerObject = function(value) {
+JMVC.View.HandlerObject = function(value) {
 	this.value = value;
 }
 
-Junction.View.HandlerObject.prototype = {
+JMVC.View.HandlerObject.prototype = {
 	toJSON : function() {
 		return this.value;
 	}
 }
 
 
-var view = Junction.View
+var view = JMVC.View

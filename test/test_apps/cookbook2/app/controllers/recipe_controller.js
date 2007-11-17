@@ -1,4 +1,4 @@
-RecipeController  = Class.create(Junction.Controller, {
+RecipeController  = Class.create(JMVC.Controller, {
 
     list : function(params) {
 		this.recipes = Recipe.find('all');

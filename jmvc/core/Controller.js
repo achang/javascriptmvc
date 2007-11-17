@@ -2,7 +2,7 @@
  * @fileoverview
  * The Controller.js file contains an Javascript implementation of the 
  * active controller design pattern and supporting functionality.
- * <p class='credits'>JavaScript Junction based off <a href='http://trimpath.com/'>TrimJunction framework</a>.
+ * <p class='credits'>JavaScript MVC based off <a href='http://trimpath.com/'>TrimJunction framework</a>.
  * @author Jupiter Information Technology Solutions - Brian Moschel, Justin Meyer.<br/>
  * @version 0.1
  */
@@ -11,13 +11,13 @@
  * For inheritance purposes, this function calls the initialize function.
  * @constructor
  * @class
- * <p>Junction.Controllers are the core of a web request in Junction. 
+ * <p>JMVC.Controllers are the core of a web request in JMVC. 
  * They are made up of one or more actions that are executed on request and then either render a template or redirect to another action. 
  * An action is defined as a method on the controller, which will automatically be made accessible through the dispatcher. 
  * A sample controller could look like this:</p>
  *
  * <pre class='example'>
- *  var GuestBookController  = Class.create(Junction.Controller, {
+ *  var GuestBookController  = Class.create(JMVC.Controller, {
  *     index : function(params) {
  *           this.entries = Entry.find('all');
  *     },
@@ -40,8 +40,8 @@
  *
  * <h4>Requests</h4>
  *
- * <p>Requests are processed by the Junction.Controller framework by extracting the value of the "action" key in the options parameter sent to the 
- * <b>get</b> or <b>post</b> methods of Junction.Dispatcher.  This value should hold the name of the action to be performed.  Once the action
+ * <p>Requests are processed by the JMVC.Controller framework by extracting the value of the "action" key in the options parameter sent to the 
+ * <b>get</b> or <b>post</b> methods of JMVC.Dispatcher.  This value should hold the name of the action to be performed.  Once the action
  * has been identified, the remaining request parameters and the session are made available to the action through instance variables.  Then the 
  * action is performed.</p>
  * 
@@ -80,8 +80,8 @@
  *
  * <h4>Renders</h4>
  * 
- * <p>Junction.Controller places content on the page by using one of two rendering methods.  The most versatile and common is the rendering of a template. Included in Junction is 
- * Junction.Template, which renders javascript template (jst) files.  In the context of an MVC architecture, these template files are called views.  
+ * <p>JMVC.Controller places content on the page by using one of two rendering methods.  The most versatile and common is the rendering of a template. Included in JMVC is 
+ * JMVC.Template, which renders javascript template (jst) files.  In the context of an MVC architecture, these template files are called views.  
  * The controller passes objects to the views by assigning instance variables:</p>
  * <pre class='example'>
  *     show : function(params) {
@@ -106,7 +106,7 @@
  *                  break;
  *           }
  *     }</pre>
- * <p>Read more about javascript templates in Junction.Template</p>
+ * <p>Read more about javascript templates in JMVC.Template</p>
  *
  * <h4>Redirects</h4>
  * 
@@ -129,11 +129,11 @@
  * <p>In this case, after saving our new entry to the database, the user is redirected to the show method, which is then executed.  If you don't supply a controller, redirect_to assumes you are redirecting to an
  *  action in the current controller.</p>
  *
- * @see Junction.View
- * @see Junction.ActiveRecord
+ * @see JMVC.View
+ * @see JMVC.ActiveRecord
  */
-Junction.Controller = function(){};
-Junction.Controller.prototype = {
+JMVC.Controller = function(){};
+JMVC.Controller.prototype = {
     /**
      * Creates a new controller instance.  Overwrite for inheritiance.
      * @param {Object} klass_name
@@ -145,9 +145,9 @@ Junction.Controller.prototype = {
         // Holds data that should persist across controller actions for this controller
         this.controller_session = this.klass().controller_session || {};
         this.request_type = type;
-        this.session = Junction.Framework.get_session();
-        this.flash = Junction.Framework.get_session().flash;
-        this.render_container_id = Junction.View.RENDER_TO;
+        this.session = JMVC.Framework.get_session();
+        this.flash = JMVC.Framework.get_session().flash;
+        this.render_container_id = JMVC.View.RENDER_TO;
         this._rendered = false;
 		// this saves the rendered text to be returned
 		this._render_result = null;
@@ -184,7 +184,7 @@ Junction.Controller.prototype = {
         // allow view methods to be accessible in views
 		for(var attr in view) {
 			if(data[attr] != null)
-				throw(new Junction.Error(new Error(), attr+' is a method in Junction.View.  You cannot name controller instance attributes the same as any Junction.View attributes.'))
+				throw(new JMVC.Error(new Error(), attr+' is a method in JMVC.View.  You cannot name controller instance attributes the same as any JMVC.View attributes.'))
 			else
 				data[attr] = view[attr];
 		}
@@ -208,11 +208,11 @@ Junction.Controller.prototype = {
         options = options || {}
 		options.controller = options.controller || this.params.controller
 		var params = Object.extend(
-          { action: Junction.Routes.params()['action'],
-            controller: Junction.Routes.params()['controller']
+          { action: JMVC.Routes.params()['action'],
+            controller: JMVC.Routes.params()['controller']
           }, options || {} );
         if(this._redirected != null) // already rendered or redirected
-			throw new Junction.Error(new Error(), 'Cannot call render twice in the same action.');
+			throw new JMVC.Error(new Error(), 'Cannot call render twice in the same action.');
         this._redirected = params;
     },
     /**
@@ -255,7 +255,7 @@ Junction.Controller.prototype = {
         }
         else {
             if(options.action) {
-                var folder_name = Junction.Routes.params()['controller'];
+                var folder_name = JMVC.Routes.params()['controller'];
                 var suggestions = APPLICATION_ROOT+'app/views/'+folder_name+'/'+options.action+".jst";
                 var file_name = options.action+'.jst';
             }
@@ -276,14 +276,14 @@ Junction.Controller.prototype = {
 				var file_name = this.params.controller+'/_'+options.partial+'.jst';
 			}
             else {
-                var suggestions = APPLICATION_ROOT+'app/views/'+Junction.Routes.params()['controller']+'/'+Junction.Routes.params()['action']+'.jst';
-				var file_name = Junction.Routes.params()['action']+'.jst';
+                var suggestions = APPLICATION_ROOT+'app/views/'+JMVC.Routes.params()['controller']+'/'+JMVC.Routes.params()['action']+'.jst';
+				var file_name = JMVC.Routes.params()['action']+'.jst';
             }
-	        var template = Junction.Template.look_for_template(suggestions);
+	        var template = JMVC.Template.look_for_template(suggestions);
 	        if(template) {
 				var result = this.render_templates(template, options.partial, null, options.locals);
 	        } else
-				throw new Junction.IncludeError(new Error(), 'Template not found: '+file_name);
+				throw new JMVC.IncludeError(new Error(), 'Template not found: '+file_name);
 			// layouts ***
 			// first, if this is a partial, skip any layout checks
 			// next check if layout is passed in as an option (can be false or point to another layout)
@@ -298,15 +298,15 @@ Junction.Controller.prototype = {
 				else if(this.klass().layout)
 					var layout_path = APPLICATION_ROOT+'app/views/layouts/'+this.klass().layout+'.jst';
 				if(layout_path && this.klass()._layout_template == null) {
-					this.klass()._layout_template = Junction.Template.look_for_template(layout_path);
+					this.klass()._layout_template = JMVC.Template.look_for_template(layout_path);
 					if(this.klass()._layout_template == null)
-						throw new Junction.IncludeError(new Error(), 'Layout not found: '+layout_path);
+						throw new JMVC.IncludeError(new Error(), 'Layout not found: '+layout_path);
 				}
 				
 				if(this.klass()._layout_template == null) {
 					// finally, try the layouts/application.jst layout
 					var layout_path = APPLICATION_ROOT+'app/views/layouts/application.jst';
-					this.klass()._layout_template = Junction.Template.look_for_template(layout_path);
+					this.klass()._layout_template = JMVC.Template.look_for_template(layout_path);
 				}
 				
 				if(this.klass()._layout_template != null)
@@ -319,7 +319,7 @@ Junction.Controller.prototype = {
 			if(options.partial || (options.template && !options.update_id)  ) // return the result to be placed directly in the page
                 return result;
             else { // render the result right now and return
-                Junction.Framework.display_content(this.render_container_id, result);
+                JMVC.Framework.display_content(this.render_container_id, result);
 				JITS.Event.fire_event('renderComplete')
 				this._rendered_result = result;
             }
@@ -327,7 +327,7 @@ Junction.Controller.prototype = {
             
             return result;
         } else
-			throw new Junction.Error(new Error(), 'nothing to render');
+			throw new JMVC.Error(new Error(), 'nothing to render');
     },
 	/**
 	 * Creates and returns a closure that can be called back for asynchronous functions.
@@ -433,20 +433,20 @@ Junction.Controller.prototype = {
 			try {
                 return template.process($H(data).merge(extra_data));
 			} catch(e) {
-				var file_name = Junction.Error.file_name(e)
+				var file_name = JMVC.Error.file_name(e)
 				if(file_name && file_name == 'ejs.js') {
 					var message = 'Error while processing '+template.path+': '+e.message+'\n<pre><code>'+template.source.replace_angle_brackets()+'</code></pre>'
-					throw new Junction.TemplateError(new Error(), message);
+					throw new JMVC.TemplateError(new Error(), message);
 				} else {
 					throw(e)
 				}
 			}
     }
 }
-Junction.Controller = Class.create(Junction.Controller.prototype)
+JMVC.Controller = Class.create(JMVC.Controller.prototype)
 
 
 
 
 
-Junction.Controller._layout_template = null;
+JMVC.Controller._layout_template = null;
