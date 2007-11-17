@@ -1,0 +1,35 @@
+<h1>Edit Recipe</h1>
+
+<%= form_tag({action: 'update', id: recipe.id}) %>
+	<input id="recipe_id" name="Recipe[id]" size="30" 
+ 		type="hidden" value="<%= recipe.id %>" />
+	<p><b>Title</b><br>
+		<input id="recipe_title" name="Recipe[title]" size="30" 
+ 			type="text" value="<%= recipe.title %>" />
+	</p>
+	<p><b>Description</b><br>
+		<input id="recipe_description" name="Recipe[description]" 
+		 size="30" type="text" 
+		 value="<%= recipe.description %>" />
+	</p>
+	<p><b>Category:</b><br>
+		
+		<select name="Recipe[category_id]">
+		<% categories.each(function(category){ %>
+		<option value="<%= category.id %>" 
+		 <%if( category.id == recipe.category_id){%>Selected<%}%>
+		 >
+		 <%= category.name %>
+		</option>
+		<% })%>
+	</select></p>
+	
+	<p><b>Instructions</b><br>
+	<textarea cols="40" id="recipe_instructions" 
+	    name="Recipe[instructions]" 
+	    rows="20" wrap="virtual"><%= recipe.instructions %></textarea> </p>
+	<input type="submit" value="Update" />
+</form>
+
+<%= link_to('Show', {action: 'show', id: recipe.id}) %> |
+<%= link_to('Back', {action: 'list'}) %>

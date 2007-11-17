@@ -1,0 +1,22 @@
+<h1>Listing categories</h1>
+
+<table>
+	<tr>
+	  	<% Category.content_columns().each(function(column){ %>
+	    	<th><%= column.human_name() %></th>
+	    <% }) %>
+	</tr>
+	<% categories.each(function(category) { %>
+		<tr>
+		  	<% Category.content_columns().each(function(column){ %>
+		    	<td><%=to_text(category[column.name], '') %></td>
+		    <% }) %>
+		    <td><%= link_to('Show', {action: 'show', id: category.id}) %></td>
+		    <td><%= link_to('Edit', {action: 'edit', id: category.id}) %></td>
+		    <td><%= link_to('Delete', {action: 'destroy', id: category.id}) %></td>
+		</tr>
+	<% }) %>
+</table>
+
+<%= link_to('New Category', {action: 'new_instance'}) %><br />
+<%= link_to('List recipes', {action: 'list', controller: 'recipe'}) %>

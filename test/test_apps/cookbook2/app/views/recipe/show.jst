@@ -1,0 +1,8 @@
+<% Recipe.content_columns().each(function(column){ %>
+<p>
+  <b><%= column.human_name() %>:</b> <%=to_text(recipe[column.name], '') %>
+</p>
+<% }) %>
+
+<%= link_to('Edit', {action: 'edit', id: recipe.id}) %> |
+<%= link_to('Back', {action: 'list'}) %>

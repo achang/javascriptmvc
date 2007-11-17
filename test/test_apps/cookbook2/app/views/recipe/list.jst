@@ -1,0 +1,15 @@
+<h1>Online Cookbook - All Recipes</h1>
+<table border="1">
+ <tr>
+  <td width="80%"><p align="center"><i><b>Recipe</b></i></td>
+  <td width="20%"><p align="center"><i><b>Date</b></i></td>
+ </tr>
+ <% recipes.each(function(recipe) { %>
+	<tr>
+	    <td><%=link_to(recipe.title, {action: 'show', id: recipe.id}) %></td>
+	    <td><%=to_text( recipe.date) %></td>
+	</tr>
+<% }) %>
+</table>
+<%= link_to('Create new recipe', {action: 'new_instance'}) %><br />
+<%= link_to('List categories', {action: 'list', controller: 'category'}) %>
