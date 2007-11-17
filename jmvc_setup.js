@@ -15,7 +15,7 @@ var include = JMVC.require;
 
 // calls itself to keep the global scope clean
 JMVC.get_root = function() {
-	var JMVC_regex = /JMVC_setup\.js$/
+	var JMVC_regex = /jmvc_setup\.js$/
 	for(var i=0; i<document.getElementsByTagName("script").length; i++) {
 		var src = document.getElementsByTagName("script")[i].src;
 		if(src.match(JMVC_regex))
