@@ -121,7 +121,7 @@ var include = JMVC.Include.include;
  */
 JMVC.Include.include_template = function(path, cache) {
 	// if this is a remote application, reroute the templates to grab processed templates
-	if(JMVC.remote == true) {
+	if(JMVC.remote() == true) {
 		path = path.replace(/\/views\//, '/processed_views/');
 		path = path.substring(0,path.length-1);
 		include(path);
