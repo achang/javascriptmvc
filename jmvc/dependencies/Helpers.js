@@ -36,7 +36,7 @@ JITS.File.prototype = {
         return path_array[(path_array.length-1)].split('.')[0];
     },
     is_absolute : function() {
-        return (this.path_name.substring(0,1) == "/" || this.path_name.substring(0,7) == 'http://' || this.path_name.substring(0,7) == 'https://');
+        return (this.path_name.substring(0,1) == "/" || this.path_name.substring(0,7) == 'http://' || this.path_name.substring(0,8) == 'https://');
     },
     keyword_to_end : function(keyword) {
         var index = $A(this.path_array).indexOf(keyword);
