@@ -103,16 +103,19 @@ JMVC.Test = {};
 	}
 })()
 
-
+JMVC.SETUP.waiting_for = [];
+JMVC.wait_for = function(name) {
+	JMVC.SETUP.waiting_for.push(name);
+}
 
 JMVC.libraries_loaded_counter = -1;
 // libraries call this function when they are done loading
 // when all libraries have loaded, this function calls the 
 // JMVC.user_initialize_function()
-JMVC.library_loaded = function() {
+JMVC.loaded = function() {
 	JMVC.libraries_loaded_counter=JMVC.libraries_loaded_counter+1;
-	if(JMVC.libraries_loaded_counter >= JMVC.SETUP.included_libraries.length &&
-	  !JMVC.initialized) {
+	var total_to_load = JMVC.SETUP.waiting_for.length + JMVC.SETUP.included_libraries.length;
+	if(JMVC.libraries_loaded_counter >= total_to_load && !JMVC.initialized) {
 		JMVC.initialized = true;
 		JMVC.user_initialize_function();
 		if(JMVC.remote == true)
