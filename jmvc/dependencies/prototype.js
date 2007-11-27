@@ -75,8 +75,8 @@ var Class = {
   },
 
   inherit: function(destination, source, name) {
-    var prototype = destination.prototype, ancestor = prototype[name],
-     descendant = source[name];
+    var proto = destination.prototype, ancestor = proto[name], 
+		descendant = source[name];
     if (ancestor && Object.isFunction(descendant) &&
         descendant.argumentNames().first() == "$super") {
       var method = descendant, descendant = ancestor.wrap(method);
@@ -86,7 +86,7 @@ var Class = {
       });
     }
 
-    prototype[name] = descendant;
+    proto[name] = descendant;
 
     if (destination.subclasses && destination.subclasses.length > 0) {
       for (var i = 0, subclass; subclass = destination.subclasses[i]; i++) {
