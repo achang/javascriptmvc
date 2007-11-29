@@ -89,6 +89,7 @@ var post = JMVC.Dispatcher.post_request;
  * @return The string produced by the render call in the called action
  */
 JMVC.Dispatcher.redirect_request = function(options) {
+	JMVC.Routes.clear_route_cache();
 	var options = Object.extend(
 	      { action: JMVC.Routes.params()['action'],
 	        controller: JMVC.Routes.params()['controller']
