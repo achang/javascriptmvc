@@ -96,6 +96,9 @@ JMVC.Dispatcher.redirect_request = function(options) {
 	      }, options || {} );
 	JMVC.Dispatcher.add_to_history(options)
 	
+	var history_options = $H(Object.clone(options))
+	JMVC.Dispatcher.add_to_history(history_options) // adds this to history
+	//return JMVC.Dispatcher.request("redirect", options);
 	/*if(JMVC.Dispatcher.asynchronous_request == true) {
         // create a closure to be called when execution resumes
         JMVC.Dispatcher.resume_execution = function() {
