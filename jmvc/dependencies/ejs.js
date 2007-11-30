@@ -50,7 +50,7 @@ String.prototype.rsplit = function(regex) {
 		item = item.slice(result[0].length);
 		result = regex.exec(item);	
 	}
-	if (! item.empty())
+	if (! item == '')
 	{
 		retArr.push(item);
 	}
@@ -63,7 +63,11 @@ String.prototype.chop = function() {
 }
 
 /* Adaptation from the Scanner of erb.rb  */
-var EjsScanner = Class.create();
+var EjsScanner = function(source) {
+	this.SplitRegexp = /(<%%)|(%%>)|(<%=)|(<%#)|(<%)|(%>\n)|(%>)|(\n)/;
+	this.source = source;
+	this.stag = null;
+};
 
 EjsScanner.to_text = function(input){
 	if(input == null || input === undefined)
@@ -76,38 +80,35 @@ EjsScanner.to_text = function(input){
 }
 
 EjsScanner.prototype = {
-  initialize: function(source) {
-      this.SplitRegexp = /(<%%)|(%%>)|(<%=)|(<%#)|(<%)|(%>\n)|(%>)|(\n)/;
-      this.source = source;
-	  this.stag = null;
-  },
 
   /* For each line, scan! */
   scan: function(block) {
      scanline = this.scanline;
 	 regex = this.SplitRegexp;
-	 if (! this.source.empty())
+	 if (! this.source == '')
 	 {
-		 this.source.rsplit(/\n/).each(function(item) {
+	 	 var source_split = this.source.rsplit(/\n/);
+	 	 for(var i=0; i<source_split.length; i++) {
+		 	 var item = source_split[i];
 			 scanline(item, regex, block);
-		 });
+		 }
 	 }
   },
   
   /* For each token, block! */
   scanline: function(line, regex, block) {
-     line.rsplit(regex).each(function(token) {
+	 var line_split = line.rsplit(regex);
+ 	 for(var i=0; i<line_split.length; i++) {
+	   var token = line_split[i];
        if (token != null) {
          block(token, this);
        }
-     });
+	 }
   }
 };
 
 /* Adaptation from the Buffer of erb.rb  */
-var EjsBuffer = Class.create();
-EjsBuffer.prototype = {
-  initialize: function(pre_cmd, post_cmd) {
+var EjsBuffer = function(pre_cmd, post_cmd) {
 	this.line = new Array();
 	this.script = "";
 	this.pre_cmd = pre_cmd;
@@ -117,8 +118,9 @@ EjsBuffer.prototype = {
 	{
 		this.push(pre_cmd[i]);
 	}
-  },
-	  
+}
+EjsBuffer.prototype = {
+	
   push: function(cmd) {
 	this.line.push(cmd);
   },
@@ -144,9 +146,7 @@ EjsBuffer.prototype = {
 };
 
 /* Adaptation from the Compiler of erb.rb  */
-var EjsCompiler = Class.create();
-EjsCompiler.prototype = {
-  initialize: function(source) {
+EjsCompiler = function(source) {
 	this.pre_cmd = ['___ejsO = "";'];
 	this.post_cmd = new Array();
 	this.source = ' ';	
@@ -169,7 +169,8 @@ EjsCompiler.prototype = {
 	}
 	this.scanner = new EjsScanner(this.source);
 	this.out = '';
-  },
+}
+EjsCompiler.prototype = {
   compile: function() {
 	this.out = '';
 	var put_cmd = "___ejsO += ";
