@@ -94,21 +94,7 @@ JMVC.Dispatcher.redirect_request = function(options) {
 	      { action: JMVC.Routes.params()['action'],
 	        controller: JMVC.Routes.params()['controller']
 	      }, options || {} );
-	//JMVC.Dispatcher.add_to_history(options)
-	
-	var history_options = $H(Object.clone(options))
-	JMVC.Dispatcher.add_to_history(history_options) // adds this to history
-	//return JMVC.Dispatcher.request("redirect", options);
-	/*if(JMVC.Dispatcher.asynchronous_request == true) {
-        // create a closure to be called when execution resumes
-        JMVC.Dispatcher.resume_execution = function() {
-            JMVC.Dispatcher.asynchronous_request = false;
-            return JMVC.Dispatcher.request("redirect", options);
-        }
-        return;
-    }
-    else*/
-        return JMVC.Dispatcher.request("redirect", options);
+    return JMVC.Dispatcher.request("redirect", options);
 }
 /*JMVC.Dispatcher.callback = function(params ){
 	params = params || {}
