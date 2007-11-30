@@ -94,7 +94,9 @@ JMVC.Dispatcher.redirect_request = function(options) {
 	      { action: JMVC.Routes.params()['action'],
 	        controller: JMVC.Routes.params()['controller']
 	      }, options || {} );
-    return JMVC.Dispatcher.request("redirect", options);
+	var history_options = $H(Object.clone(options))
+	JMVC.Dispatcher.add_to_history(history_options) // adds this to history
+	return JMVC.Dispatcher.request("redirect", options);
 }
 /*JMVC.Dispatcher.callback = function(params ){
 	params = params || {}
