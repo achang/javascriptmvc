@@ -96,7 +96,8 @@ JMVC.Test = {};
 		JMVC.application_domain = function(){
 			return domain;
 		}
-		if(domain != location.href.match(/^(http(s*):\/\/[\w|\.|:|\d]*)/)[0] ) remote = true;
+		var pages_domain = location.href.match(/^(http(s*):\/\/[\w|\.|:|\d]*)/) 
+		if(!pages_domain || domain != pages_domain[0]) remote = true; //need to check if you are local
 	}
 	JMVC.remote = function(){
 		return remote;
