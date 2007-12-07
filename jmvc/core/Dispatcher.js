@@ -7,35 +7,6 @@
 JMVC.Dispatcher = function() {}
 
 
-JMVC.Dispatcher.initialize = function() {
-	JMVC.RECORD_HISTORY = true;
-	window.historyStorage.init();
-	window.dhtmlHistory.create();
-	dhtmlHistory.initialize();
-	dhtmlHistory.addListener(JMVC.Dispatcher.historyChange);
-}
-if(JMVC.RECORD_HISTORY)
-	JMVC.JMVC_startup_tasks.push(JMVC.Dispatcher.initialize)
-
-JMVC.Dispatcher.historyChange = function(newLocation, historyData) {
-	if(historyData) { //the person has been here before
-		JMVC.Routes.clear_route_cache();
-		JMVC.Dispatcher.request("get", historyData);
-	} else { //they changed the url themselves
-		JMVC.Routes.clear_route_cache();
-		JMVC.Dispatcher.request("get", JMVC.Routes.params());
-	}
-		
-}
-JMVC.Dispatcher.add_to_history = function(options){
-	if(JMVC.RECORD_HISTORY){
-		var added_url =  JMVC.Routes.url_for(options)
-		dhtmlHistory.add(added_url, options);
-	}
-		
-}
-
-
 /**
  * <p>calls the request method</p>
  * <p>This method is also available in window as get</p>
@@ -52,9 +23,6 @@ JMVC.Dispatcher.get_request = function(options) {
 	      { action: JMVC.Routes.params()['action'],
 	        controller: JMVC.Routes.params()['controller']
 	      }, options || {} );
-	// TODO this is hack to get around the url params problem
-	var history_options = $H(Object.clone(options))
-	JMVC.Dispatcher.add_to_history(history_options) // adds this to history
 	return JMVC.Dispatcher.request("get", options);
 }
 var get = JMVC.Dispatcher.get_request
@@ -94,18 +62,8 @@ JMVC.Dispatcher.redirect_request = function(options) {
 	      { action: JMVC.Routes.params()['action'],
 	        controller: JMVC.Routes.params()['controller']
 	      }, options || {} );
-	var history_options = $H(Object.clone(options))
-	JMVC.Dispatcher.add_to_history(history_options) // adds this to history
 	return JMVC.Dispatcher.request("redirect", options);
 }
-/*JMVC.Dispatcher.callback = function(params ){
-	params = params || {}
-	return function() {
-		params.arguments = arguments 
-		return JMVC.Dispatcher.request("post", params);
-	}
-
-var callback = JMVC.Dispatcher.callback}*/
 
 JMVC.Dispatcher.get_controller_name = function(controller_option){
 	if(!controller_option) throw 'no controller given to dispatcher'

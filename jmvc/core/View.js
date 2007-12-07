@@ -337,10 +337,9 @@ JMVC.View.link_to = function(name, options, html_options, post) {
     if(!options.controller)
 		options.controller = JMVC.Routes.params().controller
 
-	if(post)
-	    html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
+    html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
 		
-    html_options.href='#'+(options ? JMVC.Routes.url_for(options) : '')
+    html_options.href='#'
     return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
 }
 /**
