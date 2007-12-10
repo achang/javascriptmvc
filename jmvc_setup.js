@@ -5,6 +5,10 @@
  * @class
  * <p>JMVC is the namespace of all other functions in JMVC</p>
  */
+
+if(!document.body)
+	document.write("<body></body>")
+	
 JMVC = function() {}
 
 JMVC.require = function(path) {
