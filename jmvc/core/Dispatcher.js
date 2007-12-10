@@ -121,7 +121,7 @@ JMVC.Dispatcher.request = function(type, params, continue_to_controller) {
 			try {
 				controller.render( {action: params.action} );
 			} catch(e) {
-				if(e instanceof JMVC.IncludeError) throw new JMVC.Error(new Error(), 'Unknown action: No action responded to '+options.action);
+				if(e instanceof JMVC.IncludeError) throw new JMVC.Error(new Error(), 'Unknown action: No action responded to '+params.action);
 				throw e;
 			}
 		}
