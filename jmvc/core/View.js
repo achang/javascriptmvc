@@ -337,11 +337,18 @@ JMVC.View.link_to = function(name, options, html_options, post) {
     if(!options.controller)
 		options.controller = JMVC.Routes.params().controller
 
-    html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
-		
-    html_options.href='#'
+	JMVC.View.link_to_onclick_and_href(html_options, options, post);
     return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
 }
+
+// adds the onclick and href attributes for the html_options
+// separated to allow history library to override this functionality easily
+JMVC.View.link_to_onclick_and_href = function(html_options, options, post) {
+    html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
+    html_options.href='#'
+}
+
+
 /**
  * 
  * @param {Object} name
