@@ -66,13 +66,13 @@ JMVC.ActiveView = Class.create({
 	toElement : function() {
 		var id = this.display_klass+'_'+this.id;
 		var el;
-		if(document.getElementById(id))
-			el = document.getElementById(id)
-		else
+		//if(document.getElementById(id))
+		//	el = document.getElementById(id)
+		//else
 			el = document.createElement('div');
 		el.innerHTML = ''
 		el.id = id
-		el.className = this.display_klass
+		el.className = this.display_klass+' '+this.klass.view_name
 		el.setAttribute('functional', 'show')
 		this.element = el
 		this.assign(el,this.display_klass.toLowerCase())
@@ -91,8 +91,10 @@ JMVC.ActiveView = Class.create({
 		var functions = controller.prototype
 		for(var f in functions)
 		{
-			if(f.startsWith(handler))
+			if(f.startsWith(handler+'_'+this.klass.view_name))
 			{
+				$(element).observe(f.substr( handler.length+this.klass.view_name.length+2 ) , this.call_controller(f) )
+			}else if(f.startsWith(handler)){
 				$(element).observe(f.substr( handler.length+1 ) , this.call_controller(f) )
 			}
 		}
@@ -106,6 +108,22 @@ JMVC.ActiveView = Class.create({
 			//params[object.klass_name.toLowerCase()] = object
 			post( params )
 		}
+	},
+	replace_with : function(new_view_name){
+		new_view_klass = this.model_klass.View[new_view_name.capitalize()]
+		if(!new_view_klass) throw 'bad view name'
+		// build object ...
+		var new_attributes = {id: this.id}
+		this.fields.each(function(field){
+			new_attributes[field.get_name()] = field.get_value()
+		})
+		var new_object = new this.model_klass(new_attributes)
+		var new_view = new_object[new_view_name]()
+		this.element.replace(new_view.toElement() )
+		return new_view
+		// 
+		//this.model_klass.View[new_class_name]
+		//return new [new_view_name](this)
 	}
 });
 
@@ -148,6 +166,12 @@ JMVC.ColumnView = Class.create({
 		this.column_name = column_name
 		this.value = value;
 		this.model= view_instance.klass.model_klass;
+		this.get_value = function(){
+			return value
+		}
+		this.get_name = function(){
+			return column_name
+		}
 		
 	},
 	toElement : function(){
@@ -189,7 +213,20 @@ JMVC.ColumnView = Class.create({
 		//el.setAttribute('view_value',this.value) -> should contian somehow, don't need an extra one.
 		this.content = el //I would put this in a closure, but memory leaks in IE
 		return this.view_instance.assign(el, this.column_name+'_content');
-	}
+	},
+	set_value : function(value){
+		if(value)
+			this.value = value;
+		this.content.innerHTML = this.value;
+	},
+	set_label : function(value){
+		if(value)
+			this.column_name = value;
+		this.content.innerHTML = this.column_name;
+	},
+	set_type : function(value){
+		
+	} //no label, no container, information should be intrinsic to element
 })
 
 JMVC.ColumnView.Boolean = Class.create(JMVC.ColumnView, {

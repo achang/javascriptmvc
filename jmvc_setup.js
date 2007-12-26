@@ -55,7 +55,8 @@ JMVC.Initializer = function(user_initialize_function) {
     if(!(JMVC.ENV.ENVIRONMENT == 'development' || JMVC.ENV.ENVIRONMENT == 'production'))
 		throw new JMVC.Error(new Error(), 'unknown JMVC.ENV.ENVIRONMENT');
     JMVC.ENV.BASE_PATH = JMVC_ROOT+JMVC.ENV.VERSION;
-    if(JMVC.ENV.ENVIRONMENT == 'development')
+    alert(JMVC.ENV.BASE_PATH+'/setup.js')
+	if(JMVC.ENV.ENVIRONMENT == 'development')
 		JMVC.require(JMVC.ENV.BASE_PATH+'/setup.js');
 	else
 		JMVC.require(JMVC.ENV.BASE_PATH+'/production.js', {cache: true});
@@ -95,6 +96,9 @@ JMVC.Test = {};
 
 (function(){
 	var remote = false;
+	if(typeof APPLICATION_ROOT == 'undefined') 
+		APPLICATION_ROOT = location.href.substring(0, location.href.lastIndexOf('/') )
+	
 	if(APPLICATION_ROOT.match(/^http(s*):\/\//)) {
 		var domain = APPLICATION_ROOT.match(/^(http(s*):\/\/[\w|\.|:|\d]*)/)[0]
 		JMVC.application_domain = function(){
