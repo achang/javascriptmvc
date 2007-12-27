@@ -8,9 +8,8 @@ JMVC.check_dependency('Inflector', 'Framework.js');
 JMVC.check_dependency('EjsScanner', 'Framework.js');
 JMVC.check_dependency('JMVC.Controller', 'Framework.js');
 JMVC.check_dependency('JMVC.Dispatcher', 'Framework.js');
-JMVC.check_dependency('JMVC.Template', 'Framework.js');
 JMVC.check_dependency('JMVC.Include', 'Framework.js');
-JMVC.check_dependency('JMVC.View', 'Framework.js');
+JMVC.check_dependency('EjsView', 'Framework.js');
 
 /**
  * <b>NEVER CALL THIS CLASS' CONSRUCTOR</b>
@@ -41,9 +40,8 @@ JMVC.Framework.JMVC_startup = function() {
 	try {
 		JMVC.JMVC_startup_tasks.each(function(task) { task(); })
 	    if( location.pathname.startsWith('/project/console') ) { return }
-		if(!$(JMVC.View.RENDER_TO)) new Insertion.Top(document.body, "<div id='"+JMVC.View.RENDER_TO+"'></div>");
-		if(JMVC.View.DOCUMENT_TITLE)
-			document.title = JMVC.View.DOCUMENT_TITLE;
+		if(!$(JMVC.RENDER_TO)) new Insertion.Top(document.body, "<div id='"+JMVC.RENDER_TO+"'></div>");
+
         
 		if(JMVC.Routes.params()['controller']!=null && JMVC.Routes.params()['action']!=null){
             return get(JMVC.Routes.params());
@@ -82,8 +80,8 @@ JMVC.Framework.render_error = function(e) {
 	error_text.push('<h3>Execution Stack</h3>');
 	error_text.push('<pre><code>',stack,'</code></pre>');
 	// don't remove all javascripts if possible
-	if($(JMVC.View.RENDER_TO))
-		$(JMVC.View.RENDER_TO).innerHTML = error_text.join('');
+	if($(JMVC.RENDER_TO))
+		$(JMVC.RENDER_TO).innerHTML = error_text.join('');
 	else
 		document.body.innerHTML = error_text.join('');
 	document.title = 'Exception Thrown';
@@ -173,7 +171,7 @@ JMVC.TemplateError = Class.create(JMVC.Error)
 
 JMVC.Error.file_name = function(e) {
 	if(e && e.fileName) {
-		var file = new JITS.File(e.fileName)
+		var file = new jFile(e.fileName)
 		
 		return file.file_and_extension();
 	}

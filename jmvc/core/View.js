@@ -19,10 +19,10 @@
  *          alert('get() called, this would normally direct you to a local action.')
  *    }
  * </script>
- * JMVC.View provides a set of methods for easily creating links and html elements.  This class
+ * EjsView provides a set of methods for easily creating links and html elements.  This class
  * is added to window as view.  So instead of calling:
  * <pre class='example'>
- * JMVC.View.link_to( {action: <span>'list'</span>} )</pre>
+ * EjsView.link_to( {action: <span>'list'</span>} )</pre>
  * you can call:
  * <pre class='example'>
  * view.link_to({action: <span>'list'</span>})</pre>
@@ -35,8 +35,8 @@
  * @see JMVC.ActiveRecord
  */
 
-JMVC.View = function() {
-    this.klass = 'JMVC.View'
+EjsView = function() {
+    this.klass = 'EjsView'
 }
 /**
  * Creates a select box for selecting a record of a belongs_to association.
@@ -50,7 +50,7 @@ JMVC.View = function() {
  * @param {String/Integer} value an optional default value.
  * @param {Object} html_options Optional html attributes
  */
-JMVC.View.belongs_to_select = function(klass, relationship_name, value , html_options ){
+EjsView.belongs_to_select = function(klass, relationship_name, value , html_options ){
 	if(typeof klass == 'string') klass = window[klass]
 
 	html_options = html_options || {};
@@ -90,11 +90,11 @@ JMVC.View.belongs_to_select = function(klass, relationship_name, value , html_op
  * Returns a closure that calls a get action when called.
  * <p>This is useful for assigning onclick and other event handlers using javascript rather than html.</p>
  * <pre class='example'>
- * $('my_botton').onclick = JMVC.View.closure_for({action: 'say_hi'})</pre>
+ * $('my_botton').onclick = EjsView.closure_for({action: 'say_hi'})</pre>
  * @param {Object} options A url hash.
  * @return {function} request function.
  */
-JMVC.View.closure_for = function(options) {
+EjsView.closure_for = function(options) {
     return function() {
         get(options);
     };
@@ -114,7 +114,7 @@ JMVC.View.closure_for = function(options) {
  * @param {Object} value  optional default date value.
  * @param {Object} html_options  optional html attributes.
  */
-JMVC.View.date_tag = function(name, value , html_options) {
+EjsView.date_tag = function(name, value , html_options) {
     if(! (value instanceof Date))
 		value = new Date()
 	
@@ -158,7 +158,7 @@ JMVC.View.date_tag = function(name, value , html_options) {
  * @return {String} Text for an file element that will upload correctly into a JMVC application
  *
  */
-JMVC.View.file_tag = function(name, value, html_options) {
+EjsView.file_tag = function(name, value, html_options) {
     return this.input_field_tag(name+'[file]', value , 'file', html_options)
 }
 
@@ -180,19 +180,28 @@ JMVC.View.file_tag = function(name, value, html_options) {
  * @param {Boolean} post False if you want the form to submit as a get request, true if you want the form to submit as post.  Defaults to true.
  * @return {String} A begining form tag.
  */
-JMVC.View.form_tag = function(url_for_options, html_options, post) {
-    url_for_options     = url_for_options                     || {};
+EjsView.form_tag = function(url_for_options, html_options) {
+    html_options     = html_options                     || {};
+	if(html_options.multipart == true) {
+        html_options.method = 'post';
+        html_options.enctype = 'multipart/form-data';
+    }
+		
+	if(typeof url_for_options == 'string'){
+		html_options.action = url_for_options
+	    return this.start_tag_for('form', html_options)
+	}
+	
+	url_for_options     = url_for_options                     || {};
     this.update_with_controller_and_action(url_for_options);
     
-    html_options     = html_options                     || {};
-    post            = post                            || true;
     html_options.onsubmit     = html_options.onsubmit                     || '' ;
     if(html_options.multipart == true) {
         html_options.method = 'post';
         html_options.enctype = 'multipart/form-data';
     }
     
-    html_options.onsubmit = html_options.onsubmit+"return JMVC.View.post_form(this, "+$H(url_for_options).toJSON()+");";
+    html_options.onsubmit = html_options.onsubmit+"return EjsView.post_form(this, "+$H(url_for_options).toJSON()+");";
     
     return this.start_tag_for('form', html_options)
 }
@@ -202,7 +211,7 @@ JMVC.View.form_tag = function(url_for_options, html_options, post) {
  * Outputs "&lt;/form&gt;".
  * @return {String} "&lt;/form&gt;" .
  */
-JMVC.View.form_tag_end = function() { return this.tag_end('form'); }
+EjsView.form_tag_end = function() { return this.tag_end('form'); }
 
 /**
  * Creates a external start form tag.
@@ -221,7 +230,7 @@ JMVC.View.form_tag_end = function() { return this.tag_end('form'); }
  * @return {String} A begining form tag.
  *
  */
-JMVC.View.form_tag_external = function(action, html_options) {
+EjsView.form_tag_external = function(action, html_options) {
     html_options     = html_options                     || {};
     html_options.action = action
     return this.start_tag_for('form', html_options)
@@ -243,7 +252,7 @@ JMVC.View.form_tag_external = function(action, html_options) {
  * @return {String} Text for an hidden field element.
  *
  */
-JMVC.View.hidden_field_tag   = function(name, value, html_options) { 
+EjsView.hidden_field_tag   = function(name, value, html_options) { 
     return this.input_field_tag(name, value, 'hidden', html_options); 
 }
 
@@ -272,12 +281,12 @@ JMVC.View.hidden_field_tag   = function(name, value, html_options) {
  * @return {String} input field text.
  *
  */
-JMVC.View.input_field_tag = function(name, value , inputType, html_options) {
+EjsView.input_field_tag = function(name, value , inputType, html_options) {
     
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
     html_options.value = value || '';
-    html_options.type = inputType;
+    html_options.type = inputType || 'text';
     html_options.name = name;
     
     return this.single_tag_for('input', html_options)
@@ -286,12 +295,15 @@ JMVC.View.input_field_tag = function(name, value , inputType, html_options) {
  * Returns true if parameters in options match the parameters of the current page.
  * @param {Object} options
  */
-JMVC.View.is_current_page = function(options) {
+EjsView.is_current_page = function(options) {
+	if(typeof options == 'string'){
+		return (window.location.href == options || window.location.pathname == options ? true : false);
+	}
+	
 	options = $H(options) || $H();
 	var options_extended = Object.extend(Object.clone(JMVC.Routes.params()), options);
-	if(this.url_for(options_extended) == this.url_for(JMVC.Routes.params()))
-		return true;
-	return false;
+	
+	return (this.url_for(options_extended) == this.url_for(JMVC.Routes.params()) ? true : false)
 }
 
 /**
@@ -320,16 +332,22 @@ JMVC.View.is_current_page = function(options) {
  * @return {String} hyperlink text.
  *
  */
-JMVC.View.link_to = function(name, options, html_options, post) {
+EjsView.link_to = function(name, options, html_options, post) {
     if(!name) var name = 'null';
     if(!html_options) var html_options = {}
-    html_options.onclick = html_options.onclick  || '' ;
+    //html_options.onclick = html_options.onclick  || '' ;
 	
 	if(html_options.confirm){
 		html_options.onclick = 
 		" var ret_confirm = confirm(\""+html_options.confirm+"\"); if(!ret_confirm){ return false;} "
 		html_options.confirm = null;
 	}
+	if(typeof options == 'string'){
+		html_options.href=options
+		return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
+	}
+	
+	
 	options = options || {}
 	if(!options.action)
 		options.action = JMVC.Routes.params().action
@@ -337,14 +355,17 @@ JMVC.View.link_to = function(name, options, html_options, post) {
     if(!options.controller)
 		options.controller = JMVC.Routes.params().controller
 
-	JMVC.View.link_to_onclick_and_href(html_options, options, post);
+	EjsView.link_to_onclick_and_href(html_options, options, post);
+	
     return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
 }
 
 // adds the onclick and href attributes for the html_options
 // separated to allow history library to override this functionality easily
-JMVC.View.link_to_onclick_and_href = function(html_options, options, post) {
-    html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
+EjsView.link_to_onclick_and_href = function(html_options, options, post) {
+    if(html_options.onclick == null) html_options.onclick = '';
+	
+	html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
     html_options.href='#'
 }
 
@@ -355,23 +376,36 @@ JMVC.View.link_to_onclick_and_href = function(html_options, options, post) {
  * @param {Object} options
  * @param {Object} html_options
  */
-JMVC.View.submit_link_to = function(name, options, html_options, post){
+EjsView.submit_link_to = function(name, options, html_options, post){
 	if(!name) var name = 'null';
-    if(!html_options) var html_options = {}
-    html_options.onclick = html_options.onclick  || '' ;
+    if(!html_options) html_options = {}
+	html_options.type = 'submit';
+    html_options.value = name;
+	html_options.onclick = html_options.onclick  || '' ;
 	
 	if(html_options.confirm){
 		html_options.onclick = 
 		" var ret_confirm = confirm(\""+html_options.confirm+"\"); if(!ret_confirm){ return false;} "
 		html_options.confirm = null;
 	}
+	if(typeof options == 'string'){
+		html_options.onclick=html_options.onclick+';window.location="'+options+'";'
+		return this.single_tag_for('input', html_options)
+	}
 	
-    html_options.value = name;
-	html_options.type = 'submit'
-    html_options.onclick=html_options.onclick+
-		(options ? this.url_for(options, post) : '')+'return false;';
-    //html_options.href='#'+(options ? JMVC.Routes.url_for(options) : '')
-	return this.start_tag_for('input', html_options)
+	
+	options = options || {}
+	if(!options.action)
+		options.action = JMVC.Routes.params().action
+		
+    if(!options.controller)
+		options.controller = JMVC.Routes.params().controller
+
+	EjsView.link_to_onclick_and_href(html_options, options, post);
+	
+	
+	
+    return this.single_tag_for('input', html_options)+name+ this.tag_end('a');
 }
 /**
  * Creates an external link tag of the given name using a URL created by the set of options.  If passed a string
@@ -396,7 +430,7 @@ JMVC.View.submit_link_to = function(name, options, html_options, post){
  * @return {String} hyperlink text.
  *
  */
-JMVC.View.link_to_external = function(text, path, html_options) {
+EjsView.link_to_external = function(text, path, html_options) {
     if(!html_options) var html_options = {}
     html_options.href=path
     return this.start_tag_for('a', html_options)+text+ this.tag_end('a');
@@ -415,7 +449,7 @@ JMVC.View.link_to_external = function(text, path, html_options) {
  * @param {Object} block
  * @see #link_to_unless
  */
-JMVC.View.link_to_if = function(condition, name, options, html_options, post, block) {
+EjsView.link_to_if = function(condition, name, options, html_options, post, block) {
 	return this.link_to_unless((condition == false), name, options, html_options, post, block);
 }
 
@@ -475,7 +509,7 @@ JMVC.View.link_to_if = function(condition, name, options, html_options, post, bl
  * @param {Object} block optional function that is called if the condition evaluates to true.  The block is called with 
  * 					name, options, html_options, and block.
  */
-JMVC.View.link_to_unless = function(condition, name, options, html_options, post, block) {
+EjsView.link_to_unless = function(condition, name, options, html_options, post, block) {
 	options = options || {};
 	html_options = html_options || {};
 	if(condition) {
@@ -501,7 +535,7 @@ JMVC.View.link_to_unless = function(condition, name, options, html_options, post
  * @param {Object} block
  * @see #link_to_unless
  */
-JMVC.View.link_to_unless_current = function(name, options, html_options, post, block) {
+EjsView.link_to_unless_current = function(name, options, html_options, post, block) {
 	options = options || {};
 	html_options = html_options || {};
 	return this.link_to_unless(this.is_current_page(options), name, options, html_options, post, block)
@@ -540,7 +574,7 @@ JMVC.View.link_to_unless_current = function(name, options, html_options, post, b
  * @return {Object} Object containing packaged form data.
  */
 
-JMVC.View.package_form = function(form_element, options, submit_button_name) {
+EjsView.package_form = function(form_element, options, submit_button_name) {
     if(!options) var options = {};
     if(typeof form_element == 'string') form_element = $(form_element)
     
@@ -550,10 +584,10 @@ JMVC.View.package_form = function(form_element, options, submit_button_name) {
             if (element.type != "submit" || element.name == submit_button_name) {
                 if(element.type == "radio") {
                     if (element.checked == true)
-                        JMVC.View.set_map_tree_value(options, element.name, element.value);
+                        EjsView.set_map_tree_value(options, element.name, element.value);
                 } else {
                     var value = (element.type == "checkbox" ? element.checked : element.value);
-                    JMVC.View.set_map_tree_value(options, element.name, value);
+                    EjsView.set_map_tree_value(options, element.name, value);
                 }
             }
         }
@@ -582,7 +616,7 @@ JMVC.View.package_form = function(form_element, options, submit_button_name) {
  * @return {String} password field text.
  *
  */
-JMVC.View.password_field_tag = function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); }
+EjsView.password_field_tag = function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); }
 
 
 /**
@@ -597,14 +631,14 @@ JMVC.View.password_field_tag = function(name, value, html_options) { return this
  * @param {String} submit_button_name Optional parameter used by package_form.
  * @see #package_form
  */
-JMVC.View.post_form = function(form_element, options, submit_button_name) {
-    JMVC.View.send_form_to_server = false;
+EjsView.post_form = function(form_element, options, submit_button_name) {
+    EjsView.send_form_to_server = false;
     // hash of file fields with their ids as the value
-    JMVC.View.insert_id_into_form = true;
+    EjsView.insert_id_into_form = true;
     post( this.package_form( form_element, options, submit_button_name ) );
-    var insert_id_into_form = JMVC.View.insert_id_into_form;
-    delete JMVC.View.insert_id_into_form;
-    if(JMVC.View.send_form_to_server == true) { // set up form for server
+    var insert_id_into_form = EjsView.insert_id_into_form;
+    delete EjsView.insert_id_into_form;
+    if(EjsView.send_form_to_server == true) { // set up form for server
         new Insertion.Top(document.body, "<iframe id='upload_frame' name='upload_frame' style='display:none' onload='JMVC.Dispatcher.resume_execution();'></iframe>")
         form_element.setAttribute('target', 'upload_frame');
         form_element.setAttribute('action', '/'+JMVC.app_info.client.name+'/'+JMVC.app_info.project.name+'/file_upload');
@@ -642,7 +676,7 @@ JMVC.View.post_form = function(form_element, options, submit_button_name) {
  *
  * @return {String} select tag text.
  */
-JMVC.View.select_tag = function(name, value, choices, html_options) {     
+EjsView.select_tag = function(name, value, choices, html_options) {     
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
     html_options.value = value;
@@ -675,7 +709,7 @@ JMVC.View.select_tag = function(name, value, choices, html_options) {
  * @param {String} path attributes seperated by [] that determine where you object will be inserted.
  * @param {} value value of final attribute.
  */
-JMVC.View.set_map_tree_value = function(mapTree, path, value) { // Example path is 'order[customer][name]'.
+EjsView.set_map_tree_value = function(mapTree, path, value) { // Example path is 'order[customer][name]'.
     if (path != null) {
         var keys = path.replace(/\]/g, '').split('[');
         for (var k = 0; k < keys.length; k++) {
@@ -703,7 +737,7 @@ JMVC.View.set_map_tree_value = function(mapTree, path, value) { // Example path 
  *
  * @return {String} html markup for a tag
  */
-JMVC.View.single_tag_for = function(tag, html_options) { return this.tag(tag, html_options, '/>');}
+EjsView.single_tag_for = function(tag, html_options) { return this.tag(tag, html_options, '/>');}
 
 /**
  * Creates tag that ends with '>'.  Use this to create html elements that have other markup or 
@@ -719,9 +753,9 @@ JMVC.View.single_tag_for = function(tag, html_options) { return this.tag(tag, ht
  *
  * @return {String} html markup for a tag
  */
-JMVC.View.start_tag_for = function(tag, html_options)  { return this.tag(tag, html_options); }
+EjsView.start_tag_for = function(tag, html_options)  { return this.tag(tag, html_options); }
 
-JMVC.View.submit_tag = function(name, html_options) {  
+EjsView.submit_tag = function(name, html_options) {  
     html_options = html_options || {};
     html_options.name  = html_options.id  || 'commit';
     html_options.type = html_options.type  || 'submit';
@@ -743,7 +777,7 @@ JMVC.View.submit_tag = function(name, html_options) {
  *
  * @return {String} html markup for a tag
  */
-JMVC.View.tag = function(tag, html_options, end) {
+EjsView.tag = function(tag, html_options, end) {
     if(!end) var end = '>'
     var txt = ' '
     for(var attr in html_options) { 
@@ -765,7 +799,7 @@ JMVC.View.tag = function(tag, html_options, end) {
  * @param {String} tag Html tag type {'span', 'div', 'p', ...}
  * @return {String} '&lt;/'+tag+'&gt;'
  */
-JMVC.View.tag_end = function(tag)             { return '</'+tag+'>'; }
+EjsView.tag_end = function(tag)             { return '</'+tag+'>'; }
 
 /**
  * Creates a textarea.
@@ -788,7 +822,7 @@ JMVC.View.tag_end = function(tag)             { return '</'+tag+'>'; }
  * @return {String} password field text.
  *
  */
-JMVC.View.text_area_tag = function(name, value, html_options) { 
+EjsView.text_area_tag = function(name, value, html_options) { 
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
     html_options.name  = html_options.name  || name;
@@ -804,7 +838,7 @@ JMVC.View.text_area_tag = function(name, value, html_options) {
     
     return  this.start_tag_for('textarea', html_options)+value+this.tag_end('textarea')
 }
-JMVC.View.text_tag = JMVC.View.text_area_tag
+EjsView.text_tag = EjsView.text_area_tag
 /**
  * Creates a standard text field.
  * <p>Example:</p>
@@ -823,7 +857,7 @@ JMVC.View.text_tag = JMVC.View.text_area_tag
  * @return {String} password field text.
  *
  */
-JMVC.View.text_field_tag     = function(name, value, html_options) { return this.input_field_tag(name, value, 'text', html_options); }
+EjsView.text_field_tag     = function(name, value, html_options) { return this.input_field_tag(name, value, 'text', html_options); }
 
 /**
  * Creates human readable text using basic types
@@ -831,7 +865,7 @@ JMVC.View.text_field_tag     = function(name, value, html_options) { return this
  * @param {String} null_text The string to display in case the input is null
  * @return {String} a string representation of whatever was passed in
  */
-JMVC.View.to_text = function(input, null_text) {
+EjsView.to_text = function(input, null_text) {
     if(input == null || input === undefined)
         return null_text || '';
     if(input instanceof Date)
@@ -847,7 +881,7 @@ JMVC.View.to_text = function(input, null_text) {
  * @param {Object} A url hash.
  * @private
  */
-JMVC.View.update_with_controller_and_action = function(options) {
+EjsView.update_with_controller_and_action = function(options) {
       if(!options)
         options= {};
       if(!options.controller)
@@ -861,7 +895,7 @@ JMVC.View.update_with_controller_and_action = function(options) {
  * <p>This is primarly used by url_for to provide a default controller for actions.</p>
  * @param {Object} A url hash.
  */
-JMVC.View.update_with_client_and_project = function(options) {
+EjsView.update_with_client_and_project = function(options) {
       if(!options)
         options= {};
       if(!options.action)
@@ -876,7 +910,7 @@ JMVC.View.update_with_client_and_project = function(options) {
  * @param {Boolean} post true if a post request, false if otherwise.  Default is a get request.
  * @return {String} request function.
  */
-JMVC.View.url_for = function(params, post) {
+EjsView.url_for = function(params, post) {
     this.update_with_controller_and_action(params);
     if(post == true)
         return 'post(' + $H(params).toJSON() + ');'
@@ -889,7 +923,7 @@ JMVC.View.url_for = function(params, post) {
  * @param {Object} column_name
  * @param {Object} options
  */
-JMVC.View.input = function(model_name, column_name, options) {
+EjsView.input = function(model_name, column_name, options) {
 	options = options || {};
 	options.value = options.value || '';
 	var type = window[model_name].columns_hash()[column_name].sql_type;
@@ -898,22 +932,19 @@ JMVC.View.input = function(model_name, column_name, options) {
 	return this.text_field_tag(model_name+'['+column_name+']', options.value, options);	
 }
 
-JMVC.View.img_tag = function(image_location, options){
+EjsView.img_tag = function(image_location, options){
 	options = options || {};
-	options.src = APPLICATION_ROOT+"/public/images/"+image_location
-	return JMVC.View.single_tag_for('img', options)
+	options.src = new jFile( jFile.join("public/images/",image_location) ).absolute()
+	return EjsView.single_tag_for('img', options)
 	//return "<img src='"+APPLICATION_ROOT+"/public/images/"+image_location+"'/>"
 }
 
-JMVC.View.HandlerObject = function(value) {
+EjsView.HandlerObject = function(value) {
 	this.value = value;
 }
 
-JMVC.View.HandlerObject.prototype = {
+EjsView.HandlerObject.prototype = {
 	toJSON : function() {
 		return this.value;
 	}
 }
-
-
-var view = JMVC.View

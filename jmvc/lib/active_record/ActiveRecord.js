@@ -886,7 +886,7 @@ JMVC.ActiveRecord.load_from_schema = function(schema_source) {
     for (var i=0; i<JMVC.app_schema.tables.length; i++) {
 		var file_name = JMVC.ActiveRecord.table_name_to_model_name(JMVC.app_schema.tables[i].name).uncapitalize();
 		try {
-	        include(JITS.File.join(APPLICATION_ROOT, "app", "models", file_name+".js"), {cache: (JMVC.ENV.ENVIRONMENT == 'development' ? false : true)  });
+	        include(jFile.join(APPLICATION_ROOT, "app", "models", file_name+".js"), {cache: (JMVC.ENV.ENVIRONMENT == 'development' ? false : true)  });
 		} catch(e) {} // swallow any errors here in case of weird table names that will be set with set_table_name
     }
 }

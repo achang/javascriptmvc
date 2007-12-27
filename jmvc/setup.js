@@ -1,5 +1,6 @@
 JMVC.include_order = ["/dependencies/prototype.js",
 						  "/dependencies/Inflector.js",
+						  "/dependencies/file.js",
 						  "/dependencies/Helpers.js",
 						  "/dependencies/ejs.js",
 						  "/core/Controller.js",

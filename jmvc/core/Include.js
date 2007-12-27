@@ -33,26 +33,26 @@ JMVC.Include = function(){
  *      nothing is returned.
  */
 JMVC.Include.include = function(path, options) {
-    if(!options) options = {};
+
+	if(!options) options = {};
     var cache = options.cache;
     var synchronous = options.synchronous;
     if(cache === undefined)
         var cache = JMVC.cache_templates || false;
     if(synchronous === undefined)
         var synchronous = false;
-    var file = new JITS.File(path);
+    var file = new jFile(path);
     if(file.is_absolute() == false && file.extension() == "js") // is a local javascript
-        JMVC.Include.include_JS(JITS.File.join(APPLICATION_ROOT, 
-            path), synchronous);
+        JMVC.Include.include_JS(jFile.join(APPLICATION_ROOT, path), synchronous);
     else if(file.is_absolute() == true && file.extension() == "js")  // is a non-local javascript
         JMVC.Include.include_JS(path+(cache == false ? "?"+Math.random(): ""), synchronous);
     else if(file.is_absolute() == false && file.extension() == "jst") // is a local template
-        return JMVC.Include.include_template(JITS.File.join(APPLICATION_ROOT, 
+        return JMVC.Include.include_template(jFile.join(APPLICATION_ROOT, 
             path), cache);
     else if(file.is_absolute() == true && file.extension() == "jst") // is a non-local template
         return JMVC.Include.include_template(path, cache);
     else if(file.is_absolute() == false && file.extension() == "css") // is a local stylesheet
-        JMVC.Include.include_CSS(JITS.File.join(APPLICATION_ROOT, path));
+        JMVC.Include.include_CSS(jFile.join(APPLICATION_ROOT, path));
     else if(file.is_absolute() == true && file.extension() == "css") // is a non-local stylesheet
         JMVC.Include.include_CSS(path, cache);
 }
@@ -130,7 +130,8 @@ JMVC.Include.include_template = function(path, cache) {
     var DOMpath = path;
     if(cache == false)
         path += "?sid=" + Math.random();
-    var response = new Ajax.Request(path, {asynchronous: false, method: "get"});
+    
+	var response = new Ajax.Request(path, {asynchronous: false, method: "get"});
     var responseText = response.transport.responseText;
     if (response.transport.status == 404) { // this means the template was not found
         if(cache) 

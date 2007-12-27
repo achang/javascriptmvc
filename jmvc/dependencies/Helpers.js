@@ -2,9 +2,9 @@ JMVC.check_dependency('Prototype', 'Helpers.js')
 JMVC.check_dependency('Element', 'Helpers.js')
 JMVC.check_dependency('Element.Methods', 'Helpers.js')
 
-JITS = {};
 
-JITS.Event = {
+
+JMVC.Event = {
 	events_hash : {},
 	register_event : function(event_name, func) {
 		if(!this.events_hash[event_name])
@@ -20,56 +20,6 @@ JITS.Event = {
 	}
 }
 
-JITS.File = function(path_name) {
-    this.path_name = path_name
-    this.path_array = this.path_name.split('/');
-    this.last_index = this.path_array.length-1;
-}
-
-JITS.File.prototype = {
-    extension : function() {
-        var path_array = this.path_array;
-        return path_array[(path_array.length-1)].split('.')[1].split('?')[0];
-    },
-    file_name : function() {
-        var path_array = this.path_array;
-        return path_array[(path_array.length-1)].split('.')[0];
-    },
-    is_absolute : function() {
-        return (this.path_name.substring(0,1) == "/" || this.path_name.substring(0,7) == 'http://' || this.path_name.substring(0,8) == 'https://');
-    },
-    keyword_to_end : function(keyword) {
-        var index = $A(this.path_array).indexOf(keyword);
-        return this.path_array.slice(index,this.path_array.length-1).join("/");
-    },
-	file_and_extension : function(){
-		return this.file_name()+'.'+this.extension();
-	}
-};
-
-JITS.File.join_relative = function() {
-    return this._join("", arguments);
-}
-JITS.File.join_absolute = function() {
-    return this._join( "/",arguments);
-}
-JITS.File.join = function() {
-    var start_char = '';
-    if(arguments[0].slice(0,1) == '/')
-        var start_char = '/';
-    return this._join( start_char, arguments);
-}
-JITS.File._join = function(start_char, file_paths) {
-    return start_char + $A(file_paths).collect(function(path){
-		return path.replace(/^\/+/, '').replace(/\/+$/, '');
-	}).join("/")
-}
-JITS.File.original_filename = function(path) {
-    var path_array = path.split('/');
-    if(path_array.length == 1)
-        path_array = path.split('\\');
-    return path_array[path_array.length-1];
-}
 
 String.prototype.uncapitalize = function()            
 {

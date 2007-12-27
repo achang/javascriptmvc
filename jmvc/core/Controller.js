@@ -147,7 +147,6 @@ JMVC.Controller.prototype = {
         this.request_type = type;
         this.session = JMVC.Framework.get_session();
         this.flash = JMVC.Framework.get_session().flash;
-        this.render_container_id = JMVC.View.RENDER_TO;
         this._rendered = false;
 		// this saves the rendered text to be returned
 		this._render_result = null;
@@ -238,11 +237,13 @@ JMVC.Controller.prototype = {
      *      </ul></p>
      * @return {String} text that was rendered.
      */
-     // if we redirect, shouldn't redirect call nothing?
-    render : function(options) {
-    
+     // if we redirect, shouldn't redirect call nothing?	
+	render : function(options) {
+    	var result, render_to_id = JMVC.RENDER_TO;
+		var controller_name = this.params.controller //JMVC.Routes.params()['controller']
+		var action_name = JMVC.Routes.params()['action']
         if(options.update_id) {
-            this.render_container_id = options.update_id;
+            render_to_id = options.update_id;
         }
         
         if(options.nothing && options.nothing == true) {
@@ -251,39 +252,34 @@ JMVC.Controller.prototype = {
         }
         if(options.text) {
             this._rendered = true;
-            var result = options.text;   
+            result = options.text;   
         }
         else {
             if(options.action) {
                 var folder_name = JMVC.Routes.params()['controller'];
-                var suggestions = APPLICATION_ROOT+'app/views/'+folder_name+'/'+options.action+".jst";
-                var file_name = options.action+'.jst';
+                var url = 'app/views/'+folder_name+'/'+options.action+".ejs";
             }
             else if(options.template) {
-                if(! options.template.include('/'))
-					options.template = this.params.controller+'/_'+options.template
-				else
-					options.template = options.template.split('/').join('/_')
-				var suggestions = APPLICATION_ROOT+'app/views/'+options.template+'.jst';
-                var file_name = options.template+'.jst';
+				var url_part =  options.template.include('/') ? 
+									options.template.split('/').join('/_') : 
+									controller_name+'/_'+options.template;
+				var url = 'app/views/'+url_part+'.ejs';
             }
 			else if(options.partial) {
-                if(! options.partial.include('/'))
-					options.partial = this.params.controller+'/_'+options.partial
-				else
-					options.partial = options.partial.split('/').join('/_')
-				var suggestions = APPLICATION_ROOT+'app/views/'+options.partial+'.jst';
-				var file_name = this.params.controller+'/_'+options.partial+'.jst';
+                
+				var url_part = options.partial.include('/') ? 
+									options.partial.split('/').join('/_') : 
+									controller_name+'/_'+options.partial;		
+				var url = 'app/views/'+url_part+'.ejs';
 			}
             else {
-                var suggestions = APPLICATION_ROOT+'app/views/'+JMVC.Routes.params()['controller']+'/'+JMVC.Routes.params()['action']+'.jst';
-				var file_name = JMVC.Routes.params()['action']+'.jst';
+                var url = 'app/views/'+controller_name+'/'+action_name+'.ejs';
             }
-	        var template = JMVC.Template.look_for_template(suggestions);
-	        if(template) {
-				var result = this.render_templates(template, options.partial, null, options.locals);
+	        result = new EJS({url:  (new jFile(url)).absolute()  }).render(this);
+	        /*if(template) {
+				result = this.render_templates(template, options.partial, null, options.locals);
 	        } else
-				throw new JMVC.IncludeError(new Error(), 'Template not found: '+file_name);
+				throw new JMVC.IncludeError(new Error(), 'Template not found: '+file_name);*/
 			// layouts ***
 			// first, if this is a partial, skip any layout checks
 			// next check if layout is passed in as an option (can be false or point to another layout)
@@ -291,24 +287,26 @@ JMVC.Controller.prototype = {
 			// next check if the user overrides the layout attribute
 			// finally check for the application.jst layout
 			if(!(options.partial || options.template || options.layout == false)) {
+				var layout, template = null;
 				if(options.layout)
-					var layout_path = APPLICATION_ROOT+'app/views/layouts/'+options.layout+'.jst';
+					layout = 'app/views/layouts/'+options.layout+'.ejs';
 				else if(this.klass()._layout_template != null)
-					var template = this.klass._layout_template;
+					template = this.klass._layout_template;
 				else if(this.klass().layout)
-					var layout_path = APPLICATION_ROOT+'app/views/layouts/'+this.klass().layout+'.jst';
-				if(layout_path && this.klass()._layout_template == null) {
-					this.klass()._layout_template = JMVC.Template.look_for_template(layout_path);
+					layout = 'app/views/layouts/'+this.klass().layout+'.jst';
+				
+				if(layout && template == null) {
+					this.klass()._layout_template = new EJS({url: layout});
 					if(this.klass()._layout_template == null)
 						throw new JMVC.IncludeError(new Error(), 'Layout not found: '+layout_path);
 				}
 				
 				if(this.klass()._layout_template == null) {
 					// finally, try the layouts/application.jst layout
-					var layout_path = APPLICATION_ROOT+'app/views/layouts/application.jst';
-					this.klass()._layout_template = JMVC.Template.look_for_template(layout_path);
+					try{
+						this.klass()._layout_template = new EJS({url: 'app/views/layouts/application.jst'});
+					}catch(e){}
 				}
-				
 				if(this.klass()._layout_template != null)
 					result = this.render_templates(this.klass()._layout_template, false, {content_for_layout: result}, options.locals);
 			}
@@ -319,8 +317,8 @@ JMVC.Controller.prototype = {
 			if(options.partial || (options.template && !options.update_id)  ) // return the result to be placed directly in the page
                 return result;
             else { // render the result right now and return
-                JMVC.Framework.display_content(this.render_container_id, result);
-				JITS.Event.fire_event('renderComplete')
+                JMVC.Framework.display_content(render_to_id, result);
+				JMVC.Event.fire_event('renderComplete')
 				this._rendered_result = result;
             }
             

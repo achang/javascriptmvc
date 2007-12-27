@@ -14,7 +14,7 @@ JMVC.Initializer(function(){
     JMVC.QueryController.RESOURCE = '/database/'+DATABASE_NAME+'/query';
     JMVC.ActiveRecord.load_from_schema('/database/'+DATABASE_NAME+'/get_schema');
     JMVC.Controller.STARTUP = {controller: 'recipe', action: 'list'};
-    JMVC.View.RENDER_TO = 'main';
+    JMVC.RENDER_TO = 'main';
     JMVC.View.DOCUMENT_TITLE = DATABASE_NAME;
 	
     include('public/stylesheets/style.css');

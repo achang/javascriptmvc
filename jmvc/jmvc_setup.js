@@ -6,8 +6,7 @@
  * <p>JMVC is the namespace of all other functions in JMVC</p>
  */
 
-if(!document.body)
-	document.write("<body></body>")
+if(!document.body) document.write("<body></body>")
 	
 JMVC = function() {}
 
@@ -50,12 +49,11 @@ JMVC.DISPATCH_FUNCTION = function(startup) {
  */
 JMVC.Initializer = function(user_initialize_function) {
     JMVC.user_initialize_function = user_initialize_function;
-	if(!JMVC.ENV.VERSION)
-		throw new JMVC.Error(new Error(), 'no JMVC.ENV.VERSION defined');
+
     if(!(JMVC.ENV.ENVIRONMENT == 'development' || JMVC.ENV.ENVIRONMENT == 'production'))
 		throw new JMVC.Error(new Error(), 'unknown JMVC.ENV.ENVIRONMENT');
-    JMVC.ENV.BASE_PATH = JMVC_ROOT+JMVC.ENV.VERSION;
-    alert(JMVC.ENV.BASE_PATH+'/setup.js')
+    JMVC.ENV.BASE_PATH = JMVC_ROOT;
+
 	if(JMVC.ENV.ENVIRONMENT == 'development')
 		JMVC.require(JMVC.ENV.BASE_PATH+'/setup.js');
 	else
@@ -97,7 +95,7 @@ JMVC.Test = {};
 (function(){
 	var remote = false;
 	if(typeof APPLICATION_ROOT == 'undefined') 
-		APPLICATION_ROOT = location.href.substring(0, location.href.lastIndexOf('/') )
+		APPLICATION_ROOT = location.href.substring(0, location.href.lastIndexOf('/') )+ '/'
 	
 	if(APPLICATION_ROOT.match(/^http(s*):\/\//)) {
 		var domain = APPLICATION_ROOT.match(/^(http(s*):\/\/[\w|\.|:|\d]*)/)[0]
@@ -133,9 +131,9 @@ JMVC.loaded = function() {
 }
 
 
-if(typeof APPLICATION_ROOT != 'undefined')
+if(typeof APPLICATION_ROOT != 'undefined'){
 	JMVC.require(APPLICATION_ROOT+'/config/environment.js');
-else //we are loading w/o an application
+}else //we are loading w/o an application
 {
 	JMVC.ENV.VERSION = '0.1';
 	JMVC.ENV.ENVIRONMENT = 'development';
