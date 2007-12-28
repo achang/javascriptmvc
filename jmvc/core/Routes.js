@@ -21,26 +21,35 @@
 
 JMVC.Routes = function(){};
 
-JMVC.Routes.clear_route_cache = function() {
-	JMVC.Routes._params = null;
-};
-
-/**
- * Used to get the routes from the current url
- */
-JMVC.Routes.params = function()
-{
-    if(JMVC.Routes._params)
-        return JMVC.Routes._params;
-    JMVC.Routes._params = $H()
-    
-	var path = new JMVC.Path(decodeURIComponent( location.href ))
+(function(){
+	var params = null;
+	JMVC.Routes.clear_route_cache = function() {
+		params = null;
+	};
 	
-	JMVC.Routes._params.merge(JMVC.Routes.match_route(path));
-	JMVC.Routes._params.merge(JMVC.Routes.get_data(path));
-	JMVC.Routes.url_params = Object.clone(JMVC.Routes._params);
-	return JMVC.Routes._params;
-}
+	/**
+	 * Used to get the routes from the current url
+	 */
+	
+	JMVC.Routes.params = function(url){
+	    if(params && url == null)
+	        return params;
+	    
+		var path = new JMVC.Path( url ? url : decodeURIComponent( location.href ) )
+		
+		params = Object.extend( 
+			Object.extend( {}, JMVC.Routes.get_data(path)), 
+				JMVC.Routes.match_route(path) 
+		)
+		return params;
+	}
+})()
+
+
+
+
+
+
 /**
  * List of routes
  */
@@ -80,32 +89,31 @@ JMVC.Routes.match_route = function(path) {
  */
 JMVC.Routes.get_data = function(path) {
 	var search = path.params();
-	if(search) {
-	    var match = search.strip().match(/([^?#]*)(#.*)?$/);
-	    if (!match) return { };
+	if(! search) return {}
 	
-	    return match[1].split('&').inject({ }, function(hash, pair) {
-	      if ((pair = pair.split('='))[0]) {
-	        var key = decodeURIComponent(pair.shift());
-			var key_components = /(.*)\[(.*)\]/.exec(key);
-	        var value = pair.length > 1 ? pair.join('=') : pair[0];
-	        if (value != undefined) value = decodeURIComponent(value);
-			if(key_components) {
-				if(!hash[key_components[1]])
-					hash[key_components[1]] = {};
-				hash[key_components[1]][key_components[2]] = value;
-			} else {
-		        if (key in hash) {
-		          if (!Object.isArray(hash[key])) hash[key] = [hash[key]];
-		          hash[key].push(value);
-		        }
-		        else hash[key] = value;
-			}
-	      }
-	      return hash;
-	    });
-	}
-	return {};
+    var match = search.strip().match(/([^?#]*)(#.*)?$/);
+    if (!match) return { };
+
+    return match[1].split('&').inject({ }, function(hash, pair) {
+      if ((pair = pair.split('='))[0]) {
+        var key = decodeURIComponent(pair.shift());
+		var key_components = /(.*)\[(.*)\]/.exec(key);
+        var value = pair.length > 1 ? pair.join('=') : pair[0];
+        if (value != undefined) value = decodeURIComponent(value);
+		if(key_components) {
+			if(!hash[key_components[1]])
+				hash[key_components[1]] = {};
+			hash[key_components[1]][key_components[2]] = value;
+		} else {
+	        if (key in hash) {
+	          if (!Object.isArray(hash[key])) hash[key] = [hash[key]];
+	          hash[key].push(value);
+	        }
+	        else hash[key] = value;
+		}
+      }
+      return hash;
+    });
 }
 /**
  * Goes through routes in order.  If it finds one it matches, it returns the url after the #
@@ -123,10 +131,7 @@ JMVC.Routes.url_for = function(options){
 }
 
 
-JMVC.Route = function(route_pattern, assignments_hash) {
-	this.route_pattern = route_pattern
-	this.assignments_hash = assignments_hash
-}
+
 JMVC.Path = function(path) {
 	this.path = path
 }
@@ -136,26 +141,37 @@ JMVC.Path.prototype = {
 		return '/'+lhs.split('/').slice(3).join('/')
 	},
 	folder : function() {
-		var parts = this.path.split('#')
-		if(parts.length <= 1)
-			return null;
-		parts.shift()
-		var rhs = parts.join('#') // computer/list&
-		return rhs.split("&")[0]
+		var first_pound = this.path.indexOf('#')
+		if( first_pound == -1) return null;
+		var after_pound =  this.path.substring( first_pound+1 )
+		
+		var first_amp = after_pound.indexOf("&")
+		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? null : after_pound
+		
+		return after_pound.substring(0, first_amp)
 	},
+	//types of urls
+	//  /someproject#action/controller&doo_doo=butter
+	//  /someproject#doo_doo=butter
 	params : function() {
-		var parts = this.path.split('#')
-		if(parts.length <= 1)
-			return null;
-		parts.shift()
-		var rhs = parts.join('#') // computer/list&
-		var rhs_parts =  rhs.split("&")
-		if(rhs_parts.length <= 1)
-			return null;
-		rhs_parts.shift();
-		return rhs_parts.join("&")
+		var first_pound = this.path.indexOf('#')
+		if( first_pound == -1) return null;
+		var after_pound =  this.path.substring( first_pound+1 )
+		
+		//now either return everything after the first & or everything
+		var first_amp = after_pound.indexOf("&")
+		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? after_pound : null
+		
+		return after_pound.substring(first_amp+1)
 	}
 }
+//assignments_hash - the default values for parts in the route
+
+JMVC.Route = function(route_pattern, assignments_hash) {
+	this.route_pattern = route_pattern
+	this.assignments_hash = assignments_hash
+}
+
 JMVC.Route.prototype = {
 	domain : function() {
 		return this.route_pattern.split('#')[0];
@@ -163,13 +179,19 @@ JMVC.Route.prototype = {
 	folder : function() {
 		return this.route_pattern.split('#')[1];
 	},
+	folders : function(){
+		var first_pound = this.route_pattern.indexOf('#')
+		if(first_pound == -1) return [];
+		var after_pound =  this.route_pattern.substring( first_pound+1 )
+		return after_pound.split('/');
+	},
 	needed_params : function() {
-		var components = this.route_pattern.split('#');
-		var domain = this.domain();
-		var parts = []
-		//parts.add( JMVC.Routes.parts_for(domain))
-		if(components.length > 1)
-			parts.add( JMVC.Routes.parts_for(components[1]))
+		var parts = [];
+		var folders = this.folders()
+		for(var i = 0; i < folders.length; i++){
+			if(folders[i].startsWith(':'))
+				parts.push(  folders[i].substring(1) );
+		}
 		return parts;
 	},
 	has_params : function(params){
@@ -191,10 +213,6 @@ JMVC.Route.prototype = {
 				delete leftover_params[ domains[i].substring(1) ] //remove
 			}
 		}
-		
-		
-		
-		
 		
 		var folders = this.folder().split('/')
 		for(var i = 0; i < folders.length; i++){
@@ -220,6 +238,7 @@ JMVC.Route.prototype = {
 	matches_folder : function(path){
 		return JMVC.Route.does_path_part_match_route(path.folder(), this.folder() )
 	},
+	//adds values to params with the path
 	populate_params_with_path : function(path, params ) {
 		params = params || {}
 		if(this.route_pattern == '*') // default route, match everything
@@ -255,14 +274,4 @@ JMVC.Route.fill_params = function(path, route, params) {
 				params[ route_domain_parts[i].substring(1) ] = path_domain_parts[i]
 			}
 		}
-}
-
-JMVC.Routes.parts_for = function(partial) {
-	var parts = [];
-	var folders = partial.split('/')
-	for(var i = 0; i < folders.length; i++){
-		if(folders[i].startsWith(':'))
-			parts.push(  folders[i].substring(1) );
-	}
-	return parts;
 }

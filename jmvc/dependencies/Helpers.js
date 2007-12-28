@@ -4,6 +4,13 @@ JMVC.check_dependency('Element.Methods', 'Helpers.js')
 
 
 
+Object.extend = function(destination, source) {
+  for (var property in source) {
+    destination[property] = source[property];
+  }
+  return destination;
+};
+
 JMVC.Event = {
 	events_hash : {},
 	register_event : function(event_name, func) {
