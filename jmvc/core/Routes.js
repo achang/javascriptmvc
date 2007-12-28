@@ -19,6 +19,8 @@
  *	})</pre>
  */
 
+//requires ejs!
+
 JMVC.Routes = function(){};
 
 (function(){
@@ -89,31 +91,37 @@ JMVC.Routes.match_route = function(path) {
  */
 JMVC.Routes.get_data = function(path) {
 	var search = path.params();
-	if(! search) return {}
-	
-    var match = search.strip().match(/([^?#]*)(#.*)?$/);
-    if (!match) return { };
-
-    return match[1].split('&').inject({ }, function(hash, pair) {
-      if ((pair = pair.split('='))[0]) {
-        var key = decodeURIComponent(pair.shift());
-		var key_components = /(.*)\[(.*)\]/.exec(key);
-        var value = pair.length > 1 ? pair.join('=') : pair[0];
-        if (value != undefined) value = decodeURIComponent(value);
-		if(key_components) {
-			if(!hash[key_components[1]])
-				hash[key_components[1]] = {};
-			hash[key_components[1]][key_components[2]] = value;
+	if(! search || ! search.match(/([^?#]*)(#.*)?$/) ) return {}
+	var data = {}
+	var parts = search.split('&')
+	for(var i=0; i < parts.length; i++){
+		var pair = parts[i].split('=')
+		if(pair.length != 2) continue;
+		var key = pair[0], value = pair[1];
+		var key_components = key.rsplit(/\[[^\]]*\]/)
+		
+		if( key_components.length > 1 ) {
+			var last = key_components.length - 1;
+			var nested_key = key_components[0].toString();
+			if(! data[nested_key] ) data[nested_key] = {};
+			var nested_hash = data[nested_key]
+			
+			for(var k = 1; k < last; k++){
+				nested_key = key_components[k].substring(1, key_components[k].length - 1)
+				if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={}
+				nested_hash = nested_hash[nested_key]
+			}
+			nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value
 		} else {
-	        if (key in hash) {
-	          if (!Object.isArray(hash[key])) hash[key] = [hash[key]];
-	          hash[key].push(value);
+	        if (key in data) {
+	        	if (typeof data[key] == 'string' ) data[key] = [data[key]];
+	         	data[key].push(value);
 	        }
-	        else hash[key] = value;
+	        else data[key] = value;
 		}
-      }
-      return hash;
-    });
+		
+	}
+	return data;
 }
 /**
  * Goes through routes in order.  If it finds one it matches, it returns the url after the #
@@ -162,7 +170,8 @@ JMVC.Path.prototype = {
 		var first_amp = after_pound.indexOf("&")
 		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? after_pound : null
 		
-		return after_pound.substring(first_amp+1)
+		return ( after_pound.substring(0,first_amp).indexOf("=") == -1 ? after_pound.substring(first_amp+1) : after_pound )
+		 
 	}
 }
 //assignments_hash - the default values for parts in the route

@@ -24,6 +24,8 @@ JMVCTest = {
 			assertEqual('start',params.action)
 			assertEqual('cool',params.jmvc)
 			
+			
+			
 	    }},
 		test_path: function() { with(this) {
 			var path1 = new JMVC.Path('http://javascriptmvc.com/something_crazy#controller/action&jmvc=cool')
@@ -38,6 +40,12 @@ JMVCTest = {
 			
 			var path3 = new JMVC.Path('http://javascriptmvc.com/app/#test')
 			assertEqual( '/app/',path3.domain())
+			
+			
+			var path4 = new JMVC.Path('http://javascriptmvc.com/something_crazy#jmvc=cool&jupiter=dope')
+			assertEqual('jmvc=cool&jupiter=dope', path4.params())
+			assertEqual( '/something_crazy',path4.domain())
+			
 	    }},
 		test_route: function() { with(this) {
 			var route1 = new JMVC.Route('*', {controller: 'test', action: 'start'})
@@ -83,6 +91,27 @@ JMVCTest = {
 			assertEqual('app', params.app_name )
 			assertEqual('test', params.controller )
 			assertEqual('act', params.action )
+	    }},
+		test_get_data: function() { with(this) {
+			var path = new JMVC.Path('http://javascriptmvc.com/another/something_crazy#jmvc=cool')
+			var params = JMVC.Routes.get_data(path)
+			assertEqual('cool', params.jmvc )
+			
+			var path2 = new JMVC.Path('http://javascriptmvc.com/another/something_crazy#jmvc=cool&jupiter=dope')
+			var params2 = JMVC.Routes.get_data(path2)
+			assertEqual('dope', params2.jupiter )
+			assertEqual('cool', params2.jmvc )
+			
+			var path3 = new JMVC.Path('http://javascriptmvc.com/another/something_crazy#jmvc[routing]=cool&jmvc[ejs]=dope')
+			var params3 = JMVC.Routes.get_data(path3)
+			assertEqual('dope', params3.jmvc.ejs )
+			assertEqual('cool', params3.jmvc.routing )
+			
+			var path4 = new JMVC.Path('http://javascriptmvc.com/another/something_crazy#jmvc[routing][tests]=cool&jmvc[ejs]=dope')
+			var params4 = JMVC.Routes.get_data(path4)
+			assertEqual('cool', params4.jmvc.routing.tests )
+			assertEqual('dope', params4.jmvc.ejs )
+			
 	    }}
 	    
 	  }, "testlog");
