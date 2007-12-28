@@ -300,7 +300,8 @@ EjsView.is_current_page = function(options) {
 		return (window.location.href == options || window.location.pathname == options ? true : false);
 	}
 	
-	options = $H(options) || $H();
+	options = $H(options) || $H(); //prototype
+	
 	var options_extended = Object.extend(Object.clone(JMVC.Routes.params()), options);
 	
 	return (this.url_for(options_extended) == this.url_for(JMVC.Routes.params()) ? true : false)
@@ -576,7 +577,7 @@ EjsView.link_to_unless_current = function(name, options, html_options, post, blo
 
 EjsView.package_form = function(form_element, options, submit_button_name) {
     if(!options) var options = {};
-    if(typeof form_element == 'string') form_element = $(form_element)
+    if(typeof form_element == 'string') form_element = document.getElementById(form_element)
     
     if (form_element != null) {
         for (var i = 0; i < form_element.elements.length; i++) {
@@ -913,9 +914,9 @@ EjsView.update_with_client_and_project = function(options) {
 EjsView.url_for = function(params, post) {
     this.update_with_controller_and_action(params);
     if(post == true)
-        return 'post(' + $H(params).toJSON() + ');'
+        return 'post(' + $H(params).toJSON() + ');' //prototype
     else
-        return 'get(' + $H(params).toJSON() + ');'
+        return 'get(' + $H(params).toJSON() + ');' //prototype
 }
 /**
  * uses the type of column to deterimine the type of field it should present.  Useful in bluepritns.
