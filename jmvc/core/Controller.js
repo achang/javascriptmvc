@@ -279,7 +279,7 @@ JMVC.Controller.prototype = {
 	        /*if(template) {
 				result = this.render_templates(template, options.partial, null, options.locals);
 	        } else
-				throw new JMVC.IncludeError(new Error(), 'Template not found: '+file_name);*/
+				throw new JMVC.includeError(new Error(), 'Template not found: '+file_name);*/
 			// layouts ***
 			// first, if this is a partial, skip any layout checks
 			// next check if layout is passed in as an option (can be false or point to another layout)
@@ -298,7 +298,7 @@ JMVC.Controller.prototype = {
 				if(layout && template == null) {
 					this.klass()._layout_template = new EJS({url: layout});
 					if(this.klass()._layout_template == null)
-						throw new JMVC.IncludeError(new Error(), 'Layout not found: '+layout_path);
+						throw new JMVC.includeError(new Error(), 'Layout not found: '+layout_path);
 				}
 				
 				if(this.klass()._layout_template == null) {

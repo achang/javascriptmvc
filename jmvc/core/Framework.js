@@ -8,7 +8,7 @@ JMVC.check_dependency('Inflector', 'Framework.js');
 JMVC.check_dependency('EjsScanner', 'Framework.js');
 JMVC.check_dependency('JMVC.Controller', 'Framework.js');
 JMVC.check_dependency('JMVC.Dispatcher', 'Framework.js');
-JMVC.check_dependency('JMVC.Include', 'Framework.js');
+JMVC.check_dependency('JMVC.include', 'Framework.js');
 JMVC.check_dependency('EjsView', 'Framework.js');
 
 /**
@@ -166,7 +166,7 @@ JMVC.Error = Class.create({
 	}
 });
 
-JMVC.IncludeError = Class.create(JMVC.Error)
+JMVC.includeError = Class.create(JMVC.Error)
 JMVC.TemplateError = Class.create(JMVC.Error)
 
 JMVC.Error.file_name = function(e) {
