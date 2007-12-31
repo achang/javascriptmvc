@@ -100,17 +100,6 @@ JMVC.Framework.display_content = function(render_container_id, content) {
         el.innerHTML = content;
 }
 
-/**
- * Getter method to retrieve the session variable.
- * <p>The session variable is used to keep track of data that needs to persist between requests.</p>
- * @param {String} render_container_id The element ID in the page where the rendered content will be placed
- * @param {String} content The rendered string to be placed into the page
- */
-JMVC.Framework.get_session = function() {
-    if (!JMVC.Framework.session)
-        JMVC.Framework.session = {};
-    return JMVC.Framework.session;
-}
 
 /**
  * 

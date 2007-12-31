@@ -139,31 +139,45 @@ JMVC.Controller.prototype = {
      * @param {Object} klass_name
      * @param {Object} type
      */
-    initialize : function(klass_name, type) {
+    initialize : function(klass_name, params) {
         // for introspection inside the controller instance
-        this.klass_name = klass_name;
-        // Holds data that should persist across controller actions for this controller
-        this.controller_session = this.klass().controller_session || {};
-        this.request_type = type;
-        this.session = JMVC.Framework.get_session();
-        this.flash = JMVC.Framework.get_session().flash;
-        this._rendered = false;
-		// this saves the rendered text to be returned
-		this._render_result = null;
-        this._redirected = null;
-        this._attrs_removed_before_render = {};
-        var exclude_from_removal = {"klass" : true, "klass_name": true, "redirect_to" : true, "redirect_to_external" : true, "render" : true};
-        for(var element in this) {
-            if(!exclude_from_removal[element])
-                this._attrs_removed_before_render[element] = true;
+        this.klass_name = klass_name
+		this.klass = function(){
+			return window[klass_name]
+		}
+		
+    	var rendered = false;
+		this.is_rendered = function(){return rendered;}
+		this.rendered = function(){rendered = true;}
+		
+		var redirected_to = null;
+		this.set_redirected = function(params){ redirected_to =  params;}
+		this.redirected = function(params){ return params;}
+		
+
+        // we basically want to setup our controller to remove everything that isn't in this list and wasn't added by the controller
+		// we use this list to create the list of things we do want to remove.
+		
+		var attributes_removed_before_render = []
+		var exclude_from_removal = {"klass" : true, 
+									"klass_name": true, 
+									"render" : true,
+									"render_templates" : true,
+									"prepare_template_data" : true};
+        for(var attr in this) {
+            if(!exclude_from_removal[attr])
+			{
+//				/alert('adding '+attr)
+                attributes_removed_before_render.push(attr)
+			}
         }
-    },
-    /**
-     * Returns the object's class.  This is usefull for introspection.
-     */
-    klass : function(){
-        if(this.klass_name)
-            return window[this.klass_name];
+		this.attributes_removed_before_render = function(){ return attributes_removed_before_render;}
+		this._attrs_removed_before_render = {};
+        
+		
+		this.params = function(){
+			return params;
+		}
     },
     /**
      * Packages an object to send to the view.  The views get a copy of the controller's 
@@ -177,15 +191,10 @@ JMVC.Controller.prototype = {
         // remove any attributes from the controller that were not set by the action
         var data = {};
         Object.extend(data, this);
-        for(var attr in this._attrs_removed_before_render)
-			if(attr != 'render' && attr != 'prepare_template_data' && attr != 'render_templates')
-            	delete data[attr];
-        // allow view methods to be accessible in views
-		for(var attr in view) {
-			if(data[attr] != null)
-				throw(new JMVC.Error(new Error(), attr+' is a method in JMVC.View.  You cannot name controller instance attributes the same as any JMVC.View attributes.'))
-			else
-				data[attr] = view[attr];
+		for(var i = 0; i < this.attributes_removed_before_render().length; i++){
+			if( data[ this.attributes_removed_before_render()[i] ] ) 
+				delete data[ this.attributes_removed_before_render()[i] ]
+				
 		}
         return data;
     },
@@ -210,9 +219,9 @@ JMVC.Controller.prototype = {
           { action: JMVC.Routes.params()['action'],
             controller: JMVC.Routes.params()['controller']
           }, options || {} );
-        if(this._redirected != null) // already rendered or redirected
+        if(this.redirected() != null) // already rendered or redirected
 			throw new JMVC.Error(new Error(), 'Cannot call render twice in the same action.');
-        this._redirected = params;
+        this.set_redirected(params);
     },
     /**
      * Renders the content that will be returned to the browser as the response body.
@@ -247,11 +256,11 @@ JMVC.Controller.prototype = {
         }
         
         if(options.nothing && options.nothing == true) {
-            this._rendered = true;
+            this.rendered();
             return '';
         }
         if(options.text) {
-            this._rendered = true;
+            this.rendered();
             result = options.text;   
         }
         else {
@@ -312,7 +321,7 @@ JMVC.Controller.prototype = {
 			}
 		}
         if(result) {
-            this._rendered = true;
+            this.rendered();
 			
 			if(options.partial || (options.template && !options.update_id)  ) // return the result to be placed directly in the page
                 return result;

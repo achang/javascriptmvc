@@ -102,7 +102,7 @@ JMVC.Dispatcher.request = function(type, params, continue_to_controller) {
 			
 	    if(!continue_to_controller){
 			var controller_class = window[controller_name];		
-		    var controller = new (controller_class)(controller_name, type); // it should know its name w/o being passed in
+		    var controller = new (controller_class)(controller_name, params); // it should know its name w/o being passed in
 			if(controller_class.before_filter) controller[controller_class.before_filter](params)
 		}else{
 			controller = continue_to_controller
@@ -126,11 +126,10 @@ JMVC.Dispatcher.request = function(type, params, continue_to_controller) {
 			}
 		}
 	    
-	    if (controller._redirected) {
-	        //controller.session.flash = controller.flash;
-	        return JMVC.Dispatcher.redirect_request(controller._redirected);
-	    }
-		if (controller._rendered == false)
+	    if (controller.redirected() ) 
+	        return JMVC.Dispatcher.redirect_request(controller.redirected() );
+			
+		if (controller.is_rendered() == false)
 			controller.render( {action: params.action} );
 	
 	    //controller.session.flash = null;

@@ -3,5 +3,6 @@ TestController  = Class.create(JMVC.Controller, {
 		TEST.action_run = true
 		this.instance_variable = 'instance variable'
 		
-	}
+	},
+	another_function : function(){}
 })
