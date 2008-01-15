@@ -29,6 +29,7 @@ JMVC.get_root = function() {
 JMVC.RECORD_HISTORY = true;
 JMVC.JMVC_startup_tasks = [];
 JMVC.database_adapter ='msaccess'
+JMVC.RENDER_TO = 'main';
 
 
 /**
