@@ -5,7 +5,6 @@ JMVC.include_order = ["/dependencies/prototype.js",
 						  "/dependencies/ejs.js",
 						  "/core/Controller.js",
 						  "/core/Dispatcher.js",
-						  "/core/Template.js",
 						  "/core/Include.js",
 						  "/core/View.js", 
 						  "/core/Routes.js"]

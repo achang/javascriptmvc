@@ -13,7 +13,6 @@ JMVCTest = {
 				map.connect('*', {controller: 'test', action: 'start'})
 			})
 			
-			
 			var params = JMVC.Routes.params('/something_crazy#&jmvc=cool')
 			assertEqual('test',params.controller)
 			assertEqual('start',params.action)

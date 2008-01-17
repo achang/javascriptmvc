@@ -40,9 +40,9 @@ JMVC.Routes = function(){};
 		var path = new JMVC.Path( url ? url : decodeURIComponent( location.href ) )
 		
 		params = Object.extend( 
-			Object.extend( {}, JMVC.Routes.get_data(path)), 
+			Object.extend( {}, $H(JMVC.Routes.get_data(path))), 
 				JMVC.Routes.match_route(path) 
-		)
+		).toObject();
 		return params;
 	}
 })()
