@@ -3,13 +3,7 @@
  * Framework.js file contains functionality used across the MVC architecture.
  */
  
-JMVC.check_dependency('Prototype', 'Framework.js');
-JMVC.check_dependency('Inflector', 'Framework.js');
-JMVC.check_dependency('EjsScanner', 'Framework.js');
-JMVC.check_dependency('JMVC.Controller', 'Framework.js');
-JMVC.check_dependency('JMVC.Dispatcher', 'Framework.js');
-JMVC.check_dependency('JMVC.include', 'Framework.js');
-JMVC.check_dependency('EjsView', 'Framework.js');
+
 
 /**
  * <b>NEVER CALL THIS CLASS' CONSRUCTOR</b>
@@ -143,20 +137,18 @@ JMVC.Framework.display_content = function(render_container_id, content) {
  *
  * @addon
  */
-JMVC.Error = Class.create({
-	initialize: function(error, message, line_number) {
-		for(var attr in error)
-			this[attr] = error[attr]
-		this.name = 'JMVCError';
-		this.message = message;
-		if(!this.lineNumber && line_number)
-			this.lineNumber = line_number;
-		return this;
-	}
-});
+JMVC.Error = function(error, message, line_number){
 
-JMVC.includeError = Class.create(JMVC.Error)
-JMVC.TemplateError = Class.create(JMVC.Error)
+	for(var attr in error)
+		this[attr] = error[attr]
+	this.name = 'JMVCError';
+	this.message = message;
+	if(!this.lineNumber && line_number)
+		this.lineNumber = line_number;
+};
+
+JMVC.includeError = JMVC.Error
+JMVC.TemplateError = JMVC.Error
 
 JMVC.Error.file_name = function(e) {
 	if(e && e.fileName) {
@@ -167,10 +159,13 @@ JMVC.Error.file_name = function(e) {
 	return null;
 }
 
-JMVC.DISPATCH_FUNCTION(JMVC.Framework.JMVC_startup);
+//JMVC.DISPATCH_FUNCTION(JMVC.Framework.JMVC_startup);
 
-JMVC.loaded();
+
+//JMVC.loaded();
 
 for(var i = 0; i < JMVC.SETUP.included_libraries.length; i++) {
-	JMVC.require(JMVC_ROOT+'lib/'+JMVC.SETUP.included_libraries[i]+'/setup.js');
+	include.absolute(JMVC_ROOT+'lib/'+JMVC.SETUP.included_libraries[i]+'/setup.js');
 }
+include.set_path(APPLICATION_ROOT);
+JMVC.user_initialize_function();
