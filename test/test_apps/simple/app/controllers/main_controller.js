@@ -1,6 +1,8 @@
 Controller('main', {
 	load : function(params){
-		this.render()
+		JMVC.Test.action_run = true
+		JMVC.Test.rendered = this.render()
+
 	},
 	files_loaded : function(response){
 		

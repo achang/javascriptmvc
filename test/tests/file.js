@@ -54,7 +54,7 @@ JMVCTest = {
 	    }},
 		test_absolute : function() { with(this) {
 			var file1 = new jFile('holla.ejs')
-			assertEqual('test_apps/simple/holla.ejs', file1.absolute() )
+			assertEqual('file:///C:/Development/jmvc/test/holla.ejs', file1.absolute() )
 			
 			var file2 = new jFile('/holla.addf.ejs')
 			assertEqual('/holla.addf.ejs', file2.absolute() )

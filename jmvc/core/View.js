@@ -294,7 +294,7 @@ EjsView.input_field_tag = function(name, value , inputType, html_options) {
 /**
  * Returns true if parameters in options match the parameters of the current page.
  * @param {Object} options
- */
+ 
 EjsView.is_current_page = function(options) {
 	if(typeof options == 'string'){
 		return (window.location.href == options || window.location.pathname == options ? true : false);
@@ -305,7 +305,7 @@ EjsView.is_current_page = function(options) {
 	var options_extended = Object.extend(Object.clone(JMVC.Routes.params()), options);
 	
 	return (this.url_for(options_extended) == this.url_for(JMVC.Routes.params()) ? true : false)
-}
+}*/
 
 /**
  * Creates a link tag of the given name using a URL created by the set of options. 
@@ -535,13 +535,13 @@ EjsView.link_to_unless = function(condition, name, options, html_options, post, 
  * @param {Object} post
  * @param {Object} block
  * @see #link_to_unless
- */
+ 
 EjsView.link_to_unless_current = function(name, options, html_options, post, block) {
 	options = options || {};
 	html_options = html_options || {};
 	return this.link_to_unless(this.is_current_page(options), name, options, html_options, post, block)
 }
-
+*/
 
 
 
