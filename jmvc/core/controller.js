@@ -147,8 +147,7 @@ Object.extend(Controller.functions.prototype, {
             else {
                 var url = 'app/views/'+controller_name+'/'+action_name+'.ejs';
             }
-			//alert(APPLICATION_ROOT)
-	        result = new EJS({url:  (new jFile(jFile.join(APPLICATION_ROOT,url))).absolute()  }).render(this);
+	        result = new EJS({url:  jFile.join(APPLICATION_ROOT,url)  }).render(this);
 		}
 		return result;
 		

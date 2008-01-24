@@ -32,7 +32,8 @@ jFile.prototype = {
 jFile.join = function() {
     var cleaned = [];
 	for(var i=0; i < arguments.length ; i ++){
-		cleaned.push(arguments[i].replace(/^\/+/, '').replace(/\/+$/, ''));
+		if(arguments[i].replace(/\s+/g, '') != '')
+			cleaned.push(arguments[i].replace(/^\/+/, '').replace(/\/+$/, ''));
 	}
 	return (arguments[0].slice(0,1) == '/' ? '/' : '' )+cleaned.join("/");
 }
