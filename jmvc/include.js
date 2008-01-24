@@ -1,16 +1,49 @@
 (function(){
+	
 	if(typeof include != 'undefined'){
 		include.end();
 		return;
 	}
+	var PAGE_ROOT = window.location.href;
+	var last = PAGE_ROOT.lastIndexOf('/')
+	if(last != -1){
+				PAGE_ROOT = PAGE_ROOT.substring(0,last+1)
+	}
 	var INCLUDE_ROOT = '';
 	var INCLUDE_PATH = '';
-	var INCLUDE_regex = /include\.js$/;
+	var INCLUDE_regex = /include\.js/;
+	var is_absolute = function(path){
+		return path.indexOf('/') == 0 || path.indexOf('http') == 0 || path.indexOf('file://') == 0
+	}
+	var join = function(first, second){
+		
+		var first_parts = first.split('/')
+		first_parts.pop()
+		//first_parts.pop()
+		var second_parts = second.split('/')
+		var second_part = second_parts[0]
+		while(second_part == '..' && second_parts.length > 0){
+			second_parts.shift();
+			first_parts.pop();
+			second_part =second_parts[0];
+		}
+		return first_parts.concat(second_parts).join('/');
+	}
 	for(var i=0; i<document.getElementsByTagName("script").length; i++) {
 		var src = document.getElementsByTagName("script")[i].src;
-		if(src.match(INCLUDE_regex))
+		
+		if(src.match(INCLUDE_regex)){
 			INCLUDE_PATH = src;
+			//var last = src.lastIndexOf('/')
+			//if(last != -1){
+			//	src = src.substring(0,last+1)
+			//}
+			//PAGE_ROOT = src
+			if(!is_absolute(src) ) src = join(window.location.href, src);
+			
 			INCLUDE_ROOT = src.replace(INCLUDE_regex,'');
+		}
+			
 	}
 	include = function(){
 		if(include.get_env()=='development' || include.get_env()=='compress'){
@@ -80,18 +113,29 @@
 	}
 	include.get_path = function() { return cwd;}
 	
-	include.add = function(name, type){
+	//this references where include.js is, and your path basically with that in mind.  Although, this 
+	//should probably reference the difference between the page location because that is where you include from
+	
+	include.get_absolute_path = function(){
+		if(is_absolute(cwd)) return cwd;
+//		/alert('PAGE_ROOT='+PAGE_ROOT)
+		return join(PAGE_ROOT,cwd);
+	}
+	
+	
+	
+	
+	include.add = function(name){
 		name = ( name.indexOf('.js') == -1 ? name+'.js' : name );
 		var ar = name.split('/');
 		ar.pop();
 		var newer_path = ar.join('/');
 		var current_path = include.get_path()
 		//set the path to the new object;
-		if(current_path != '' && type != 'absolute'){
+		if(current_path != '' && !is_absolute(name) ){
 			newer_path = current_path+'/'+ newer_path;
 			name = current_path+'/'+name;
 		}
-		
 		current_includes.unshift(  {start: newer_path, name: name } );
 	}
 	
@@ -158,8 +202,10 @@ var total = []
 		}
 		else
 		{
+			//alert((src? '<script type="text/javascript" src="'+src+(true ? '': '?'+Math.random() )+'"></script>':'')+
+			//	'<script type="text/javascript" src="'+INCLUDE_PATH+(navigator.userAgent.match(/Firefox/) ? '': '?'+Math.random() )+'"></script>')
 			document.write(
-				(src? '<script type="text/javascript" src="'+src+(false ? '': '?'+Math.random() )+'"></script>':'')+
+				(src? '<script type="text/javascript" src="'+src+(true ? '': '?'+Math.random() )+'"></script>':'')+
 				'<script type="text/javascript" src="'+INCLUDE_PATH+(navigator.userAgent.match(/Firefox/) ? '': '?'+Math.random() )+'"></script>'
 			);
 		}
