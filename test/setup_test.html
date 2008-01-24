@@ -26,12 +26,19 @@
 	<script language="javascript" type="text/javascript" src="../jmvc/include.js"></script>
 
 	<script language="javascript" type="text/javascript">
-		$('title').innerHTML = TEST_NAME.replace(/_/, ' ')+' test on '+JMVCTest.APPLICATION_NAME;
+		
 		if(JMVCTest.TEST_DESCRIPTION) $('description').innerHTML = JMVCTest.TEST_DESCRIPTION;
 		
-		include(	"../jmvc/jmvc",
-					"test_apps/"+JMVCTest.APPLICATION_NAME+"/config/environment"
-					)
+		
+		if(JMVCTest.APPLICATION_NAME){
+			$('title').innerHTML = TEST_NAME.replace(/_/, ' ')+' test on '+JMVCTest.APPLICATION_NAME;
+			include(	"../jmvc/jmvc")
+			include( "test_apps/"+JMVCTest.APPLICATION_NAME+"/config/environment" )
+		}else{
+			TEST = {order: 1}
+			include('test_apps/include/load1')
+		}
+			
 	</script>
 
 	<script language="javascript" type="text/javascript">

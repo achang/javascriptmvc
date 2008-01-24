@@ -113,12 +113,8 @@
 	}
 	include.get_path = function() { return cwd;}
 	
-	//this references where include.js is, and your path basically with that in mind.  Although, this 
-	//should probably reference the difference between the page location because that is where you include from
-	
 	include.get_absolute_path = function(){
 		if(is_absolute(cwd)) return cwd;
-//		/alert('PAGE_ROOT='+PAGE_ROOT)
 		return join(PAGE_ROOT,cwd);
 	}
 	

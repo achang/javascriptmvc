@@ -119,9 +119,10 @@ JMVC.loaded = function() {
 			JMVC.cache_templates = false;
 	}
 }
+if(typeof Prototype == 'undefined') include("dependencies/query_event")
 
 
-include(  "dependencies/query_event",
+include( 
 		  "dependencies/helpers",
 		  "dependencies/Inflector",
 		  "dependencies/file",
