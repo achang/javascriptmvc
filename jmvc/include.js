@@ -1,27 +1,37 @@
+/***
+ * Include
+ * 	Include adds other JavaScript files, and can be used to compress a project.
+ * 
+ */
+
+
 (function(){
-	
+	//checks if included has been added, if it has, gets the next included file.
 	if(typeof include != 'undefined'){
 		include.end();
 		return;
 	}
+	//Saves root of the page that include is loaded on;
 	var PAGE_ROOT = window.location.href;
 	var last = PAGE_ROOT.lastIndexOf('/')
-	if(last != -1){
-				PAGE_ROOT = PAGE_ROOT.substring(0,last+1)
-	}
-	var INCLUDE_ROOT = '';
-	var INCLUDE_PATH = '';
-	var INCLUDE_regex = /include\.js/;
+	if(last != -1) PAGE_ROOT = PAGE_ROOT.substring(0,last+1);
+	
+	
+	var INCLUDE_ROOT = '',INCLUDE_PATH = '', first = true , INCLUDE_regex = /include\.js/;
+	var env = 'development', production = '/javascripts/production.js', cwd = '', includes=[], current_includes=[];
+	var total = []; //used to store text
+	
+	//returns true if a path is absolute
 	var is_absolute = function(path){
 		return path.indexOf('/') == 0 || path.indexOf('http') == 0 || path.indexOf('file://') == 0
 	}
+	
+	//joins 2 folders.  This takes into account things like ../../
 	var join = function(first, second){
-		
-		var first_parts = first.split('/')
-		first_parts.pop()
-		//first_parts.pop()
-		var second_parts = second.split('/')
-		var second_part = second_parts[0]
+		var first_parts = first.split('/');
+		first_parts.pop();
+		var second_parts = second.split('/');
+		var second_part = second_parts[0];
 		while(second_part == '..' && second_parts.length > 0){
 			second_parts.shift();
 			first_parts.pop();
@@ -29,88 +39,58 @@
 		}
 		return first_parts.concat(second_parts).join('/');
 	}
+	//find include and get its absolute path
 	for(var i=0; i<document.getElementsByTagName("script").length; i++) {
 		var src = document.getElementsByTagName("script")[i].src;
-		
 		if(src.match(INCLUDE_regex)){
 			INCLUDE_PATH = src;
-			//var last = src.lastIndexOf('/')
-			//if(last != -1){
-			//	src = src.substring(0,last+1)
-			//}
-			//PAGE_ROOT = src
 			if(!is_absolute(src) ) src = join(window.location.href, src);
-			
 			INCLUDE_ROOT = src.replace(INCLUDE_regex,'');
 		}
 			
 	}
+	/**
+	 * includes a list of files like 'abc','def'
+	 */
 	include = function(){
 		if(include.get_env()=='development' || include.get_env()=='compress'){
 			for(var i=0; i < arguments.length; i++){
 				include.add(arguments[i]);
 			}
-		}
-		else{
-			if(!include.first) return;
+		}else{
+			if(!first) return;
 			document.write('<script type="text/javascript" src="'+include.get_path()+include.get_production_name()+'"></script>');
-			include.first = false;
+			first = false;
 			return;
 		}
-		if(include.first && !navigator.userAgent.match(/Opera/)){
-			include.first = false;
-			insert();
-			
+		if(first && !navigator.userAgent.match(/Opera/)){
+			first = false;
+			insert(); //insert include tag
 		}
 	};
-	include.absolute = function(){
-		if(include.get_env()=='development' || include.get_env()=='compress'){
-			for(var i=0; i < arguments.length; i++){
-				include.add(arguments[i],'absolute');
-			}
-		}
-		else{
-			if(!include.first) return;
-			document.write('<script type="text/javascript" src="'+include.get_path()+include.get_production_name()+'"></script>');
-			include.first = false;
-			return;
-		}
-		if(include.first && !navigator.userAgent.match(/Opera/)){
-			include.first = false;
-			insert();
-			
-		}
-	}
 	
 	
-	include.first = true;
-	
-	var env = 'development', path = '/public', production = '/javascripts/production.js', cwd = '', includes=[], current_includes=[];
-	include.setup = function(environment, production_name, p){
+	/**
+	 * Sets up the environment.
+	 * @param {Object} environment - the environment the scripts are running in [deveopment,compress,production]
+	 * @param {Object} production_name - where the production file should be looked for
+	 */
+	include.setup = function(environment, production_name){
 		if(environment != 'development' && environment != 'production' && environment != 'compress'){
 			alert('You are using an incorrect environment!  Only development, production, and compress are allowed.');
 			return;
 		}
 		
 		env = environment;
-		if(p) p = path;
-		if(production_name) {
-			production = production_name+(production_name.indexOf('.js') == -1 ? '.js' : '' );
-		}
+		if(production_name)   production = production_name+(production_name.indexOf('.js') == -1 ? '.js' : '' );
 		
-		if(env == 'compress'){
-			document.write(
-			'<script type="text/javascript" src="'+INCLUDE_ROOT+'compress.js'+'"></script>');
-		}
-	}
+		if(env == 'compress') document.write('<script type="text/javascript" src="'+INCLUDE_ROOT+'compress.js'+'"></script>');
+		
+	};
+	
 	include.get_env = function() { return env;}
-	include.get_production_name = function() { 
-		
-		return production;
-	}
-	include.set_path = function(p) { 
-		cwd = p;
-	}
+	include.get_production_name = function() { return production;}
+	include.set_path = function(p) { cwd = p;}
 	include.get_path = function() { return cwd;}
 	
 	include.get_absolute_path = function(){
@@ -120,7 +100,11 @@
 	
 	
 	
-	
+	/**
+	 * Adds a file to the of objects to be included.  If it is not absolute, it adds the current path
+	 * to the include path.
+	 * @param {Object} name
+	 */
 	include.add = function(name){
 		name = ( name.indexOf('.js') == -1 ? name+'.js' : name );
 		var ar = name.split('/');
@@ -134,7 +118,11 @@
 		}
 		current_includes.unshift(  {start: newer_path, name: name } );
 	}
-	
+	/**
+	 * called after a file is loaded.  Then it takes the last one
+	 * and loads it.  If it is the last one and it is in compression
+	 * opens the compression page
+	 */
 	include.end = function(){
 		includes = includes.concat(current_includes);
 		var latest = includes.pop();
@@ -156,20 +144,21 @@
 			}
 			return;
 		};
-
 		current_includes = [];
-		
 		include.set_path(latest.start);
 		insert(latest.name);
 
 	}
+	/**
+	 * This is for opera.  Call after all your includes.
+	 */
 	include.opera = function(){
 		if(navigator.userAgent.match(/Opera/)){
 			include.end();
 		}
 	}
 
-var total = []	
+
 	var insert = function(src){
 		//if you are compressing, load, eval, and then call end and return.
 		if(src && include.get_env()=='compress'){
