@@ -165,7 +165,7 @@ JMVC.Error.file_name = function(e) {
 //JMVC.loaded();
 
 for(var i = 0; i < JMVC.SETUP.included_libraries.length; i++) {
-	include.absolute(JMVC_ROOT+'lib/'+JMVC.SETUP.included_libraries[i]+'/setup.js');
+	include('../lib/'+JMVC.SETUP.included_libraries[i]+'/setup.js');
 }
 include.set_path(APPLICATION_ROOT);
 jFile.set_cwd(APPLICATION_ROOT);
