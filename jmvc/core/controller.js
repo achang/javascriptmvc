@@ -111,6 +111,7 @@ Object.extend(Controller.functions.prototype, {
 	},
 	continue_to :function(action){
 		return function(response){
+			this.action = action
 			this[action](response);
 			//this.attach_event_handlers()
 		}.bind(this)
@@ -147,7 +148,7 @@ Object.extend(Controller.functions.prototype, {
             else {
                 var url = 'app/views/'+controller_name+'/'+action_name+'.ejs';
             }
-	        result = new EJS({url:  jFile.join(APPLICATION_ROOT,url)  }).render(this);
+			result = new EJS({url:  jFile.join(APPLICATION_ROOT,url)  }).render(this);
 		}
 		return result;
 		
