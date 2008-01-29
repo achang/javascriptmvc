@@ -38,7 +38,7 @@ include.css = function(path){
 	link.setAttribute("type","text/css")
 	link.setAttribute("rel","stylesheet")
 	link.setAttribute("href",path)
-	head.appendChild(path)
+	head.appendChild(link)
 }
 // JMVC request
 
