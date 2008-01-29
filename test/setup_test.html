@@ -28,14 +28,15 @@
 	<script language="javascript" type="text/javascript">
 		
 		if(JMVCTest.TEST_DESCRIPTION) $('description').innerHTML = JMVCTest.TEST_DESCRIPTION;
-		
-		
+
 		if(JMVCTest.APPLICATION_NAME){
 			$('title').innerHTML = TEST_NAME.replace(/_/, ' ')+' test on '+JMVCTest.APPLICATION_NAME;
+
 			include(	"../jmvc/jmvc")
 			include( "test_apps/"+JMVCTest.APPLICATION_NAME+"/config/environment" )
 		}else{
 			TEST = {order: 1}
+			include.setup(JMVCTest.TEST_MODE)
 			include('test_apps/include/load1')
 		}
 			

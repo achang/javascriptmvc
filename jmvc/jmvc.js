@@ -13,7 +13,7 @@ JMVC = function() {}
 
 // calls itself to keep the global scope clean
 JMVC.get_root = function() {
-	window.JMVC_ROOT = include.get_path();
+	window.JMVC_ROOT = include.get_absolute_path();
 }();
 
 
@@ -36,15 +36,14 @@ JMVC.DISPATCH_FUNCTION = function(startup) {
  * <p>Saves the user defined app_init_func to be executed later (once JMVC files are included).</p>
  */
 JMVC.Initializer = function(user_initialize_function) {
-//    /alert(include.get_path())
+  	
 	APPLICATION_ROOT = new jFile( include.get_path() ).directory()
 	JMVC.user_initialize_function = user_initialize_function;
 
     if(!(JMVC.ENV.ENVIRONMENT == 'development' || JMVC.ENV.ENVIRONMENT == 'production'))
 		throw new JMVC.Error(new Error(), 'unknown JMVC.ENV.ENVIRONMENT');
     JMVC.ENV.BASE_PATH = JMVC_ROOT;
-
-	include.absolute(JMVC.ENV.BASE_PATH+'/core/Framework');  
+	include(JMVC.ENV.BASE_PATH+'/core/Framework');  
 	// Framework should have just what it takes for the complex folder strucutre.
 	// this is so if there is no initializer function called, only framework isn't provided.  However, controller, views, etc are still available
 	// this allows people to easily add parts

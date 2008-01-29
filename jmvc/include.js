@@ -142,7 +142,16 @@
 		if(!latest) {
 			if(include.get_env()=='compress'){
 				include.total = total;
-				document.body.innerHTML = 'Compressing ..'
+				var div = document.createElement('div');
+				div.id = '_COMPRESS';
+				div.style.border = 'solid 1px Green'
+				div.style.position = 'absolute';
+				div.style.left = '10px';
+				div.style.width = '700px';
+				div.style.top = '10px';
+				div.innerHTML = 'Compressing';
+				div.style.backgroundColor = '#dddddd';
+				document.body.appendChild(div);
 				setTimeout( include.compress, 10 );
 			}
 			return;
@@ -207,7 +216,7 @@ var total = []
 		}
 	}
 	var script_tag = function(){
-		var start = document.createElement('script')
+		var start = document.createElement('script');
 		start.type = 'text/javascript';
 		return start;
 	}

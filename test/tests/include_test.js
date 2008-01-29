@@ -1,5 +1,6 @@
 JMVCTest = {
 	TEST_DESCRIPTION : 'This tests include by itself.',
+	TEST_MODE : 'development',
 	perform_test : function() {
 	  new Test.Unit.Runner({
 	  	
