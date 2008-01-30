@@ -39,6 +39,8 @@
 			include.setup(JMVCTest.TEST_MODE)
 			include('test_apps/include/load1')
 		}
+		if(JMVCTest.TRIMQUERY)
+			include("../jmvc/lib/local_storage/setup")
 			
 	</script>
 

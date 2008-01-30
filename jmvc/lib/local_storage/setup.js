@@ -1,0 +1,6 @@
+include("parser")
+include("trimquery")
+include("gears_init")
+include("generic_adapter")
+include("trimquery_adapter")
+include("gears_adapter")
