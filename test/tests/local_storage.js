@@ -58,7 +58,7 @@ JMVCTest = {
 			assertEqual(obj[0].content, 'test test')
 			assertEqual(obj[0].id, 1)
 	    }},
-	    test_localstorage : function() { with(this) {
+	    test_localstorage_gears : function() { with(this) {
 			var app_schema = {"name":"db","tables":[
 				{"name":"things","columns":
 					[{"name":"content","type":"string"},{"name":"id","type":"integer"}]}
@@ -68,6 +68,8 @@ JMVCTest = {
 			var obj = LocalStorage.execute("SELECT * FROM things WHERE things.id = 1")
 			assertEqual(obj[0].content, 'test test')
 			assertEqual(obj[0].id, 1)
+	    }},
+	    test_localstorage_trimquery : function() { with(this) {
 			// switch it up
 			if(LocalStorage.type == 'TrimQuery')
 				LocalStorage.type = 'Gears';
