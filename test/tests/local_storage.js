@@ -30,7 +30,7 @@ JMVCTest = {
 			db.open();
 			var rs = db.execute('DROP TABLE things');
 			rs.close();
-			var rs = db.execute('CREATE TABLE things (id INTEGER PRIMARY KEY, content TEXT)');
+			var rs = db.execute('CREATE TABLE things (id INTEGER, content TEXT)');
 			rs.close();
 			var rs = db.execute("DELETE FROM things WHERE id=1");
 			rs.close();
@@ -45,7 +45,7 @@ JMVCTest = {
 				rs.next();
 			}
 			rs.close();
-	    }}/*,
+	    }},
 	    test_gears_adapter : function() { with(this) {
 			if(!window.google || !google.gears) alert('This test requires Google Gears.')
 			var app_schema = {"name":"db","tables":[
@@ -54,10 +54,10 @@ JMVCTest = {
 				]}
 			JMVC.GearsAdapter.setup(app_schema)
 			JMVC.GearsAdapter.execute("INSERT INTO things (content,id) VALUES ('test test',1)")
-			var obj = JMVC.TrimQueryAdapter.execute("SELECT * FROM things WHERE things.id = 1")
-			assertEqual(test[0].content, 'test test')
-			assertEqual(test[0].id, 1)
-	    }}*/
+			var obj = JMVC.GearsAdapter.execute("SELECT * FROM things WHERE things.id = 1")
+			assertEqual(obj[0].content, 'test test')
+			assertEqual(obj[0].id, 1)
+	    }}
 	  }, "testlog");
 	}
 }
