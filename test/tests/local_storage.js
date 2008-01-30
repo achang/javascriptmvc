@@ -57,6 +57,31 @@ JMVCTest = {
 			var obj = JMVC.GearsAdapter.execute("SELECT * FROM things WHERE things.id = 1")
 			assertEqual(obj[0].content, 'test test')
 			assertEqual(obj[0].id, 1)
+	    }},
+	    test_localstorage : function() { with(this) {
+			var app_schema = {"name":"db","tables":[
+				{"name":"things","columns":
+					[{"name":"content","type":"string"},{"name":"id","type":"integer"}]}
+				]}
+			LocalStorage.setup(app_schema)
+			LocalStorage.execute("INSERT INTO things (content,id) VALUES ('test test',1)")
+			var obj = LocalStorage.execute("SELECT * FROM things WHERE things.id = 1")
+			assertEqual(obj[0].content, 'test test')
+			assertEqual(obj[0].id, 1)
+			// switch it up
+			if(LocalStorage.type == 'TrimQuery')
+				LocalStorage.type = 'Gears';
+			else
+				LocalStorage.type = 'TrimQuery';
+			var app_schema = {"name":"db","tables":[
+				{"name":"things","columns":
+					[{"name":"content","type":"string"},{"name":"id","type":"integer"}]}
+				]}
+			LocalStorage.setup(app_schema)
+			LocalStorage.execute("INSERT INTO things (content,id) VALUES ('test test',1)")
+			var obj = LocalStorage.execute("SELECT * FROM things WHERE things.id = 1")
+			assertEqual(obj[0].content, 'test test')
+			assertEqual(obj[0].id, 1)
 	    }}
 	  }, "testlog");
 	}

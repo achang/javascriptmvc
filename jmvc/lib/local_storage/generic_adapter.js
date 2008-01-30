@@ -1,6 +1,6 @@
 JMVC.GenericAdapter = Class.create();
 
-JMVC.GenericAdapter.setup = function() {
+JMVC.GenericAdapter.setup = function(schema) {
 	throw new JMVC.Error(new Error(), 'setup must be defined for adapters');
 }
 
@@ -9,4 +9,16 @@ JMVC.GenericAdapter.setup_complete = false;
 
 JMVC.GenericAdapter.execute = function() {
 	throw new JMVC.Error(new Error(), 'execute must be defined for adapters');
+}
+
+LocalStorage = Class.create();
+
+LocalStorage.setup = function(schema) {
+	LocalStorage.type = 'Gears';
+	if(!window.google || !google.gears) LocalStorage.type = 'TrimQuery';
+	JMVC[LocalStorage.type+'Adapter'].setup(schema);
+}
+
+LocalStorage.execute = function(sql) {
+	return JMVC[LocalStorage.type+'Adapter'].execute(sql);
 }
