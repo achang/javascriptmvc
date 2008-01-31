@@ -883,15 +883,17 @@ var TrimQuery = {};
         
         if (query_type == 'SELECT' || query_type == 'DESTROY') {
             
-            var fromSplit = sqlQuery.substring(7).split(" FROM ");
+            var fromSplit = sqlQuery.substring(7).split("FROM ");
             if (fromSplit.length != 2)
                 err("missing a FROM clause");
             
+			//DELETE FROM things WHERE things.id=14
             //SELECT Invoice.*, Customer.* FROM Invoice, Customer
             //SELECT * FROM Invoice, Customer
             //DELETE things, relationships FROM relationships LEFT OUTER JOIN things ON things.relationship_id = relationships.id WHERE relationships.id = 2
             //SELECT * FROM relationships LEFT OUTER JOIN users ON relationships.created_by = users.id AND relationships.updated_by = users.id LEFT OUTER JOIN things ON things.relatedrelationship_id = relationships.id  ORDER BY relationships.updated_at DESC LIMIT 0, 20
-            var columnsClause = fromSplit[0].replace(/\.\*/g, ".ALL");
+            if(strip_whitespace(fromSplit[0]) == '') fromSplit[0] = '*';
+			var columnsClause = fromSplit[0].replace(/\.\*/g, ".ALL");
             var remaining     = fromSplit[1];
             var fromClause    = findClause(remaining, /\sWHERE\s|\sGROUP BY\s|\sHAVING\s|\sORDER BY\s|\sLIMIT/);
             var fromTableClause = findClause(fromClause, /\sLEFT OUTER JOIN\s/);
@@ -908,7 +910,7 @@ var TrimQuery = {};
             }
             fromClause = fromClauseParts.join(", LEFT_OUTER_JOIN");
             
-            if(strip_whitespace(columnsClause) == '*') {
+            if(strip_whitespace(columnsClause) == '*' || columnsClause == null) {
                 var new_columns = [];
                 for(var i=0; i<fromTables.length; i++) {
                     new_columns.push(fromTables[i]+'.ALL')

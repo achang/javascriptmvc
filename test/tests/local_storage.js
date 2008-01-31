@@ -6,7 +6,7 @@ JMVCTest = {
 	  new Test.Unit.Runner({
 	  	
 		setup: function() {
-			
+			JMVC.TrimQueryAdapter._model_query_lang = null
 		},
 		teardown: function() {
 		},
@@ -58,32 +58,46 @@ JMVCTest = {
 			assertEqual(obj[0].content, 'test test')
 			assertEqual(obj[0].id, 1)
 	    }},
-	    test_localstorage_gears : function() { with(this) {
-			var app_schema = {"name":"db","tables":[
-				{"name":"things","columns":
-					[{"name":"content","type":"string"},{"name":"id","type":"integer"}]}
-				]}
-			LocalStorage.setup(app_schema)
-			LocalStorage.execute("INSERT INTO things (content,id) VALUES ('test test',1)")
-			var obj = LocalStorage.execute("SELECT * FROM things WHERE things.id = 1")
-			assertEqual(obj[0].content, 'test test')
-			assertEqual(obj[0].id, 1)
+	    test_localstorage : function() { with(this) {
+			var adapters = ['TrimQuery', 'Gears'];
+			for(var i=0; i<adapters.length; i++) {
+				LocalStorage.type = adapters[i];
+				var app_schema = {"name":"db","tables":[
+					{"name":"things","columns":
+						[{"name":"content","type":"string"},{"name":"id","type":"integer"}]}
+					]}
+				LocalStorage.setup(app_schema)
+				LocalStorage.execute("INSERT INTO things (content,id) VALUES ('test test',1)")
+				var obj = LocalStorage.execute("SELECT * FROM things WHERE things.id = 1")
+				assertEqual(obj[0].content, 'test test')
+				assertEqual(obj[0].id, 1)
+				LocalStorage.execute("UPDATE things SET content='different content' WHERE things.id = 1")
+				var obj = LocalStorage.execute("SELECT * FROM things WHERE things.id = 1")
+				assertEqual(obj[0].content, 'different content')
+				LocalStorage.execute("DELETE FROM things WHERE things.id = 1")
+				var obj = LocalStorage.execute("SELECT * FROM things WHERE things.id = 1")
+				assertEqual(obj.length, 0)
+			}
 	    }},
-	    test_localstorage_trimquery : function() { with(this) {
-			// switch it up
-			if(LocalStorage.type == 'TrimQuery')
-				LocalStorage.type = 'Gears';
-			else
-				LocalStorage.type = 'TrimQuery';
-			var app_schema = {"name":"db","tables":[
-				{"name":"things","columns":
-					[{"name":"content","type":"string"},{"name":"id","type":"integer"}]}
-				]}
-			LocalStorage.setup(app_schema)
-			LocalStorage.execute("INSERT INTO things (content,id) VALUES ('test test',1)")
-			var obj = LocalStorage.execute("SELECT * FROM things WHERE things.id = 1")
-			assertEqual(obj[0].content, 'test test')
-			assertEqual(obj[0].id, 1)
+	    test_localstorage_joins : function() { with(this) {
+			var adapters = ['TrimQuery', 'Gears'];
+			for(var i=0; i<adapters.length; i++) {
+				LocalStorage.type = adapters[i];
+				var app_schema = {"name":"db","tables":[
+					{"name":"teachers","columns":
+						[{"name":"name","type":"string"},{"name":"id","type":"integer"}]},
+					{"name":"students","columns":
+						[{"name":"name","type":"string"},{"name":"id","type":"integer"},{"name": "teacher_id","type":"integer"}]}
+					]}
+				LocalStorage.setup(app_schema)
+				LocalStorage.execute("INSERT INTO teachers (name,id) VALUES ('Brian Moschel',1)")
+				LocalStorage.execute("INSERT INTO students (name,id,teacher_id) VALUES ('Tommy Jones',2,1)")
+				LocalStorage.execute("INSERT INTO students (name,id,teacher_id) VALUES ('Mike Jones',3,1)")
+				var obj = LocalStorage.execute("SELECT students.name AS t0_c0, students.id AS t0_c1, students.teacher_id AS t0_c2, teachers.name AS t1_c0, teachers.id AS t1_c1 FROM students LEFT OUTER JOIN teachers ON students.teacher_id = teachers.id WHERE teachers.id = 1")
+				assertEqual(obj.length, 2)
+				assertEqual(obj[0].t0_c0, 'Tommy Jones')
+				assertEqual(obj[1].t1_c0, 'Brian Moschel')
+			}
 	    }}
 	  }, "testlog");
 	}

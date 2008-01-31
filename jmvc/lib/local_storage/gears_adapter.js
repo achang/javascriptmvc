@@ -13,8 +13,8 @@ JMVC.GearsAdapter.setup = function(schema) {
 	db.open();
 	for(var i=0; i<schema.tables.length; i++) {
 		var table_name = schema.tables[i].name
-		var drop_sql = ['DROP TABLE', table_name];
-		var create_sql = ['CREATE TABLE', table_name];
+		var drop_sql = ['DROP TABLE IF EXISTS', table_name];
+		var create_sql = ['CREATE TABLE IF NOT EXISTS', table_name];
 		var columns_sql = [];
 		for(var j=0; j<schema.tables[i].columns.length; j++) {
 			var column_name = schema.tables[i].columns[j].name;

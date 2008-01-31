@@ -8,8 +8,10 @@ include("gears_adapter")
 LocalStorage = Class.create();
 
 LocalStorage.setup = function(schema) {
-	LocalStorage.type = 'Gears';
-	if(!window.google || !google.gears) LocalStorage.type = 'TrimQuery';
+	if(!LocalStorage.type) {
+		LocalStorage.type = 'Gears';
+		if(!window.google || !google.gears) LocalStorage.type = 'TrimQuery';
+	}
 	JMVC[LocalStorage.type+'Adapter'].setup(schema);
 }
 
