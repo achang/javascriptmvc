@@ -1716,12 +1716,16 @@ var Words = Collection.extend({
 compress = function(total, srcs, production_name){
 		collection = total.join(";\n")
 		document.getElementById('files').innerHTML = "'"+srcs.join("',<br/> '")+"'"
-		document.getElementById('uncompressed').innerHTML = "<textarea cols='63' rows='6'>"+collection.replace(/</g,'&lt;').replace(/>/g,'&gt;')+"</textarea>"
+		document.getElementById('uncompressed').value = collection.replace(/</g,'&lt;').replace(/>/g,'&gt;')
 		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing.'
+		
+		document.getElementById('uncompressed_length').innerHTML = collection.length+' Characters';
+		
 		setTimeout(pack,1)
 }
 pack = function(){
 	var value =   new Packer().pack(collection,false,true);
-	document.getElementById('compressed').innerHTML ="<textarea cols='63' rows='6'>"+value.replace(/</g,'&lt;').replace(/>/g,'&gt;')+"</textarea>";
+	document.getElementById('compressed').value =value.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	document.getElementById('status').innerHTML = '<b>Status:</b> Done.'
+	document.getElementById('compressed_length').innerHTML = value.length+' Characters';
 }

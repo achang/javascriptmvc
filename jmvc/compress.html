@@ -18,6 +18,7 @@
 			}
 			#files {height: 100px; overflow: auto; border: solid 1px #D5E7B3}
 			textarea {width: 540px;}
+			#uncompressed_length , #compressed_length {font-size: 10pt; color: gray; float: right;}
 		</style>
 		<title>IncludeJS - Compressor</title>
 	</head>
@@ -34,17 +35,24 @@
 		<div class='width' id='files'>
 			loading ...
 		</div>
+		
+		
 		<div class='banner sub'>
-			Uncompressed collection
+			Uncompressed collection 
 		</div>
-		<div class='width' id='uncompressed'>
-			loading ...
+		<div class='width' >
+			<textarea cols='63' rows='6' id='uncompressed'>loading ...</textarea>
+			<span id='uncompressed_length'></span>
 		</div>
+		
+		
 		<div class='banner sub'>
-			Compressed collection
+			Compressed collection 
 		</div>
-		<div class='width' id='compressed'>
-			loading ...
+		<div class='width'>
+			<textarea cols='63' rows='6' id='compressed'>loading ...</textarea>
+			<span id='compressed_length'></span>
 		</div>
+		
 	</body>
 </html>
