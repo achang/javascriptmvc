@@ -1756,7 +1756,7 @@ include.compress = function(){
 		var collect = include.total.join(";\n")
 		var value =   new Packer().pack(collect,false,true);
 		var div = document.getElementById('_COMPRESS');
-		div.innerHTML = "<center><p>Uncompressed</p><textarea cols='70' rows='8'>"+collect+"</textarea>"+
+		div.innerHTML = "<center><p>Files: '"+include.srcs.join("', '")+"'</p><p>Uncompressed</p><textarea cols='70' rows='8'>"+collect.replace(/</g,'&lt;').replace(/>/g,'&gt;')+"</textarea>"+
 		"<p>Compressed.  <span style='color: gray'>Save text to "+include.get_production_name()+
-		"</span></p><textarea cols='70' rows='8'>"+value+"</textarea><p><a href='#' onclick='this.parentNode.parentNode.display = \"none\"'>Close<a/></p></center>";
+		"</span></p><textarea cols='70' rows='8'>"+value.replace(/</g,'&lt;').replace(/>/g,'&gt;')+"</textarea><p><a href='#' onclick='this.parentNode.parentNode.display = \"none\"'>Close<a/></p></center>";
 }

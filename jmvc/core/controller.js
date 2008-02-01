@@ -26,9 +26,11 @@ Controller = function(model, actions){
 		Object.extend(window[ className.capitalize()+'View' ].prototype, Model ) 
 		window[ className.capitalize()+'View' ].prototype.className = className
 	}
+	Controller.klasses.push(newmodel)
 	return new newmodel();
 }
 Controller.functions = function(){};
+Controller.klasses = [];
 
 (function(){
 
@@ -150,8 +152,7 @@ Object.extend(Controller.functions.prototype, {
             }
 			result = new EJS({url:  jFile.join(APPLICATION_ROOT,url)  }).render(this);
 		}
-		return result;
-		
+		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom']
 		var element = null;
 		for(var l =0; l < locations.length; l++){
@@ -159,6 +160,17 @@ Object.extend(Controller.functions.prototype, {
 			
 			if(options[locations[l]]) element = options[locations[l]]
 		}
+		
+		if(this.klass_name == 'MainController'){
+			options.to.innerHTML = result;
+			for(var c = 0; c  < Controller.klasses.length ; c++){
+				(new Controller.klasses[c]()).attach_event_handlers(options.to)
+				//this.attach_event_handlers
+			}
+			return;
+		}
+		return result;
+		/*
 		if(!element){
 			element = ( this.params.element == window ? $(JMVC.RENDER_TO) : this.params.element)
 		}
@@ -166,7 +178,7 @@ Object.extend(Controller.functions.prototype, {
 			element.innerHTML = result
 		return element	
 		//}
-		
+		*/
 		
     }
 })

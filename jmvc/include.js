@@ -13,7 +13,7 @@
 	}
 	//Saves root of the page that include is loaded on;
 	var PAGE_ROOT = window.location.href;
-	var last = PAGE_ROOT.lastIndexOf('/')
+	var last = PAGE_ROOT.lastIndexOf('/');
 	if(last != -1) PAGE_ROOT = PAGE_ROOT.substring(0,last+1);
 	
 	
@@ -106,6 +106,11 @@
 	 * @param {Object} name
 	 */
 	include.add = function(name){
+		if(first_wave_done){ //add right away!
+			insert_head(name);
+			return;
+		}
+		
 		name = ( name.indexOf('.js') == -1 ? name+'.js' : name );
 		var ar = name.split('/');
 		ar.pop();
@@ -118,6 +123,7 @@
 		}
 		current_includes.unshift(  {start: newer_path, name: name } );
 	}
+	var first_wave_done = false; 
 	/**
 	 * called after a file is loaded.  Then it takes the last one
 	 * and loads it.  If it is the last one and it is in compression
@@ -128,18 +134,23 @@
 		var latest = includes.pop();
 		
 		if(!latest) {
+			first_wave_done = true;
 			if(include.get_env()=='compress'){
 				include.total = total;
-				var div = document.createElement('div');
-				div.id = '_COMPRESS';
-				div.style.border = 'solid 1px Green'
-				div.style.position = 'absolute';
-				div.style.left = '10px';
-				div.style.width = '700px';
-				div.style.top = '10px';
-				div.innerHTML = 'Compressing';
-				div.style.backgroundColor = '#dddddd';
-				document.body.appendChild(div);
+				if(! document.getElementById('_COMPRESS')){
+					var div = document.createElement('div');
+					div.id = '_COMPRESS';
+					var s = div.style
+					s.zIndex = '999';
+					s.border = 'solid 1px Green'
+					s.position = 'absolute';
+					s.left = '10px';
+					s.width = '700px';
+					s.top = '10px';
+					div.innerHTML = 'Compressing';
+					s.backgroundColor = '#dddddd';
+					document.body.appendChild(div);
+				}
 				setTimeout( include.compress, 10 );
 			}
 			return;
@@ -157,20 +168,21 @@
 			include.end();
 		}
 	}
-
-
+	include.srcs = [];
+	var insert_head = function(src){
+		var script= document.createElement("script");
+		script.type= "text/javascript";
+		script.src= src;
+		script.charset= "UTF-8";
+		document.getElementsByTagName("head")[0].appendChild(script);
+	}
+	
 	var insert = function(src){
 		//if you are compressing, load, eval, and then call end and return.
 		if(src && include.get_env()=='compress'){
 			var text = JMVC.request(src);
 			total.push( text);
-			try{
-			eval( "with(window){"+text+"}");
-			}catch(e){
-				//alert('Error with '+src)
-			}
-			include.end();
-			return;
+			include.srcs.push(src);
 		}
 		
 		
