@@ -1714,18 +1714,29 @@ var Words = Collection.extend({
 
 
 compress = function(total, srcs, production_name){
+		compress.scripts = total
+		compress.collection = [];
+		compress.working_script = 0;
 		collection = total.join(";\n")
 		document.getElementById('files').innerHTML = "'"+srcs.join("',<br/> '")+"'"
 		document.getElementById('uncompressed').value = collection.replace(/</g,'&lt;').replace(/>/g,'&gt;')
 		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing.'
 		
 		document.getElementById('uncompressed_length').innerHTML = collection.length+' Characters';
-		
+		save_production_name = production_name
 		setTimeout(pack,1)
 }
 pack = function(){
-	var value =   new Packer().pack(collection,false,true);
+	var newest_script = compress.scripts[compress.working_script];
+	var value =   new Packer().pack(newest_script,false,true);
+	compress.collection.push(value);
+	compress.working_script++;
+	if(compress.working_script >= compress.scripts.length) setTimeout(finished,1)
+	else setTimeout(pack,1)
+}
+finished = function(){
+	var value = compress.collection.join(";\n")
 	document.getElementById('compressed').value =value.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	document.getElementById('status').innerHTML = '<b>Status:</b> Done.'
-	document.getElementById('compressed_length').innerHTML = value.length+' Characters';
+	document.getElementById('compressed_length').innerHTML = value.length+' Characters, Save to '+save_production_name;
 }
