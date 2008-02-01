@@ -84,7 +84,7 @@
 		env = environment;
 		if(production_name)   production = production_name+(production_name.indexOf('.js') == -1 ? '.js' : '' );
 		
-		if(env == 'compress') document.write('<script type="text/javascript" src="'+INCLUDE_ROOT+'compress.js'+'"></script>');
+		if(env == 'compress') include.compress_window = window.open(INCLUDE_ROOT+'compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 		
 	};
 	
@@ -136,21 +136,8 @@
 		if(!latest) {
 			first_wave_done = true;
 			if(include.get_env()=='compress'){
-				include.total = total;
-				if(! document.getElementById('_COMPRESS')){
-					var div = document.createElement('div');
-					div.id = '_COMPRESS';
-					var s = div.style
-					s.zIndex = '999';
-					s.border = 'solid 1px Green'
-					s.position = 'absolute';
-					s.left = '10px';
-					s.width = '700px';
-					s.top = '10px';
-					div.innerHTML = 'Compressing';
-					s.backgroundColor = '#dddddd';
-					document.body.appendChild(div);
-				}
+				//include.total = total;
+				//if(! document.getElementById('_COMPRESS')){
 				setTimeout( include.compress, 10 );
 			}
 			return;
@@ -160,6 +147,11 @@
 		insert(latest.name);
 
 	}
+	
+	include.compress = function(){
+		include.compress_window.compress(total, include.srcs, include.get_production_name())
+	}
+	
 	/**
 	 * This is for opera.  Call after all your includes.
 	 */
@@ -180,7 +172,7 @@
 	var insert = function(src){
 		//if you are compressing, load, eval, and then call end and return.
 		if(src && include.get_env()=='compress'){
-			var text = JMVC.request(src);
+			var text = syncrequest(src);
 			total.push( text);
 			include.srcs.push(src);
 		}
@@ -221,4 +213,28 @@
 		start.type = 'text/javascript';
 		return start;
 	}
+	
+	
+
+	var newRequest = function(){
+	   var factories = [function() { return new XMLHttpRequest(); },function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
+	   for(var i = 0; i < factories.length; i++) {
+	        try {
+	            var request = factories[i]();
+	            if (request != null)  return request;
+	        }
+	        catch(e) { continue;}
+	   }
+	}
+	var syncrequest = function(path){
+	   var request = newRequest();
+	   request.open("GET", path, false);
+	   try{request.send(null);}
+	   catch(e){return null;}
+	   if ( request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
+	   return request.responseText
+	}
+	
+	
+	
 })();

@@ -1431,46 +1431,8 @@ eval(this.exports);
 
 
 
-if(typeof JMVC == 'undefined') JMVC = {}
 
-JMVC.newRequest = function(){
-   var factories = [function() { return new XMLHttpRequest(); },function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
-   for(var i = 0; i < factories.length; i++) {
-        try {
-            var request = factories[i]();
-            if (request != null)  return request;
-        }
-        catch(e) { continue;}
-   }
-}
-JMVC.request = function(path){
-   var request = JMVC.newRequest()
-   request.open("GET", path, false);
-   
-   try{request.send(null);}
-   catch(e){return null;}
-   
-   if ( request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
-   
-   return request.responseText
-}
-JMVC.ajax_request = function(params){
-	params.method = ( params.method ? params.method : 'GET')
-	
-	var request = JMVC.newRequest();
-	request.onreadystatechange = function(){
-		if(request.readyState == 4){
-			if(request.status == 200){
-				params.onComplete(request)
-			}else
-			{
-				params.onComplete(request)
-			}
-		}
-	}
-	request.open(params.method, params.url)
-	request.send(null)
-}
+
 
 
 /*
@@ -1751,12 +1713,15 @@ var Words = Collection.extend({
 });
 
 
-include.compress = function(){
-		
-		var collect = include.total.join(";\n")
-		var value =   new Packer().pack(collect,false,true);
-		var div = document.getElementById('_COMPRESS');
-		div.innerHTML = "<center><p>Files: '"+include.srcs.join("', '")+"'</p><p>Uncompressed</p><textarea cols='70' rows='8'>"+collect.replace(/</g,'&lt;').replace(/>/g,'&gt;')+"</textarea>"+
-		"<p>Compressed.  <span style='color: gray'>Save text to "+include.get_production_name()+
-		"</span></p><textarea cols='70' rows='8'>"+value.replace(/</g,'&lt;').replace(/>/g,'&gt;')+"</textarea><p><a href='#' onclick='this.parentNode.parentNode.display = \"none\"'>Close<a/></p></center>";
+compress = function(total, srcs, production_name){
+		collection = total.join(";\n")
+		document.getElementById('files').innerHTML = "'"+srcs.join("',<br/> '")+"'"
+		document.getElementById('uncompressed').innerHTML = "<textarea cols='63' rows='6'>"+collection.replace(/</g,'&lt;').replace(/>/g,'&gt;')+"</textarea>"
+		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing.'
+		setTimeout(pack,1)
+}
+pack = function(){
+	var value =   new Packer().pack(collection,false,true);
+	document.getElementById('compressed').innerHTML ="<textarea cols='63' rows='6'>"+value.replace(/</g,'&lt;').replace(/>/g,'&gt;')+"</textarea>";
+	document.getElementById('status').innerHTML = '<b>Status:</b> Done.'
 }

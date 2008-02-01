@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<script type='text/javascript' src='compress.js'></script>
+		<style>
+			body {margin: 0px; padding: 0px; font-family: Verdana;}
+			.banner {
+				background:#D5E7B3 none repeat scroll 0%;
+				border-bottom:1px solid #8FBA3C;
+				border-top:1px solid #8FBA3C;
+				margin-bottom:20px;margin-top: 20px;
+				text-align: center;
+				font-size:30px;
+			}
+			.sub {font-size: 20pt;}
+			.width {margin:0pt auto;
+				width:540px;
+				position:relative;
+			}
+			#files {height: 100px; overflow: auto; border: solid 1px #D5E7B3}
+			textarea {width: 540px;}
+		</style>
+		<title>IncludeJS - Compressor</title>
+	</head>
+	<body>
+		<div class='banner' style='margin-top: 0px;'>
+			IncludeJS compression
+		</div>
+		<div class='width' id='status'>
+			<b>Status:</b> Loading application files.
+		</div>
+		<div class='banner sub'>
+			Compressed files
+		</div>
+		<div class='width' id='files'>
+			loading ...
+		</div>
+		<div class='banner sub'>
+			Uncompressed collection
+		</div>
+		<div class='width' id='uncompressed'>
+			loading ...
+		</div>
+		<div class='banner sub'>
+			Compressed collection
+		</div>
+		<div class='width' id='compressed'>
+			loading ...
+		</div>
+	</body>
+</html>
