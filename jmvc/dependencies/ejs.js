@@ -60,35 +60,35 @@ String.prototype.rsplit = function(regex) {
 /* Chop is nice to have too */
 String.prototype.chop = function() {
 	return this.substr(0, this.length - 1);
-}
+};
 
 /* Adaptation from the Scanner of erb.rb  */
 var EjsScanner = function(source, left, right) {
-	this.left_delimiter = 	left +'%'	//<%
-	this.right_delimiter = 	'%'+right	//>
-	this.double_left = 		left+'%%'
-	this.double_right = 	'%%'+right
-	this.left_equal = 		left+'%='
-	this.left_comment = 	left+'%#'
+	this.left_delimiter = 	left +'%';	//<%
+	this.right_delimiter = 	'%'+right;	//>
+	this.double_left = 		left+'%%';
+	this.double_right = 	'%%'+right;
+	this.left_equal = 		left+'%=';
+	this.left_comment = 	left+'%#';
 	if(left=='[')
 		this.SplitRegexp = /(\[%%)|(%%\])|(\[%=)|(\[%#)|(\[%)|(%\]\n)|(%\])|(\n)/;
 	else
-		this.SplitRegexp = new RegExp('('+this.double_left+')|(%%'+this.double_right+')|('+this.left_equal+')|('+this.left_comment+')|('+this.left_delimiter+')|('+this.right_delimiter+'\n)|('+this.right_delimiter+')|(\n)') 
+		this.SplitRegexp = new RegExp('('+this.double_left+')|(%%'+this.double_right+')|('+this.left_equal+')|('+this.left_comment+')|('+this.left_delimiter+')|('+this.right_delimiter+'\n)|('+this.right_delimiter+')|(\n)') ;
 	
 	this.source = source;
 	this.stag = null;
 	this.lines = 0;
 };
-EjsView = {}
+EjsView = {};
 EjsScanner.to_text = function(input){
 	if(input == null || input === undefined)
         return '';
     if(input instanceof Date)
 		return input.toDateString();
 	if(input.toString) 
-        return input.toString()
+        return input.toString();
 	return '';
-}
+};
 
 EjsScanner.prototype = {
 
@@ -108,7 +108,7 @@ EjsScanner.prototype = {
   
   /* For each token, block! */
   scanline: function(line, regex, block) {
-	 this.lines++
+	 this.lines++;
 	 var line_split = line.rsplit(regex);
  	 for(var i=0; i<line_split.length; i++) {
 	   var token = line_split[i];
@@ -116,7 +116,7 @@ EjsScanner.prototype = {
 		   	try{
 	         	block(token, this);
 		 	}catch(e){
-				throw {type: 'EjsScanner', line: this.lines}
+				throw {type: 'EjsScanner', line: this.lines};
 			}
        }
 	 }
@@ -129,12 +129,11 @@ var EjsBuffer = function(pre_cmd, post_cmd) {
 	this.script = "";
 	this.pre_cmd = pre_cmd;
 	this.post_cmd = post_cmd;
-	
 	for (var i=0; i<this.pre_cmd.length; i++)
 	{
 		this.push(pre_cmd[i]);
 	}
-}
+};
 EjsBuffer.prototype = {
 	
   push: function(cmd) {
@@ -173,31 +172,28 @@ EjsCompiler = function(source, left) {
 		    source = source.replace(/\r\n/g, "\n");
             source = source.replace(/\r/g,   "\n");
 			this.source = source;
-		}
-		else if (source.innerHTML)
-		{
+		}else if (source.innerHTML){
 			this.source = source.innerHTML;
 		} 
-		if (typeof this.source != 'string')
-		{
+		if (typeof this.source != 'string'){
 			this.source = "";
 		}
 	}
-	left = left || '<'
-	var right = '>'
+	left = left || '<';
+	var right = '>';
 	switch(left) {
 		case '[':
-			right = ']'
+			right = ']';
 			break;
 		case '<':
 			break;
 		default:
-			throw left+' is not a supported deliminator'
+			throw left+' is not a supported deliminator';
 			break;
 	}
 	this.scanner = new EjsScanner(this.source, left, right);
 	this.out = '';
-}
+};
 EjsCompiler.prototype = {
   compile: function(options) {
   	options = options || {};
@@ -212,16 +208,15 @@ EjsCompiler.prototype = {
         content = content.replace(/\n/g, '\\n');
         content = content.replace(/"/g,  '\\"');
         return content;
-	} 
+	};
 	this.scanner.scan(function(token, scanner) {
 		if (scanner.stag == null)
 		{
-			//alert(token+'|'+(token == "\n"))
 			switch(token) {
 				case '\n':
 					content = content + "\n";
 					buff.push(put_cmd + '"' + clean(content) + '";');
-					buff.cr()
+					buff.cr();
 					content = '';
 					break;
 				case scanner.left_delimiter:
@@ -230,8 +225,6 @@ EjsCompiler.prototype = {
 					scanner.stag = token;
 					if (content.length > 0)
 					{
-						// Chould be content.dump in Ruby
-						
 						buff.push(put_cmd + '"' + clean(content) + '"');
 					}
 					content = '';
@@ -288,7 +281,7 @@ EjsCompiler.prototype = {
 		eval(to_be_evaled);
 	}catch(e){
 		if(typeof JSLINT != 'undefined'){
-			JSLINT(this.out)
+			JSLINT(this.out);
 			for(var i = 0; i < JSLINT.errors.length; i++){
 				var error = JSLINT.errors[i];
 				if(error.reason != "Unnecessary semicolon."){
@@ -306,37 +299,37 @@ EjsCompiler.prototype = {
 		}
 	}
   }
-}
+};
 
 
 //type, cache, folder
 EJS = function( options ){
-	this.set_options(options)
+	this.set_options(options);
 	
 	if(options.url){
-		var template = EJS.get(options.url, this.cache)
+		var template = EJS.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == EJS.INVALID_PATH) return null;
-		this.text = EJS.request(options.url+('?'+Math.random() ) )
+		this.text = EJS.request(options.url+('?'+Math.random() ) );
 		if(this.text == null){
 			//EJS.update(options.url, this.INVALID_PATH);
-			throw 'There is no template at '+options.url
+			throw 'There is no template at '+options.url;
 		}
-		this.name = options.url
+		this.name = options.url;
 	}else if(options.element)
 	{
 		if(typeof options.element == 'string'){
-			var name = options.element
-			options.element = document.getElementById(  options.element )
-			if(options.element == null) throw name+'does not exist!'
+			var name = options.element;
+			options.element = document.getElementById(  options.element );
+			if(options.element == null) throw name+'does not exist!';
 		}
 		if(options.element.value){
-			this.text = options.element.value
+			this.text = options.element.value;
 		}else{
-			this.text = options.element.innerHTML
+			this.text = options.element.innerHTML;
 		}
-		this.name = options.element.id
-		this.type = '['
+		this.name = options.element.id;
+		this.type = '[';
 	}
 	var template = new EjsCompiler(this.text, this.type);
 
@@ -344,71 +337,69 @@ EJS = function( options ){
 
 	
 	EJS.update(this.name, this);
-	this.template = template
-}
+	this.template = template;
+};
 EJS.config = function(options){
-	EJS.cache = options.cache != null ? options.cache : EJS.cache
-	EJS.type = options.type != null ? options.type : EJS.type
-	var templates_directory = {} //nice and private container
+	EJS.cache = options.cache != null ? options.cache : EJS.cache;
+	EJS.type = options.type != null ? options.type : EJS.type;
+	var templates_directory = {}; //nice and private container
 	
 	EJS.get = function(path, cache){
 		if(cache == false) return null;
 		if(templates_directory[path]) return templates_directory[path];
   		return null;
-	}
+	};
 	
 	EJS.update = function(path, template) { 
 		if(path == null) return;
-		templates_directory[path] = template 
-	}
+		templates_directory[path] = template ;
+	};
 	
 	EJS.INVALID_PATH =  -1;
-	
-	
-}
-EJS.config( {cache: true, type: '<' } )
+};
+EJS.config( {cache: true, type: '<' } );
 
 EJS.prototype = {
 	render : function(object){
-		return this.template.process.call(object, object)
+		return this.template.process.call(object, object);
 	},
 	out : function(){
-		return this.template.out
+		return this.template.out;
 	},
 	set_options : function(options){
-		this.type = options.type != null ? options.type : EJS.type
-		this.cache = options.cache != null ? options.cache : EJS.cache
-		this.text = options.text != null ? options.text : null
-		this.name = options.name != null ? options.name : null
+		this.type = options.type != null ? options.type : EJS.type;
+		this.cache = options.cache != null ? options.cache : EJS.cache;
+		this.text = options.text != null ? options.text : null;
+		this.name = options.name != null ? options.name : null;
 	},
 	// called without options, returns a function that takes the object
 	// called with options being a string, uses that as a url
 	// called with options as an object
 	update : function(element, options){
 		if(typeof element == 'string'){
-			element = document.getElementById(element)
+			element = document.getElementById(element);
 		}
 		if(options == null){
 			_template = this;
 			return function(object){
-				EJS.prototype.update.call(_template, element, object)
-			}
+				EJS.prototype.update.call(_template, element, object);
+			};
 		}
 		if(typeof options == 'string'){
-			params = {}
-			params.url = options
+			params = {};
+			params.url = options;
 			_template = this;
 			params.onComplete = function(request){
-				var object = eval( request.responseText )
-				EJS.prototype.update.call(_template, element, object)
-			}
-			EJS.ajax_request(params)
+				var object = eval( request.responseText );
+				EJS.prototype.update.call(_template, element, object);
+			};
+			EJS.ajax_request(params);
 		}else
 		{
-			element.innerHTML = this.render(options)
+			element.innerHTML = this.render(options);
 		}
 	}
-}
+};
 /*if(typeof Prototype != 'undefined') {
 	EJS.request = function(path){
 		var response = new Ajax.Request(path, {asynchronous: false, method: "get"});
@@ -427,10 +418,10 @@ EJS.prototype = {
 	        }
 	        catch(e) { continue;}
 	   }
-	}
+	};
 	
 	EJS.request = function(path){
-	   var request = new EJS.newRequest()
+	   var request = new EJS.newRequest();
 	   request.open("GET", path, false);
 	   
 	   try{request.send(null);}
@@ -438,25 +429,25 @@ EJS.prototype = {
 	   
 	   if ( request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
 	   
-	   return request.responseText
-	}
+	   return request.responseText;
+	};
 	EJS.ajax_request = function(params){
-		params.method = ( params.method ? params.method : 'GET')
+		params.method = ( params.method ? params.method : 'GET');
 		
 		var request = new EJS.newRequest();
 		request.onreadystatechange = function(){
 			if(request.readyState == 4){
 				if(request.status == 200){
-					params.onComplete(request)
+					params.onComplete(request);
 				}else
 				{
-					params.onComplete(request)
+					params.onComplete(request);
 				}
 			}
-		}
-		request.open(params.method, params.url)
-		request.send(null)
-	}
+		};
+		request.open(params.method, params.url);
+		request.send(null);
+	};
 //}
 
 
