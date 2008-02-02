@@ -17,10 +17,9 @@
 	if(last != -1) PAGE_ROOT = PAGE_ROOT.substring(0,last+1);
 	
 	
-	var INCLUDE_ROOT = '',INCLUDE_PATH = '', first = true , INCLUDE_regex = /include\.js/;
+	var INCLUDE_ROOT = '',INCLUDE_PATH = '', first = true , INCLUDE_regex = /include\.js/, PACKER_OPTIONS = {base62: false, shrink_variables: true};
 	var env = 'development', production = '/javascripts/production.js', cwd = '', includes=[], current_includes=[];
 	var total = []; //used to store text
-	
 	//returns true if a path is absolute
 	var is_absolute = function(path){
 		return path.indexOf('/') == 0 || path.indexOf('http') == 0 || path.indexOf('file://') == 0
@@ -55,7 +54,15 @@
 	include = function(){
 		if(include.get_env()=='development' || include.get_env()=='compress'){
 			for(var i=0; i < arguments.length; i++){
-				include.add(arguments[i]);
+				var newInclude = arguments[i];
+				if(typeof newInclude == 'string'){
+					newInclude = {name: newInclude};
+				}
+				if(newInclude.base62 == null)
+					newInclude.base62 = PACKER_OPTIONS.base62;
+				if(newInclude.shrink_variables == null)
+					newInclude.shrink_variables = PACKER_OPTIONS.shrink_variables;
+				include.add(newInclude);
 			}
 		}else{
 			if(!first) return;
@@ -74,8 +81,9 @@
 	 * Sets up the environment.
 	 * @param {Object} environment - the environment the scripts are running in [deveopment,compress,production]
 	 * @param {Object} production_name - where the production file should be looked for
+	 * @param {Object} packer_options - optional object that sets default packing options {base62: true/false, shrink_variables: true/false }
 	 */
-	include.setup = function(environment, production_name){
+	include.setup = function(environment, production_name, pack_options){
 		if(environment != 'development' && environment != 'production' && environment != 'compress'){
 			alert('You are using an incorrect environment!  Only development, production, and compress are allowed.');
 			return;
@@ -86,6 +94,12 @@
 		
 		if(env == 'compress') include.compress_window = window.open(INCLUDE_ROOT+'compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 		
+		if(pack_options){
+			if(pack_options.base62 != null)
+				PACKER_OPTIONS.base62 = pack_options.base62;
+			if(pack_options.shrink_variables != null)
+				PACKER_OPTIONS.shrink_variables = pack_options.shrink_variables;
+		}
 	};
 	
 	include.get_env = function() { return env;}
@@ -103,14 +117,15 @@
 	/**
 	 * Adds a file to the of objects to be included.  If it is not absolute, it adds the current path
 	 * to the include path.
-	 * @param {Object} name
+	 * @param {Object} newInclude
+	 * {name: NAME, base62: true/false, shrink_variables: true/false }
 	 */
-	include.add = function(name){
+	include.add = function(newInclude){
+		var name = newInclude.name;
 		if(first_wave_done){ //add right away!
 			insert_head(name);
 			return;
 		}
-		
 		name = ( name.indexOf('.js') == -1 ? name+'.js' : name );
 		var ar = name.split('/');
 		ar.pop();
@@ -121,7 +136,9 @@
 			newer_path = current_path+'/'+ newer_path;
 			name = current_path+'/'+name;
 		}
-		current_includes.unshift(  {start: newer_path, name: name } );
+		newInclude.name = name;
+		newInclude.start = newer_path;
+		current_includes.unshift(  newInclude );
 	}
 	var first_wave_done = false; 
 	/**
@@ -144,8 +161,16 @@
 		};
 		current_includes = [];
 		include.set_path(latest.start);
+		
+		if(include.get_env()=='compress'){
+			latest.text = syncrequest(latest.name);
+			total.push( latest);
+		}
+		
+		
 		insert(latest.name);
-
+		
+		
 	}
 	
 	include.compress = function(){
@@ -171,11 +196,7 @@
 	
 	var insert = function(src){
 		//if you are compressing, load, eval, and then call end and return.
-		if(src && include.get_env()=='compress'){
-			var text = syncrequest(src);
-			total.push( text);
-			include.srcs.push(src);
-		}
+		
 		
 		
 		if(navigator.userAgent.match(/Safari/) ){
