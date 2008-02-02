@@ -38,6 +38,12 @@ Controller.klasses = [];
 	var new_event_closure_function = function(controller_name, f_name, element){
 		return function(event){
 			var instance = new window[controller_name];
+			if(!event.stop){
+				event.stop = function(){
+					stopPropagation(event);
+				};
+			}
+			
 			
 			var params = {event: event, element: element, action: f_name   };
 			instance.params = params;
@@ -66,6 +72,14 @@ Controller.klasses = [];
 })();
 
 Object.extend(Controller.functions.prototype, {
+	attach_to : function(element, to_controller){
+		if(!to_controller){
+			this.attach_event_handlers_to(element);
+			return;
+		}
+		new window[to_controller.capitalize()+'Controller']().attach_event_handlers_to(element )
+		//new MenuController().attach_event_handlers_to(menu );
+	},
 	attach_event_handlers : function(start_element){
 		start_element = start_element || document.body;
 		var els;
@@ -198,4 +212,24 @@ Model = {
 		new window[this.className.capitalize()+'Controller']().attach_event_handlers_to(this.element);
 		return this.element;
 	}
+};
+
+
+function stopPropagation(event)
+{
+    if(!event)
+            event = window.event;
+    try{
+	
+    event.cancelBubble = true;
+    
+    if (event.stopPropagation) 
+        event.stopPropagation(); 
+        
+    if (event.preventDefault) 
+        event.preventDefault();
+	Event.stop(event);
+    }catch(e)
+    {}
+    return false;
 };
