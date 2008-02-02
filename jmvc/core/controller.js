@@ -72,12 +72,28 @@ Controller.klasses = [];
 })();
 
 Object.extend(Controller.functions.prototype, {
+	attach : function(){
+		var element = arguments[0];
+		if(arguments.length == 1){
+			return this.attach_event_handlers(element);
+		}
+		for(var i = 1; i < arguments.length; i ++){
+			new window[arguments[i].capitalize()+'Controller']().attach_event_handlers(element );
+		}
+	},
+	attach_later : function(){
+		var args = arguments;
+		var thsOb = this
+		setTimeout(function(){
+			thsOb.attach.apply(thsOb, args)
+		}, 10);
+	},
 	attach_to : function(element, to_controller){
 		if(!to_controller){
 			this.attach_event_handlers_to(element);
 			return;
 		}
-		new window[to_controller.capitalize()+'Controller']().attach_event_handlers_to(element )
+		new window[to_controller.capitalize()+'Controller']().attach_event_handlers_to(element );
 		//new MenuController().attach_event_handlers_to(menu );
 	},
 	attach_event_handlers : function(start_element){
@@ -161,7 +177,7 @@ Object.extend(Controller.functions.prototype, {
 				var url = 'app/views/'+url_part+'.ejs';
 			}
             else {
-                var url = 'app/views/'+controller_name+'/'+action_name+'.ejs';
+                var url = 'app/views/'+controller_name+'/'+action_name.replace(/\./g, '').replace(/ /g,'_')+'.ejs';
             }
 			result = new EJS({url:  jFile.join(APPLICATION_ROOT,url)  }).render(this);
 		}
@@ -182,6 +198,9 @@ Object.extend(Controller.functions.prototype, {
 			}
 			return;
 		}
+		//if there is somewhere to render, render it there
+		if(options.to)
+			options.to.innerHTML = result;
 		return result;
 		/*
 		if(!element){
