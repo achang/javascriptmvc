@@ -83,9 +83,9 @@ Object.extend(Controller.functions.prototype, {
 	},
 	attach_later : function(){
 		var args = arguments;
-		var thsOb = this
+		var thsOb = this;
 		setTimeout(function(){
-			thsOb.attach.apply(thsOb, args)
+			thsOb.attach.apply(thsOb, args);
 		}, 10);
 	},
 	attach_to : function(element, to_controller){
@@ -190,14 +190,14 @@ Object.extend(Controller.functions.prototype, {
 			if(options[locations[l]]) element = options[locations[l]];
 		}
 		
-		if(this.klass_name == 'MainController'){
+		/*if(this.klass_name == 'MainController'){
 			options.to.innerHTML = result;
 			for(var c = 0; c  < Controller.klasses.length ; c++){
 				(new Controller.klasses[c]()).attach_event_handlers(options.to);
 				//this.attach_event_handlers
 			}
 			return;
-		}
+		}*/
 		//if there is somewhere to render, render it there
 		if(options.to)
 			options.to.innerHTML = result;
