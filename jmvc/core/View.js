@@ -37,7 +37,7 @@
 
 EjsView = function() {
     this.klass = 'EjsView'
-}
+};
 /**
  * Creates a select box for selecting a record of a belongs_to association.
  * <pre class='example'>
@@ -51,40 +51,40 @@ EjsView = function() {
  * @param {Object} html_options Optional html attributes
  */
 EjsView.belongs_to_select = function(klass, relationship_name, value , html_options ){
-	if(typeof klass == 'string') klass = window[klass]
+	if(typeof klass == 'string') klass = window[klass];
 
 	html_options = html_options || {};
 	html_options.representive_column = html_options.representive_column  || null;
 	
-	var assoc_class = window[klass.associations().belongs_to[relationship_name].model_name]
+	var assoc_class = window[klass.associations().belongs_to[relationship_name].model_name];
 	
 	
 	if(! html_options.representive_column && assoc_class.column_names().include('title') == true) 
-		html_options.representive_column = 'title'
+		html_options.representive_column = 'title';
 	if(! html_options.representive_column && assoc_class.column_names().include('name') == true) 
-		html_options.representive_column = 'name'
+		html_options.representive_column = 'name';
 	
-	var fkey = klass.associations().belongs_to[relationship_name].foreign_key
+	var fkey = klass.associations().belongs_to[relationship_name].foreign_key;
 	var options = assoc_class.find("all");
-	var txt = '<select name="'+klass.klass_name+'['+fkey+']">'
+	var txt = '<select name="'+klass.klass_name+'['+fkey+']">';
 	
 	for(var i = 0; i < options.length; i++)
 	{
 		var option = options[i];
-		txt+= '<option value="'+option.id+'"   '+(value && value[fkey]==option.id ?  'SELECTED':'')+'>'
+		txt+= '<option value="'+option.id+'"   '+(value && value[fkey]==option.id ?  'SELECTED':'')+'>';
 		if(!html_options.representive_column)
-			txt+= option.toString()
+			txt+= option.toString();
 		else {
 			if(typeof option[html_options.representive_column] == 'function')
-				txt+= option[html_options.representive_column]()
+				txt+= option[html_options.representive_column]();
 			else
-				txt+= option[html_options.representive_column]
+				txt+= option[html_options.representive_column];
 		}
-		txt+="</option>"
+		txt+="</option>";
 	}
-	txt+= "</select>"
+	txt+= "</select>";
 	return txt;
-}
+};
 
 /**
  * Returns a closure that calls a get action when called.
@@ -98,7 +98,7 @@ EjsView.closure_for = function(options) {
     return function() {
         get(options);
     };
-}
+};
 
 /**
  * creates a date select tag.
@@ -116,7 +116,7 @@ EjsView.closure_for = function(options) {
  */
 EjsView.date_tag = function(name, value , html_options) {
     if(! (value instanceof Date))
-		value = new Date()
+		value = new Date();
 	
 	var years = [], months = [], days =[];
 	var year = value.getFullYear();
@@ -124,22 +124,22 @@ EjsView.date_tag = function(name, value , html_options) {
 	var day = value.getDate();
 	for(var y = year - 15; y < year+15 ; y++)
 	{
-		years.push({value: y, text: y})
+		years.push({value: y, text: y});
 	}
 	for(var m = 0; m < 12; m++)
 	{
-		months.push({value: (m), text: Date.month_names[m]})
+		months.push({value: (m), text: Date.month_names[m]});
 	}
 	for(var d = 0; d < 31; d++)
 	{
-		days.push({value: (d+1), text: (d+1)})
+		days.push({value: (d+1), text: (d+1)});
 	}
-	var year_select = this.select_tag(name+'[year]', year, years, {id: name+'[year]'} )
-	var month_select = this.select_tag(name+'[month]', month, months, {id: name+'[month]'})
-	var day_select = this.select_tag(name+'[day]', day, days, {id: name+'[day]'})
+	var year_select = this.select_tag(name+'[year]', year, years, {id: name+'[year]'} );
+	var month_select = this.select_tag(name+'[month]', month, months, {id: name+'[month]'});
+	var day_select = this.select_tag(name+'[day]', day, days, {id: name+'[day]'});
 	
     return year_select+month_select+day_select;
-}
+};
 
 /**
  * Creates a file field that sets up the correct naming structure for JMVC file types.
@@ -159,8 +159,8 @@ EjsView.date_tag = function(name, value , html_options) {
  *
  */
 EjsView.file_tag = function(name, value, html_options) {
-    return this.input_field_tag(name+'[file]', value , 'file', html_options)
-}
+    return this.input_field_tag(name+'[file]', value , 'file', html_options);
+};
 
 /**
  * Outputs a starting form tag that points to a action configured with url_for_options.  The method for the form defaults
@@ -188,8 +188,8 @@ EjsView.form_tag = function(url_for_options, html_options) {
     }
 		
 	if(typeof url_for_options == 'string'){
-		html_options.action = url_for_options
-	    return this.start_tag_for('form', html_options)
+		html_options.action = url_for_options;
+	    return this.start_tag_for('form', html_options);
 	}
 	
 	url_for_options     = url_for_options                     || {};
@@ -203,15 +203,15 @@ EjsView.form_tag = function(url_for_options, html_options) {
     
     html_options.onsubmit = html_options.onsubmit+"return EjsView.post_form(this, "+$H(url_for_options).toJSON()+");";
     
-    return this.start_tag_for('form', html_options)
-}
+    return this.start_tag_for('form', html_options);
+};
 
 
 /**
  * Outputs "&lt;/form&gt;".
  * @return {String} "&lt;/form&gt;" .
  */
-EjsView.form_tag_end = function() { return this.tag_end('form'); }
+EjsView.form_tag_end = function() { return this.tag_end('form'); };
 
 /**
  * Creates a external start form tag.
@@ -232,9 +232,9 @@ EjsView.form_tag_end = function() { return this.tag_end('form'); }
  */
 EjsView.form_tag_external = function(action, html_options) {
     html_options     = html_options                     || {};
-    html_options.action = action
-    return this.start_tag_for('form', html_options)
-}
+    html_options.action = action;
+    return this.start_tag_for('form', html_options);
+};
 /**
  * Creates a hidden field.
  * <p>Example:</p>
@@ -254,7 +254,7 @@ EjsView.form_tag_external = function(action, html_options) {
  */
 EjsView.hidden_field_tag   = function(name, value, html_options) { 
     return this.input_field_tag(name, value, 'hidden', html_options); 
-}
+};
 
 
 /**
@@ -289,8 +289,8 @@ EjsView.input_field_tag = function(name, value , inputType, html_options) {
     html_options.type = inputType || 'text';
     html_options.name = name;
     
-    return this.single_tag_for('input', html_options)
-}
+    return this.single_tag_for('input', html_options);
+};
 /**
  * Returns true if parameters in options match the parameters of the current page.
  * @param {Object} options
@@ -335,31 +335,31 @@ EjsView.is_current_page = function(options) {
  */
 EjsView.link_to = function(name, options, html_options, post) {
     if(!name) var name = 'null';
-    if(!html_options) var html_options = {}
+    if(!html_options) var html_options = {};
     //html_options.onclick = html_options.onclick  || '' ;
 	
 	if(html_options.confirm){
 		html_options.onclick = 
-		" var ret_confirm = confirm(\""+html_options.confirm+"\"); if(!ret_confirm){ return false;} "
+		" var ret_confirm = confirm(\""+html_options.confirm+"\"); if(!ret_confirm){ return false;} ";
 		html_options.confirm = null;
 	}
 	if(typeof options == 'string'){
-		html_options.href=options
+		html_options.href=options;
 		return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
 	}
 	
 	
-	options = options || {}
+	options = options || {};
 	if(!options.action)
-		options.action = JMVC.Routes.params().action
+		options.action = JMVC.Routes.params().action;
 		
     if(!options.controller)
-		options.controller = JMVC.Routes.params().controller
+		options.controller = JMVC.Routes.params().controller;
 
 	EjsView.link_to_onclick_and_href(html_options, options, post);
 	
     return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
-}
+};
 
 // adds the onclick and href attributes for the html_options
 // separated to allow history library to override this functionality easily
@@ -367,8 +367,8 @@ EjsView.link_to_onclick_and_href = function(html_options, options, post) {
     if(html_options.onclick == null) html_options.onclick = '';
 	
 	html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
-    html_options.href='#'
-}
+    html_options.href='#';
+};
 
 
 /**
@@ -379,35 +379,35 @@ EjsView.link_to_onclick_and_href = function(html_options, options, post) {
  */
 EjsView.submit_link_to = function(name, options, html_options, post){
 	if(!name) var name = 'null';
-    if(!html_options) html_options = {}
+    if(!html_options) html_options = {};
 	html_options.type = 'submit';
     html_options.value = name;
 	html_options.onclick = html_options.onclick  || '' ;
 	
 	if(html_options.confirm){
 		html_options.onclick = 
-		" var ret_confirm = confirm(\""+html_options.confirm+"\"); if(!ret_confirm){ return false;} "
+		" var ret_confirm = confirm(\""+html_options.confirm+"\"); if(!ret_confirm){ return false;} ";
 		html_options.confirm = null;
 	}
 	if(typeof options == 'string'){
-		html_options.onclick=html_options.onclick+';window.location="'+options+'";'
-		return this.single_tag_for('input', html_options)
+		html_options.onclick=html_options.onclick+';window.location="'+options+'";';
+		return this.single_tag_for('input', html_options);
 	}
 	
 	
-	options = options || {}
+	options = options || {};
 	if(!options.action)
-		options.action = JMVC.Routes.params().action
+		options.action = JMVC.Routes.params().action;
 		
     if(!options.controller)
-		options.controller = JMVC.Routes.params().controller
+		options.controller = JMVC.Routes.params().controller;
 
 	EjsView.link_to_onclick_and_href(html_options, options, post);
 	
 	
 	
     return this.single_tag_for('input', html_options)+name+ this.tag_end('a');
-}
+};
 /**
  * Creates an external link tag of the given name using a URL created by the set of options.  If passed a string
  * for options, that is set as the href attribute.
@@ -432,10 +432,10 @@ EjsView.submit_link_to = function(name, options, html_options, post){
  *
  */
 EjsView.link_to_external = function(text, path, html_options) {
-    if(!html_options) var html_options = {}
-    html_options.href=path
+    if(!html_options) var html_options = {};
+    html_options.href=path;
     return this.start_tag_for('a', html_options)+text+ this.tag_end('a');
-}
+};
 /**
  * Creates a link tag of the given name using a URL 
  * created by the set of options if the condition is true.  If the condition is false, 
@@ -452,7 +452,7 @@ EjsView.link_to_external = function(text, path, html_options) {
  */
 EjsView.link_to_if = function(condition, name, options, html_options, post, block) {
 	return this.link_to_unless((condition == false), name, options, html_options, post, block);
-}
+};
 
 /**
  * Creates a link tag of the given name using a URL 
@@ -521,7 +521,7 @@ EjsView.link_to_unless = function(condition, name, options, html_options, post, 
 		}
 	} else
 		return this.link_to(name, options, html_options, post);
-}
+};
 
 /**
  * Creates a link tag of the given name using a URL created by the 
@@ -539,8 +539,8 @@ EjsView.link_to_unless = function(condition, name, options, html_options, post, 
 EjsView.link_to_unless_current = function(name, options, html_options, post, block) {
 	options = options || {};
 	html_options = html_options || {};
-	return this.link_to_unless(this.is_current_page(options), name, options, html_options, post, block)
-}
+	return this.link_to_unless(this.is_current_page(options), name, options, html_options, post, block);
+};
 */
 
 
@@ -577,7 +577,7 @@ EjsView.link_to_unless_current = function(name, options, html_options, post, blo
 
 EjsView.package_form = function(form_element, options, submit_button_name) {
     if(!options) var options = {};
-    if(typeof form_element == 'string') form_element = document.getElementById(form_element)
+    if(typeof form_element == 'string') form_element = document.getElementById(form_element);
     
     if (form_element != null) {
         for (var i = 0; i < form_element.elements.length; i++) {
@@ -594,7 +594,7 @@ EjsView.package_form = function(form_element, options, submit_button_name) {
         }
         return options;
     }
-}
+};
 
 /**
  * Creates a password field.
@@ -617,7 +617,7 @@ EjsView.package_form = function(form_element, options, submit_button_name) {
  * @return {String} password field text.
  *
  */
-EjsView.password_field_tag = function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); }
+EjsView.password_field_tag = function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); };
 
 
 /**
@@ -640,7 +640,7 @@ EjsView.post_form = function(form_element, options, submit_button_name) {
     var insert_id_into_form = EjsView.insert_id_into_form;
     delete EjsView.insert_id_into_form;
     if(EjsView.send_form_to_server == true) { // set up form for server
-        new Insertion.Top(document.body, "<iframe id='upload_frame' name='upload_frame' style='display:none' onload='JMVC.Dispatcher.resume_execution();'></iframe>")
+        new Insertion.Top(document.body, "<iframe id='upload_frame' name='upload_frame' style='display:none' onload='JMVC.Dispatcher.resume_execution();'></iframe>");
         form_element.setAttribute('target', 'upload_frame');
         form_element.setAttribute('action', '/'+JMVC.app_info.client.name+'/'+JMVC.app_info.project.name+'/file_upload');
         // look for all file ids to place into the form
@@ -650,7 +650,7 @@ EjsView.post_form = function(form_element, options, submit_button_name) {
         return true;
     }
     return false;
-}
+};
 
 /**
  * Creates a select field.
@@ -683,20 +683,20 @@ EjsView.select_tag = function(name, value, choices, html_options) {
     html_options.value = value;
 	html_options.name = name;
     
-    var txt = ''
-    txt += this.start_tag_for('select', html_options)
+    var txt = '';
+    txt += this.start_tag_for('select', html_options);
     
     for(var i = 0; i < choices.length; i++)
     {
         var choice = choices[i];
-        var optionOptions = {value: choice.value}
+        var optionOptions = {value: choice.value};
         if(choice.value == value)
-            optionOptions.selected ='selected'
-        txt += this.start_tag_for('option', optionOptions )+choice.text+this.tag_end('option')
+            optionOptions.selected ='selected';
+        txt += this.start_tag_for('option', optionOptions )+choice.text+this.tag_end('option');
     }
     txt += this.tag_end('select');
     return txt;
-}
+};
 /**
  * Adds a value to an object with a given path.  This function is used by package_form
  * to add nested attributes/objects to an object.
@@ -724,7 +724,7 @@ EjsView.set_map_tree_value = function(mapTree, path, value) { // Example path is
             }
         }
     }
-}
+};
 
 /**
  * Creates tag that ends with '/>'.  Use this to create html elements that have no ending tag.
@@ -738,7 +738,7 @@ EjsView.set_map_tree_value = function(mapTree, path, value) { // Example path is
  *
  * @return {String} html markup for a tag
  */
-EjsView.single_tag_for = function(tag, html_options) { return this.tag(tag, html_options, '/>');}
+EjsView.single_tag_for = function(tag, html_options) { return this.tag(tag, html_options, '/>');};
 
 /**
  * Creates tag that ends with '>'.  Use this to create html elements that have other markup or 
@@ -754,7 +754,7 @@ EjsView.single_tag_for = function(tag, html_options) { return this.tag(tag, html
  *
  * @return {String} html markup for a tag
  */
-EjsView.start_tag_for = function(tag, html_options)  { return this.tag(tag, html_options); }
+EjsView.start_tag_for = function(tag, html_options)  { return this.tag(tag, html_options); };
 
 EjsView.submit_tag = function(name, html_options) {  
     html_options = html_options || {};
@@ -762,7 +762,7 @@ EjsView.submit_tag = function(name, html_options) {
     html_options.type = html_options.type  || 'submit';
     html_options.value = name || 'Submit';
     return this.single_tag_for('input', html_options);
-}
+};
 
 /**
  * Creates a html tag.
@@ -779,28 +779,28 @@ EjsView.submit_tag = function(name, html_options) {
  * @return {String} html markup for a tag
  */
 EjsView.tag = function(tag, html_options, end) {
-    if(!end) var end = '>'
-    var txt = ' '
+    if(!end) var end = '>';
+    var txt = ' ';
     for(var attr in html_options) { 
        if(html_options[attr] != null)
         var value = html_options[attr].toString();
        else
-        var value=''
+        var value='';
        if(attr == "Class") // special case because "class" is a reserved word in IE
         attr = "class";
        if( value.indexOf("'") != -1 )
-            txt += attr+'=\"'+value+'\" ' 
+            txt += attr+'=\"'+value+'\" ' ;
        else
-            txt += attr+"='"+value+"' " 
+            txt += attr+"='"+value+"' " ;
     }
     return '<'+tag+txt+end;
-}
+};
 /**
  * Creates an ending html tag.
  * @param {String} tag Html tag type {'span', 'div', 'p', ...}
  * @return {String} '&lt;/'+tag+'&gt;'
  */
-EjsView.tag_end = function(tag)             { return '</'+tag+'>'; }
+EjsView.tag_end = function(tag)             { return '</'+tag+'>'; };
 
 /**
  * Creates a textarea.
@@ -827,19 +827,19 @@ EjsView.text_area_tag = function(name, value, html_options) {
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
     html_options.name  = html_options.name  || name;
-	value = value || ''
+	value = value || '';
     if(html_options.size) {
-        html_options.cols = html_options.size.split('x')[0]
-        html_options.rows = html_options.size.split('x')[1]
-        delete html_options.size
+        html_options.cols = html_options.size.split('x')[0];
+        html_options.rows = html_options.size.split('x')[1];
+        delete html_options.size;
     }
     
     html_options.cols = html_options.cols  || 50;
     html_options.rows = html_options.rows  || 4;
     
-    return  this.start_tag_for('textarea', html_options)+value+this.tag_end('textarea')
-}
-EjsView.text_tag = EjsView.text_area_tag
+    return  this.start_tag_for('textarea', html_options)+value+this.tag_end('textarea');
+};
+EjsView.text_tag = EjsView.text_area_tag;
 /**
  * Creates a standard text field.
  * <p>Example:</p>
@@ -858,7 +858,7 @@ EjsView.text_tag = EjsView.text_area_tag
  * @return {String} password field text.
  *
  */
-EjsView.text_field_tag     = function(name, value, html_options) { return this.input_field_tag(name, value, 'text', html_options); }
+EjsView.text_field_tag     = function(name, value, html_options) { return this.input_field_tag(name, value, 'text', html_options); };
 
 /**
  * Creates human readable text using basic types
@@ -872,10 +872,10 @@ EjsView.to_text = function(input, null_text) {
     if(input instanceof Date)
 		return input.toDateString();
 	if(input.toString) 
-        return input.toString().replace(/\n/g, '<br />').replace(/''/g, "'")
+        return input.toString().replace(/\n/g, '<br />').replace(/''/g, "'");
 	
 	return '';
-}
+};
 /**
  * Updates options with controller and action attributes.
  * <p>This is primarly used by url_for to provide a default controller for actions.</p>
@@ -889,7 +889,7 @@ EjsView.update_with_controller_and_action = function(options) {
         options.controller = JMVC.Routes.params()['controller'];
       if(!options.action)
         options.action = JMVC.Routes.params()['action'];
-}
+};
 
 /**
  * Updates options with controller and action attributes.
@@ -903,7 +903,7 @@ EjsView.update_with_client_and_project = function(options) {
         options.action = 'index';
       if(!options.controller)
         options.project = JMVC.Routes.params()['controller'];
-}
+};
 /**
  * Returns javascript text that when run will call a controller action with parameters defined in params.
  * <p>This is primarly used for adding to onclick or other functions when creating templates.</p>
@@ -914,10 +914,10 @@ EjsView.update_with_client_and_project = function(options) {
 EjsView.url_for = function(params, post) {
     this.update_with_controller_and_action(params);
     if(post == true)
-        return 'post(' + $H(params).toJSON() + ');' //prototype
+        return 'post(' + $H(params).toJSON() + ');'; //prototype
     else
-        return 'get(' + $H(params).toJSON() + ');' //prototype
-}
+        return 'get(' + $H(params).toJSON() + ');'; //prototype
+};
 /**
  * uses the type of column to deterimine the type of field it should present.  Useful in bluepritns.
  * @param {Object} model_name
@@ -931,21 +931,21 @@ EjsView.input = function(model_name, column_name, options) {
 	if(this[type+'_tag'])
 		return this[type+'_tag'](model_name+'['+column_name+']', options.value, options);
 	return this.text_field_tag(model_name+'['+column_name+']', options.value, options);	
-}
+};
 
 EjsView.img_tag = function(image_location, options){
 	options = options || {};
-	options.src = new jFile( jFile.join("public/images/",image_location) ).absolute()
-	return EjsView.single_tag_for('img', options)
+	options.src = new jFile( jFile.join("public/images/",image_location) ).absolute();
+	return EjsView.single_tag_for('img', options);
 	//return "<img src='"+APPLICATION_ROOT+"/public/images/"+image_location+"'/>"
-}
+};
 
 EjsView.HandlerObject = function(value) {
 	this.value = value;
-}
+};
 
 EjsView.HandlerObject.prototype = {
 	toJSON : function() {
 		return this.value;
 	}
-}
+};

@@ -27,7 +27,7 @@ Controller = function(model, actions){
 	}
 	Controller.klasses.push(newmodel);
 	return new newmodel();
-}
+};
 Controller.functions = function(){};
 Controller.klasses = [];
 

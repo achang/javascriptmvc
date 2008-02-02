@@ -7,10 +7,10 @@ JMVC.newRequest = function(){
         }
         catch(e) { continue;}
    }
-}
+};
 	
 JMVC.request = function(path){
-   var request = new JMVC.newRequest()
+   var request = new JMVC.newRequest();
    request.open("GET", path, false);
    
    try{request.send(null);}
@@ -18,8 +18,8 @@ JMVC.request = function(path){
    
    if ( request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
    
-   return request.responseText
-}
+   return request.responseText;
+};
 
 
 /**
@@ -28,17 +28,17 @@ JMVC.request = function(path){
  * @param {String} path The path of the requested javascript file
  */
 include.sync = function(path) {
-    var response = JMVC.request(path)
+    var response = JMVC.request(path);
 	if(!response) return null;
 	window.eval(response);
-}
+};
 include.css = function(path){
-	var head = document.getElementsByTagName('head')[0]
-	var link = document.createElement('link')
-	link.setAttribute("type","text/css")
-	link.setAttribute("rel","stylesheet")
-	link.setAttribute("href",path)
-	head.appendChild(link)
+	var head = document.getElementsByTagName('head')[0];
+	var link = document.createElement('link');
+	link.setAttribute("type","text/css");
+	link.setAttribute("rel","stylesheet");
+	link.setAttribute("href",path);
+	head.appendChild(path);
 }
 // JMVC request
 

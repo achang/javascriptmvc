@@ -13,7 +13,7 @@
  */
 JMVC.Framework = function(){
 	throw new JMVC.Error(new Error(), 'You should never create a JMVC framework');
-}
+};
 
 
 
@@ -32,8 +32,8 @@ JMVC.Framework = function(){
  */
 JMVC.Framework.JMVC_startup = function() {
 	try {
-		JMVC.JMVC_startup_tasks.each(function(task) { task(); })
-	    if( location.pathname.startsWith('/project/console') ) { return }
+		JMVC.JMVC_startup_tasks.each(function(task) { task(); });
+	    if( location.pathname.startsWith('/project/console') ) { return; }
 		if(!$(JMVC.RENDER_TO)) new Insertion.Top(document.body, "<div id='"+JMVC.RENDER_TO+"'></div>");
 
         
@@ -48,13 +48,13 @@ JMVC.Framework.JMVC_startup = function() {
 		JMVC.Framework.render_error(e);
 		return;
 	}
-}
+};
 /**
  * Renders an error to the page.
  * @param {Object} e
  */
 JMVC.Framework.render_error = function(e) {
-	var fileName = 'Unknown File Name'
+	var fileName = 'Unknown File Name';
 	var stack = '';
 	var lineNumber = '';
 	var name = 'Error';
@@ -63,7 +63,7 @@ JMVC.Framework.render_error = function(e) {
 	if(e.fileName) path = e.fileName;
 	if(e.lineNumber) lineNumber = e.lineNumber;
 	if(e.message) message = e.message;
-	if(typeof e =='string') message = e
+	if(typeof e =='string') message = e;
 	if(e.fileName) fileName = e.fileName.split('/')[e.fileName.split('/').length-1];
 	if(e.stack) stack = e.stack.replace(/</g,"&lt;").replace(/>/g,"&gt;");
 	var error_text = ['<style>body { background-color: #fff; color: #333; } body, p, ol, ul, td { font-family: verdana, arial, helvetica, sans-serif;font-size: 13px;line-height: 18px;}pre {background-color: #eee;padding: 10px;font-size: 11px;}a { color: #000; }a:visited { color: #666; }a:hover { color: #fff; background-color:#000; }</style>'];
@@ -81,7 +81,7 @@ JMVC.Framework.render_error = function(e) {
 	document.title = 'Exception Thrown';
 	throw e;
 	return;
-}
+};
 
 /**
  * Places the rendered page string in an element inside the page.
@@ -92,7 +92,7 @@ JMVC.Framework.display_content = function(render_container_id, content) {
     var el = $(render_container_id);
     if (el)
         el.innerHTML = content;
-}
+};
 
 
 /**
@@ -140,24 +140,24 @@ JMVC.Framework.display_content = function(render_container_id, content) {
 JMVC.Error = function(error, message, line_number){
 
 	for(var attr in error)
-		this[attr] = error[attr]
+		this[attr] = error[attr];
 	this.name = 'JMVCError';
 	this.message = message;
 	if(!this.lineNumber && line_number)
 		this.lineNumber = line_number;
 };
 
-JMVC.includeError = JMVC.Error
-JMVC.TemplateError = JMVC.Error
+JMVC.includeError = JMVC.Error;
+JMVC.TemplateError = JMVC.Error;
 
 JMVC.Error.file_name = function(e) {
 	if(e && e.fileName) {
-		var file = new jFile(e.fileName)
+		var file = new jFile(e.fileName);
 		
 		return file.file_and_extension();
 	}
 	return null;
-}
+};
 
 //JMVC.DISPATCH_FUNCTION(JMVC.Framework.JMVC_startup);
 
