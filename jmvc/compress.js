@@ -1718,25 +1718,38 @@ compress = function(total, srcs, production_name){
 		compress.collection = [];
 		compress.working_script = 0;
 		collection = total.join(";\n")
-		document.getElementById('files').innerHTML = "'"+srcs.join("',<br/> '")+"'"
-		document.getElementById('uncompressed').value = collection.replace(/</g,'&lt;').replace(/>/g,'&gt;')
+		var txt=''
+		for(var s=0; s < srcs.length; s++){
+			txt += "<p id='file_"+s+"'>'"+srcs[s]+"'</p>"
+		}
+		
+		document.getElementById('files').innerHTML = txt
+		document.getElementById('uncompressed').value = collection;//.replace(/</g,'&lt;').replace(/>/g,'&gt;')
 		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing.'
 		
 		document.getElementById('uncompressed_length').innerHTML = collection.length+' Characters';
 		save_production_name = production_name
+		document.getElementById('file_'+compress.working_script).style.backgroundColor = '#e5f0cf'
 		setTimeout(pack,1)
 }
 pack = function(){
+	if(compress.working_script > 3)
+	document.getElementById('files').scrollTop += 18;
 	var newest_script = compress.scripts[compress.working_script];
 	var value =   new Packer().pack(newest_script,false,true);
 	compress.collection.push(value);
+	document.getElementById('file_'+compress.working_script).style.backgroundColor = ''
 	compress.working_script++;
+	
 	if(compress.working_script >= compress.scripts.length) setTimeout(finished,1)
-	else setTimeout(pack,1)
+	else {
+		document.getElementById('file_'+compress.working_script).style.backgroundColor = '#e5f0cf';
+		setTimeout(pack,1);
+	}
 }
 finished = function(){
 	var value = compress.collection.join(";\n")
-	document.getElementById('compressed').value =value.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+	document.getElementById('compressed').value =value;//.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	document.getElementById('status').innerHTML = '<b>Status:</b> Done.'
 	document.getElementById('compressed_length').innerHTML = value.length+' Characters, Save to '+save_production_name;
 }
