@@ -120,11 +120,11 @@ Inflector = {
       }
     }
   }
-}
+};
 
 function ordinalize(number) {
   return Inflector.ordinalize(number);
-}
+};
 
 Object.extend(String.prototype, {
   pluralize: function(count, plural) {
