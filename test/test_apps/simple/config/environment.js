@@ -2,7 +2,7 @@
  */
 
 JMVC.Test.environment_run = true
-include_plugin('local_storage')
+include_plugins('local_storage','jester')
 
 JMVC.Initializer(function(){
 	
