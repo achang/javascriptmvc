@@ -1721,7 +1721,7 @@ compress = function(total, srcs, production_name){
 		var txt=''
 		for(var s=0; s < total.length; s++){
 			txt += "<p id='file_"+s+"'>'"+total[s].name+"'</p>"
-			collection += total[s].text + ";\n"
+			collection += "include.set_path('"+total[s].start+"')"+";\n"+total[s].text + ";\n"
 		}
 		
 		document.getElementById('files').innerHTML = txt
@@ -1731,20 +1731,27 @@ compress = function(total, srcs, production_name){
 		document.getElementById('uncompressed_length').innerHTML = collection.length+' Characters';
 		save_production_name = production_name
 		document.getElementById('file_'+compress.working_script).style.backgroundColor = '#e5f0cf'
+		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing - '+compress.scripts[0].name.split('/').pop();
+		document.getElementById('compressed').value = 'Compressing ...'
 		setTimeout(pack,1)
 }
 pack = function(){
 	if(compress.working_script > 3)
 		document.getElementById('files').scrollTop += 18;
 	var newest_script = compress.scripts[compress.working_script];
+	
 	var value =   new Packer().pack(newest_script.text,newest_script.base32,newest_script.shrink_variables);
 	compress.collection.push( "include.set_path('"+newest_script.start+"')" );
 	compress.collection.push(value);
 	document.getElementById('file_'+compress.working_script).style.backgroundColor = '';
-	compress.working_script++;
 	
+	
+	
+	
+	compress.working_script++;
 	if(compress.working_script >= compress.scripts.length) setTimeout(finished,1);
 	else {
+		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing - '+compress.scripts[compress.working_script].name.split('/').pop();
 		document.getElementById('file_'+compress.working_script).style.backgroundColor = '#e5f0cf';
 		setTimeout(pack,1);
 	}
@@ -1753,5 +1760,5 @@ finished = function(){
 	var value = compress.collection.join(";\n")
 	document.getElementById('compressed').value =value;//.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	document.getElementById('status').innerHTML = '<b>Status:</b> Done.'
-	document.getElementById('compressed_length').innerHTML = value.length+' Characters, Save to '+save_production_name;
+	document.getElementById('compressed_length').innerHTML = 'Save to '+save_production_name+', '+value.length+' Characters';
 }

@@ -20,9 +20,12 @@ window.onerror = JMVC.error_handler
 
 
 JMVC.handle_error = function(error){
-	new Ajax.Request('/errors', {method: 'post', postBody: 'title='+encodeURIComponent(error.title())+'&message='+encodeURIComponent(error.message()), onComplete: function(){
-			alert('sent errror');
-	}} );
+	if(include.get_env() == 'production')
+		new Ajax.Request('/errors', {method: 'post', postBody: 'title='+encodeURIComponent(error.title())+'&message='+encodeURIComponent(error.message()), onComplete: function(){
+				alert('sent errror');
+		}} );
+	else
+		alert(error.toString());
 }
 BrowserError = function(error, url, line){
 	this.error = error;

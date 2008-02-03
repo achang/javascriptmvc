@@ -174,7 +174,11 @@
 	}
 	
 	include.compress = function(){
-		include.compress_window.compress(total, include.srcs, include.get_production_name())
+		if(include.compress_window)
+			include.compress_window.compress(total, include.srcs, include.get_production_name())
+		else
+			alert("Your popup blocker is keeping the compressor from running.\n"+
+			"Please allow popups for this page and refresh this page.")
 	}
 	
 	/**

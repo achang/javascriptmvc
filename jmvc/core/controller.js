@@ -1,3 +1,8 @@
+/**
+ * Creates a new controller object with actions
+ * @param {String} model - The name of the controller type.  Example: todo.
+ * @param {Object} actions - a hash of functions that get added to the controller's prototype
+ */
 Controller = function(model, actions){
 	var className= model, newmodel = null;
 	model = model.capitalize()+'Controller';
@@ -28,13 +33,26 @@ Controller = function(model, actions){
 	Controller.klasses.push(newmodel);
 	return new newmodel();
 };
+/**
+ * This is the default constructor for a controller
+ */
 Controller.functions = function(){};
+/**
+ * a list of all created controller classes
+ */
 Controller.klasses = [];
 
 (function(){
 
 	var functions = {};
 	var controller_id = 0;
+	/**
+	 * Creates a new event closure for a controller
+	 * @param {Object} controller_name - name of the controller, ex: TodoController
+	 * @param {Object} f_name - name of the action or function
+	 * @param {Object} element - element this is called on
+	 * @return {Function} returns a function that calls a controller action
+	 */
 	var new_event_closure_function = function(controller_name, f_name, element){
 		return function(event){
 			var instance = new window[controller_name];
@@ -57,7 +75,12 @@ Controller.klasses = [];
 			//instance.attach_event_handlers()
 		}
 	};
-	
+	/**
+	 * For a controller, action, element, returns a function event closure
+	 * @param {Object} controller_name
+	 * @param {Object} f_name
+	 * @param {Object} element
+	 */
 	Controller.event_closure = function(controller_name, f_name, element){
 		if(!element.controller_id) element.controller_id = ++controller_id;
 		
@@ -77,6 +100,13 @@ Controller.klasses = [];
 })();
 
 Object.extend(Controller.functions.prototype, {
+	/**
+	 * attaches event handlers to an element
+	 *  Takes an element as its first parameter and a list of controller names as the second parameters
+	 *  If only 1 parameter is given, uses the current controller to attach event handlers
+	 *  Examples: this.attach(el)
+	 *  		  this.attach(el, 'todo','notes')
+	 */
 	attach : function(){
 		var element = arguments[0];
 		if(arguments.length == 1){
@@ -86,6 +116,9 @@ Object.extend(Controller.functions.prototype, {
 			new window[arguments[i].capitalize()+'Controller']().attach_event_handlers(element );
 		}
 	},
+	/**
+	 * does the same as attach, but sets a timeout so it will happen after the page gets a chance to render
+	 */
 	attach_later : function(){
 		var args = arguments;
 		var thsOb = this;
@@ -93,6 +126,11 @@ Object.extend(Controller.functions.prototype, {
 			thsOb.attach.apply(thsOb, args);
 		}, 10);
 	},
+	/**
+	 * 
+	 * @param {Object} element
+	 * @param {Object} to_controller
+	 */
 	attach_to : function(element, to_controller){
 		if(!to_controller){
 			this.attach_event_handlers_to(element);
@@ -101,6 +139,10 @@ Object.extend(Controller.functions.prototype, {
 		new window[to_controller.capitalize()+'Controller']().attach_event_handlers_to(element );
 		//new MenuController().attach_event_handlers_to(menu );
 	},
+	/**
+	 * 
+	 * @param {Object} start_element
+	 */
 	attach_event_handlers : function(start_element){
 		start_element = start_element || document.body;
 		var els;
@@ -145,6 +187,11 @@ Object.extend(Controller.functions.prototype, {
 	initialize : function(){
 		
 	},
+	/**
+	 * returns a function that calls an action with the first value passed to it.
+	 * TODO: this should be changed to call all the args with it.
+	 * @param {Object} action
+	 */
 	continue_to :function(action){
 		return function(response){
 			this.action = action;
@@ -152,6 +199,10 @@ Object.extend(Controller.functions.prototype, {
 			//this.attach_event_handlers()
 		}.bind(this)
 	},
+	/**
+	 * renders a template
+	 * @param {Object} options
+	 */
 	render : function(options) {
 		var result, render_to_id = JMVC.RENDER_TO;
 		var controller_name = this.className;
@@ -238,7 +289,10 @@ Model = {
 	}
 };
 
-
+/**
+ * Stops an event
+ * @param {Object} event
+ */
 function stopPropagation(event)
 {
     if(!event)
@@ -258,7 +312,13 @@ function stopPropagation(event)
     return false;
 };
 
-
+/**
+ * An error that controllers create
+ * @param {Object} error
+ * @param {Object} controller_name
+ * @param {Object} action_name
+ * @param {Object} params
+ */
 ControllerError = function(error, controller_name, action_name, params){
 	this.error = error;
 	this.controller = controller_name;
