@@ -129,3 +129,7 @@ include(
 		  "core/controller",
 		  "core/Include",
 		  "core/View");
+		  
+JMVC.handle_error = function(error){
+	alert(error.toString())
+}

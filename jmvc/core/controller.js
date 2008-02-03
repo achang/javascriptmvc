@@ -48,7 +48,12 @@ Controller.klasses = [];
 			var params = {event: event, element: element, action: f_name   };
 			instance.params = params;
 			instance.action = f_name;
-			instance[f_name](params);
+			
+			try{
+				instance[f_name](params);
+			}catch(e){
+				JMVC.handle_error(new ControllerError(e, controller_name, f_name, params))
+			}
 			//instance.attach_event_handlers()
 		}
 	};
@@ -252,3 +257,32 @@ function stopPropagation(event)
     {}
     return false;
 };
+
+
+ControllerError = function(error, controller_name, action_name, params){
+	this.error = error;
+	this.controller = controller_name;
+	this.action = action_name;
+	this.params = params;
+};
+
+ControllerError.prototype = {
+	location : function(){
+		return location.href+" [controller:"+this.controller+", action:"+this.action+"]";
+	},
+	title : function(){
+		return this.location() + ' '+this.error;
+	},
+	browser : function(){
+		return navigator.userAgent;
+	},
+	message : function(){
+		return ['There was an error at '+this.location(),
+				'Error: '+this.error,
+				'Browser: '+this.browser()].join("\n");
+	},
+	toString : function(){
+		return this.message();
+	}
+};
+
