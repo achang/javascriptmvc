@@ -1,7 +1,6 @@
 JMVCTest = {
 	APPLICATION_NAME : 'simple',
-	TEST_DESCRIPTION : 'Test TrimQuery local storage.',
-	TRIMQUERY : true,
+	TEST_DESCRIPTION : 'Test TrimQuery and Gears local storage.',
 	perform_test : function() {
 	  new Test.Unit.Runner({
 	  	

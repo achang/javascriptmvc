@@ -2,6 +2,7 @@
  */
 
 JMVC.Test.environment_run = true
+include_plugin('local_storage')
 
 JMVC.Initializer(function(){
 	
