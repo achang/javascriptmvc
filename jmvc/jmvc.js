@@ -53,31 +53,29 @@ JMVC.check_dependency = function(dependency_class_name, dependent_file_name) {
     eval(eval_text);
 };
 
-include_plugin = function(plugin_name) {
+JMVC.include_plugin = function(plugin_name) {
 	var current_path = include.get_path();
 	include.set_path(JMVC_ROOT);
 	include(jFile.join('plugins', plugin_name, 'setup'));
 	include.set_path(current_path);
 }
 
-JMVC.SETUP = {};
-JMVC.SETUP.included_libraries = [];
-
-JMVC.include_library = function(library_name) {
-	JMVC.SETUP.included_libraries.push(library_name);
-};
-JMVC.include_libraries = function(library_names){
+JMVC.include_plugins = function(plugin_names){
 	if(arguments.length > 1){
 		for(var i=0; i < arguments.length; i++)
-			JMVC.include_library(arguments[i]);
+			JMVC.include_plugin(arguments[i]);
 		return;
 	}
-	if(typeof library_names == 'string') library_names = [library_names];
+	if(typeof plugin_names == 'string') plugin_names = [plugin_names];
 	
-	for(var i=0; i < library_names.length; i++)
-		JMVC.include_library(library_names[i]);
+	for(var i=0; i < plugin_names.length; i++)
+		JMVC.include_plugin(plugin_names[i]);
 };
-var include_library = JMVC.include_library;
+var include_plugin = JMVC.include_plugin;
+var include_plugins = JMVC.include_plugins;
+
+JMVC.SETUP = {};
+JMVC.SETUP.included_libraries = [];
 
 JMVC.ENV = {ENVIRONMENT: 'development'}; //this shouldn't even be here
 JMVC.OPTIONS = {};
