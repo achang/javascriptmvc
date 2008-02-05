@@ -1723,6 +1723,7 @@ compress = function(total, srcs, production_name){
 			txt += "<p id='file_"+s+"'>'"+total[s].name+"'</p>"
 			collection += "include.set_path('"+total[s].start+"')"+";\n"+total[s].text + ";\n"
 		}
+		collection += "include.end_of_production();"
 		
 		document.getElementById('files').innerHTML = txt
 		document.getElementById('uncompressed').value = collection;//.replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -1757,7 +1758,7 @@ pack = function(){
 	}
 }
 finished = function(){
-	var value = compress.collection.join(";\n")
+	var value = compress.collection.join(";\n")+";\ninclude.end_of_production();"
 	document.getElementById('compressed').value =value;//.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	document.getElementById('status').innerHTML = '<b>Status:</b> Done.'
 	document.getElementById('compressed_length').innerHTML = 'Save to '+save_production_name+', '+value.length+' Characters';

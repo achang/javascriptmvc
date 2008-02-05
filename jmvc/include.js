@@ -65,10 +65,23 @@
 				include.add(newInclude);
 			}
 		}else{
-			if(!first) return;
-			document.write('<script type="text/javascript" src="'+include.get_path()+include.get_production_name()+'"></script>');
-			first = false;
-			return;
+			if(first){
+				document.write('<script type="text/javascript" src="'+include.get_path()+include.get_production_name()+'"></script>');
+				first = false;
+				return;
+			}
+			if(!first_wave_done) return; //if production isn't finished loading, don't add
+			for(var i=0; i < arguments.length; i++){
+				var newInclude = arguments[i];
+				if(typeof newInclude == 'string'){
+					newInclude = {name: newInclude};
+				}
+				if(newInclude.base62 == null)
+					newInclude.base62 = PACKER_OPTIONS.base62;
+				if(newInclude.shrink_variables == null)
+					newInclude.shrink_variables = PACKER_OPTIONS.shrink_variables;
+				include.add(newInclude);
+			}
 		}
 		if(first && !navigator.userAgent.match(/Opera/)){
 			first = false;
@@ -172,7 +185,9 @@
 		
 		
 	}
-	
+	include.end_of_production = function(){
+		first_wave_done = true;
+	};
 	include.compress = function(){
 		if(include.compress_window)
 			include.compress_window.compress(total, include.srcs, include.get_production_name())

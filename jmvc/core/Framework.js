@@ -15,8 +15,8 @@ JMVC.Framework = function(){
 	throw new JMVC.Error(new Error(), 'You should never create a JMVC framework');
 };
 
-if(JMVC.error_handler)
-	window.onerror = JMVC.error_handler;
+
+//window.onerror = JMVC.error_handler;
 
 /**
  * Initializes the application by performing various startup tasks.

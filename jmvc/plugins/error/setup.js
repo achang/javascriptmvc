@@ -13,7 +13,7 @@
 
 
 JMVC.error_handler = function(msg, url, l){
-	JMVC.send_error(new BrowserError(msg, url, l) )
+	JMVC.handle_error(new BrowserError(msg, url, l) )
 };
 
 window.onerror = JMVC.error_handler;
