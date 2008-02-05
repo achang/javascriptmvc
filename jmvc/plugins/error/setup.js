@@ -16,7 +16,7 @@ JMVC.error_handler = function(msg, url, l){
 	JMVC.send_error(new BrowserError(msg, url, l) )
 };
 
-window.onerror = JMVC.error_handler
+window.onerror = JMVC.error_handler;
 
 
 JMVC.handle_error = function(error){
@@ -26,7 +26,7 @@ JMVC.handle_error = function(error){
 		}} );
 	else
 		alert(error.toString());
-}
+};
 BrowserError = function(error, url, line){
 	this.error = error;
 	this.file = url;

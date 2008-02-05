@@ -58,7 +58,7 @@ JMVC.include_plugin = function(plugin_name) {
 	include.set_path(JMVC_ROOT);
 	include(jFile.join('plugins', plugin_name, 'setup'));
 	include.set_path(current_path);
-}
+};
 
 JMVC.include_plugins = function(plugin_names){
 	if(arguments.length > 1){
@@ -131,5 +131,5 @@ include(
 		  "core/View");
 		  
 JMVC.handle_error = function(error){
-	alert(error.toString())
-}
+	alert(error.toString());
+};

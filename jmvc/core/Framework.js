@@ -16,7 +16,7 @@ JMVC.Framework = function(){
 };
 
 
-window.onerror = JMVC.error_handler
+window.onerror = JMVC.error_handler;
 
 /**
  * Initializes the application by performing various startup tasks.
