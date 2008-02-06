@@ -164,8 +164,8 @@
 				newer_path = domain_part + newer_path
 				name = domain_part+name
 			}else{
-				newer_path = join(current_path, newer_path);
-				name = join(current_path, name);
+				newer_path = join(current_path+'/', newer_path);
+				name = join(current_path+'/', name);
 			}
 		}else if(current_path != '' && !is_absolute(name)){
 			newer_path = current_path+'/'+ newer_path;
