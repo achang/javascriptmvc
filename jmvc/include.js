@@ -22,7 +22,20 @@
 	var total = []; //used to store text
 	//returns true if a path is absolute
 	var is_absolute = function(path){
-		return path.indexOf('/') == 0 || path.indexOf('http') == 0 || path.indexOf('file://') == 0
+		return is_local_absolute(path) || is_domain_absolute(path);
+	};
+	var is_cross_domain = function(path){
+		if(path.indexOf('/') == 0) return false;
+		return (get_domain(location.href) != get_domain(path));
+	};
+	var is_local_absolute = function(path){
+		return path.indexOf('/') == 0;
+	};
+	var is_domain_absolute = function(path){
+		return path.indexOf('http') == 0 || path.indexOf('file://') == 0
+	};
+	var get_domain = function(path){
+		return path.split('/')[2];
 	}
 	
 	//joins 2 folders.  This takes into account things like ../../
@@ -144,8 +157,17 @@
 		ar.pop();
 		var newer_path = ar.join('/');
 		var current_path = include.get_path()
-		//set the path to the new object;
-		if(current_path != '' && !is_absolute(name) ){
+		if(is_cross_domain(current_path) && !is_domain_absolute(name) ){
+			
+			if(is_local_absolute(name) ){
+				var domain_part = current_path.split('/').slice(0,3).join('/')
+				newer_path = domain_part + newer_path
+				name = domain_part+name
+			}else{
+				newer_path = join(current_path, newer_path);
+				name = join(current_path, name);
+			}
+		}else if(current_path != '' && !is_absolute(name)){
 			newer_path = current_path+'/'+ newer_path;
 			name = current_path+'/'+name;
 		}
