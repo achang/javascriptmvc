@@ -1,4 +1,8 @@
-if(typeof cssQuery != 'undefined') $$ = cssQuery;
+if(typeof Prototype != 'undefined') {
+	$$.descendant = function(element, selector) {
+		element.getElementsBySelector(selector)
+	}
+}
 
 
 Object.extend = function(destination, source) {
@@ -104,3 +108,24 @@ String.prototype.split = function (s /* separator */, limit) {
 		(limit      ? output : output.concat(this.slice(lastLastIndex)));
 };
 })();
+
+if(!Array.from){
+	Array.from = function(iterable){
+		var results = [];
+	    for (var i = 0, length = iterable.length; i < length; i++)
+	      results.push(iterable[i]);
+	    return results;
+	}
+}
+
+
+if(typeof Function.prototype.bind == 'undefined'){
+	Function.prototype.bind = function() {
+	  var args = Array.from(arguments);
+	  args.shift();
+	  var __method = this, object = arguments[0];
+	  return function() {
+	    return __method.apply(object, args.concat(Array.from(arguments) )  );
+	  }
+	}
+}

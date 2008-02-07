@@ -152,7 +152,7 @@
 			insert_head(name);
 			return;
 		}
-		name = ( name.indexOf('.js') == -1 ? name+'.js' : name );
+		name = ( name.indexOf('.js') == -1  ? name+'.js' : name );
 		var ar = name.split('/');
 		ar.pop();
 		var newer_path = ar.join('/');

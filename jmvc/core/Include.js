@@ -39,9 +39,16 @@ include.css = function(path){
 	link.setAttribute("rel","stylesheet");
 	link.setAttribute("href",path);
 	head.appendChild(path);
-}
-// JMVC request
+};
 
+
+// JMVC request
+include.controllers = function(){
+	for(var i=0; i< arguments.length; i++){
+		arguments[i] = 'app/controllers/'+arguments[i]+'_controller';
+	}
+	return include.apply(null, arguments);
+}
 
 
 

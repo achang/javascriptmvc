@@ -53,26 +53,18 @@ JMVC.check_dependency = function(dependency_class_name, dependent_file_name) {
     eval(eval_text);
 };
 
-JMVC.include_plugin = function(plugin_name) {
+include.plugin = function(plugin_name) {
 	var current_path = include.get_path();
 	include.set_path(JMVC_ROOT);
 	include(jFile.join('plugins', plugin_name, 'setup'));
 	include.set_path(current_path);
 };
 
-JMVC.include_plugins = function(plugin_names){
-	if(arguments.length > 1){
-		for(var i=0; i < arguments.length; i++)
-			JMVC.include_plugin(arguments[i]);
-		return;
-	}
-	if(typeof plugin_names == 'string') plugin_names = [plugin_names];
-	
-	for(var i=0; i < plugin_names.length; i++)
-		JMVC.include_plugin(plugin_names[i]);
+include.plugins = function(){
+	for(var i=0; i < arguments.length; i++)
+		include.plugin(arguments[i]);
+	return;
 };
-var include_plugin = JMVC.include_plugin;
-var include_plugins = JMVC.include_plugins;
 
 JMVC.SETUP = {};
 JMVC.SETUP.included_libraries = [];
@@ -130,6 +122,6 @@ include(
 		  "core/Include",
 		  "core/View");
 		  
-JMVC.handle_error = function(error){
-	alert(error.toString());
-};
+//JMVC.handle_error = function(error){
+//	alert(error.toString());
+//};

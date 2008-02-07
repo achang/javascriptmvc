@@ -15,10 +15,11 @@ Controller = function(model, actions){
 	newmodel.prototype = controller_functions;
 	newmodel.prototype.klass_name = 	model;
 	newmodel.prototype.className = className;
+	newmodel.views = {};
 	Object.extend(newmodel.prototype, actions );
 	var handler_names = [];
 	for(var action_name in actions ){
-		if( action_name.search(/[click|mouseover|mouseout|load|resize|dblclick|contextmenu|blur|keypress|unload]/) != -1 ) {
+		if( action_name.search(/[click|mouseover|mouseout|load|resize|dblclick|contextmenu|blur|keypress|unload|submit]/) != -1 ) {
 			handler_names.push(action_name);
 		}
 	}
@@ -67,10 +68,14 @@ Controller.klasses = [];
 			instance.params = params;
 			instance.action = f_name;
 			
-			try{
-				instance[f_name](params);
-			}catch(e){
-				JMVC.handle_error(new ControllerError(e, controller_name, f_name, params))
+			if(JMVC.handle_error){
+				try{
+					return instance[f_name](params);
+				}catch(e){
+					JMVC.handle_error(new ControllerError(e, controller_name, f_name, params))
+				}
+			}else{
+				return instance[f_name](params);
 			}
 			//instance.attach_event_handlers()
 		}
@@ -98,6 +103,8 @@ Controller.klasses = [];
 	};
 	
 })();
+
+Controller.main_events = {'load' : window, 'resize': window, 'unload' : window}; //everything else is document if single or document.body
 
 Object.extend(Controller.functions.prototype, {
 	/**
@@ -167,7 +174,14 @@ Object.extend(Controller.functions.prototype, {
 				handler_name = event_function;
 			}else{
 				handler_name = event_function.substring(last_space+1);
-				event_els = el.getElementsBySelector(event_function.substring(0, last_space));
+				if(this.klass_name == 'MainController' && el == document){
+					event_els = $$(event_function.substring(0, last_space));
+				}else{
+					event_els = $$.descendant(el,event_function.substring(0, last_space) );
+				}
+				
+				
+				//el.getElementsBySelector(event_function.substring(0, last_space));
 			}
 			if( (handler_name == 'load' || handler_name == 'resize' || handler_name == 'unload') && this.klass_name == 'MainController'){
 				event_els= [window];
@@ -306,7 +320,8 @@ function stopPropagation(event)
         
     if (event.preventDefault) 
         event.preventDefault();
-	Event.stop(event);
+	if(Event.stop) //this should be moved elsewhere
+		Event.stop(event);
     }catch(e)
     {}
     return false;
