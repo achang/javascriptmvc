@@ -37,7 +37,7 @@ Controller = function(model, actions){
 
 Controller.params = function(params){
 	for(var thing in params){
-		this[thing] = params[thing]
+		this[thing] = params[thing];
 	}
 };
 Controller.params.prototype = {
