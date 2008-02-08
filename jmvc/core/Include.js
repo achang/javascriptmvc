@@ -32,13 +32,14 @@ include.sync = function(path) {
 	if(!response) return null;
 	window.eval(response);
 };
+//we need a function that can figure this out in include that this guy can use
 include.css = function(path){
 	var head = document.getElementsByTagName('head')[0];
 	var link = document.createElement('link');
 	link.setAttribute("type","text/css");
 	link.setAttribute("rel","stylesheet");
-	link.setAttribute("href",path);
-	head.appendChild(path);
+	link.href=path;
+	head.appendChild(link);
 };
 
 

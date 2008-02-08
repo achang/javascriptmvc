@@ -45,6 +45,37 @@ Date.prototype.number_of_days_in_month = function() {
     if (year%100 == 0 && year%400 != 0) return m[1];
     return m[1] + 1;
 };
+//steal old date parse
+(function(){
+	var parse = Date.parse
+	Date.parse = function(data) {
+		if(typeof data != "string") return null;
+		var f1 = /\d{4}-\d{1,2}-\d{1,2}/, 
+		    f2 = /\d{4}\/\d{1,2}\/\d{1,2}/, 
+			f3 = /\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}/;
+		
+		if(data.match(f3)) {
+			var timeArr = data.match(f3)[0].split(' ')[1].split(':');
+			var dateArr = data.match(f3)[0].split(' ')[0].split('-');
+			
+			return Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10),
+				parseInt(timeArr[0], 10), parseInt(timeArr[1], 10), parseInt(timeArr[2], 10));
+		}
+		if(data.match(f1)) {
+			var dateArr = data.match(date_format_1)[0].split('-');
+			return Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10));
+		}
+		if(data.match(f2)) {
+			var dateArr = data.match(date_format_2)[0].split('/');
+			return Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10));
+		}
+		return parse(data);
+	}
+})();
+
+
+
+
 String.prototype.camalize = function(){
 	var parts = this.split('_');
 	for(var i = 0; i < parts.length; i++){
