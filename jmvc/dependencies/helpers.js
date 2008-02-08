@@ -1,6 +1,6 @@
 if(typeof Prototype != 'undefined') {
 	$$.descendant = function(element, selector) {
-		element.getElementsBySelector(selector)
+		return element.getElementsBySelector(selector)
 	}
 }
 
