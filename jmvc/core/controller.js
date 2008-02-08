@@ -231,6 +231,7 @@ Object.extend(Controller.functions.prototype, {
 			if( (handler_name == 'load' || handler_name == 'resize' || handler_name == 'unload') && this.klass_name == 'MainController'){
 				event_els= [window];
 			}
+			event_els = event_els || [];
 			for(var he = 0; he < event_els.length; he++){
 				if(handler_name == 'contextmenu'){
 					event_els[he].oncontextmenu = Controller.event_closure(this.klass_name, event_function,event_els[he] );

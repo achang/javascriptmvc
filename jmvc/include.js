@@ -157,7 +157,7 @@
 		ar.pop();
 		var newer_path = ar.join('/');
 		var current_path = include.get_path()
-		if(is_cross_domain(current_path) && !is_domain_absolute(name) ){
+		if(is_cross_domain(include.get_absolute_path()) && !is_domain_absolute(name) ){
 			
 			if(is_local_absolute(name) ){
 				var domain_part = current_path.split('/').slice(0,3).join('/')

@@ -935,7 +935,7 @@ EjsView.input = function(model_name, column_name, options) {
 
 EjsView.img_tag = function(image_location, options){
 	options = options || {};
-	options.src = new jFile( jFile.join("public/images/",image_location) ).absolute();
+	options.src = jFile.join("resources/images/",image_location);
 	return EjsView.single_tag_for('img', options);
 	//return "<img src='"+APPLICATION_ROOT+"/public/images/"+image_location+"'/>"
 };
