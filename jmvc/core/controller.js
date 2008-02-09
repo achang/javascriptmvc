@@ -296,7 +296,13 @@ Object.extend(Controller.functions.prototype, {
             else {
                 var url = 'app/views/'+controller_name+'/'+action_name.replace(/\./g, '').replace(/ /g,'_')+'.ejs';
             }
-			result = new EJS({url:  jFile.join(APPLICATION_ROOT,url)  }).render(this);
+			var data_to_render = this;
+			if(options.locals) {
+				for(var local_var in options.locals) {
+					data_to_render[local_var] = options.locals[local_var];
+				}
+			}
+			result = new EJS({url:  jFile.join(APPLICATION_ROOT,url)  }).render(data_to_render);
 		}
 		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];
