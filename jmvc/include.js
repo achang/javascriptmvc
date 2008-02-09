@@ -78,11 +78,6 @@
 				include.add(newInclude);
 			}
 		}else{
-			if(first){
-				document.write('<script type="text/javascript" src="'+include.get_path()+include.get_production_name()+'"></script>');
-				first = false;
-				return;
-			}
 			if(!first_wave_done) return; //if production isn't finished loading, don't add
 			for(var i=0; i < arguments.length; i++){
 				var newInclude = arguments[i];
@@ -94,7 +89,8 @@
 				if(newInclude.shrink_variables == null)
 					newInclude.shrink_variables = PACKER_OPTIONS.shrink_variables;
 				include.add(newInclude);
-			}
+			};
+			return;
 		}
 		if(first && !navigator.userAgent.match(/Opera/)){
 			first = false;
@@ -126,6 +122,10 @@
 			if(pack_options.shrink_variables != null)
 				PACKER_OPTIONS.shrink_variables = pack_options.shrink_variables;
 		}
+		if(environment == 'production'){
+			document.write('<script type="text/javascript" src="'+include.get_path()+include.get_production_name()+'"></script>');
+			return;
+		}
 	};
 	
 	include.get_env = function() { return env;}
@@ -156,7 +156,6 @@
 		var ar = newInclude.name.split('/');
 		ar.pop();
 		newInclude.start = ar.join('/')
-		//newInclude.start += (newInclude.start == '' ? '' : '/')
 		current_includes.unshift(  newInclude );
 	}
 	include.normalize = function(path){

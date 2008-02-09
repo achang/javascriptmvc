@@ -1,7 +1,7 @@
 if(typeof Prototype != 'undefined') {
 	$$.descendant = function(element, selector) {
-		return element.getElementsBySelector(selector)
-	}
+		return element.getElementsBySelector(selector);
+	};
 }
 
 
@@ -47,7 +47,7 @@ Date.prototype.number_of_days_in_month = function() {
 };
 //steal old date parse
 (function(){
-	var parse = Date.parse
+	var parse = Date.parse;
 	Date.parse = function(data) {
 		if(typeof data != "string") return null;
 		var f1 = /\d{4}-\d{1,2}-\d{1,2}/, 
@@ -70,7 +70,7 @@ Date.prototype.number_of_days_in_month = function() {
 			return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10)) );
 		}
 		return parse(data);
-	}
+	};
 })();
 
 
@@ -146,7 +146,7 @@ if(!Array.from){
 	    for (var i = 0, length = iterable.length; i < length; i++)
 	      results.push(iterable[i]);
 	    return results;
-	}
+	};
 }
 
 
@@ -158,5 +158,5 @@ if(typeof Function.prototype.bind == 'undefined'){
 	  return function() {
 	    return __method.apply(object, args.concat(Array.from(arguments) )  );
 	  }
-	}
+	};
 }

@@ -38,7 +38,7 @@ include.css = function(path){
 	var link = document.createElement('link');
 	link.setAttribute("type","text/css");
 	link.setAttribute("rel","stylesheet");
-	link.href=path;
+	link.href= include.normalize( 'resources/stylesheets/'+path+(path.indexOf('.css')== -1 ?'.css':''));
 	head.appendChild(link);
 };
 

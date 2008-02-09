@@ -44,26 +44,26 @@ Controller.params.prototype = {
 	form_params : function(){
 		var data = {};
 		if(this.element.nodeName.toLowerCase() != 'form') return data;
-		var els = this.element.elements
+		var els = this.element.elements;
 		var uri_params = [];
 		for(var i=0; i < els.length; i++){
 			var el = els[i];
 			if(el.type.toLowerCase()=='submit') continue;
 			var key = el.name, value = el.value;
 
-			var key_components = key.rsplit(/\[[^\]]*\]/)
+			var key_components = key.rsplit(/\[[^\]]*\]/);
 			if( key_components.length > 1 ) {
 				var last = key_components.length - 1;
 				var nested_key = key_components[0].toString();
 				if(! data[nested_key] ) data[nested_key] = {};
-				var nested_hash = data[nested_key]
+				var nested_hash = data[nested_key];
 				
 				for(var k = 1; k < last; k++){
-					nested_key = key_components[k].substring(1, key_components[k].length - 1)
-					if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={}
-					nested_hash = nested_hash[nested_key]
+					nested_key = key_components[k].substring(1, key_components[k].length - 1);
+					if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={};
+					nested_hash = nested_hash[nested_key];
 				}
-				nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value
+				nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value;
 			} else {
 		        if (key in data) {
 		        	if (typeof data[key] == 'string' ) data[key] = [data[key]];
@@ -75,7 +75,7 @@ Controller.params.prototype = {
 
 		return data;
 	}
-}
+};
 
 /**
  * This is the default constructor for a controller
