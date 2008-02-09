@@ -57,17 +57,17 @@ Date.prototype.number_of_days_in_month = function() {
 		if(data.match(f3)) {
 			var timeArr = data.match(f3)[0].split(' ')[1].split(':');
 			var dateArr = data.match(f3)[0].split(' ')[0].split('-');
-			
-			return Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10),
-				parseInt(timeArr[0], 10), parseInt(timeArr[1], 10), parseInt(timeArr[2], 10));
+
+			return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10),
+				parseInt(timeArr[0], 10), parseInt(timeArr[1], 10), parseInt(timeArr[2], 10)) );
 		}
 		if(data.match(f1)) {
 			var dateArr = data.match(date_format_1)[0].split('-');
-			return Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10));
+			return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10)) );
 		}
 		if(data.match(f2)) {
 			var dateArr = data.match(date_format_2)[0].split('/');
-			return Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10));
+			return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10)) );
 		}
 		return parse(data);
 	}
