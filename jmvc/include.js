@@ -17,7 +17,7 @@
 	if(last != -1) PAGE_ROOT = PAGE_ROOT.substring(0,last+1);
 	
 	
-	var INCLUDE_ROOT = '',INCLUDE_PATH = '', first = true , INCLUDE_regex = /include\.js/, PACKER_OPTIONS = {base62: false, shrink_variables: true};
+	var INCLUDE_ROOT = '',INCLUDE_PATH = '', first = true , INCLUDE_regex = /include\.js/, PACKER_OPTIONS = {base62: false, shrink_variables: true}, first_wave_done = false;
 	var env = 'development', production = '/javascripts/production.js', cwd = '', includes=[], current_includes=[];
 	var total = []; //used to store text
 	//returns true if a path is absolute
@@ -152,30 +152,29 @@
 			insert_head(name);
 			return;
 		}
-		name = ( name.indexOf('.js') == -1  ? name+'.js' : name );
-		var ar = name.split('/');
+		newInclude.name = include.normalize(  name.indexOf('.js') == -1  ? name+'.js' : name  );
+		var ar = newInclude.name.split('/');
 		ar.pop();
-		var newer_path = ar.join('/');
-		var current_path = include.get_path()
-		if(is_cross_domain(include.get_absolute_path()) && !is_domain_absolute(name) ){
-			
-			if(is_local_absolute(name) ){
-				var domain_part = current_path.split('/').slice(0,3).join('/')
-				newer_path = domain_part + newer_path
-				name = domain_part+name
-			}else{
-				newer_path = join(current_path+'/', newer_path);
-				name = join(current_path+'/', name);
-			}
-		}else if(current_path != '' && !is_absolute(name)){
-			newer_path = current_path+'/'+ newer_path;
-			name = current_path+'/'+name;
-		}
-		newInclude.name = name;
-		newInclude.start = newer_path;
+		newInclude.start = ar.join('/')
+		//newInclude.start += (newInclude.start == '' ? '' : '/')
 		current_includes.unshift(  newInclude );
 	}
-	var first_wave_done = false; 
+	include.normalize = function(path){
+		var current_path = include.get_path();
+		//if you are cross domain from the page, and providing a path that doesn't have an domain
+		if(is_cross_domain(include.get_absolute_path()) && !is_domain_absolute(path) ){
+			//if the path starts with /
+			if(is_local_absolute(path) ){
+				var domain_part = current_path.split('/').slice(0,3).join('/')
+				path = domain_part+path;
+			}else{ //otherwise
+				path = join(current_path+'/', path);
+			}
+		}else if(current_path != '' && !is_absolute(path)){
+			path = join(current_path+'/', path);
+		}
+		return path;
+	}
 	/**
 	 * called after a file is loaded.  Then it takes the last one
 	 * and loads it.  If it is the last one and it is in compression
