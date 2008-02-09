@@ -17,7 +17,13 @@
 	if(last != -1) PAGE_ROOT = PAGE_ROOT.substring(0,last+1);
 	
 	
-	var INCLUDE_ROOT = '',INCLUDE_PATH = '', first = true , INCLUDE_regex = /include\.js/, PACKER_OPTIONS = {base62: false, shrink_variables: true}, first_wave_done = false;
+	var INCLUDE_ROOT = '',
+		INCLUDE_PATH = '', 
+		first = true , 
+		INCLUDE_regex = /include\.js/, 
+		PACKER_OPTIONS = {base62: false, shrink_variables: true}, 
+		first_wave_done = false,
+		PACK_FOR_REMOTE = false;
 	var env = 'development', production = '/javascripts/production.js', cwd = '', includes=[], current_includes=[];
 	var total = []; //used to store text
 	//returns true if a path is absolute
@@ -121,6 +127,8 @@
 				PACKER_OPTIONS.base62 = pack_options.base62;
 			if(pack_options.shrink_variables != null)
 				PACKER_OPTIONS.shrink_variables = pack_options.shrink_variables;
+			if(pack_options.remote != null)
+				PACK_FOR_REMOTE = pack_options.remote;
 		}
 		if(environment == 'production'){
 			document.write('<script type="text/javascript" src="'+include.get_path()+include.get_production_name()+'"></script>');
@@ -131,7 +139,13 @@
 	include.get_env = function() { return env;}
 	include.get_production_name = function() { return production;}
 	include.set_path = function(p) { cwd = p;}
-	include.get_path = function() { return cwd;}
+	include.get_path = function() { 
+		if(PACK_FOR_REMOTE)
+			return include.get_absolute_path();
+		else
+			return cwd;
+	
+	}
 	
 	include.get_absolute_path = function(){
 		if(is_absolute(cwd)) return cwd;
@@ -171,6 +185,9 @@
 			}
 		}else if(current_path != '' && !is_absolute(path)){
 			path = join(current_path+'/', path);
+		}else if(current_path != '' && PACK_FOR_REMOTE && !is_domain_absolute(path)){
+			var domain_part = current_path.split('/').slice(0,3).join('/')
+			path = domain_part+path;
 		}
 		return path;
 	}
