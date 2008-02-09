@@ -14,7 +14,7 @@
 	//Saves root of the page that include is loaded on;
 	var PAGE_ROOT = window.location.href;
 	var last = PAGE_ROOT.lastIndexOf('/');
-	if(last != -1) PAGE_ROOT = PAGE_ROOT.substring(0,last+1);
+	if(last != -1) PAGE_ROOT = PAGE_ROOT.substring(0,last); // no ending /
 	
 	
 	var INCLUDE_ROOT = '',
@@ -23,8 +23,13 @@
 		INCLUDE_regex = /include\.js/, 
 		PACKER_OPTIONS = {base62: false, shrink_variables: true}, 
 		first_wave_done = false,
-		PACK_FOR_REMOTE = false;
-	var env = 'development', production = '/javascripts/production.js', cwd = '', includes=[], current_includes=[];
+		PACK_FOR_REMOTE = false,
+		included_paths = [];
+	var env = 'development', 
+		production = '/javascripts/production.js', 
+		cwd = '', 
+		includes=[], 
+		current_includes=[];
 	var total = []; //used to store text
 	//returns true if a path is absolute
 	var is_absolute = function(path){
@@ -40,12 +45,24 @@
 	var is_domain_absolute = function(path){
 		return path.indexOf('http') == 0 || path.indexOf('file://') == 0
 	};
+	var is_relative = function(path){
+		return !is_absolute(path);
+	};
 	var get_domain = function(path){
 		return path.split('/')[2];
-	}
-	
+	};
+	var is_included = function(path){
+		for(var i = 0; i < includes.length; i++){
+			if(includes[i].absolute == path) return true;
+		}
+		for(var i = 0; i < current_includes.length; i++){
+			if(current_includes[i].absolute == path) return true;
+		}
+		return false;
+	};
 	//joins 2 folders.  This takes into account things like ../../
 	var join = function(first, second){
+		if(second == '') return first.substr(0,first.length-1)
 		var first_parts = first.split('/');
 		first_parts.pop();
 		var second_parts = second.split('/');
@@ -149,7 +166,7 @@
 	
 	include.get_absolute_path = function(){
 		if(is_absolute(cwd)) return cwd;
-		return join(PAGE_ROOT,cwd);
+		return join(PAGE_ROOT+'/',cwd);
 	}
 	
 	
@@ -167,9 +184,14 @@
 			return;
 		}
 		newInclude.name = include.normalize(  name.indexOf('.js') == -1  ? name+'.js' : name  );
+		newInclude.absolute = newInclude.name;
+		if(is_relative(newInclude.absolute)){
+			newInclude.absolute = join(include.get_absolute_path()+'/', name.indexOf('.js') == -1  ? name+'.js' : name);
+		}
+		if(is_included(newInclude.absolute)) return;
 		var ar = newInclude.name.split('/');
 		ar.pop();
-		newInclude.start = ar.join('/')
+		newInclude.start = ar.join('/');
 		current_includes.unshift(  newInclude );
 	}
 	include.normalize = function(path){
@@ -191,6 +213,7 @@
 		}
 		return path;
 	}
+	
 	/**
 	 * called after a file is loaded.  Then it takes the last one
 	 * and loads it.  If it is the last one and it is in compression
