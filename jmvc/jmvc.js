@@ -111,7 +111,7 @@ JMVC.loaded = function() {
 	}
 };
 
-include.plugins("helpers","inflector","event","query", "file","view","controller","includer");
+include.plugins("standard");
 		  
 //JMVC.handle_error = function(error){
 //	alert(error.toString());
