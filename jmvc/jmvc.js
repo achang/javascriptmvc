@@ -91,25 +91,6 @@ JMVC.Test = {};
 	};
 })();
 
-JMVC.SETUP.waiting_for = [];
-JMVC.wait_for = function(name) {
-	JMVC.SETUP.waiting_for.push(name);
-};
-
-JMVC.libraries_loaded_counter = -1;
-// libraries call this function when they are done loading
-// when all libraries have loaded, this function calls the 
-// JMVC.user_initialize_function()
-JMVC.loaded = function() {
-	JMVC.libraries_loaded_counter=JMVC.libraries_loaded_counter+1;
-	var total_to_load = JMVC.SETUP.waiting_for.length + JMVC.SETUP.included_libraries.length;
-	if(JMVC.libraries_loaded_counter >= total_to_load && !JMVC.initialized) {
-		JMVC.initialized = true;
-		JMVC.user_initialize_function();
-		if(JMVC.remote == true)
-			JMVC.cache_templates = false;
-	}
-};
 
 include.plugins("standard");
 		  
