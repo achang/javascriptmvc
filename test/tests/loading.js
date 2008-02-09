@@ -14,12 +14,13 @@ JMVCTest = {
 			assert(JMVC.Test.action_run, 'The first action wasnt run')
 			assertEqual("Hello World", JMVC.Test.rendered   )
 			
-	    }},
+	    }}
+		/*,
 		test_include_plugins: function() { with(this) {
 			// the simple app loads Jester and LocalStorage
 			assert(Jester)
 			assert(LocalStorage)
-	    }}
+	    }}*/
 	    
 	  }, "testlog");
 	}

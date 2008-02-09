@@ -2,10 +2,10 @@
  */
 
 JMVC.Test.environment_run = true
-include.plugins('local_storage','jester')
+//include.plugins('local_storage','jester')
 JMVC.Initializer(function(){
 	
 	JMVC.Test.initializer_run = true;
-	include('app/controllers/main_controller')
+	include.controllers('main')
 	
 });
