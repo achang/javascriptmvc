@@ -56,7 +56,7 @@ JMVC.check_dependency = function(dependency_class_name, dependent_file_name) {
 include.plugin = function(plugin_name) {
 	var current_path = include.get_path();
 	include.set_path(JMVC_ROOT);
-	include(jFile.join('plugins', plugin_name, 'setup'));
+	include('plugins/'+ plugin_name+'/setup');
 	include.set_path(current_path);
 };
 
@@ -110,17 +110,8 @@ JMVC.loaded = function() {
 			JMVC.cache_templates = false;
 	}
 };
-if(typeof Prototype == 'undefined') include("dependencies/query_event");
 
-
-include( 
-		  "dependencies/helpers",
-		  "dependencies/Inflector",
-		  "dependencies/file",
-		  "dependencies/ejs",
-		  "core/controller",
-		  "core/Include",
-		  "core/View");
+include.plugins("helpers","inflector","event","query", "file","view","controller","includer");
 		  
 //JMVC.handle_error = function(error){
 //	alert(error.toString());

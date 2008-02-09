@@ -1,10 +1,3 @@
-if(typeof Prototype != 'undefined') {
-	$$.descendant = function(element, selector) {
-		return element.getElementsBySelector(selector);
-	};
-}
-
-
 Object.extend = function(destination, source) {
   for (var property in source) 
     destination[property] = source[property];
@@ -76,7 +69,7 @@ Date.prototype.number_of_days_in_month = function() {
 
 
 
-String.prototype.camalize = function(){
+String.prototype.camelize = function(){
 	var parts = this.split('_');
 	for(var i = 0; i < parts.length; i++){
 		parts[i] = parts[i].capitalize();
@@ -159,4 +152,10 @@ if(typeof Function.prototype.bind == 'undefined'){
 	    return __method.apply(object, args.concat(Array.from(arguments) )  );
 	  }
 	};
+}
+
+if(typeof $ == 'undefined'){
+	$ = function(id){
+		return document.getElementById(id);
+	}
 }
