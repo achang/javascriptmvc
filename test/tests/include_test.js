@@ -9,6 +9,9 @@ JMVCTest = {
 		},
 		teardown: function() {
 		},
+		test_redundant : function(){with(this){
+			assertEqual(1, TEST.load2);
+		}},
 	    test_start_path: function() { with(this) {
 			assertEqual("test_apps/include",include.get_path());
 	    }},

@@ -1,4 +1,4 @@
-
+TEST.load2 = 0;
 TEST.Local = true;
 TEST.Localorder = TEST.order++;
 if(JMVCTest.TEST_MODE != 'compress')
