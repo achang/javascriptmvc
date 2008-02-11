@@ -1373,5 +1373,3 @@ JMVC.ActiveRecord.table_names_hash = {};
  * @private
  */
 JMVC.ActiveRecord._associations_are_setup = false;
-
-JMVC.loaded()

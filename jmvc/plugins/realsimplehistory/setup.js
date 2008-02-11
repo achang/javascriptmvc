@@ -718,5 +718,3 @@ JMVC.View.link_to_onclick_and_href = function(html_options, options, post) {
     html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
     html_options.href='#'+(options ? JMVC.Routes.url_for(options) : '')
 }
-
-JMVC.loaded()

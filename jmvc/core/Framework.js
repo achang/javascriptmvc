@@ -163,6 +163,7 @@ JMVC.Error.file_name = function(e) {
 
 
 
+
 include.set_path(APPLICATION_ROOT);
 //jFile.set_cwd(APPLICATION_ROOT);
 JMVC.user_initialize_function();
