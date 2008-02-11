@@ -1,14 +1,15 @@
 Ajax = {}
-Ajax.request = function(url,options){
+Ajax.Request = function(url,options){
 	options.asynchronous = options.asynchronous || false
 	options.method = options.method || 'post'
 	
 	var factory = Ajax.factory();
+	this.transport =factory;
 	if(options.asynchronous == true){
 	   factory.open("GET", url, false);
 	   try{factory.send(null);}
 	   catch(e){return null;}
-	   return factory;
+	   return;
 	}else{
 	   factory.onreadystatechange = function(){
 			if(factory.readyState == 4){

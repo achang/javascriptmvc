@@ -310,7 +310,7 @@ EJS = function( options ){
 		var template = EJS.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == EJS.INVALID_PATH) return null;
-		this.text = new Ajax.request(options.url+('?'+Math.random() ), {asynchronous: true}).transport.responseText;
+		this.text = new Ajax.Request(options.url+('?'+Math.random() ), {asynchronous: true}).transport.responseText;
 		if(this.text == null){
 			//EJS.update(options.url, this.INVALID_PATH);
 			throw 'There is no template at '+options.url;
@@ -393,7 +393,7 @@ EJS.prototype = {
 				var object = eval( request.responseText );
 				EJS.prototype.update.call(_template, element, object);
 			};
-			new Ajax.request(params.url, params)
+			new Ajax.Request(params.url, params)
 		}else
 		{
 			element.innerHTML = this.render(options);
