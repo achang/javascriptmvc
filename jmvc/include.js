@@ -240,11 +240,7 @@
 			latest.text = syncrequest(latest.name);
 			total.push( latest);
 		}
-		
-		
 		insert(latest.name);
-		
-		
 	}
 	include.end_of_production = function(){
 		first_wave_done = true;
@@ -275,10 +271,6 @@
 	}
 	
 	var insert = function(src){
-		//if you are compressing, load, eval, and then call end and return.
-		
-		
-		
 		if(navigator.userAgent.match(/Safari/) ){
 			var start = script_tag();
 			start.src = INCLUDE_PATH+'?'+Math.random()
@@ -301,8 +293,6 @@
 		}
 		else
 		{
-			//alert((src? '<script type="text/javascript" src="'+src+(true ? '': '?'+Math.random() )+'"></script>':'')+
-			//	'<script type="text/javascript" src="'+INCLUDE_PATH+(navigator.userAgent.match(/Firefox/) ? '': '?'+Math.random() )+'"></script>')
 			document.write(
 				(src? '<script type="text/javascript" src="'+src+(true ? '': '?'+Math.random() )+'"></script>':'')+
 				'<script type="text/javascript" src="'+INCLUDE_PATH+(navigator.userAgent.match(/Firefox/) ? '': '?'+Math.random() )+'"></script>'
@@ -315,8 +305,6 @@
 		return start;
 	}
 	
-	
-
 	var newRequest = function(){
 	   var factories = [function() { return new XMLHttpRequest(); },function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
 	   for(var i = 0; i < factories.length; i++) {
@@ -340,4 +328,53 @@
 	//	include(INCLUDE_ROOT+'jmvc')
 	//}
 	
+	//JMVC stuff
+	JMVC = function() {};
+	JMVC.OPTIONS = {};
+	JMVC.Test = {};
+	
+	//sets default app root to whatever page we are currently loading
+	//can be changed by set application root
+	(function() {
+		var jmvc_root = INCLUDE_ROOT, 
+			application_root = location.href.substring(0, location.href.lastIndexOf('/') )+ '/';
+		JMVC.root = function(){
+			return jmvc_root;
+		};
+		JMVC.set_application_root = function(path){
+			application_root = path;
+		};
+		JMVC.get_application_root = function(){
+			return application_root;
+		};
+	})();
+	
+	
+	/**
+	 * <p>Loads the correct version of JMVC.</p>
+	 * <p>Saves the user defined app_init_func to be executed later (once JMVC files are included).</p>
+	 */
+	JMVC.Initializer = function(user_initialize_function) {
+		if(include.get_path().lastIndexOf('/') == -1) {
+			JMVC.set_application_root('');
+		} else {
+			var config_folder = include.get_path();
+			JMVC.set_application_root(include.get_path().substring(0, config_folder.lastIndexOf('/')));
+		}
+		JMVC.user_initialize_function = user_initialize_function;
+		include(JMVC.root()+'/framework');
+	};
+	
+	
+	include.plugin = function(plugin_name) {
+		var current_path = include.get_path();
+		include.set_path(JMVC.root());
+		include('plugins/'+ plugin_name+'/setup');
+		include.set_path(current_path);
+	};
+	
+	include.plugins = function(){
+		for(var i=0; i < arguments.length; i++)
+			include.plugin(arguments[i]);
+	};
 })();
