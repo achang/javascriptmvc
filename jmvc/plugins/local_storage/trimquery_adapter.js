@@ -8,7 +8,7 @@ JMVC.TrimQueryAdapter.setup = function(schema) {
         else if (type == 'date' || type == 'datetime')
             return 'Datetime';
         return 'String';
-    }
+    };
 	for(var i=0; i<schema.tables.length; i++) {
 		var table = schema.tables[i];
 		var trimquery_schema = {};
@@ -19,19 +19,19 @@ JMVC.TrimQueryAdapter.setup = function(schema) {
 	    this._data_schema[table.name] = trimquery_schema;
 	}
 	this.setup_complete = true;
-}
+};
 // boolean attribute that signifies whether setup has been performed on this adapter or not
 JMVC.TrimQueryAdapter.setup_complete = false;
 // performs the query and returns results
 JMVC.TrimQueryAdapter.execute = function(sql) {
     return this._data_provider.query(this._sqlPrepare(sql));
-}
+};
 JMVC.TrimQueryAdapter._data_provider = {
     query : function(stmt) { 
         return stmt.filter(this.memoryData); 
     },
     memoryData : {}
-}
+};
 /**
  * Stores the "schema" required by TrimQuery, which contains an object hashed 
  * by each table name, and objects for each field
@@ -50,7 +50,7 @@ JMVC.TrimQueryAdapter._queryLang = function(forceReset) {
         this._sqlPrepare_cache = {};
     }
     return this._model_query_lang;
-}
+};
 /**
  * Stores previously performed queries and their results for quick access
  */
@@ -65,4 +65,4 @@ JMVC.TrimQueryAdapter._sqlPrepare = function(sql, sqlParams) {
         this._sqlPrepare_cache[key] = sqlPrepare_value;
     }
     return this._sqlPrepare_cache[key];
-}
+};

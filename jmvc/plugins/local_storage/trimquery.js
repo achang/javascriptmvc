@@ -1,4 +1,4 @@
-if(typeof Cruiser.Parser == 'undefined') throw 'TrimQuery needs Cruiser parser'
+if(typeof Cruiser.Parser == 'undefined') throw 'TrimQuery needs Cruiser parser';
 /**
  * TrimPath Query. Release 1.0.38.
  * Copyright (C) 2004, 2005 Metaha.
@@ -32,10 +32,10 @@ var TrimQuery = {};
     TrimPath.makeQueryLang_etc.Error = function(message, stmt) { // The stmt can be null, a String, or an Object.
         this.message = message; 
         this.stmt    = stmt;
-    }
+    };
     TrimPath.makeQueryLang_etc.Error.prototype.toString = function() { 
         return ("TrimPath query Error in " + (this.stmt != null ? this.stmt : "[unknown]") + ": " + this.message);
-    }
+    };
 
     var TODO  = function() { throw "currently unsupported"; };
     var USAGE = function() { throw "incorrect keyword usage"; };
@@ -53,7 +53,7 @@ var TrimQuery = {};
             aliasArr.push({ aliasKey: aliasKey, scope: scope, orig: scope[aliasKey] });
             scope[aliasKey] = obj;
             return obj;
-        }
+        };
 
         var queryLang = new QueryLang();
 
@@ -71,13 +71,13 @@ var TrimQuery = {};
                         args[k] instanceof typeCheck == false)
                         throw new etc.Error("TrimQuery::checkArgs - wrong type for " + args[k] + " to " + name);
             return args;
-        }
+        };
         
         var sql_date_to_js_date = function(data) {
             if(typeof data == "string") {
-                var date_format_1 = /\d{4}-\d{1,2}-\d{1,2}/
-                var date_format_2 = /\d{4}\/\d{1,2}\/\d{1,2}/
-                var date_format_3 = /\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}/
+                var date_format_1 = /\d{4}-\d{1,2}-\d{1,2}/;
+                var date_format_2 = /\d{4}\/\d{1,2}\/\d{1,2}/;
+                var date_format_3 = /\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}/;
                 if(data.match(date_format_3)) {
 					var timeArr = data.match(date_format_3)[0].split(' ')[1].split(':');
            			var dateArr = data.match(date_format_3)[0].split(' ')[0].split('-');
@@ -93,8 +93,8 @@ var TrimQuery = {};
                     return new Date(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10));
                 }
             }
-            throw('TrimQuery: Unrecognized date format.')
-        }
+            throw('TrimQuery: Unrecognized date format.');
+        };
         
         var data_insertion = function(table_info, field_name, data, column_ref) {
             if(table_info[field_name]) {
@@ -107,10 +107,10 @@ var TrimQuery = {};
                 else if(data && table_info[field_name].type && table_info[field_name].type == 'Datetime')
                     data = sql_date_to_js_date(data);
 				else if(data && table_info[field_name].type && table_info[field_name].type == 'String')
-					column_ref[field_name] = data.replace(/\\'/g, "\'").replace(/\\"/g, "\"")
+					column_ref[field_name] = data.replace(/\\'/g, "\'").replace(/\\"/g, "\"");
                 column_ref[field_name] = data;
             }
-        }
+        };
     
         var NodeType = { // Constructor functions for SELECT statement tree nodes.
             select : function(args) {
@@ -154,7 +154,7 @@ var TrimQuery = {};
                                 results[i][attr] = dateToString(value);
                         }
                     }
-                }
+                };
                 
 
                 this.prepareFilter = function() {
@@ -172,7 +172,7 @@ var TrimQuery = {};
                         columnConvertor = compileColumnConvertor(nodes.from.tables, columns);
                     if (orderByComparator == null && nodes.orderBy != null)
                         orderByComparator = compileOrderByComparator(nodes.orderBy.exprs, columns);
-                }
+                };
 			    
                 /* params is a list of parameters including:
                  * with_table: if set to true, the results will include table_name+'.'+field_name
@@ -182,7 +182,7 @@ var TrimQuery = {};
                 this.filter = function(dataTables, bindings, params) {
                     var group_by_comparator = function(a, b) {
 			        	return arrayCompare(a.groupByValues, b.groupByValues);
-			    	}
+			    	};
 					
 					this.prepareFilter();
                     if (bindings == null)
@@ -244,9 +244,9 @@ var TrimQuery = {};
                         result = result.slice(start, start + (nodes.limit.total > 0 ? nodes.limit.total : result.length));
                     }
                     
-                    typeConverter(result)
+                    typeConverter(result);
                     return result;
-                }
+                };
                 
                 setSSFunc(this, function() {
                     var sqlArr = [ "SELECT", map(columns, toSqlWithAlias).join(", "), nodes.from.toSql() ];
@@ -281,7 +281,7 @@ var TrimQuery = {};
                         data_insertion(table_info, field_name, object[field_name], dataTables[table_name][dataTables[table_name].length-1]);
                     }
                     return true;
-                }
+                };
 
                 setSSFunc(this, function() {
                     var sqlArr = [ "INSERT INTO", table_info.toSql(), '('+$H(object).keys().join(', ')+')', 
@@ -307,13 +307,13 @@ var TrimQuery = {};
                         }
                     }
                     return true;
-                }
+                };
 
                 setSSFunc(this, function() {
                     var sqlArr = [ "UPDATE", from_node.toSql() ];
                     var assignmentsArr = [];
                     for(var attr in assignments) {
-                        assignmentsArr.push(attr+'='+assignments[attr])
+                        assignmentsArr.push(attr+'='+assignments[attr]);
                     }
                     sqlArr.push(assignmentsArr.join(', '));
                     if (where_node != null)
@@ -337,7 +337,7 @@ var TrimQuery = {};
                     }
                     // then go through each table in the dataTables, each record, deleting any records that are empty objects
                     for(var table_name in dataTables) {
-                        var table = dataTables[table_name]
+                        var table = dataTables[table_name];
                         for(var i = 0; i<table.length; i++) {
                             if($H(table[i]).keys().length == 0)
                                 delete table[i];
@@ -349,7 +349,7 @@ var TrimQuery = {};
                     }
                     
                     return true;
-                }
+                };
                 
                 setSSFunc(this, function() {
                     var sqlArr = [ "DELETE", select_node.toSql() ];
@@ -372,7 +372,7 @@ var TrimQuery = {};
                 this.AS = function(aliasArg) { 
                     this[".alias"] = this.ASC[".alias"] = this.DESC[".alias"] = aliasArg; 
                     return aliasReg(aliasArg, queryLang, this); 
-                }
+                };
                 this.ASC  = setSSFunc({ ".name": name, ".alias": theExpr[".alias"], order: "ASC" }, 
                                       function() { return theExpr[".alias"] + " ASC"; });
                 this.DESC = setSSFunc({ ".name": name, ".alias": theExpr[".alias"], order: "DESC" }, 
@@ -401,7 +401,7 @@ var TrimQuery = {};
                 setSSFunc(this, function() { return name; });
                 this.AS = function(alias) { 
                     return aliasReg(alias, queryLang, new NodeType.tableDef(name, columnInfos, alias)); 
-                }
+                };
                 this.ALL    = new NodeType.columnDef("*", null, this);
                 this.ALL.AS = null; // SELECT T.* AS X FROM T is not legal.
             },
@@ -417,9 +417,9 @@ var TrimQuery = {};
                 });
                 this.AS = function(aliasArg) { 
                     return aliasReg(aliasArg, queryLang, new NodeType.columnDef(name, columnInfo, tableDef, aliasArg)); 
-                }
+                };
                 if(columnInfo && columnInfo.type)
-                    this.type = columnInfo.type
+                    this.type = columnInfo.type;
                 else
                     this.type = "String";
                 this.ASC  = setSSFunc({ ".name": name, ".alias": theColumnDef[".alias"], tableDef: tableDef, order: "ASC" }, 
@@ -442,9 +442,9 @@ var TrimQuery = {};
                     if (theJoin.USING_exprs != null)
                         return (" USING (" + theJoin.USING_exprs.join(", ") + ")");
                     return "";
-                }
+                };
             }
-        }
+        };
     
         var setSSFunc = function(obj, func) { obj.toSql = obj.toJs = obj.toString = func; return obj; };
 
@@ -454,7 +454,7 @@ var TrimQuery = {};
                 if (i > 0) {
                     var sep = this.tables[i].fromSeparator;
                     if (sep == null)
-                        sep = ", "
+                        sep = ", ";
                     sqlArr.push(sep);
                 }
                 sqlArr.push(toSqlWithAlias(this.tables[i]));
@@ -480,8 +480,8 @@ var TrimQuery = {};
                 if (this.opFix > 0) // suffix
                     return "(" + map(this.args, toFunc, flags).join(") " + this[opText] + " (") + ") " + this[opText];
                 return "(" + map(this.args, toFunc, flags).join(") " + this[opText] + " (") + ")"; // infix
-            }
-        }
+            };
+        };
     
         NodeType.expression.prototype.toSql = makeToFunc(toSql, "sqlText");
         NodeType.expression.prototype.toJs  = makeToFunc(toJs,  "jsText");
@@ -491,7 +491,7 @@ var TrimQuery = {};
             if (flags != null && flags.aliasOnly == true && this[".alias"] != this[".name"])
                 return this[".alias"];
             return this.jsText + " ('" + this[".alias"] + "', (" + map(this.args, toJs).join("), (") + "))";
-        }
+        };
 
         NodeType.join.prototype = new NodeType.tableDef();
 
@@ -501,8 +501,8 @@ var TrimQuery = {};
         NodeType.havingSql = function(sql) { this.exprs = [ new NodeType.rawSql(sql) ]; };
         NodeType.havingSql.prototype = new NodeType.having([new NodeType.expression([0], null, 0, null, 0, null, null, null)]);
 
-        NodeType.rawSql = function(sql) { this.sql = sql; }
-        NodeType.rawSql.prototype.toSql = function(flags) { return this.sql; }
+        NodeType.rawSql = function(sql) { this.sql = sql; };
+        NodeType.rawSql.prototype.toSql = function(flags) { return this.sql; };
         NodeType.rawSql.prototype.toJs = function(flags) { 
             var js = this.sql;
             js = js.replace(/ AND /g, " && ");
@@ -527,7 +527,7 @@ var TrimQuery = {};
             // replace all table+'.'+column with valueOf()
             js = js.replace(/(\w+\.\w+)/g, "$1 && $1.valueOf()");
             return js;
-        }
+        };
 
         var keywords = {
             INSERT  :   function() { return new NodeType.insert(arguments); },
@@ -601,7 +601,7 @@ var TrimQuery = {};
         for (var tableName in tableInfos)
             queryLang[tableName] = new NodeType.tableDef(tableName, tableInfos[tableName]);
         return queryLang;
-    }
+    };
 
     /////////////////////////////////////////////////////
     
@@ -629,7 +629,7 @@ var TrimQuery = {};
         }
         funcText.push("return result; }; TrimPath_query_tmpJD");
         return eval(funcText.join(""));
-    }
+    };
 
     var compileFilter = function(bodyFunc, tables, whereExpressions, flags) { // Used for WHERE and HAVING.
         var funcText = [ "var TrimPath_query_tmpWF = function(_BINDINGS" ];
@@ -639,7 +639,7 @@ var TrimQuery = {};
         bodyFunc(funcText, tables, whereExpressions, flags);
         funcText.push("return true; }}; TrimPath_query_tmpWF");
         return eval(funcText.join(""));
-    }
+    };
     
     var compileFilterForJoin = function(funcText, tables, whereExpressions, flags) {
         for (var i = 0; i < tables.length; i++) { // Emit JOIN ON/USING clauses.
@@ -647,7 +647,7 @@ var TrimQuery = {};
                 if (tables[i].ON_exprs != null || tables[i].USING_exprs != null) {
                     funcText.push("if (!(");
                     if (tables[i].ON_exprs != null && tables[i].ON_exprs[0].exprs != null) {
-                        funcText.push(tables[i].ON_exprs[0].exprs[0].toJs())
+                        funcText.push(tables[i].ON_exprs[0].exprs[0].toJs());
                     } else if(tables[i].ON_exprs != null)
                         funcText.push(map(tables[i].ON_exprs, toJs).join(" && "));
                     if (tables[i].USING_exprs != null)
@@ -658,7 +658,7 @@ var TrimQuery = {};
                 }
             }
         }
-    }
+    };
 
     var compileFilterForWhere = function(funcText, tables, whereExpressions, flags) {
         if (whereExpressions != null) {
@@ -670,7 +670,7 @@ var TrimQuery = {};
             }
             funcText.push("))) return false;");
         }
-    }
+    };
     var compileColumnConvertor = function(tables, columnExpressions) {
         var funcText = [ "var TrimPath_query_tmpCC = function(_BINDINGS, " ];
         var table_aliases = [];
@@ -686,11 +686,11 @@ var TrimQuery = {};
         funcText.push("}");
         funcText.push("return _RESULT; }}; TrimPath_query_tmpCC");
         return eval(funcText.join(""));
-    }
+    };
     
     var test = function(stuff) {
         var i;
-    }
+    };
     var compileColumnConvertorHelper = function(funcText, columnExpressions, with_table) {
         for (var i = 0; i < columnExpressions.length; i++) {
             var columnExpression = columnExpressions[i];
@@ -708,7 +708,7 @@ var TrimQuery = {};
                 funcText.push(");");
             }
         }
-    }
+    };
     
     var dateToString = function(date) {
         if(typeof date == 'object')
@@ -716,16 +716,16 @@ var TrimQuery = {};
 				date.getHours(), ':', date.getMinutes(), ':', date.getSeconds()].join('');
         if(date == null)
             return null;
-    }
+    };
 
     var compileOrderByComparator = function(orderByExpressions, columns) {
         var funcText = [ "var TrimPath_query_tmpOC = function(A, B) { var a, b; " ];
         for (var i = 0; i < orderByExpressions.length; i++) {
             var orderByExpression = orderByExpressions[i];
-			var name = orderByExpression['.name']
+			var name = orderByExpression['.name'];
 			for(var j=0; j<columns.length; j++) {
 				if(name == columns[j]['.name'])
-					orderByExpression['.alias'] = columns[j]['.alias']
+					orderByExpression['.alias'] = columns[j]['.alias'];
 			}
             if(orderByExpression.tableDef) {
                 funcText.push("a = A['" + orderByExpression[".alias"] + "'] || A['" + 
@@ -742,7 +742,7 @@ var TrimQuery = {};
         }
         funcText.push("return 0; }; TrimPath_query_tmpOC");
         return eval(funcText.join(""));
-    }
+    };
 
     var compileGroupByCalcValues = function(tables, groupByExpressions) {
         var funcText = [ "var TrimPath_query_tmpGC = function(_BINDINGS" ];
@@ -756,7 +756,7 @@ var TrimQuery = {};
         }
         funcText.push("return _RESULT; }; TrimPath_query_tmpGC");
         return eval(funcText.join(""));
-    }
+    };
 
     /////////////////////////////////////////////////////
 
@@ -769,7 +769,7 @@ var TrimQuery = {};
             if (x[i] > y[i]) return 1;
         }
         return 0;
-    }
+    };
     
     var toSqlWithAlias = function(obj, flags) { 
         var res = toSql(obj, flags);
@@ -777,28 +777,28 @@ var TrimQuery = {};
             obj[".alias"] != obj[".name"])
             return res + " AS " + obj[".alias"];
         return res;
-    }
-    var toSql = function(obj, flags) { return toX(obj, "toSql", flags); }
-    var toJs  = function(obj, flags) { return toX(obj, "toJs",  flags); }
+    };
+    var toSql = function(obj, flags) { return toX(obj, "toSql", flags); };
+    var toJs  = function(obj, flags) { return toX(obj, "toJs",  flags); };
     var toX   = function(obj, funcName, flags) {
         if (typeof(obj) == "object" && obj[funcName] != null)
             return obj[funcName].call(obj, flags);
         return theString(obj);
-    }
+    };
 
-    var zeroDefault = function(x) { return (x != null ? x : 0); }
+    var zeroDefault = function(x) { return (x != null ? x : 0); };
     
     var map = function(arr, func, arg2) { // Lisp-style map function on an Array.
         for (var result = [], i = 0; i < arr.length; i++)
             result.push(func(arr[i], arg2));
         return result;
-    }
+    };
 
     var cleanArray = function(src, quotes) {
         for (var result = [], i = 0; i < src.length; i++)
             result.push(cleanString(src[i], quotes));
         return result;
-    }
+    };
 
     var cleanString = TrimPath.TEST.cleanString = function(src, quotes) { // Example: "hello" becomes "'hello'"
         if (src instanceof theString || typeof(src) == "string") {
@@ -807,40 +807,40 @@ var TrimQuery = {};
                 src = "'" + src + "'";
         }
         return src;
-    }
+    };
 
     var findClause = function(str, regexp) {
         var clauseEnd = str.search(regexp);
         if (clauseEnd < 0)
             clauseEnd = str.length;
         return str.substring(0, clauseEnd);
-    }
-	QueryLang.Grammar = {}
+    };
+	QueryLang.Grammar = {};
 	QueryLang._setup_grammar = function() {
 		var g = QueryLang.Grammar;
 		with ( Parser.Operators ) {
-	  	  g.single_quote = token(/'(\\'|[^'])*'/) //matches everything between ''
-		  g.double_quote = token(/"(\\"|[^"])*"/) //matches everything between ""
-		  g.word = token(/\w+/)				//matches an entire word
-		  g.date = token(/#.+#/)
+	  	  g.single_quote = token(/'(\\'|[^'])*'/); //matches everything between ''
+		  g.double_quote = token(/"(\\"|[^"])*"/); //matches everything between ""
+		  g.word = token(/\w+/);				//matches an entire word
+		  g.date = token(/#.+#/);
 		  
-		  g.parts = any(g.single_quote, g.double_quote, g.word, g.date) //matches 1, "", or ''
+		  g.parts = any(g.single_quote, g.double_quote, g.word, g.date); //matches 1, "", or ''
 		  
 		  
-		  g.open_bracket = token(/\[/) // matches [
-		  g.close_bracket = token(/\]/) // matches ] 
-		  g.equal = token('=') //matches =
+		  g.open_bracket = token(/\[/); // matches [
+		  g.close_bracket = token(/\]/); // matches ] 
+		  g.equal = token('='); //matches =
 		  if(JMVC.database_adapter =='msaccess'){
-			  g.field = between(g.open_bracket, g.word, g.close_bracket) //matches [ word ]
-			  g.pair = pair(g.field, g.parts,g.equal )
+			  g.field = between(g.open_bracket, g.word, g.close_bracket); //matches [ word ]
+			  g.pair = pair(g.field, g.parts,g.equal );
 		  }else
 		  {
-		  	g.pair = pair(g.word, g.parts,g.equal )
+		  	g.pair = pair(g.word, g.parts,g.equal );
 		  }
 		  
-		  g.update_list = list(g.pair) 
+		  g.update_list = list(g.pair); 
 		  
-		  g.list = list(g.parts)
+		  g.list = list(g.parts);
 		}
 	}();
 	
@@ -879,7 +879,7 @@ var TrimQuery = {};
         
         var strip_whitespace = function(str) {
             return str.replace(/\s+/g, '');
-        }
+        };
         
         if (query_type == 'SELECT' || query_type == 'DESTROY') {
             
@@ -913,9 +913,9 @@ var TrimQuery = {};
             if(strip_whitespace(columnsClause) == '*' || columnsClause == null) {
                 var new_columns = [];
                 for(var i=0; i<fromTables.length; i++) {
-                    new_columns.push(fromTables[i]+'.ALL')
+                    new_columns.push(fromTables[i]+'.ALL');
                 }
-                columnsClause = columnsClause.replace(/\*/, new_columns.join(', '))
+                columnsClause = columnsClause.replace(/\*/, new_columns.join(', '));
             }
             var whereClause   = findClause(remaining, /\sGROUP BY\s|\sHAVING\s|\sORDER BY\s|\sLIMIT/);
             remaining = remaining.substring(whereClause.length);
@@ -945,15 +945,15 @@ var TrimQuery = {};
             var intoSplit = sqlQuery.substring(6).split(" INTO ");
             if (intoSplit.length != 2)
                 err("missing an INTO clause");
-            var insertion_regex = /^\s*(\w+)\s*\((.+)\)\s+VALUES\s+\(((.|\n)+)\)/
+            var insertion_regex = /^\s*(\w+)\s*\((.+)\)\s+VALUES\s+\(((.|\n)+)\)/;
             var parsed_sql = intoSplit[1].match(insertion_regex);
             var table_name = parsed_sql[1];
             var fields = strip_whitespace(parsed_sql[2]).split(',');
             
-			var field_value_parens = parsed_sql[3]
+			var field_value_parens = parsed_sql[3];
 			//alert(field_value_parens)
 			
-			var values = QueryLang.Grammar.list(parsed_sql[3])[0]
+			var values = QueryLang.Grammar.list(parsed_sql[3])[0];
 			
 			//var values = parsed_sql[3].split(',');
             //if (fields.length != values.length)
@@ -981,11 +981,11 @@ var TrimQuery = {};
 			var object_hash = {};
 			for(var i=0; i<values.length; i++) {
 				if(JMVC.database_adapter =='msaccess')
-                	object_hash[values[i][0][1]] = values[i][1]
+                	object_hash[values[i][0][1]] = values[i][1];
 				else
-					object_hash[values[i][0]] = values[i][1]
+					object_hash[values[i][0]] = values[i][1];
             }
-            var update_regex = /^UPDATE\s+(\w+)\s+SET\s+(\w+\s*=\s*\w+)/
+            var update_regex = /^UPDATE\s+(\w+)\s+SET\s+(\w+\s*=\s*\w+)/;
             var parsed_sql = sqlQuery.match(update_regex);
             
             var tql = ['UPDATE(FROM(', fromClause, '), ', $H(object_hash).toJSON()];
@@ -999,5 +999,5 @@ var TrimQuery = {};
         with (this) {
             return eval(tql.join(''));
         }
-    }
+    };
 }) ();
