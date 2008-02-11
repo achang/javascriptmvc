@@ -68,14 +68,15 @@ Date.prototype.number_of_days_in_month = function() {
 
 
 
-
-String.prototype.camelize = function(){
-	var parts = this.split('_');
-	for(var i = 0; i < parts.length; i++){
-		parts[i] = parts[i].capitalize();
-	}
-	return parts.join('');
-};
+if(typeof String.prototype.camelize == 'undefined'){
+	String.prototype.camelize = function(){
+		var parts = this.split('_');
+		for(var i = 0; i < parts.length; i++){
+			parts[i] = parts[i].capitalize();
+		}
+		return parts.join('');
+	};
+}
 
 /* Cross-Browser Split v0.1; MIT-style license
 By Steven Levithan <http://stevenlevithan.com>
