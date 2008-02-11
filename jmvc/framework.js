@@ -83,87 +83,12 @@ JMVC.Framework.render_error = function(e) {
 	return;
 };
 
-/**
- * Places the rendered page string in an element inside the page.
- * @param {String} render_container_id The element ID in the page where the rendered content will be placed
- * @param {String} content The rendered string to be placed into the page
- */
-JMVC.Framework.display_content = function(render_container_id, content) {
-    var el = $(render_container_id);
-    if (el)
-        el.innerHTML = content;
-};
-
-
-/**
- * 
- * @class This class is an Exception that gets thrown when something goes wrong in a JMVC application.
- *      <p>If an error occurs during an application, a JMVC.Error instance is created and then thrown.</p>
- *      <p>Here is an example of creating and throwing a JMVC.Error that will also give you an approximate 
- *          line number in Firefox: </p> 
- *      <pre class='example'>
- *          try {
- *               causeError();
- *           }
- *           catch (e) {
- *               thow(new JMVC.Error(JMVC.ErrorType.Request, e.lineNumber, "Framework.js"));
- *           }</pre> 
- *
- *      <p>Users can define their own error handling in one of two ways:</p>
- * <ol>
- * <li>Add a try...catch around the block of code they expect to fail</li>
- *      <pre class='example'>
- *          try {
- *              var task = Task.find(1).send();
- *          catch(e) {
- *              // swallow the exception in the case task 1 doesn't exist
- *          }</pre>
- * <li>Define their own error_handler controller action.  This action is called by default whenever an error occurs inside an action</li>
- *      <pre class='example'>
- *          error_handler : function(e) {
- *          if(e.type == JMVC.ErrorType.Request) {
- *              alert('There has been an error in a request')
- *          }</pre>
- * </ol>
- *
- *  @param {JMVC.ErrorType} type An integer specified by JMVC.ErrorType corresponding to the type of error
- * <p>The following ErrorType's are supported currently:</p>
- * <ul>
- * <li>JMVC.ErrorType.Not_authenticated: used when the server determines the user is not authenticated in the application.</li>
- * <li>JMVC.ErrorType.Request: used when there is an error while the server is processing a request.</li>
- * </ul>
- *  @param {int} lineNumber The line number of the error (this is currently only supported in Firefox)
- *  @param {string} fileName The name of the file that threw this error
- *
- * @addon
- */
-JMVC.Error = function(error, message, line_number){
-
-	for(var attr in error)
-		this[attr] = error[attr];
-	this.name = 'JMVCError';
-	this.message = message;
-	if(!this.lineNumber && line_number)
-		this.lineNumber = line_number;
-};
-
-JMVC.includeError = JMVC.Error;
-JMVC.TemplateError = JMVC.Error;
-
-JMVC.Error.file_name = function(e) {
-	if(e && e.fileName) {
-		var file = new jFile(e.fileName);
-		
-		return file.file_and_extension();
-	}
-	return null;
-};
-
-//JMVC.DISPATCH_FUNCTION(JMVC.Framework.JMVC_startup);
 
 
 
 
-include.set_path(APPLICATION_ROOT);
-//jFile.set_cwd(APPLICATION_ROOT);
+
+
+
+include.set_path(JMVC.get_application_root());
 JMVC.user_initialize_function();
