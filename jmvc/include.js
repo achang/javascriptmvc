@@ -336,6 +336,8 @@
 	   return request.responseText
 	}
 	
-	
+	//if(INCLUDE_ROOT.lastIndexOf('jmvc') !=-1){
+	//	include(INCLUDE_ROOT+'jmvc')
+	//}
 	
 })();

@@ -9,5 +9,5 @@ JMVC.include_order = ["/active_record/TrimQuery/parser.js",
 
 for(var i = 0; i < JMVC.include_order.length; i++)
 {
-	JMVC.require(JMVC_ROOT+'lib'+JMVC.include_order[i], {cache: true});
+	JMVC.require(JMVC.root()+'lib'+JMVC.include_order[i], {cache: true});
 }

@@ -279,7 +279,7 @@ window.dhtmlHistory = {
 	/*Private: Constant for our own internal history event called when the page is loaded*/
 	PAGELOADEDSTRING: "DhtmlHistory_pageLoaded",
 	
-	blank_html_path: JMVC_ROOT+'lib/realsimplehistory/',
+	blank_html_path: JMVC.root()+'lib/realsimplehistory/',
 	
 	/*Private: Our history change listener.*/
 	listener: null,
