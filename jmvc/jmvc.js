@@ -36,8 +36,14 @@ JMVC.DISPATCH_FUNCTION = function(startup) {
  * <p>Saves the user defined app_init_func to be executed later (once JMVC files are included).</p>
  */
 JMVC.Initializer = function(user_initialize_function) {
-  	var  config_folder = include.get_path();
-	APPLICATION_ROOT = include.get_path().substring(0, config_folder.lastIndexOf('/'));
+	// if APPLICATION_ROOT is located at the current directory, there wont be any '/'s in the path
+	if(include.get_path().lastIndexOf('/') == -1) {
+		APPLICATION_ROOT = '';
+	} else {
+		var config_folder = include.get_path();
+		// the APPLICATION_ROOT is the current path minus the config folder
+		APPLICATION_ROOT = include.get_path().substring(0, config_folder.lastIndexOf('/'));
+	}
 	JMVC.user_initialize_function = user_initialize_function;
 
     if(!(JMVC.ENV.ENVIRONMENT == 'development' || JMVC.ENV.ENVIRONMENT == 'production'))

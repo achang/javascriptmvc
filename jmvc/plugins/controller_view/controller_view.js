@@ -36,7 +36,11 @@ Controller.functions.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			result = new EJS({url:  APPLICATION_ROOT+'/'+url  }).render(data_to_render);
+			if(APPLICATION_ROOT == '')
+				var path = url;
+			else
+				var path = APPLICATION_ROOT+'/'+url;
+			result = new EJS({url:  path  }).render(data_to_render);
 		}
 		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];
