@@ -20,7 +20,22 @@ include.controllers = function(){
 		arguments[i] = 'app/controllers/'+arguments[i]+'_controller';
 	}
 	return include.apply(null, arguments);
-}
-
-
-
+};
+include.models = function(){
+	for(var i=0; i< arguments.length; i++){
+		arguments[i] = 'app/models/'+arguments[i];
+	}
+	return include.apply(null, arguments);
+};
+include.resources = function(){
+	for(var i=0; i< arguments.length; i++){
+		arguments[i] = 'resources/javascripts/'+arguments[i];
+	}
+	return include.apply(null, arguments);
+};
+include.views = function(){
+	for(var i=0; i< arguments.length; i++){
+		arguments[i] = 'app/views/'+arguments[i]+'.jstr';
+	}
+	return include.apply(null, arguments);
+};
