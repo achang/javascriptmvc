@@ -310,7 +310,7 @@ EJS = function( options ){
 		var template = EJS.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == EJS.INVALID_PATH) return null;
-		this.text = EJS.request(options.url+('?'+Math.random() ) );
+		this.text = new Ajax.request(options.url+('?'+Math.random() ), {asynchronous: true}).transport.responseText;
 		if(this.text == null){
 			//EJS.update(options.url, this.INVALID_PATH);
 			throw 'There is no template at '+options.url;
@@ -393,61 +393,13 @@ EJS.prototype = {
 				var object = eval( request.responseText );
 				EJS.prototype.update.call(_template, element, object);
 			};
-			EJS.ajax_request(params);
+			new Ajax.request(params.url, params)
 		}else
 		{
 			element.innerHTML = this.render(options);
 		}
 	}
 };
-/*if(typeof Prototype != 'undefined') {
-	EJS.request = function(path){
-		var response = new Ajax.Request(path, {asynchronous: false, method: "get"});
-		if ( response.transport.status == 404 || response.transport.status == 2 ||
-			(response.transport.status == 0 && response.transport.responseText == '') ) return null;
-	    return response.transport.responseText
-	}
-}else
-{*/
-	EJS.newRequest = function(){
-	   var factories = [function() { return new XMLHttpRequest(); },function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
-	   for(var i = 0; i < factories.length; i++) {
-	        try {
-	            var request = factories[i]();
-	            if (request != null)  return request;
-	        }
-	        catch(e) { continue;}
-	   }
-	};
-	
-	EJS.request = function(path){
-	   var request = new EJS.newRequest();
-	   request.open("GET", path, false);
-	   
-	   try{request.send(null);}
-	   catch(e){return null;}
-	   
-	   if ( request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
-	   
-	   return request.responseText;
-	};
-	EJS.ajax_request = function(params){
-		params.method = ( params.method ? params.method : 'GET');
-		
-		var request = new EJS.newRequest();
-		request.onreadystatechange = function(){
-			if(request.readyState == 4){
-				if(request.status == 200){
-					params.onComplete(request);
-				}else
-				{
-					params.onComplete(request);
-				}
-			}
-		};
-		request.open(params.method, params.url);
-		request.send(null);
-	};
-//}
+
 
 
