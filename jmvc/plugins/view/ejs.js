@@ -310,7 +310,7 @@ EJS = function( options ){
 		var template = EJS.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == EJS.INVALID_PATH) return null;
-		this.text = new Ajax.Request(options.url+('?'+Math.random() ), {asynchronous: true}).transport.responseText;
+		this.text = new Ajax.Request(options.url+('?'+Math.random() ), {asynchronous: false, method: 'get'}).transport.responseText;
 		if(this.text == null){
 			//EJS.update(options.url, this.INVALID_PATH);
 			throw 'There is no template at '+options.url;

@@ -36,10 +36,10 @@ Controller.functions.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			if(APPLICATION_ROOT == '')
+			if(JMVC.get_application_root() == '')
 				var path = url;
 			else
-				var path = APPLICATION_ROOT+'/'+url;
+				var path = JMVC.get_application_root()+'/'+url;
 			result = new EJS({url:  path  }).render(data_to_render);
 		}
 		//return result;

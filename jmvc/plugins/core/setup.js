@@ -16,5 +16,5 @@ include('../file/setup',
 		'../view/ejs',
 		'../view/view', 
 		'../controller/controller',
-		'../controller/controller_view',
+		'../controller_view/controller_view',
 		'../includer/includer');
