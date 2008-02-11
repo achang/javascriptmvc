@@ -36,8 +36,8 @@ JMVC.DISPATCH_FUNCTION = function(startup) {
  * <p>Saves the user defined app_init_func to be executed later (once JMVC files are included).</p>
  */
 JMVC.Initializer = function(user_initialize_function) {
-  	
-	APPLICATION_ROOT = new jFile( include.get_path() ).directory();
+  	var  config_folder = include.get_path();
+	APPLICATION_ROOT = include.get_path().substring(0, config_folder.lastIndexOf('/'));
 	JMVC.user_initialize_function = user_initialize_function;
 
     if(!(JMVC.ENV.ENVIRONMENT == 'development' || JMVC.ENV.ENVIRONMENT == 'production'))
@@ -92,7 +92,7 @@ JMVC.Test = {};
 })();
 
 
-include.plugins("standard");
+include.plugins("includer","controller_view");
 		  
 //JMVC.handle_error = function(error){
 //	alert(error.toString());

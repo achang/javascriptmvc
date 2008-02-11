@@ -12,4 +12,9 @@ if(typeof Prototype != 'undefined') {
 }else
  	include("../query/standard");
 
-include('../file/setup','../view/ejs','../view/view', '../controller/controller','../includer/includer')
+include('../file/setup',
+		'../view/ejs',
+		'../view/view', 
+		'../controller/controller',
+		'../controller/controller_view',
+		'../includer/includer')

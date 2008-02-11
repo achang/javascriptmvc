@@ -162,11 +162,7 @@ JMVC.Error.file_name = function(e) {
 //JMVC.DISPATCH_FUNCTION(JMVC.Framework.JMVC_startup);
 
 
-//JMVC.loaded();
 
-for(var i = 0; i < JMVC.SETUP.included_libraries.length; i++) {
-	include('../lib/'+JMVC.SETUP.included_libraries[i]+'/setup.js');
-}
 include.set_path(APPLICATION_ROOT);
-jFile.set_cwd(APPLICATION_ROOT);
+//jFile.set_cwd(APPLICATION_ROOT);
 JMVC.user_initialize_function();

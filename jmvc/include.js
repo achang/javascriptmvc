@@ -184,6 +184,7 @@
 			return;
 		}
 		newInclude.name = include.normalize(  name.indexOf('.js') == -1  ? name+'.js' : name  );
+		//this doesn't take into account /file.js == mydomain.com/file.js
 		newInclude.absolute = newInclude.name;
 		if(is_relative(newInclude.absolute)){
 			newInclude.absolute = join(include.get_absolute_path()+'/', name.indexOf('.js') == -1  ? name+'.js' : name);
