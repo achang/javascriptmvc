@@ -14,15 +14,16 @@ RemoteModel = function(model, url, functions){
 	newmodel.url = url;
 	newmodel.className =className;
 	Object.extend(newmodel.prototype, functions );
-	Object.extend(newmodel, RemoteModel.class_functions)
+	Object.extend(newmodel, RemoteModel.class_functions);
 	return newmodel;
 };
 
 RemoteModel.functions = function(){};
+
 RemoteModel.class_functions = {
 	find : function(params, callback){
 		params.callback = this.className.capitalize()+'.listCallback';
-		var klass = this
+		var klass = this;
 		//make callback function create new and call the callback with them
 		klass.listCallback = function(callback_params){
 			var newObjects = [];
@@ -31,7 +32,7 @@ RemoteModel.class_functions = {
 			}
 			callback(newObjects);
 		};
-		params.method = 'GET'
+		params.method = 'GET';
 		include(this.url+'/'+this.className.pluralize()+'.json?'+Form.object_stringify(params));
 	},
 	create : function(params, callback) {
@@ -45,7 +46,7 @@ RemoteModel.class_functions = {
 				callback(new klass(callback_params));
 			}
 		};
-		params.method = 'POST'
+		params.method = 'POST';
 		
 		
 		var options = Form.object_stringify(params);

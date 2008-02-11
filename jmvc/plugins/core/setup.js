@@ -1,7 +1,7 @@
 //I want this to include the standard set on its own ...
 include('../helpers/setup', 
 		'../inflector/inflector'
-		)
+		);
 if(typeof Prototype == 'undefined') 
 	include("../event/standard");
 
@@ -17,4 +17,4 @@ include('../file/setup',
 		'../view/view', 
 		'../controller/controller',
 		'../controller/controller_view',
-		'../includer/includer')
+		'../includer/includer');

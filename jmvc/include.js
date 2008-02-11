@@ -148,7 +148,7 @@
 				PACK_FOR_REMOTE = pack_options.remote;
 		}
 		if(environment == 'production'){
-			document.write('<script type="text/javascript" src="'+include.get_path()+include.get_production_name()+'"></script>');
+			document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
 			return;
 		}
 	};
