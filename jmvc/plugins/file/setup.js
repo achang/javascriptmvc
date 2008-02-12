@@ -6,6 +6,11 @@
  * jFile provides a set of methods and instance functions to help the user gain easy access to different features
  * associated with the path.
  * 
+ * <p>Example: </p>
+ * <pre class='example'>
+ * var test = new jFile('/dir2/dir1/file1.txt');
+ * </pre>
+ * 
  * @param {Object} path_name full path to file
  */
 jFile = function(path_name) {
@@ -20,6 +25,14 @@ jFile = function(path_name) {
 jFile.prototype = {
 	/**
 	 * Returns the extension at the end of the path if it exists.
+	 * 
+	 * <p>Example: </p>
+ 	 * <pre class='example'>
+ 	 * (new jFile('/dir2/dir1/file1.txt').extension()
+ 	 * </pre>
+ 	 * returns "txt"
+ 	 * 
+ 	 * @return {string} file extension
 	 */
     extension : function() {
 		var both = this.file_and_extension();
@@ -30,24 +43,58 @@ jFile.prototype = {
     },
 	/**
 	 * Returns the name of the file without .extension at the end.
+	 * 
+	 * <p>Example: </p>
+ 	 * <pre class='example'>
+ 	 * (new jFile('/dir2/dir1/file1.txt').file_name()
+ 	 * </pre>
+ 	 * returns "file1"
+  	 * "file1"
+ 	 * 
+ 	 * @return {string} file name
 	 */
     file_name : function() {
 		return this.file_and_extension().split('.')[0];
     },
 	/**
-	 * Checks for complete URL or file path
+	 * Checks whether the given file path or URL is absolute, as opposed to relative.
+	 * 
+	 * <p>Example: </p>
+ 	 * <pre class='example'>
+ 	 * (new jFile('/dir2/dir1/file1.txt').is_absolute()
+ 	 * </pre>
+ 	 * returns TRUE
+ 	 * 
+ 	 * @return {bool} TRUE if path starts with '/', 'http://', 'file://', or https:// and FALSE otherwise
 	 */
     is_absolute : function() {
         return (this.path_name.substring(0,1) == "/" || this.path_name.substring(0,7) == 'http://' || this.path_name.substring(0,7) == 'file://' || this.path_name.substring(0,8) == 'https://');
     },
 	/**
 	 * Returns (file name).(extension)
+	 * 
+	 * <p>Example: </p>
+ 	 * <pre class='example'>
+ 	 * (new jFile('/dir2/dir1/file1.txt').file_and_extension()
+ 	 * </pre>
+ 	 * returns "file1.txt"
+ 	 * 
+ 	 * @return {string} file name and extension
 	 */
 	file_and_extension : function(){
 		return this.path_array[this.last_index].split(/[\?#&]/)[0];
 	},
 	/**
-	 * Returns the complete URL or file path
+	 * Returns the complete URL or file path.  If the path is relative, combines the current
+	 * working directory with the relative path.
+	 * 
+	 * <p>Example: </p>
+ 	 * <pre class='example'>
+ 	 * (new jFile('/dir2/dir1/file1.txt').absolute()
+ 	 * </pre>
+ 	 * returns "/dir2/dir1/file1.txt"
+ 	 * 
+ 	 * @return {string} absolute path
 	 */
 	absolute : function(){
 		return (this.is_absolute() ? this.path_name : jFile.get_cwd() + this.path_name);
@@ -55,6 +102,14 @@ jFile.prototype = {
 	/**
 	 * Returns the file path up to the working directory
 	 * (doesn't include the file name and extension).
+	 * 
+	 * <p>Example: </p>
+ 	 * <pre class='example'>
+ 	 * (new jFile('/dir2/dir1/file1.txt').directory()
+ 	 * </pre>
+ 	 * returns "/dir2/dir1"
+ 	 * 
+ 	 * @return {string} path directory preceding file name and extension
 	 */
 	directory : function(){
 		var path_array_copy = this.path_name.split("/");
@@ -64,6 +119,14 @@ jFile.prototype = {
 };
 /**
  * Joins two paths
+ * 
+ * <p>Example: </p>
+ * <pre class='example'>
+ * jFile.join('test_apps', 'simple', 'holla.ejs')
+ * </pre>
+ * Returns "test_apps/simple/holla.ejs"
+ * 
+ * @param two partial paths
  */
 jFile.join = function() {
     var cleaned = [];
@@ -77,6 +140,13 @@ jFile.join = function() {
 //shortcut to filename from above - don't need to create a jFile to use
 /**
  * Returns the filename (with extension) at the end of the path.
+ * 
+ * <p>Example: </p>
+ * <pre class='example'>
+ * jFile.original_filename('/dir2/dir1/file1.txt')
+ * </pre>
+ * Returns "file1.txt"
+ * 
  * @param {Object} path file path
  */
 jFile.original_filename = function(path) {
@@ -89,17 +159,34 @@ jFile.original_filename = function(path) {
 
 /**
  * Sets up the current working directory.
+ * 
+ * <p>Example: </p>
+ * <pre class='example'>
+ * jFile.setup()
+ * </pre>
  */
 jFile.setup =  function(){
 	var cwd;
 	/**
 	 * Returns the current working directory.
+	 * 
+	 * <p>Example: </p>
+ 	 * <pre class='example'>
+ 	 * var cwd = jFile.get_cwd()
+ 	 * </pre>
+ 	 * Returns the current working directory
 	 */
 	jFile.get_cwd = function(){ return cwd;};
 	
 	//makes sure it always has an ending /
 	/**
 	 * Sets the current working directory to the parameter.
+	 * 
+	 * <p>Example: </p>
+ 	 * <pre class='example'>
+ 	 * jFile.set_cwd('http://something.com/here/')
+ 	 * </pre>
+	 * 
 	 * @param {Object} newcwd
 	 */
 	jFile.set_cwd = function(newcwd){
