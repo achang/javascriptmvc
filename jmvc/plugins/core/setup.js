@@ -2,8 +2,10 @@
 include('../helpers/setup', 
 		'../inflector/inflector'
 		);
-if(typeof Prototype == 'undefined') 
+if(typeof Prototype == 'undefined') {
 	include("../event/standard");
+	include("../ajax/ajax");
+}
 
 if(typeof Prototype != 'undefined') {
 	$$.descendant = function(element, selector) {
