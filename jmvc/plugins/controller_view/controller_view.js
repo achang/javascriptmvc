@@ -60,8 +60,10 @@ Controller.functions.prototype.render = function(options) {
 			return;
 		}*/
 		//if there is somewhere to render, render it there
-		if(options.to)
+		if(options.to){
 			options.to.innerHTML = result;
+			this.attach(options.to)
+		}
 		return result;
 		/*
 		if(!element){

@@ -279,7 +279,7 @@ window.dhtmlHistory = {
 	/*Private: Constant for our own internal history event called when the page is loaded*/
 	PAGELOADEDSTRING: "DhtmlHistory_pageLoaded",
 	
-	blank_html_path: JMVC.root()+'lib/realsimplehistory/',
+	blank_html_path: JMVC.root()+'plugins/history/',
 	
 	/*Private: Our history change listener.*/
 	listener: null,
@@ -664,32 +664,160 @@ window.historyStorage = {
 };
 
 
-window.dhtmlHistory.create({
-    toJSON: function(o) {
-            return Object.toJSON(o);
-    }
-    , fromJSON: function(s) {
-            return s.evalJSON();
-    }
+window.dhtmlHistory.create();
+
+Event.observe(window, 'load', function(){
+	dhtmlHistory.initialize();
+	dhtmlHistory.addListener(dhtmlHistory.historyChange);
+	dhtmlHistory.historyChange();
+	
 });
 
-dhtmlHistory.initialize_library = function() {
-    dhtmlHistory.initialize();
-    dhtmlHistory.addListener(dhtmlHistory.historyChange);
-};
-
-JMVC.JMVC_startup_tasks.push(dhtmlHistory.initialize_library)
-
-dhtmlHistory.historyChange = function(newLocation, historyData) {
-	if(historyData) { //the person has been here before
-		JMVC.Routes.clear_route_cache();
-		get(historyData);
-	} else { //they changed the url themselves
-		JMVC.Routes.clear_route_cache();
-		get(JMVC.Routes.params());
-	}
+//JMVC.JMVC_startup_tasks.push(dhtmlHistory.initialize_library)
+Controller.test_dispatch = function(controller, action){
+	if(!controller) return false;
+	var controller_name = controller.capitalize()+'Controller';
+	if(!action) action = 'index';
+	if(window[controller_name]){
+		if(action in window[controller_name].prototype){
+			return true;
+		}else{
+			return false;
+		}
+	}else
+		return false;
 }
 
+Controller.dispatch = function(controller_part, action, params){
+	var controller_name = controller_part.capitalize()+'Controller';
+	if(!action) action = 'index';
+	
+	if(window[controller_name]){
+		var controller = new window[controller_name]();
+		if(action in controller){
+			params.action = action;
+			params.controller = controller_part;
+			var passedparams = new Controller.params(params);
+			controller.params = params;
+			controller.action = action;
+			return controller[action](passedparams);
+		}else{
+			throw 'No action named '+action+' was found for '+controller_name+'.';
+		}
+	}else
+		throw 'No controller named '+controller_name+' was found.';
+}
+
+dhtmlHistory.historyChange = function(newLocation, historyData) {
+
+	var path = new JMVC.Path(location.href);
+	var data = JMVC.Path.get_data(path);
+	var folders = path.folder();
+	if(folders == null){folders = ''}
+	var action_part = null,
+		controller_part;
+	var first_s = folders.indexOf('/');
+	if(first_s != -1){
+		controller_part = folders.substring(0,first_s);
+		action_part = folders.substring(first_s+1);
+		return Controller.dispatch(controller_part, action_part,data);
+	}
+	
+	if( Controller.test_dispatch(folders) ){
+		return Controller.dispatch(folders, null ,data);
+	}
+	if( Controller.test_dispatch('main',folders) ){
+		return Controller.dispatch('main' , folders , data);
+	}
+	throw "Can't dispatch location "+folders;
+	
+}
+
+
+
+
+JMVC.Path = function(path) {
+	this.path = path
+};
+JMVC.Path.prototype = {
+	domain : function() {
+		var lhs = this.path.split('#')[0];
+		return '/'+lhs.split('/').slice(3).join('/')
+	},
+	folder : function() {
+		var first_pound = this.path.indexOf('#')
+		if( first_pound == -1) return null;
+		var after_pound =  this.path.substring( first_pound+1 )
+		
+		var first_amp = after_pound.indexOf("&")
+		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? null : after_pound
+		
+		return after_pound.substring(0, first_amp)
+	},
+	//types of urls
+	//  /someproject#action/controller&doo_doo=butter
+	//  /someproject#doo_doo=butter
+	params : function() {
+		var first_pound = this.path.indexOf('#')
+		if( first_pound == -1) return null;
+		var after_pound =  this.path.substring( first_pound+1 )
+		
+		//now either return everything after the first & or everything
+		var first_amp = after_pound.indexOf("&")
+		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? after_pound : null
+		
+		return ( after_pound.substring(0,first_amp).indexOf("=") == -1 ? after_pound.substring(first_amp+1) : after_pound )
+		 
+	}
+};
+
+
+
+JMVC.Path.get_data = function(path) {
+	var search = path.params();
+	if(! search || ! search.match(/([^?#]*)(#.*)?$/) ) return {}
+	var data = {}
+	var parts = search.split('&')
+	for(var i=0; i < parts.length; i++){
+		var pair = parts[i].split('=')
+		if(pair.length != 2) continue;
+		var key = pair[0], value = pair[1];
+		var key_components = key.rsplit(/\[[^\]]*\]/)
+		
+		if( key_components.length > 1 ) {
+			var last = key_components.length - 1;
+			var nested_key = key_components[0].toString();
+			if(! data[nested_key] ) data[nested_key] = {};
+			var nested_hash = data[nested_key]
+			
+			for(var k = 1; k < last; k++){
+				nested_key = key_components[k].substring(1, key_components[k].length - 1)
+				if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={}
+				nested_hash = nested_hash[nested_key]
+			}
+			nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value
+		} else {
+	        if (key in data) {
+	        	if (typeof data[key] == 'string' ) data[key] = [data[key]];
+	         	data[key].push(value);
+	        }
+	        else data[key] = value;
+		}
+		
+	}
+	return data;
+};
+
+
+Controller.functions.prototype.redirect_to = function(options){
+	var controller_name = options.controller || this.className;
+	var action_name = options.action || 'index';
+	var lhs = window.location.href.split('#')[0];
+	window.location = lhs+'#'+controller_name+'/'+action_name
+};
+
+
+/*
 dhtmlHistory.add_to_history = function(options){
 	var added_url =  JMVC.Routes.url_for(options)
 	dhtmlHistory.add(added_url, options);
@@ -717,4 +845,4 @@ JMVC.Dispatcher.add_to_history_and_get = function(options){
 JMVC.View.link_to_onclick_and_href = function(html_options, options, post) {
     html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
     html_options.href='#'+(options ? JMVC.Routes.url_for(options) : '')
-}
+}*/

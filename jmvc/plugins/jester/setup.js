@@ -1,1 +1,0 @@
-include({name: "jester.js", shrink_variables: false});

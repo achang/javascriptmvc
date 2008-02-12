@@ -204,7 +204,7 @@ Object.extend(Controller.functions.prototype, {
 		if(this.klass_name == 'MainController') 
 		  els = [document];
 		else
-		  els = start_element.getElementsByClassName(this.className);
+		  els = $$.descendant(start_element,'.'+this.className ); //  start_element.getElementsByClassName();
 		for(var e=0; e < els.length; e++){
 			this.attach_event_handlers_to(els[e]);
 		}
