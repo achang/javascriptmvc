@@ -60,10 +60,12 @@ Object.extend(RemoteModel.functions.prototype, {
 		if(params.attributes)
 		this.attributes = params.attributes;
 		for(var thing in params.attributes){
-			if(thing != 'created_at'){
-				this[thing] = params.attributes[thing];
-			}else
-				this[thing] = Date.parse( params.attributes[thing]);
+			if(params.attributes.hasOwnProperty(thing)) {
+				if(thing != 'created_at'){
+					this[thing] = params.attributes[thing];
+				}else
+					this[thing] = Date.parse( params.attributes[thing]);
+			}
 			
 		}
 		this.errors = params.errors ? params.errors : [];
@@ -75,7 +77,7 @@ Object.extend(RemoteModel.functions.prototype, {
 		}
 	}
 });
-
+//now is Object.toQueryString
 Form = {};
 Form.object_stringify = function(object,name){
 	return Form.object_stringify.worker(object,name).join('&');
