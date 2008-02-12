@@ -663,8 +663,18 @@ window.historyStorage = {
 	}
 };
 
-
-window.dhtmlHistory.create();
+if(typeof Prototype == 'undefined'){
+	window.dhtmlHistory.create();
+}else{
+	window.dhtmlHistory.create({
+	    toJSON: function(o) {
+	            return Object.toJSON(o);
+	    }
+	    , fromJSON: function(s) {
+	            return s.evalJSON();
+	    }
+	});
+}
 
 Event.observe(window, 'load', function(){
 	dhtmlHistory.initialize();

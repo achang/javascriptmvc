@@ -163,6 +163,7 @@ if(typeof $ == 'undefined'){
 }
 
 Object.toQueryString = function(object,name){
+	if(!object) return null;
 	return Object.toQueryString.worker(object,name).join('&');
 };
 Object.toQueryString.worker = function(obj,name){
@@ -172,7 +173,8 @@ Object.toQueryString.worker = function(obj,name){
 			var value = obj[thing];
 			if(typeof value != 'object'){
 				var nice_val = encodeURIComponent(value.toString());
-				parts2.push( (name ? name+'['+thing+']='+nice_val : thing+'='+nice_val ) )  ;
+				var newer_name = encodeURIComponent(name ? name+'['+thing+']' : thing)
+				parts2.push( newer_name+'='+nice_val )  ;
 			}else{
 				if(name){
 					parts2 = parts2.concat( Form.object_stringify.worker(value, name+'['+thing+']')   );
