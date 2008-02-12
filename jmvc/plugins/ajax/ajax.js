@@ -5,7 +5,7 @@ Ajax.Request = function(url,options){
 	
 	var factory = Ajax.factory();
 	this.transport =factory;
-	if(options.asynchronous == true){
+	if(options.asynchronous == false){
 	   factory.open("GET", url, false);
 	   try{factory.send(null);}
 	   catch(e){return null;}
@@ -21,8 +21,8 @@ Ajax.Request = function(url,options){
 				}
 			}
 		};
-		request.open(options.method, url);
-		request.send(null);
+		factory.open(options.method, url);
+		factory.send(null);
 	}
 }
 
