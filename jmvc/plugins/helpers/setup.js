@@ -136,6 +136,7 @@ String.prototype.split = function (s /* separator */, limit) {
 
 if(!Array.from){
 	Array.from = function(iterable){
+		 if (!iterable) return [];
 		var results = [];
 	    for (var i = 0, length = iterable.length; i < length; i++)
 	      results.push(iterable[i]);
@@ -158,5 +159,36 @@ if(typeof Function.prototype.bind == 'undefined'){
 if(typeof $ == 'undefined'){
 	$ = function(id){
 		return document.getElementById(id);
+	};
+}
+
+Object.toQueryString = function(object,name){
+	return Object.toQueryString.worker(object,name).join('&');
+};
+Object.toQueryString.worker = function(obj,name){
+	var parts2 = [];
+	for(var thing in obj){
+		if(obj.hasOwnProperty(thing)) {
+			var value = obj[thing];
+			if(typeof value != 'object'){
+				var nice_val = encodeURIComponent(value.toString());
+				parts2.push( (name ? name+'['+thing+']='+nice_val : thing+'='+nice_val ) )  ;
+			}else{
+				if(name){
+					parts2 = parts2.concat( Form.object_stringify.worker(value, name+'['+thing+']')   );
+				}else{
+					parts2 = parts2.concat( Form.object_stringify.worker(value, thing)  );
+				}
+			}
+		}
 	}
+	return parts2;
+};
+if(typeof Array.prototype.include == 'undefined'){
+	Array.prototype.include = function(thing){
+		for(var i=0; i< this.length; i++){
+			if(this[i] == thing) return true;
+		}
+		return false;
+	};
 }
