@@ -19,9 +19,10 @@ Controller = function(model, actions){
 	Object.extend(newmodel.prototype, actions );
 	var handler_names = [];
 	for(var action_name in actions ){
-		if( action_name.search(/[click|mouseover|mouseout|load|resize|dblclick|contextmenu|blur|keypress|unload|submit]/) != -1 ) {
+		if( actions.hasOwnProperty(action_name) && action_name.search(/[click|mouseover|mouseout|load|resize|dblclick|contextmenu|blur|keypress|unload|submit]/) != -1 ) {
 			handler_names.push(action_name);
 		}
+		
 	}
 	newmodel.event_handler_function_names = function(){
 		return handler_names;
@@ -36,8 +37,10 @@ Controller = function(model, actions){
 };
 
 Controller.params = function(params){
+	
 	for(var thing in params){
-		this[thing] = params[thing];
+		if( params.hasOwnProperty(thing) )
+			this[thing] = params[thing];
 	}
 };
 Controller.params.prototype = {
