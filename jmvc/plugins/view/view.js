@@ -101,7 +101,7 @@ String.prototype.chop = function() {
 };
 
 /* Adaptation from the Scanner of erb.rb  */
-var View.Scanner = function(source, left, right) {
+View.Scanner = function(source, left, right) {
 	this.left_delimiter = 	left +'%';	//<%
 	this.right_delimiter = 	'%'+right;	//>
 	this.double_left = 		left+'%%';
@@ -162,7 +162,7 @@ View.Scanner.prototype = {
 };
 
 /* Adaptation from the Buffer of erb.rb  */
-var ViewBuffer = function(pre_cmd, post_cmd) {
+var View.Buffer = function(pre_cmd, post_cmd) {
 	this.line = new Array();
 	this.script = "";
 	this.pre_cmd = pre_cmd;
@@ -172,7 +172,7 @@ var ViewBuffer = function(pre_cmd, post_cmd) {
 		this.push(pre_cmd[i]);
 	}
 };
-ViewBuffer.prototype = {
+View.Buffer.prototype = {
 	
   push: function(cmd) {
 	this.line.push(cmd);
@@ -238,7 +238,7 @@ View.Compiler.prototype = {
 	this.out = '';
 	var put_cmd = "___ViewO += ";
 	var insert_cmd = put_cmd;
-	var buff = new ViewBuffer(this.pre_cmd, this.post_cmd);		
+	var buff = new View.Buffer(this.pre_cmd, this.post_cmd);		
 	var content = '';
 	var clean = function(content)
 	{
