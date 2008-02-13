@@ -75,3 +75,4 @@ Controller.functions.prototype.render = function(options) {
 		//}
 		*/
 };
+

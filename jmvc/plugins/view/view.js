@@ -349,12 +349,12 @@ EjsView.link_to = function(name, options, html_options, post) {
 	}
 	
 	
-	options = options || {};
-	if(!options.action)
-		options.action = JMVC.Routes.params().action;
+	//options = options || {};
+	//if(!options.action)
+	//	options.action = JMVC.Routes.params().action;
 		
-    if(!options.controller)
-		options.controller = JMVC.Routes.params().controller;
+    //if(!options.controller)
+	//	options.controller = JMVC.Routes.params().controller;
 
 	EjsView.link_to_onclick_and_href(html_options, options, post);
 	
@@ -912,11 +912,11 @@ EjsView.update_with_client_and_project = function(options) {
  * @return {String} request function.
  */
 EjsView.url_for = function(params, post) {
-    this.update_with_controller_and_action(params);
-    if(post == true)
-        return 'post(' + $H(params).toJSON() + ');'; //prototype
-    else
-        return 'get(' + $H(params).toJSON() + ');'; //prototype
+    //this.update_with_controller_and_action(params);
+    //if(post == true)
+    //   return 'post(' + $H(params).toJSON() + ');'; //prototype
+    //else
+    //    return 'get(' + $H(params).toJSON() + ');'; //prototype
 };
 /**
  * uses the type of column to deterimine the type of field it should present.  Useful in bluepritns.
@@ -949,3 +949,21 @@ EjsView.HandlerObject.prototype = {
 		return this.value;
 	}
 };
+
+(function(){
+	var data = {};
+	var name = 0;
+	EjsView.link_data = function(store){
+		var functionName = name++;
+		data[functionName] = store;	
+		return "_data='"+functionName+"'"
+	}
+	EjsView.get_data = function(el){
+		if(!el) return null;
+		var dataAt = el.getAttribute('_data')
+		if(!dataAt) return null;
+		return data[parseInt(dataAt)]
+	}
+})()
+
+

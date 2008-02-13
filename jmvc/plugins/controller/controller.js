@@ -77,6 +77,18 @@ Controller.params.prototype = {
 		}
 
 		return data;
+	},
+	class_element : function(){
+		var start = this.element
+		var controller = this.controller
+		while(start && start.className.indexOf(controller) == -1 ){
+			start = start.parentNode;
+			if(start == document) return null;
+		}
+		return start;
+	},
+	object_data : function(){
+		return EjsView.get_data(this.class_element())
 	}
 };
 
@@ -102,7 +114,9 @@ Controller.klasses = [];
 	 */
 	var new_event_closure_function = function(controller_name, f_name, element){
 		return function(event){
-			var instance = new window[controller_name];
+			var full_name = controller_name.capitalize()+'Controller'
+			
+			var instance = new window[full_name];
 			if(!event.stop){
 				event.stop = function(){
 					stopPropagation(event);
@@ -237,12 +251,12 @@ Object.extend(Controller.functions.prototype, {
 			event_els = event_els || [];
 			for(var he = 0; he < event_els.length; he++){
 				if(handler_name == 'contextmenu'){
-					event_els[he].oncontextmenu = Controller.event_closure(this.klass_name, event_function,event_els[he] );
+					event_els[he].oncontextmenu = Controller.event_closure(this.className, event_function,event_els[he] );
 				}else if(handler_name == 'load' && this.klass_name != 'MainController'){
 					new this.klass().load({element: event_els[he]});
 				}else{
-				Event.stopObserving(event_els[he], handler_name, Controller.event_closure(this.klass_name, event_function,event_els[he] ));
-				Event.observe(event_els[he], handler_name, Controller.event_closure(this.klass_name, event_function,event_els[he] ) );
+				Event.stopObserving(event_els[he], handler_name, Controller.event_closure(this.className, event_function,event_els[he] ));
+				Event.observe(event_els[he], handler_name, Controller.event_closure(this.className, event_function,event_els[he] ) );
 				}
 			}
 		}
