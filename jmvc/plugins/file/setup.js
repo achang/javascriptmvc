@@ -42,7 +42,7 @@ JFile.prototype = {
 				);
     },
 	/**
-	 * Returns the name of the file without .extension at the end.
+	 * Returns the name of the file without the extension.
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
@@ -122,9 +122,9 @@ JFile.prototype = {
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * JFile.join('test_apps', 'simple', 'holla.ejs')
+ * JFile.join('test_apps', 'simple', 'holla.View')
  * </pre>
- * Returns "test_apps/simple/holla.ejs"
+ * Returns "test_apps/simple/holla.View"
  * 
  * @param two partial paths
  */

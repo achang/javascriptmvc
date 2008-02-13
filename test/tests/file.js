@@ -24,58 +24,58 @@ JMVCTest = {
 			assert( file5.is_absolute() )
 	    }},
 		test_extension : function() { with(this) {
-			var file1 = new JFile('/holla.ejs')
-			assertEqual('ejs', file1.extension() )
+			var file1 = new JFile('/holla.View')
+			assertEqual('View', file1.extension() )
 			
-			var file2 = new JFile('/holla.addf.ejs')
-			assertEqual('ejs', file2.extension() )
+			var file2 = new JFile('/holla.addf.View')
+			assertEqual('View', file2.extension() )
 			
 			
-			var file3 = new JFile('/holla.addf.ejs#thisblah')
-			assertEqual('ejs', file3.extension() )
+			var file3 = new JFile('/holla.addf.View#thisblah')
+			assertEqual('View', file3.extension() )
 			
-			var file4 = new JFile('/holla.addf.ejs#thisblah')
-			assertEqual('ejs', file4.extension() )
+			var file4 = new JFile('/holla.addf.View#thisblah')
+			assertEqual('View', file4.extension() )
 			
 	    }},
 		test_file_name : function() { with(this) {
-			var file1 = new JFile('/holla.ejs')
+			var file1 = new JFile('/holla.View')
 			assertEqual('holla', file1.file_name() )
 			
-			var file2 = new JFile('/bad_holla.ejs#a;fda#asfdl;kj')
+			var file2 = new JFile('/bad_holla.View#a;fda#asfdl;kj')
 			assertEqual('bad_holla', file2.file_name() )
 	    }},
 		test_file_and_extension : function() { with(this) {
-			var file1 = new JFile('/holla.ejs')
-			assertEqual('holla.ejs', file1.file_and_extension() )
+			var file1 = new JFile('/holla.View')
+			assertEqual('holla.View', file1.file_and_extension() )
 			
-			var file2 = new JFile('/holla.addf.ejs')
-			assertEqual('holla.addf.ejs', file2.file_and_extension() )
+			var file2 = new JFile('/holla.addf.View')
+			assertEqual('holla.addf.View', file2.file_and_extension() )
 	    }},
 		test_absolute : function() { with(this) {
-			var file1 = new JFile('holla.ejs')
-			assertEqual('file:///C:/Development/jmvc/test/holla.ejs', file1.absolute() )
+			var file1 = new JFile('holla.View')
+			assertEqual('file:///C:/Development/jmvc/test/holla.View', file1.absolute() )
 			
-			var file2 = new JFile('/holla.addf.ejs')
-			assertEqual('/holla.addf.ejs', file2.absolute() )
+			var file2 = new JFile('/holla.addf.View')
+			assertEqual('/holla.addf.View', file2.absolute() )
 			
 			var cwd = JFile.get_cwd()
 			JFile.set_cwd('http://something.com/here/')
 			
-			var file1 = new JFile('holla.ejs')
-			assertEqual('http://something.com/here/holla.ejs', file1.absolute() )
+			var file1 = new JFile('holla.View')
+			assertEqual('http://something.com/here/holla.View', file1.absolute() )
 			
-			var file2 = new JFile('/holla.addf.ejs')
-			assertEqual('/holla.addf.ejs', file2.absolute() )
+			var file2 = new JFile('/holla.addf.View')
+			assertEqual('/holla.addf.View', file2.absolute() )
 			
 			
 			JFile.set_cwd('http://something.com/here')
 			
-			var file1 = new JFile('holla.ejs')
-			assertEqual('http://something.com/here/holla.ejs', file1.absolute() )
+			var file1 = new JFile('holla.View')
+			assertEqual('http://something.com/here/holla.View', file1.absolute() )
 			
-			var file2 = new JFile('/holla.addf.ejs')
-			assertEqual('/holla.addf.ejs', file2.absolute() )
+			var file2 = new JFile('/holla.addf.View')
+			assertEqual('/holla.addf.View', file2.absolute() )
 			
 			
 			JFile.set_cwd(cwd)
@@ -83,8 +83,8 @@ JMVCTest = {
 	    }},
 		test_join : function() { with(this) {
 			
-			assertEqual('test_apps/simple/holla.ejs', JFile.join('test_apps', 'simple', 'holla.ejs')  )
-			assertEqual('test_apps/simple/holla.ejs', JFile.join('test_apps', '/simple', 'holla.ejs')  )
+			assertEqual('test_apps/simple/holla.View', JFile.join('test_apps', 'simple', 'holla.View')  )
+			assertEqual('test_apps/simple/holla.View', JFile.join('test_apps', '/simple', 'holla.View')  )
 			
 	    }}
 	  }, "testlog");

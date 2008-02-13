@@ -659,7 +659,7 @@ window.historyStorage = {
 		return o.toJSONString();
 	},
 	fromJSON: function(s) {
-		return s.parseJSON();
+		return s.parsViewON();
 	}
 };
 

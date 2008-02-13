@@ -101,15 +101,15 @@ JMVCTest = {
 			assertEqual('dope', params2.jupiter )
 			assertEqual('cool', params2.jmvc )
 			
-			var path3 = new JMVC.Path('http://javascriptmvc.com/another/something_crazy#jmvc[routing]=cool&jmvc[ejs]=dope')
+			var path3 = new JMVC.Path('http://javascriptmvc.com/another/something_crazy#jmvc[routing]=cool&jmvc[View]=dope')
 			var params3 = JMVC.Routes.get_data(path3)
-			assertEqual('dope', params3.jmvc.ejs )
+			assertEqual('dope', params3.jmvc.View )
 			assertEqual('cool', params3.jmvc.routing )
 			
-			var path4 = new JMVC.Path('http://javascriptmvc.com/another/something_crazy#jmvc[routing][tests]=cool&jmvc[ejs]=dope')
+			var path4 = new JMVC.Path('http://javascriptmvc.com/another/something_crazy#jmvc[routing][tests]=cool&jmvc[View]=dope')
 			var params4 = JMVC.Routes.get_data(path4)
 			assertEqual('cool', params4.jmvc.routing.tests )
-			assertEqual('dope', params4.jmvc.ejs )
+			assertEqual('dope', params4.jmvc.View )
 			
 	    }}
 	    

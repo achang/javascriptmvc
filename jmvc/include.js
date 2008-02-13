@@ -128,26 +128,24 @@
 	 * @param {Object} production_name - where the production file should be looked for
 	 * @param {Object} packer_options - optional object that sets default packing options {base62: true/false, shrink_variables: true/false }
 	 */
-	include.setup = function(environment, production_name, pack_options){
-		if(environment != 'development' && environment != 'production' && environment != 'compress'){
-			alert('You are using an incorrect environment!  Only development, production, and compress are allowed.');
-			return;
+	include.setup = function(options){
+		options = options || {};
+		if(options.env){
+			env = options.env;
 		}
-		
-		env = environment;
-		if(production_name)   production = production_name+(production_name.indexOf('.js') == -1 ? '.js' : '' );
+		if(options.production)   production = options.production+(options.production.indexOf('.js') == -1 ? '.js' : '' );
 		
 		if(env == 'compress') include.compress_window = window.open(INCLUDE_ROOT+'compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 		
-		if(pack_options){
-			if(pack_options.base62 != null)
-				PACKER_OPTIONS.base62 = pack_options.base62;
-			if(pack_options.shrink_variables != null)
-				PACKER_OPTIONS.shrink_variables = pack_options.shrink_variables;
-			if(pack_options.remote != null)
-				PACK_FOR_REMOTE = pack_options.remote;
-		}
-		if(environment == 'production'){
+		
+		if(options.base62 != null)
+			PACKER_OPTIONS.base62 = options.base62;
+		if(options.shrink_variables != null)
+			PACKER_OPTIONS.shrink_variables = options.shrink_variables;
+		if(options.remote != null)
+			PACK_FOR_REMOTE = options.remote;
+		
+		if(env == 'production'){
 			document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
 			return;
 		}

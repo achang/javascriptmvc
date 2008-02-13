@@ -4,7 +4,7 @@ Controller.functions.prototype.render = function(options) {
 		var action_name = this.action;
         if(!options) options = {};
 		if(typeof options == 'string'){
-			result = new EJS({url:  options  }).render(this);
+			result = new View({url:  options  }).render(this);
 		}
 		else if(options.text) {
             result = options.text;   
@@ -12,23 +12,23 @@ Controller.functions.prototype.render = function(options) {
         else {
             if(options.action) {
                 //var folder_name = controller_name;
-                var url = 'app/views/'+controller_name+'/'+options.action+".ejs";
+                var url = 'app/views/'+controller_name+'/'+options.action+".View";
             }
             else if(options.template) {
 				var url_part =  options.template.include('/') ? 
 									options.template.split('/').join('/_') : 
 									controller_name+'/_'+options.template;
-				var url = 'app/views/'+url_part+'.ejs';
+				var url = 'app/views/'+url_part+'.View';
             }
 			else if(options.partial) {
                 
 				var url_part = options.partial.include('/') ? 
 									options.partial.split('/').join('/_') : 
 									controller_name+'/_'+options.partial;		
-				var url = 'app/views/'+url_part+'.ejs';
+				var url = 'app/views/'+url_part+'.View';
 			}
             else {
-                var url = 'app/views/'+controller_name+'/'+action_name.replace(/\./g, '').replace(/ /g,'_')+'.ejs';
+                var url = 'app/views/'+controller_name+'/'+action_name.replace(/\./g, '').replace(/ /g,'_')+'.View';
             }
 			var data_to_render = this;
 			if(options.locals) {
@@ -40,7 +40,7 @@ Controller.functions.prototype.render = function(options) {
 				var path = url;
 			else
 				var path = JMVC.get_application_root()+'/'+url;
-			result = new EJS({url:  path  }).render(data_to_render);
+			result = new View({url:  path  }).render(data_to_render);
 		}
 		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];

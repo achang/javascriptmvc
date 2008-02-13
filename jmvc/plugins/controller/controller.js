@@ -88,7 +88,7 @@ Controller.params.prototype = {
 		return start;
 	},
 	object_data : function(){
-		return EjsView.get_data(this.class_element())
+		return View.Helpers.get_data(this.class_element())
 	}
 };
 

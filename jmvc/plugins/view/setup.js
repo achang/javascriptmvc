@@ -1,2 +1,2 @@
 include.plugins('ajax')
-include('ejs','view')
+include('view','helpers')

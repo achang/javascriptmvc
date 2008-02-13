@@ -2,7 +2,7 @@
  *  (c) 2005-2007 Sam Stephenson
  *
  *  Prototype is freely distributable under the terms of an MIT-style license.
- *  For details, see the Prototype web site: http://www.prototypejs.org/
+ *  For details, see the Prototype web site: http://www.prototypView.org/
  *
  *--------------------------------------------------------------------------*/
 
@@ -1396,7 +1396,7 @@ Ajax.Response.prototype = {
     if(readyState == 4) {
       var xml = transport.responseXML;
       this.responseXML  = xml === undefined ? null : xml;
-      this.responseJSON = this.getResponseJSON();
+      this.responsViewON = this.getResponsViewON();
     }
   },
 
@@ -1430,18 +1430,18 @@ Ajax.Response.prototype = {
   getHeaderJSON: function() {
     var json = this.getHeader('X-JSON');
     try {
-      return json ? json.evalJSON(this.request.options.sanitizeJSON) : null;
+      return json ? json.evalJSON(this.request.options.sanitizViewON) : null;
     } catch (e) {
       this.request.dispatchException(e);
     }
   },
 
-  getResponseJSON: function() {
+  getResponsViewON: function() {
     var options = this.request.options;
     try {
       if (options.evalJSON == 'force' || (options.evalJSON &&
           (this.getHeader('Content-type') || '').include('application/json')))
-        return this.transport.responseText.evalJSON(options.sanitizeJSON);
+        return this.transport.responseText.evalJSON(options.sanitizViewON);
       return null;
     } catch (e) {
       this.request.dispatchException(e);
