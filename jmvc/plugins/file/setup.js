@@ -1,34 +1,34 @@
 /**
- * jFile provides convenient helper functions for URLs and file paths.
+ * JFile provides convenient helper functions for URLs and file paths.
  * @constructor
  * 
  * @classDescription
- * jFile provides a set of methods and instance functions to help the user gain easy access to different features
+ * JFile provides a set of methods and instance functions to help the user gain easy access to different features
  * associated with the path.
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * var test = new jFile('/dir2/dir1/file1.txt');
+ * var test = new JFile('/dir2/dir1/file1.txt');
  * </pre>
  * 
  * @param {Object} path_name full path to file
  */
-jFile = function(path_name) {
+JFile = function(path_name) {
     this.path_name = path_name;
     this.path_array = this.path_name.split('/'); //splits path
     this.last_index = this.path_array.length-1; //number things in array
 };
 
 /**
- * jFile instance functions
+ * JFile instance functions
  */
-jFile.prototype = {
+JFile.prototype = {
 	/**
 	 * Returns the extension at the end of the path if it exists.
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new jFile('/dir2/dir1/file1.txt').extension()
+ 	 * (new JFile('/dir2/dir1/file1.txt').extension()
  	 * </pre>
  	 * returns "txt"
  	 * 
@@ -46,7 +46,7 @@ jFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new jFile('/dir2/dir1/file1.txt').file_name()
+ 	 * (new JFile('/dir2/dir1/file1.txt').file_name()
  	 * </pre>
  	 * returns "file1"
   	 * "file1"
@@ -61,7 +61,7 @@ jFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new jFile('/dir2/dir1/file1.txt').is_absolute()
+ 	 * (new JFile('/dir2/dir1/file1.txt').is_absolute()
  	 * </pre>
  	 * returns TRUE
  	 * 
@@ -75,7 +75,7 @@ jFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new jFile('/dir2/dir1/file1.txt').file_and_extension()
+ 	 * (new JFile('/dir2/dir1/file1.txt').file_and_extension()
  	 * </pre>
  	 * returns "file1.txt"
  	 * 
@@ -90,14 +90,14 @@ jFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new jFile('/dir2/dir1/file1.txt').absolute()
+ 	 * (new JFile('/dir2/dir1/file1.txt').absolute()
  	 * </pre>
  	 * returns "/dir2/dir1/file1.txt"
  	 * 
  	 * @return {string} absolute path
 	 */
 	absolute : function(){
-		return (this.is_absolute() ? this.path_name : jFile.get_cwd() + this.path_name);
+		return (this.is_absolute() ? this.path_name : JFile.get_cwd() + this.path_name);
 	},
 	/**
 	 * Returns the file path up to the working directory
@@ -105,7 +105,7 @@ jFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new jFile('/dir2/dir1/file1.txt').directory()
+ 	 * (new JFile('/dir2/dir1/file1.txt').directory()
  	 * </pre>
  	 * returns "/dir2/dir1"
  	 * 
@@ -122,13 +122,13 @@ jFile.prototype = {
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * jFile.join('test_apps', 'simple', 'holla.ejs')
+ * JFile.join('test_apps', 'simple', 'holla.ejs')
  * </pre>
  * Returns "test_apps/simple/holla.ejs"
  * 
  * @param two partial paths
  */
-jFile.join = function() {
+JFile.join = function() {
     var cleaned = [];
 	for(var i=0; i < arguments.length ; i ++){
 		if(arguments[i].replace(/\s+/g, '') != '')
@@ -137,19 +137,19 @@ jFile.join = function() {
 	return (arguments[0].slice(0,1) == '/' ? '/' : '' )+cleaned.join("/");
 };
 
-//shortcut to filename from above - don't need to create a jFile to use
+//shortcut to filename from above - don't need to create a JFile to use
 /**
  * Returns the filename (with extension) at the end of the path.
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * jFile.original_filename('/dir2/dir1/file1.txt')
+ * JFile.original_filename('/dir2/dir1/file1.txt')
  * </pre>
  * Returns "file1.txt"
  * 
  * @param {Object} path file path
  */
-jFile.original_filename = function(path) {
+JFile.original_filename = function(path) {
     var path_array = path.split('/');
     if(path_array.length == 1)
         path_array = path.split('\\');
@@ -162,21 +162,21 @@ jFile.original_filename = function(path) {
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * jFile.setup()
+ * JFile.setup()
  * </pre>
  */
-jFile.setup =  function(){
+JFile.setup =  function(){
 	var cwd;
 	/**
 	 * Returns the current working directory.
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * var cwd = jFile.get_cwd()
+ 	 * var cwd = JFile.get_cwd()
  	 * </pre>
  	 * Returns the current working directory
 	 */
-	jFile.get_cwd = function(){ return cwd;};
+	JFile.get_cwd = function(){ return cwd;};
 	
 	//makes sure it always has an ending /
 	/**
@@ -184,19 +184,19 @@ jFile.setup =  function(){
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * jFile.set_cwd('http://something.com/here/')
+ 	 * JFile.set_cwd('http://something.com/here/')
  	 * </pre>
 	 * 
 	 * @param {Object} newcwd
 	 */
-	jFile.set_cwd = function(newcwd){
+	JFile.set_cwd = function(newcwd){
 		cwd = newcwd+(newcwd[newcwd.length - 1] == '/' ? '' : '/');
 	};
-	jFile.set_cwd(typeof APPLICATION_ROOT == 'undefined' ? 
+	JFile.set_cwd(typeof APPLICATION_ROOT == 'undefined' ? 
 					location.href.substring(0, location.href.lastIndexOf('/') )+ '/' :
 					APPLICATION_ROOT);
 };
-jFile.setup();
+JFile.setup();
 
 
 
