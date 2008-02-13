@@ -1,7 +1,4 @@
-Ajax = {}
-
-
-'application/x-www-form-urlencoded'
+Ajax = {};
 
 Ajax.Request = function(url,options){
 	this.options = {
@@ -40,7 +37,7 @@ Ajax.Request = function(url,options){
 		this.setRequestHeaders();
 		this.transport.send(Object.toQueryString(this.options.parameters));
 	}
-}
+};
 Ajax.Request.prototype.setRequestHeaders = function() {
     var headers = {
       'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
@@ -68,7 +65,7 @@ Ajax.Request.prototype.setRequestHeaders = function() {
 		}
 	}
       
-}
+};
 
 
 
@@ -81,4 +78,4 @@ Ajax.factory = function(){
 	    }
 	    catch(e) { continue;}
    }
-}
+};
