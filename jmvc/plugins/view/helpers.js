@@ -580,14 +580,14 @@ View.Helpers.img_tag = function(image_location, options){
 	View.Helpers.link_data = function(store){
 		var functionName = name++;
 		data[functionName] = store;	
-		return "_data='"+functionName+"'"
-	}
+		return "_data='"+functionName+"'";
+	};
 	View.Helpers.get_data = function(el){
 		if(!el) return null;
-		var dataAt = el.getAttribute('_data')
+		var dataAt = el.getAttribute('_data');
 		if(!dataAt) return null;
-		return data[parseInt(dataAt)]
-	}
+		return data[parseInt(dataAt)];
+	};
 })()
 
 

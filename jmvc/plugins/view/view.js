@@ -366,7 +366,7 @@ View.config = function(options){
 	
 	View.INVALID_PATH =  -1;
 };
-View.config( {cache: true, type: '<' } );
+View.config( {cache: include.get_env() == 'production', type: '<' } );
 
 View.prototype = {
 	render : function(object){
