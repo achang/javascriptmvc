@@ -153,28 +153,7 @@ View.Helpers.form_tag = function(url_for_options, html_options) {
  */
 View.Helpers.form_tag_end = function() { return this.tag_end('form'); };
 
-/**
- * Creates a external start form tag.
- * <p>Example:</p>
- * <pre class='example'>
- *  form_tag_external( '/action' ) 
- * </pre>
- * Produces:
- * <pre class='example'>
- * <script language="javascript" type="text/javascript">
- *   document.write( view.form_tag_external( '/action' ).escapeHTML() ) ;
- * </script></pre>
- * @param {String} action The post action
- * @param {Object} html_options Options used to create html attributes.
- *
- * @return {String} A begining form tag.
- *
- */
-View.Helpers.form_tag_external = function(action, html_options) {
-    html_options     = html_options                     || {};
-    html_options.action = action;
-    return this.start_tag_for('form', html_options);
-};
+
 /**
  * Creates a hidden field.
  * <p>Example:</p>
@@ -259,7 +238,7 @@ View.Helpers.input_field_tag = function(name, value , inputType, html_options) {
  * @return {String} hyperlink text.
  *
  */
-View.Helpers.link_to = function(name, options, html_options, post) {
+View.Helpers.link_to = function(name, options, html_options) {
     if(!name) var name = 'null';
     if(!html_options) var html_options = {};
     //html_options.onclick = html_options.onclick  || '' ;
@@ -349,8 +328,8 @@ View.Helpers.submit_link_to = function(name, options, html_options, post){
  * @param {Object} block
  * @see #link_to_unless
  */
-View.Helpers.link_to_if = function(condition, name, options, html_options, post, block) {
-	return this.link_to_unless((condition == false), name, options, html_options, post, block);
+View.Helpers.link_to_if = function(condition, name, options, html_options, block) {
+	return this.link_to_unless((condition == false), name, options, html_options, null, block);
 };
 
 

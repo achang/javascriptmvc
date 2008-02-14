@@ -338,3 +338,25 @@ View.Helpers.HandlerObject.prototype = {
 		return this.value;
 	}
 };
+/**
+ * Creates a external start form tag.
+ * <p>Example:</p>
+ * <pre class='example'>
+ *  form_tag_external( '/action' ) 
+ * </pre>
+ * Produces:
+ * <pre class='example'>
+ * <script language="javascript" type="text/javascript">
+ *   document.write( view.form_tag_external( '/action' ).escapeHTML() ) ;
+ * </script></pre>
+ * @param {String} action The post action
+ * @param {Object} html_options Options used to create html attributes.
+ *
+ * @return {String} A begining form tag.
+ *
+ */
+View.Helpers.form_tag_external = function(action, html_options) {
+    html_options     = html_options                     || {};
+    html_options.action = action;
+    return this.start_tag_for('form', html_options);
+};

@@ -28,7 +28,13 @@
  *  For the license: see license.txt
  *
  *--------------------------------------------------------------------------*/
-
+if(typeof Object.extend == 'undefined'){
+	Object.extend = function(destination, source) {
+	  for (var property in source) 
+	    destination[property] = source[property];
+	  return destination;
+	};
+}
 
 View = function( options ){
 	this.set_options(options);
@@ -162,7 +168,7 @@ View.Scanner.prototype = {
 };
 
 /* Adaptation from the Buffer of erb.rb  */
-var View.Buffer = function(pre_cmd, post_cmd) {
+View.Buffer = function(pre_cmd, post_cmd) {
 	this.line = new Array();
 	this.script = "";
 	this.pre_cmd = pre_cmd;
