@@ -6,6 +6,7 @@
 
 
 (function(){
+	
 	//checks if included has been added, if it has, gets the next included file.
 	if(typeof include != 'undefined'){
 		include.end();
@@ -94,6 +95,7 @@
 				if(typeof newInclude == 'string'){
 					newInclude = {name: newInclude};
 				}
+				
 				if(newInclude.base62 == null)
 					newInclude.base62 = PACKER_OPTIONS.base62;
 				if(newInclude.shrink_variables == null)
@@ -153,7 +155,9 @@
 	
 	include.get_env = function() { return env;}
 	include.get_production_name = function() { return production;}
-	include.set_path = function(p) { cwd = p;}
+	include.set_path = function(p) { 
+		cwd = p;
+	}
 	include.get_path = function() { 
 		if(PACK_FOR_REMOTE)
 			return include.get_absolute_path();
@@ -205,7 +209,8 @@
 				path = join(current_path+'/', path);
 			}
 		}else if(current_path != '' && !is_absolute(path)){
-			path = join(current_path+'/', path);
+			current_path.lastIndexOf('/') === current_path.length - 1
+			path = join(current_path+(current_path.lastIndexOf('/') === current_path.length - 1 ? '' : '/'), path);
 		}else if(current_path != '' && PACK_FOR_REMOTE && !is_domain_absolute(path)){
 			var domain_part = current_path.split('/').slice(0,3).join('/')
 			path = domain_part+path;
@@ -270,14 +275,14 @@
 	
 	var insert = function(src){
 		if(navigator.userAgent.match(/Safari/) ){
+			if(src) {
+				var script = script_tag();
+				script.src=src+'?'+Math.random()
+				document.body.appendChild(script)
+			}
 			var start = script_tag();
 			start.src = INCLUDE_PATH+'?'+Math.random()
 			document.body.appendChild(start)
-	
-			if(!src) return ;
-			var script = script_tag();
-			script.src=src+'?'+Math.random()
-			document.body.appendChild(script)
 	
 		}else if(navigator.userAgent.match(/Opera/)){
 			if(src) {
@@ -375,4 +380,7 @@
 		for(var i=0; i < arguments.length; i++)
 			include.plugin(arguments[i]);
 	};
+	
+	
+	
 })();

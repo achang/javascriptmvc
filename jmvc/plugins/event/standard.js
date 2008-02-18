@@ -3,8 +3,8 @@ var Event = {};
 // In DOM-compliant browsers, our functions are trivial wrappers around
 // addEventListener() and removeEventListener().
 if (document.addEventListener) {
-    Event.observe = function(element, eventType, handler, capture) {
-        if(capture == null) capture = false;
+	Event.observe = function(element, eventType, handler, capture) {
+		if(capture == null) capture = false;
         element.addEventListener(eventType, handler, capture);
     };
     Event.stopObserving = function(element, eventType, handler) {

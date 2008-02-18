@@ -43,7 +43,8 @@ View = function( options ){
 		var template = View.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == View.INVALID_PATH) return null;
-		this.text = new Ajax.Request(options.url+('?'+Math.random() ), {asynchronous: false, method: 'get'}).transport.responseText;
+		this.text = new Ajax.Request(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get'}).transport.responseText;
+		
 		if(this.text == null){
 			//View.update(options.url, this.INVALID_PATH);
 			throw 'There is no template at '+options.url;

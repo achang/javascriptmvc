@@ -141,9 +141,10 @@ Object.extend(String.prototype, {
       return count + " " + Inflector.singularize(this);
     }
   },
-  isSingular: function(){
+  is_singular: function(){
     if(this.singularize() == null && this)
         return true;
     return false;
   }
 });
+String.prototype.isSingular = String.prototype.is_singular  //copy for people who might still use this

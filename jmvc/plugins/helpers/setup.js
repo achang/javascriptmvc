@@ -23,7 +23,10 @@ String.prototype.first_capitalize = function() {
 String.prototype.clean = function(){
     return this.replace(/[_!@\#\$\%^&*()\<\>\"\'\\?,.\{\}\[\]~\- ]/g, '').uncapitalize();
 };
-
+String.prototype.endsWith = function(pattern) {
+    var d = this.length - pattern.length;
+    return d >= 0 && this.lastIndexOf(pattern) === d;
+};
 Date.month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
 Date.prototype.month_name = function() {
@@ -194,3 +197,12 @@ if(typeof Array.prototype.include == 'undefined'){
 		return false;
 	};
 }
+
+
+JMVC.Browser = {
+    IE:     !!(window.attachEvent && !window.opera),
+    Opera:  !!window.opera,
+    WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
+    Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1,
+    MobileSafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/)
+  };

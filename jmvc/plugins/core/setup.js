@@ -15,8 +15,8 @@ if(typeof Prototype != 'undefined') {
  	include("../query/standard");
 
 include('../file/setup',
-		'../view/View',
-		'../view/view', 
-		'../controller/controller',
+		'../view/view',
+		'../view/helpers', 
+		'../controller2/controller',
 		'../controller_view/controller_view',
 		'../includer/includer');

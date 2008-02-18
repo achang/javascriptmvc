@@ -1,2 +1,2 @@
-include.plugins('helpers','inflector','event')
+include.plugins('helpers','inflector','event','query')
 include('controller')
