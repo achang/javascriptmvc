@@ -4,9 +4,8 @@
  * @param {Object} actions - a hash of functions that get added to the controller's prototype
  */
 Controller = function(model, actions){
-	var className= model, newmodel = null;
+	var className= model, newmodel = null, singular = model.is_singular();
 	model = model.capitalize()+'Controller';
-
 	newmodel = eval(model + " = function() { this.klass = "+model+"; "+
 				"this.initialize.apply(this, arguments);"+
 				"};");
@@ -15,17 +14,47 @@ Controller = function(model, actions){
 	newmodel.prototype = controller_functions;
 	newmodel.prototype.klass_name = 	model;
 	newmodel.prototype.className = className;
+	newmodel.className = className;
 	newmodel.views = {};
+	newmodel.attached =false;
 	Object.extend(newmodel.prototype, actions );
-	var handler_names = [];
+	
+	
+	//create actions
+	
+	var bubbling_actions = {};
+	var non_bubbling_actions = {};
+	var controller_actions = {};
+	
+	
 	for(var action_name in actions ){
-		if( actions.hasOwnProperty(action_name) && action_name.search(/[click|mouseover|mouseout|load|resize|dblclick|contextmenu|blur|keypress|unload|submit]/) != -1 ) {
-			handler_names.push(action_name);
+		var val = actions[action_name];
+		if( actions.hasOwnProperty(action_name) && typeof val == 'function') {
+			var action = new Controller.Action(action_name, val,className)
+			controller_actions[action_name] = action;
+			if(! action.event_type) continue;
+			if(typeof action.selector != 'string'){
+				Event.observe(action.selector, action_name, Controller.event_closure(className, action_name, window) );
+			}else if(action.bubbles){
+				var et = action.event_type;
+				if(!bubbling_actions[et]){
+					bubbling_actions[et] = [];
+					Event.observe(document.documentElement, action.event_type, Controller.dispatch_event)
+				}
+				bubbling_actions[et].push(action)
+			}else{
+				non_bubbling_actions[action_name] = action;
+			}
 		}
-		
 	}
-	newmodel.event_handler_function_names = function(){
-		return handler_names;
+	newmodel.actions = function(){
+		return controller_actions;
+	};
+	newmodel.bubbling_actions = function(){
+		return bubbling_actions;
+	};
+	newmodel.non_bubbling_actions = function(){
+		return non_bubbling_actions;
 	};
 	
 	if(window[ className.capitalize()+'View' ]){
@@ -33,73 +62,133 @@ Controller = function(model, actions){
 		window[ className.capitalize()+'View' ].prototype.className = className;
 	}
 	Controller.klasses.push(newmodel);
-	return new newmodel();
-};
-
-Controller.params = function(params){
 	
-	for(var thing in params){
-		if( params.hasOwnProperty(thing) )
-			this[thing] = params[thing];
-	}
-};
-Controller.params.prototype = {
-	form_params : function(){
-		var data = {};
-		if(this.element.nodeName.toLowerCase() != 'form') return data;
-		var els = this.element.elements;
-		var uri_params = [];
-		for(var i=0; i < els.length; i++){
-			var el = els[i];
-			if(el.type.toLowerCase()=='submit') continue;
-			var key = el.name, value = el.value;
-
-			var key_components = key.rsplit(/\[[^\]]*\]/);
-			if( key_components.length > 1 ) {
-				var last = key_components.length - 1;
-				var nested_key = key_components[0].toString();
-				if(! data[nested_key] ) data[nested_key] = {};
-				var nested_hash = data[nested_key];
-				
-				for(var k = 1; k < last; k++){
-					nested_key = key_components[k].substring(1, key_components[k].length - 1);
-					if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={};
-					nested_hash = nested_hash[nested_key];
-				}
-				nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value;
-			} else {
-		        if (key in data) {
-		        	if (typeof data[key] == 'string' ) data[key] = [data[key]];
-		         	data[key].push(value);
-		        }
-		        else data[key] = value;
-			}
-		}
-
-		return data;
-	},
-	class_element : function(){
-		var start = this.element
-		var controller = this.controller
-		while(start && start.className.indexOf(controller) == -1 ){
-			start = start.parentNode;
-			if(start == document) return null;
-		}
-		return start;
-	},
-	object_data : function(){
-		return View.Helpers.get_data(this.class_element())
-	}
+	return newmodel;
 };
 
 /**
- * This is the default constructor for a controller
+ * Controller prototype functions
  */
 Controller.functions = function(){};
+Object.extend(Controller.functions.prototype, {
+	initialize : function(){
+		
+	},
+	/**
+	 * returns a function that calls an action with the first value passed to it.
+	 * @param {Object} action
+	 */
+	continue_to :function(action){
+		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. '}
+		return function(){
+			this.action = action;
+			this[action].apply(this, arguments);
+			//this.attach_event_handlers()
+		}.bind(this)
+	},
+	attach_later : function(){
+		var thsOb = this;
+		if(this.className == 'main' && this.klass.attached) return;
+		if(this.timeout) window.clearTimeout(this.timeout)
+		this.timeout = setTimeout(function(){
+			thsOb.attach.apply(thsOb, arguments);
+		}, 100);
+	},
+	attach : function(){
+		this.klass.attached = true;
+		var action_css_pairs = this.klass.non_bubbling_actions();
+		for(var action_name in action_css_pairs){
+			if( action_css_pairs.hasOwnProperty(action_name)){
+				var selector = action_css_pairs[action_name];
+				var els = $$(selector);
+				for(var e=0; e < els.length; e++){
+					this.attach_event_handlers_to(els[e],action_name);
+				}
+			}
+		}
+	},
+	attach_event_handlers_to : function(el,action_name){
+		var handler_name = action_name
+		var last_space = action_name.lastIndexOf(' ');
+		if(last_space != -1){
+			handler_name = action_name.substring(last_space+1)
+		}
+		
+		if(handler_name == 'contextmenu'){
+			el.oncontextmenu = Controller.event_closure(this.className, event_function,el);
+		}else if(handler_name == 'load' && this.klass_name != 'MainController'){
+			new this.klass().load({element: el});
+		}else{
+			Event.stopObserving(el, handler_name, Controller.event_closure(this.className, action_name,el ));
+			Event.observe(el, handler_name, Controller.event_closure(this.className, action_name,el ) );
+		}
+	}
+});
+
 /**
- * a list of all created controller classes
+ * Controller class functions
  */
+
 Controller.klasses = [];
+Controller.add_stop_event = function(event){
+	if(!event.stop)
+		event.stop = function(){
+			if(!event) event = window.event;
+		    try{
+		    event.cancelBubble = true;
+		    
+		    if (event.stopPropagation) 
+		        event.stopPropagation(); 
+		        
+		    if (event.preventDefault) 
+		        event.preventDefault();
+			if(Event.stop) Event.stop(event);
+		    }catch(e)
+		    {}
+		    return false;
+		};
+};
+Controller.dispatch = function(controller, action_name, params){
+	if(typeof controller == 'string'){
+		controller = window[controller.capitalize()+'Controller'];
+	}
+	var action = controller.actions()[action_name];
+	var instance = new controller();
+	instance.params = params;
+	instance.action = action;
+	var ret_val = instance[action_name](params);
+	if(action.attach)
+		Controller.attach_all();
+	return ret_val;
+}
+
+
+Controller.dispatch_event = function(event){
+	var target = event.target;
+	var classes = Controller.klasses;
+	for(var c = 0 ; c < classes.length; c++){
+		var klass= Controller.klasses[c];
+		var actions = klass.bubbling_actions()[event.type];
+		if(!actions) continue;
+		for(var i =0; i < actions.length;  i++){
+			var action = actions[i];
+			var action_name = action.name;
+			var match_result = action.match(target)
+			if(match_result){
+				Controller.add_stop_event(event);
+				var params = new Controller.Params({event: event, element: match_result, action: action_name, controller: klass  });
+				return Controller.dispatch(klass, action_name, params)
+			}
+		}
+	}
+	if(JMVC.Browser.Opera) Style.deleteRule(0);
+}
+Controller.attach_all = function(){
+	var classes = Controller.klasses;
+	for(var c = 0 ; c < classes.length; c++){
+		(new classes[c]()).attach_later();
+	}
+};
 
 (function(){
 
@@ -114,32 +203,9 @@ Controller.klasses = [];
 	 */
 	var new_event_closure_function = function(controller_name, f_name, element){
 		return function(event){
-			var full_name = controller_name.capitalize()+'Controller'
-			
-			var instance = new window[full_name];
-			if(!event.stop){
-				event.stop = function(){
-					stopPropagation(event);
-				};
-			}
-			
-			
-			var params = new Controller.params({event: event, element: element, action: f_name, controller: controller_name   });
-			instance.params = params;
-			instance.action = f_name;
-			
-			
-			
-			if(JMVC.handle_error){
-				try{
-					return instance[f_name](params);
-				}catch(e){
-					JMVC.handle_error(new ControllerError(e, controller_name, f_name, params))
-				}
-			}else{
-				return instance[f_name](params);
-			}
-			//instance.attach_event_handlers()
+			Controller.add_stop_event(event);
+			var params = new Controller.Params({event: event, element: element, action: f_name, controller: controller_name   });
+			return Controller.dispatch(controller_name, f_name, params);
 		}
 	};
 	/**
@@ -163,121 +229,176 @@ Controller.klasses = [];
 		}
 		return functions[controller_name][f_name][element.controller_id];
 	};
-	
 })();
 
-Controller.main_events = {'load' : window, 'resize': window, 'unload' : window}; //everything else is document if single or document.body
 
-Object.extend(Controller.functions.prototype, {
-	/**
-	 * attaches event handlers to an element
-	 *  Takes an element as its first parameter and a list of controller names as the second parameters
-	 *  If only 1 parameter is given, uses the current controller to attach event handlers
-	 *  Examples: this.attach(el)
-	 *  		  this.attach(el, 'todo','notes')
-	 */
-	attach : function(){
-		var element = arguments[0];
-		if(arguments.length == 1){
-			return this.attach_event_handlers(element);
-		}
-		for(var i = 1; i < arguments.length; i ++){
-			new window[arguments[i].capitalize()+'Controller']().attach_event_handlers(element );
-		}
-	},
-	/**
-	 * does the same as attach, but sets a timeout so it will happen after the page gets a chance to render
-	 */
-	attach_later : function(){
-		var args = arguments;
-		var thsOb = this;
-		setTimeout(function(){
-			thsOb.attach.apply(thsOb, args);
-		}, 10);
-	},
-	/**
-	 * 
-	 * @param {Object} element
-	 * @param {Object} to_controller
-	 */
-	attach_to : function(element, to_controller){
-		if(!to_controller){
-			this.attach_event_handlers_to(element);
-			return;
-		}
-		new window[to_controller.capitalize()+'Controller']().attach_event_handlers_to(element );
-		//new MenuController().attach_event_handlers_to(menu );
-	},
-	/**
-	 * 
-	 * @param {Object} start_element
-	 */
-	attach_event_handlers : function(start_element){
-		start_element = start_element || document.body;
-		var els;
-		if(this.klass_name == 'MainController') 
-		  els = [document];
-		else
-		  els = $$.descendant(start_element,'.'+this.className ); //  start_element.getElementsByClassName();
-		for(var e=0; e < els.length; e++){
-			this.attach_event_handlers_to(els[e]);
-		}
-	},
-	attach_event_handlers_to : function(el){
-		var event_functions = this.klass.event_handler_function_names();
-		for(var i=0; i< event_functions.length; i++){
-			
-			var event_function = event_functions[i];
-	
-			var last_space = event_function.lastIndexOf(' ');
-			var event_els , handler_name;
-			if(last_space == -1){
-				event_els = [el];
-				handler_name = event_function;
-			}else{
-				handler_name = event_function.substring(last_space+1);
-				if(this.klass_name == 'MainController' && el == document){
-					event_els = $$(event_function.substring(0, last_space));
-				}else{
-					event_els = $$.descendant(el,event_function.substring(0, last_space) );
-				}
-				
-				
-				//el.getElementsBySelector(event_function.substring(0, last_space));
-			}
-			if( (handler_name == 'load' || handler_name == 'resize' || handler_name == 'unload') && this.klass_name == 'MainController'){
-				event_els= [window];
-			}
-			event_els = event_els || [];
-			for(var he = 0; he < event_els.length; he++){
-				if(handler_name == 'contextmenu'){
-					event_els[he].oncontextmenu = Controller.event_closure(this.className, event_function,event_els[he] );
-				}else if(handler_name == 'load' && this.klass_name != 'MainController'){
-					new this.klass().load({element: event_els[he]});
-				}else{
-				Event.stopObserving(event_els[he], handler_name, Controller.event_closure(this.className, event_function,event_els[he] ));
-				Event.observe(event_els[he], handler_name, Controller.event_closure(this.className, event_function,event_els[he] ) );
-				}
-			}
-		}
-	},
-	initialize : function(){
-		
-	},
-	/**
-	 * returns a function that calls an action with the first value passed to it.
-	 * TODO: this should be changed to call all the args with it.
-	 * @param {Object} action
-	 */
-	continue_to :function(action){
-		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. '}
-		return function(response){
-			this.action = action;
-			this[action](response);
-			//this.attach_event_handlers()
-		}.bind(this)
+Controller.Params = function(params){
+	for(var thing in params){
+		if( params.hasOwnProperty(thing) )
+			this[thing] = params[thing];
 	}
-});
+};
+Controller.Params.prototype = {
+	form_params : function(){
+		var data = {};
+		if(this.element.nodeName.toLowerCase() != 'form') return data;
+		var els = this.element.elements;
+		var uri_params = [];
+		for(var i=0; i < els.length; i++){
+			var el = els[i];
+			if(el.type.toLowerCase()=='submit') continue;
+			var key = el.name, value = el.value;
+			var key_components = key.rsplit(/\[[^\]]*\]/);
+			if( key_components.length > 1 ) {
+				var last = key_components.length - 1;
+				var nested_key = key_components[0].toString();
+				if(! data[nested_key] ) data[nested_key] = {};
+				var nested_hash = data[nested_key];
+				for(var k = 1; k < last; k++){
+					nested_key = key_components[k].substring(1, key_components[k].length - 1);
+					if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={};
+					nested_hash = nested_hash[nested_key];
+				}
+				nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value;
+			} else {
+		        if (key in data) {
+		        	if (typeof data[key] == 'string' ) data[key] = [data[key]];
+		         	data[key].push(value);
+		        }
+		        else data[key] = value;
+			}
+		}
+		return data;
+	},
+	class_element : function(){
+		var start = this.element
+		var controller = this.controller
+		while(start && start.className.indexOf(controller) == -1 ){
+			start = start.parentNode;
+			if(start == document) return null;
+		}
+		return start;
+	},
+	object_data : function(){
+		return View.Helpers.get_data(this.class_element())
+	}
+};
+
+Controller.Action = function(name, f,className){
+	this.name = name;
+	this.func = f;
+	this.attach = false;
+	
+	//selector
+	if(name.search(/change|click|contextmenu|dblclick|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|select|submit|dblclick|focus|blur|load|unload/) == -1 ) {
+		return;		
+	}
+	var last_space = name.lastIndexOf(' ');
+	
+	// click, mouseover, etc
+	this.event_type = last_space == -1 ? name :name.substring(last_space+1) ;
+	this.bubbles = this.event_type.search(/focus|blur|load|unload/) == -1;
+	
+	var before_space = last_space == -1 ? '' : name.substring(0,last_space);
+	
+	var singular = className.is_singular()
+	
+	//now lets figure out the selector
+	if(className == 'main'){
+		if(last_space == -1){
+			//selector is body, or window
+			if(name  == 'load' || name == 'resize' || name == 'unload' ){ 
+				this.selector =  window
+			}else{
+				this.selector = '';  // basically makes it body since body is added to everything
+			}
+		}else{
+			this.selector = before_space;
+		}
+	}else if(singular){
+		this.selector = last_space == -1 ? '#'+className : '#'+className+' '+before_space;
+	}else{
+		if(name.substring(0,1) == "#"){
+			var newer_action_name = name.substring(1,action_name.length);
+			last_space = newer_action_name.lastIndexOf(' ');
+			this.selector = last_space == -1 ? '#'+className : '#'+className+newer_action_name.substring(0,last_space);
+		}else{
+			this.selector = last_space == -1 ? '.'+className.singularize() : '.'+className.singularize()+' '+before_space;
+		}
+	}
+}
+Controller.Action.prototype = {
+	selector_order : function(){
+		if(this.order) return this.order;
+		
+		var selector_parts = this.selector.split(/\s+/);
+		var patterns = {tag :    		/^\s*(\*|[\w\-]+)(\b|$)?/,
+        				id :            /^#([\w\-\*]+)(\b|$)/,
+    					className :     /^\.([\w\-\*]+)(\b|$)/};
+		
+		var order = [];
+		for(var i =0; i< selector_parts.length; i++){
+			var v = {}, r;
+			var p =selector_parts[i];
+			for(var attr in patterns){
+				if( (r = p.match(patterns[attr]))  ) {
+					if(attr == 'tag'){
+						v[attr] = r[1].toUpperCase();
+					}else{
+						v[attr] = r[1];
+					}
+					
+					p.replace(r[0],'')
+				}
+			}
+			order.push(v)
+		}
+		this.order = order;
+		return this.order;
+	},
+	node_path : function(el){
+		var body = document.body;
+		var parents = [];
+		var iterator =el;
+		while(iterator != body){
+			parents.unshift({tag: iterator.nodeName, className: iterator.className, id: iterator.id, element: iterator});
+			iterator = iterator.parentNode;
+		}
+		return parents;
+	},
+	match : function(el){
+		var docEl = document.documentElement;
+		var body = document.body;
+		if(el == docEl || el==body) return false;
+		
+		
+		var parents = this.node_path(el);
+
+		var matching = 0;
+		for(var n=0; n < parents.length; n++){
+			var node = parents[n];
+			var match = this.selector_order()[matching];
+			var matched = true;
+			for(var attr in match){
+				if(!match.hasOwnProperty(attr) || attr == 'element') continue;
+				if(match[attr] && node[attr] != match[attr]){
+					matched = false;
+				}
+			}
+			if(matched){
+				matching++;
+				if(matching >= this.selector_order().length){
+					return node.element;
+				}
+			}
+		}
+		return false;
+	}
+}
+
+
+
+
 
 Model = {
 	appendAsChildOf : function(element){
@@ -297,61 +418,7 @@ Model = {
 	}
 };
 
-/**
- * Stops an event
- * @param {Object} event
- */
-function stopPropagation(event)
-{
-    if(!event)
-            event = window.event;
-    try{
-	
-    event.cancelBubble = true;
-    
-    if (event.stopPropagation) 
-        event.stopPropagation(); 
-        
-    if (event.preventDefault) 
-        event.preventDefault();
-	if(Event.stop) //this should be moved elsewhere
-		Event.stop(event);
-    }catch(e)
-    {}
-    return false;
-};
+Event.observe(window, "load",Controller.attach_all);
 
-/**
- * An error that controllers create
- * @param {Object} error
- * @param {Object} controller_name
- * @param {Object} action_name
- * @param {Object} params
- */
-ControllerError = function(error, controller_name, action_name, params){
-	this.error = error;
-	this.controller = controller_name;
-	this.action = action_name;
-	this.params = params;
-};
 
-ControllerError.prototype = {
-	location : function(){
-		return location.href+" [controller:"+this.controller+", action:"+this.action+"]";
-	},
-	title : function(){
-		return this.location() + ' '+this.error;
-	},
-	browser : function(){
-		return navigator.userAgent;
-	},
-	message : function(){
-		return ['There was an error at '+this.location(),
-				'Error: '+this.error,
-				'Browser: '+this.browser()].join("\n");
-	},
-	toString : function(){
-		return this.message();
-	}
-};
 

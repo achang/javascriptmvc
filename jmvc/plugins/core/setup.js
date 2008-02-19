@@ -17,6 +17,6 @@ if(typeof Prototype != 'undefined') {
 include('../file/setup',
 		'../view/view',
 		'../view/helpers', 
-		'../controller2/controller',
+		'../controller/controller',
 		'../controller_view/controller_view',
 		'../includer/includer');
