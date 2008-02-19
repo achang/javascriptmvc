@@ -11,24 +11,20 @@ Controller.functions.prototype.render = function(options) {
         }
         else {
             if(options.action) {
-                //var folder_name = controller_name;
-                var url = 'app/views/'+controller_name+'/'+options.action+".View";
-            }
-            else if(options.template) {
 				var url_part =  options.template.include('/') ? 
 									options.template.split('/').join('/_') : 
 									controller_name+'/_'+options.template;
-				var url = 'app/views/'+url_part+'.View';
+				var url = 'app/views/'+url_part+'.ejs';
             }
 			else if(options.partial) {
                 
 				var url_part = options.partial.include('/') ? 
 									options.partial.split('/').join('/_') : 
 									controller_name+'/_'+options.partial;		
-				var url = 'app/views/'+url_part+'.View';
+				var url = 'app/views/'+url_part+'.ejs';
 			}
             else {
-                var url = 'app/views/'+controller_name+'/'+action_name.replace(/\./g, '').replace(/ /g,'_')+'.View';
+                var url = 'app/views/'+controller_name+'/'+action_name.replace(/\./g, '').replace(/ /g,'_')+'.ejs';
             }
 			var data_to_render = this;
 			if(options.locals) {
