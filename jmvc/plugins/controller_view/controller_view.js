@@ -1,7 +1,7 @@
 Controller.functions.prototype.render = function(options) {
 		var result, render_to_id = JMVC.RENDER_TO;
 		var controller_name = this.className;
-		var action_name = this.action;
+		var action_name = this.action.name;
         if(!options) options = {};
 		if(typeof options == 'string'){
 			result = new View({url:  options  }).render(this);

@@ -8,15 +8,34 @@ Ajax.Request = function(url,options){
       encoding:     'UTF-8',
       parameters:   ''
     };
+	this.url = url
     Object.extend(this.options, options || { });
-    this.options.method = this.options.method.toLowerCase();
+    
+	//var params = Object.clone(this.options.parameters);
 	
+	this.options.method = this.options.method.toLowerCase();
+	
+	if (!['get', 'post'].include(this.options.method)) {
+      // simulate other verbs over post
+      if(this.options.parameters == ''){
+	  	this.options.parameters = {_method : this.options.method}
+	  }else
+	  	this.options.parameters['_method'] = this.options.method;
+      this.options.method = 'post';
+    }
+	
+
+	if (this.options.method == 'get')
+	   this.url += (this.url.include('?') ? '&' : '?') + Object.toQueryString(this.options.parameters);
+	else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
+	   params += '&_=';
+    
 	
 	this.transport = Ajax.factory();
 	
 	
 	if(this.options.asynchronous == false){
-	   this.transport.open("GET", url, false);
+	   this.transport.open("GET", this.url, false);
 	   this.setRequestHeaders();
 	   try{this.transport.send(null);}
 	   catch(e){return null;}
@@ -33,7 +52,7 @@ Ajax.Request = function(url,options){
 			}
 		}).bind(this);
 		
-		this.transport.open(this.options.method, url);
+		this.transport.open(this.options.method, this.url);
 		this.setRequestHeaders();
 		this.transport.send(Object.toQueryString(this.options.parameters));
 	}

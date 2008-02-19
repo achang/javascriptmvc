@@ -79,9 +79,10 @@ Object.extend(Controller.functions.prototype, {
 	 * @param {Object} action
 	 */
 	continue_to :function(action){
+		if(!action) action = this.action.name+'ing'
 		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. '}
 		return function(){
-			this.action = action;
+			this.action = this.klass.actions()[action];
 			this[action].apply(this, arguments);
 			//this.attach_event_handlers()
 		}.bind(this)
@@ -148,6 +149,7 @@ Controller.add_stop_event = function(event){
 		    return false;
 		};
 };
+/*
 Controller.dispatch = function(controller, action_name, params){
 	if(typeof controller == 'string'){
 		controller = window[controller.capitalize()+'Controller'];
@@ -160,8 +162,30 @@ Controller.dispatch = function(controller, action_name, params){
 	if(action.attach)
 		Controller.attach_all();
 	return ret_val;
-}
+}*/
 
+Controller.dispatch = function(controller, action_name, params){
+	var c_name = controller;
+	if(typeof controller == 'string'){
+		controller = window[controller.capitalize()+'Controller'];
+	}
+	if(!controller) 'No controller named '+c_name+' was found for Controller.dispatch.';
+	if(!action_name) action_name = 'index';
+	
+	if(typeof action_name == 'string'){
+		if(!(action_name in controller.actions()) ) throw 'No action named '+action+' was found for '+c_name+'.';
+	}else{ //action passed
+		action_name = action_name.name;
+	}
+
+	var action = controller.actions()[action_name];
+	var instance = new controller();
+	instance.params = params;
+	instance.action = action;
+	var ret_val = instance[action_name](params);
+	action.after_filters();
+	return ret_val;
+}
 
 Controller.dispatch_event = function(event){
 	var target = event.target;
@@ -238,6 +262,12 @@ Controller.Params = function(params){
 			this[thing] = params[thing];
 	}
 };
+String.is_number = function(value){
+	if(typeof value == 'number') return true;
+	if(typeof value != 'string') return false;
+	return value.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)
+}
+
 Controller.Params.prototype = {
 	form_params : function(){
 		var data = {};
@@ -248,6 +278,7 @@ Controller.Params.prototype = {
 			var el = els[i];
 			if(el.type.toLowerCase()=='submit') continue;
 			var key = el.name, value = el.value;
+			if(String.is_number(value) ) value = parseFloat(value);
 			var key_components = key.rsplit(/\[[^\]]*\]/);
 			if( key_components.length > 1 ) {
 				var last = key_components.length - 1;
@@ -273,7 +304,8 @@ Controller.Params.prototype = {
 	class_element : function(){
 		var start = this.element
 		var controller = this.controller
-		while(start && start.className.indexOf(controller) == -1 ){
+		var className = controller.className.is_singular() ? controller.className : controller.className.singularize();
+		while(start && start.className.indexOf(className) == -1 ){
 			start = start.parentNode;
 			if(start == document) return null;
 		}
@@ -287,7 +319,7 @@ Controller.Params.prototype = {
 Controller.Action = function(name, f,className){
 	this.name = name;
 	this.func = f;
-	this.attach = false;
+	this.attach = null;
 	
 	//selector
 	if(name.search(/change|click|contextmenu|dblclick|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|select|submit|dblclick|focus|blur|load|unload/) == -1 ) {
@@ -318,10 +350,10 @@ Controller.Action = function(name, f,className){
 	}else if(singular){
 		this.selector = last_space == -1 ? '#'+className : '#'+className+' '+before_space;
 	}else{
-		if(name.substring(0,1) == "#"){
-			var newer_action_name = name.substring(1,action_name.length);
+		if(name.substring(0,2) == "# "){
+			var newer_action_name = name.substring(2,name.length);
 			last_space = newer_action_name.lastIndexOf(' ');
-			this.selector = last_space == -1 ? '#'+className : '#'+className+newer_action_name.substring(0,last_space);
+			this.selector = last_space == -1 ? '#'+className : '#'+className+' '+newer_action_name.substring(0,last_space);
 		}else{
 			this.selector = last_space == -1 ? '.'+className.singularize() : '.'+className.singularize()+' '+before_space;
 		}
@@ -393,6 +425,11 @@ Controller.Action.prototype = {
 			}
 		}
 		return false;
+	},
+	after_filters : function(){
+		if(this.attach){
+			Controller.attach_all();
+		}
 	}
 }
 

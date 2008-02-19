@@ -267,7 +267,21 @@ Object.extend(Jester.Resource, {
       return base;
     }
   },
-  
+  update : function(attributes, callback){
+  	var base = new this(attributes);
+
+	updateWork = bind(this, function(saved) {
+      return callback(base);
+    });
+    
+    if (callback) {
+      return base.save(updateWork);
+    }
+    else {
+      base.save();
+      return base;
+    }
+  },
   // If not given an ID, destroys itself, if it has an ID.  If given an ID, destroys that record.
   // You can call destroy(), destroy(1), destroy(callback()), or destroy(1, callback()), and it works as you expect.
   destroy : function(given_id, callback) {

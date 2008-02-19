@@ -698,49 +698,32 @@ Controller.test_dispatch = function(controller, action){
 		return false;
 }
 
-Controller.dispatch = function(controller_part, action, params){
-	var controller_name = controller_part.capitalize()+'Controller';
-	if(!action) action = 'index';
-	
-	if(window[controller_name]){
-		var controller = new window[controller_name]();
-		if(action in controller){
-			params.action = action;
-			params.controller = controller_part;
-			var passedparams = new Controller.params(params);
-			controller.params = params;
-			controller.action = action;
-			return controller[action](passedparams);
-		}else{
-			throw 'No action named '+action+' was found for '+controller_name+'.';
-		}
-	}else
-		throw 'No controller named '+controller_name+' was found.';
-}
-
 dhtmlHistory.historyChange = function(newLocation, historyData) {
 
 	var path = new JMVC.Path(location.href);
 	var data = JMVC.Path.get_data(path);
 	var folders = path.folder();
+	var action_part = null, controller_part;
 	if(folders == null){folders = ''}
-	var action_part = null,
-		controller_part;
+	
 	var first_s = folders.indexOf('/');
+	
+	var params = new Controller.Params(data);
+	
 	if(first_s != -1){
 		controller_part = folders.substring(0,first_s);
 		action_part = folders.substring(first_s+1);
-		return Controller.dispatch(controller_part, action_part,data);
+	}else if( Controller.test_dispatch(folders) ){
+		controller_part = folders;
+	}else if( Controller.test_dispatch('main',folders) ){
+		controller_part = 'main'
+		action_part = folders;
+	}else{
+		throw "Can't dispatch location "+folders;
 	}
-	
-	if( Controller.test_dispatch(folders) ){
-		return Controller.dispatch(folders, null ,data);
-	}
-	if( Controller.test_dispatch('main',folders) ){
-		return Controller.dispatch('main' , folders , data);
-	}
-	throw "Can't dispatch location "+folders;
-	
+	var result = Controller.dispatch(controller_part, action_part,params);
+	Controller.attach_all();
+	return result;
 }
 
 
