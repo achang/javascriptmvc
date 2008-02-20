@@ -58,7 +58,7 @@ Controller.functions.prototype.render = function(options) {
 		//if there is somewhere to render, render it there
 		if(options.to){
 			options.to.innerHTML = result;
-			this.attach(options.to)
+			Controller.attach_all()
 		}
 		return result;
 		/*

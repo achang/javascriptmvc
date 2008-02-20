@@ -616,11 +616,14 @@ Object.extend(Jester.Resource.prototype, {
 	  	if(transport.getResponseHeader)
         	loc = transport.getResponseHeader("location");
         if (loc) {
-          //id = parseInt(loc.match(/\/([^\/]*?)(\.\w+)?$/)[1]);
-		  // changed to work in Safari
-		  id = parseInt(loc.match(/\/[^\/]*?(\w+)?$/)[1]);
-          if (!isNaN(id))
-            this._setProperty("id", id)
+          //todo check this with prototype
+		  var mtcs = loc.match(/\/[^\/]*?(\w+)?$/);
+		  
+		  if(mtcs){
+		  	id = parseInt(mtcs[1]);
+			if (!isNaN(id))
+            	this._setProperty("id", id)
+		  }
         }
       }
 	  

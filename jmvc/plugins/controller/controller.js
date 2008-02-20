@@ -100,8 +100,8 @@ Object.extend(Controller.functions.prototype, {
 		var action_css_pairs = this.klass.non_bubbling_actions();
 		for(var action_name in action_css_pairs){
 			if( action_css_pairs.hasOwnProperty(action_name)){
-				var selector = action_css_pairs[action_name];
-				var els = $$(selector);
+				var action = action_css_pairs[action_name];
+				var els = $$(action.selector);
 				for(var e=0; e < els.length; e++){
 					this.attach_event_handlers_to(els[e],action_name);
 				}
@@ -329,7 +329,7 @@ Controller.Action = function(name, f,className){
 	
 	// click, mouseover, etc
 	this.event_type = last_space == -1 ? name :name.substring(last_space+1) ;
-	this.bubbles = this.event_type.search(/focus|blur|load|unload/) == -1;
+	this.bubbles = this.event_type.search(/focus|blur|load|unload|submit/) == -1;
 	
 	var before_space = last_space == -1 ? '' : name.substring(0,last_space);
 	
@@ -373,14 +373,16 @@ Controller.Action.prototype = {
 			var v = {}, r;
 			var p =selector_parts[i];
 			for(var attr in patterns){
-				if( (r = p.match(patterns[attr]))  ) {
-					if(attr == 'tag'){
-						v[attr] = r[1].toUpperCase();
-					}else{
-						v[attr] = r[1];
+				if( patterns.hasOwnProperty(attr) ){
+					if( (r = p.match(patterns[attr]))  ) {
+						if(attr == 'tag'){
+							v[attr] = r[1].toUpperCase();
+						}else{
+							v[attr] = r[1];
+						}
+						
+						p.replace(r[0],'')
 					}
-					
-					p.replace(r[0],'')
 				}
 			}
 			order.push(v)
