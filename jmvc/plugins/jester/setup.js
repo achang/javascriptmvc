@@ -613,7 +613,7 @@ Object.extend(Jester.Resource.prototype, {
       // Get ID from the location header if it's there
       if (this.new_record() && transport.status == 201) {
 	  	loc = transport.responseText;
-	  	if(transport.getResponseHeader)
+	  	if(typeof transport.getResponseHeader != 'unknown' && transport.getResponseHeader)
         	loc = transport.getResponseHeader("location");
         if (loc) {
           //todo check this with prototype
