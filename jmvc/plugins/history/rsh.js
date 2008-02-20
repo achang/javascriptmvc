@@ -255,15 +255,19 @@ window.dhtmlHistory = {
 
 	/*Get browser's current hash location; for Safari, read value from a hidden form field*/
 
-	/*Public*/
+	/*Public
 	getCurrentLocation: function() {
 		var r = (this.isSafari
 			? this.getSafariState()
 			: this.getCurrentHash()
 		);
 		return r;
+	},*/
+	getCurrentLocation: function() {
+		var r = this.getCurrentHash()
+
+		return r;
 	},
-	
 	/*Public: Manually parse the current url for a hash; tip of the hat to YUI*/
     getCurrentHash: function() {
 		var r = window.location.href;
