@@ -8,7 +8,7 @@
 (function(){
 	
 	//checks if included has been added, if it has, gets the next included file.
-	if(typeof include != 'undefined'){
+	if(typeof include != 'undefined'  && typeof include.end != 'undefined'){
 		include.end();
 		return;
 	}
