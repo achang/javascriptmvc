@@ -509,9 +509,11 @@ Object.extend(Jester.Resource, {
 		doc[this._plural_xml][this._singular_xml] = [doc[this._plural_xml][this._singular_xml]];
 	  }
       
-      collection = doc[this._plural_xml][this._singular_xml].map( bind(this, function(elem) {
-        return this.build(this._attributesFromTree(elem));
-      }));
+      collection = [];
+	  var attrs = doc[this._plural_xml][this._singular_xml];
+	  for(var i = 0; i < attrs.length; i++){
+	  	collection.push(this.build(this._attributesFromTree(attrs[i])))
+	  }
     }
     return collection;
   }

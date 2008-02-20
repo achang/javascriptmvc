@@ -469,7 +469,10 @@ View.Helpers.tag = function(tag, html_options, end) {
     if(!end) var end = '>';
     var txt = ' ';
     for(var attr in html_options) { 
-       if(html_options[attr] != null)
+       if(html_options.hasOwnProperty(attr)){
+	   	
+	   
+	   if(html_options[attr] != null)
         var value = html_options[attr].toString();
        else
         var value='';
@@ -479,6 +482,7 @@ View.Helpers.tag = function(tag, html_options, end) {
             txt += attr+'=\"'+value+'\" ' ;
        else
             txt += attr+"='"+value+"' " ;
+	   }
     }
     return '<'+tag+txt+end;
 };

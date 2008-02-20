@@ -358,11 +358,12 @@ window.dhtmlHistory = {
 			? 'width:800px;height:20px;border:1px solid black;margin:0;padding:0;'
 			: historyStorage.hideStyles
 		);
-		var safariHTML = '<form id="' + formID + '" style="' + formStyles + '">'
-			+ '<input type="text" style="' + inputStyles + '" id="' + stackID + '" value="[]"/>'
+		var form = document.createElement('form')
+		form.id = formID;
+		form.setAttribute('style',formStyles);
+		form.innerHTML = '<input type="text" style="' + inputStyles + '" id="' + stackID + '" value="[]"/>'
 			+ '<input type="text" style="' + inputStyles + '" id="' + lengthID + '" value=""/>'
-		+ '</form>';
-		document.write(safariHTML);
+		document.body.appendChild(form)
 		this.safariStack = document.getElementById(stackID);
 		this.safariLength = document.getElementById(lengthID);
 		if (!historyStorage.hasKey(this.PAGELOADEDSTRING)) {
@@ -547,10 +548,18 @@ window.historyStorage = {
 			? 'width: 800px;height:80px;border:1px solid black;'
 			: historyStorage.hideStyles
 		);
-		var textareaHTML = '<form id="' + formID + '" style="' + formStyles + '">'
-			+ '<textarea id="' + textareaID + '" style="' + textareaStyles + '"></textarea>'
-		+ '</form>';
-		document.write(textareaHTML)
+		if(dhtmlHistory.isSafari){
+			var form = document.createElement('form')
+			form.id = formID;
+			form.setAttribute('style',formStyles);
+			form.innerHTML = '<textarea id="' + textareaID + '" style="' + textareaStyles + '"></textarea>'
+			document.body.appendChild(form)
+		}else{
+			var textareaHTML = '<form id="' + formID + '" style="' + formStyles + '">'
+				+ '<textarea id="' + textareaID + '" style="' + textareaStyles + '"></textarea>'
+			+ '</form>';
+			document.write(textareaHTML)
+		}
 		this.storageField = document.getElementById(textareaID);
 		if (typeof window.opera !== "undefined") {
 			this.storageField.focus();/*Opera needs to focus this element before persisting values in it*/
