@@ -124,7 +124,16 @@ View.Scanner = function(source, left, right) {
 	this.stag = null;
 	this.lines = 0;
 };
-View.Helpers = {};
+
+View.Helpers = function(data){
+	this.data = data
+}
+View.Helpers.prototype.partial = function(options, data){
+	if(!data) data = this.data;
+	return new View(options).render(data);
+}
+
+
 View.Scanner.to_text = function(input){
 	if(input == null || input === undefined)
         return '';
@@ -320,7 +329,7 @@ View.Compiler.prototype = {
 	}
 	buff.close();
 	this.out = buff.script + ";";
-	var to_be_evaled = 'this.process = function(_CONTEXT) { try { with(View.Helpers) { with (_CONTEXT) {'+this.out+" return ___ViewO;}}}catch(e){e.lineNumber=null;throw e;}};";
+	var to_be_evaled = 'this.process = function(_CONTEXT,_VIEW) { try { with(_VIEW) { with (_CONTEXT) {'+this.out+" return ___ViewO;}}}catch(e){e.lineNumber=null;throw e;}};";
 	
 	try{
 		eval(to_be_evaled);
@@ -371,7 +380,10 @@ View.config( {cache: include.get_env() == 'production', type: '<' } );
 
 View.prototype = {
 	render : function(object){
-		return this.template.process.call(object, object);
+		var v = new View.Helpers(object);
+		return this.template.process.call(v, object,v);
+		
+		//return this.template.process.call(object, object);
 	},
 	out : function(){
 		return this.template.out;

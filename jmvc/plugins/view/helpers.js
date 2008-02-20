@@ -1,43 +1,4 @@
-/**
- * @fileoverview
- * The View.js file contains an Javascript implementation of the 
- * active view design pattern and supporting functionality.
- * <p class='credits'>JavaScript MVC based off <a href='http://trimpath.com/'>TrimJunction framework</a>.
- * @author Jupiter Information Technology Solutions - Brian Moschel, Justin Meyer.<br/>
- * @version 0.1
- */
 
-/**
- * <script language="javascript" src="/junction_setup.js" type="text/javascript"></script>
- * 
- * This is a static class and should never be instantiated.
- * @constructor
- * 
- * @class
- * <script language="javascript" type="text/javascript">
- *    get = function() {
- *          alert('get() called, this would normally direct you to a local action.')
- *    }
- * </script>
- * View.Helpers provides a set of methods for easily creating links and html elements.  This class
- * is added to window as view.  So instead of calling:
- * <pre class='example'>
- * View.Helpers.link_to( {action: <span>'list'</span>} )</pre>
- * you can call:
- * <pre class='example'>
- * view.link_to({action: <span>'list'</span>})</pre>
- *
- * In your templates, these methods are added to the data object you are rendering with.  So you can call them like:
- * <pre class='example'>
- * &lt;p&gt;I am going to show a link&lt;/p&gt;
- * &lt;%=  link_to('Click Me', {action: 'list'} ) %></pre>
- * @see JMVC.Controller
- * @see JMVC.ActiveRecord
- */
-
-View.Helpers = function() {
-    this.klass = 'View.Helpers'
-};
 
 
 /**
@@ -54,7 +15,7 @@ View.Helpers = function() {
  * @param {Object} value  optional default date value.
  * @param {Object} html_options  optional html attributes.
  */
-View.Helpers.date_tag = function(name, value , html_options) {
+View.Helpers.prototype.date_tag = function(name, value , html_options) {
     if(! (value instanceof Date))
 		value = new Date();
 	
@@ -98,7 +59,7 @@ View.Helpers.date_tag = function(name, value , html_options) {
  * @return {String} Text for an file element that will upload correctly into a JMVC application
  *
  */
-View.Helpers.file_tag = function(name, value, html_options) {
+View.Helpers.prototype.file_tag = function(name, value, html_options) {
     return this.input_field_tag(name+'[file]', value , 'file', html_options);
 };
 
@@ -120,7 +81,7 @@ View.Helpers.file_tag = function(name, value, html_options) {
  * @param {Boolean} post False if you want the form to submit as a get request, true if you want the form to submit as post.  Defaults to true.
  * @return {String} A begining form tag.
  */
-View.Helpers.form_tag = function(url_for_options, html_options) {
+View.Helpers.prototype.form_tag = function(url_for_options, html_options) {
     html_options     = html_options                     || {};
 	if(html_options.multipart == true) {
         html_options.method = 'post';
@@ -141,7 +102,7 @@ View.Helpers.form_tag = function(url_for_options, html_options) {
         html_options.enctype = 'multipart/form-data';
     }
     
-    html_options.onsubmit = html_options.onsubmit+"return View.Helpers.post_form(this, "+$H(url_for_options).toJSON()+");";
+    html_options.onsubmit = html_options.onsubmit+"return View.Helpers.prototype.post_form(this, "+$H(url_for_options).toJSON()+");";
     
     return this.start_tag_for('form', html_options);
 };
@@ -151,7 +112,7 @@ View.Helpers.form_tag = function(url_for_options, html_options) {
  * Outputs "&lt;/form&gt;".
  * @return {String} "&lt;/form&gt;" .
  */
-View.Helpers.form_tag_end = function() { return this.tag_end('form'); };
+View.Helpers.prototype.form_tag_end = function() { return this.tag_end('form'); };
 
 
 /**
@@ -171,7 +132,7 @@ View.Helpers.form_tag_end = function() { return this.tag_end('form'); };
  * @return {String} Text for an hidden field element.
  *
  */
-View.Helpers.hidden_field_tag   = function(name, value, html_options) { 
+View.Helpers.prototype.hidden_field_tag   = function(name, value, html_options) { 
     return this.input_field_tag(name, value, 'hidden', html_options); 
 };
 
@@ -200,7 +161,7 @@ View.Helpers.hidden_field_tag   = function(name, value, html_options) {
  * @return {String} input field text.
  *
  */
-View.Helpers.input_field_tag = function(name, value , inputType, html_options) {
+View.Helpers.prototype.input_field_tag = function(name, value , inputType, html_options) {
     
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
@@ -238,7 +199,7 @@ View.Helpers.input_field_tag = function(name, value , inputType, html_options) {
  * @return {String} hyperlink text.
  *
  */
-View.Helpers.link_to = function(name, options, html_options) {
+View.Helpers.prototype.link_to = function(name, options, html_options) {
     if(!name) var name = 'null';
     if(!html_options) var html_options = {};
     //html_options.onclick = html_options.onclick  || '' ;
@@ -261,14 +222,14 @@ View.Helpers.link_to = function(name, options, html_options) {
     //if(!options.controller)
 	//	options.controller = JMVC.Routes.params().controller;
 
-	View.Helpers.link_to_onclick_and_href(html_options, options, post);
+	View.Helpers.prototype.link_to_onclick_and_href(html_options, options, post);
 	
     return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
 };
 
 // adds the onclick and href attributes for the html_options
 // separated to allow history library to override this functionality easily
-View.Helpers.link_to_onclick_and_href = function(html_options, options, post) {
+View.Helpers.prototype.link_to_onclick_and_href = function(html_options, options, post) {
     if(html_options.onclick == null) html_options.onclick = '';
 	
 	html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
@@ -282,7 +243,7 @@ View.Helpers.link_to_onclick_and_href = function(html_options, options, post) {
  * @param {Object} options
  * @param {Object} html_options
  */
-View.Helpers.submit_link_to = function(name, options, html_options, post){
+View.Helpers.prototype.submit_link_to = function(name, options, html_options, post){
 	if(!name) var name = 'null';
     if(!html_options) html_options = {};
 	html_options.type = 'submit';
@@ -307,7 +268,7 @@ View.Helpers.submit_link_to = function(name, options, html_options, post){
     if(!options.controller)
 		options.controller = JMVC.Routes.params().controller;
 
-	View.Helpers.link_to_onclick_and_href(html_options, options, post);
+	View.Helpers.prototype.link_to_onclick_and_href(html_options, options, post);
 	
 	
 	
@@ -328,7 +289,7 @@ View.Helpers.submit_link_to = function(name, options, html_options, post){
  * @param {Object} block
  * @see #link_to_unless
  */
-View.Helpers.link_to_if = function(condition, name, options, html_options, block) {
+View.Helpers.prototype.link_to_if = function(condition, name, options, html_options, block) {
 	return this.link_to_unless((condition == false), name, options, html_options, null, block);
 };
 
@@ -362,7 +323,7 @@ View.Helpers.link_to_if = function(condition, name, options, html_options, block
  * @return {String} password field text.
  *
  */
-View.Helpers.password_field_tag = function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); };
+View.Helpers.prototype.password_field_tag = function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); };
 
 
 
@@ -391,7 +352,7 @@ View.Helpers.password_field_tag = function(name, value, html_options) { return t
  *
  * @return {String} select tag text.
  */
-View.Helpers.select_tag = function(name, value, choices, html_options) {     
+View.Helpers.prototype.select_tag = function(name, value, choices, html_options) {     
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
     html_options.value = value;
@@ -425,7 +386,7 @@ View.Helpers.select_tag = function(name, value, choices, html_options) {
  *
  * @return {String} html markup for a tag
  */
-View.Helpers.single_tag_for = function(tag, html_options) { return this.tag(tag, html_options, '/>');};
+View.Helpers.prototype.single_tag_for = function(tag, html_options) { return this.tag(tag, html_options, '/>');};
 
 /**
  * Creates tag that ends with '>'.  Use this to create html elements that have other markup or 
@@ -441,9 +402,9 @@ View.Helpers.single_tag_for = function(tag, html_options) { return this.tag(tag,
  *
  * @return {String} html markup for a tag
  */
-View.Helpers.start_tag_for = function(tag, html_options)  { return this.tag(tag, html_options); };
+View.Helpers.prototype.start_tag_for = function(tag, html_options)  { return this.tag(tag, html_options); };
 
-View.Helpers.submit_tag = function(name, html_options) {  
+View.Helpers.prototype.submit_tag = function(name, html_options) {  
     html_options = html_options || {};
     html_options.name  = html_options.id  || 'commit';
     html_options.type = html_options.type  || 'submit';
@@ -465,7 +426,7 @@ View.Helpers.submit_tag = function(name, html_options) {
  *
  * @return {String} html markup for a tag
  */
-View.Helpers.tag = function(tag, html_options, end) {
+View.Helpers.prototype.tag = function(tag, html_options, end) {
     if(!end) var end = '>';
     var txt = ' ';
     for(var attr in html_options) { 
@@ -491,7 +452,7 @@ View.Helpers.tag = function(tag, html_options, end) {
  * @param {String} tag Html tag type {'span', 'div', 'p', ...}
  * @return {String} '&lt;/'+tag+'&gt;'
  */
-View.Helpers.tag_end = function(tag)             { return '</'+tag+'>'; };
+View.Helpers.prototype.tag_end = function(tag)             { return '</'+tag+'>'; };
 
 /**
  * Creates a textarea.
@@ -514,7 +475,7 @@ View.Helpers.tag_end = function(tag)             { return '</'+tag+'>'; };
  * @return {String} password field text.
  *
  */
-View.Helpers.text_area_tag = function(name, value, html_options) { 
+View.Helpers.prototype.text_area_tag = function(name, value, html_options) { 
     html_options = html_options || {};
     html_options.id  = html_options.id  || name;
     html_options.name  = html_options.name  || name;
@@ -530,7 +491,7 @@ View.Helpers.text_area_tag = function(name, value, html_options) {
     
     return  this.start_tag_for('textarea', html_options)+value+this.tag_end('textarea');
 };
-View.Helpers.text_tag = View.Helpers.text_area_tag;
+View.Helpers.prototype.text_tag = View.Helpers.prototype.text_area_tag;
 /**
  * Creates a standard text field.
  * <p>Example:</p>
@@ -549,7 +510,7 @@ View.Helpers.text_tag = View.Helpers.text_area_tag;
  * @return {String} password field text.
  *
  */
-View.Helpers.text_field_tag     = function(name, value, html_options) { return this.input_field_tag(name, value, 'text', html_options); };
+View.Helpers.prototype.text_field_tag     = function(name, value, html_options) { return this.input_field_tag(name, value, 'text', html_options); };
 
 /**
  * Creates human readable text using basic types
@@ -557,7 +518,7 @@ View.Helpers.text_field_tag     = function(name, value, html_options) { return t
  * @param {String} null_text The string to display in case the input is null
  * @return {String} a string representation of whatever was passed in
  */
-View.Helpers.to_text = function(input, null_text) {
+View.Helpers.prototype.to_text = function(input, null_text) {
     if(input == null || input === undefined)
         return null_text || '';
     if(input instanceof Date)
@@ -569,10 +530,10 @@ View.Helpers.to_text = function(input, null_text) {
 };
 
 
-View.Helpers.img_tag = function(image_location, options){
+View.Helpers.prototype.img_tag = function(image_location, options){
 	options = options || {};
 	options.src = "resources/images/"+image_location;
-	return View.Helpers.single_tag_for('img', options);
+	return this.single_tag_for('img', options);
 	//return "<img src='"+APPLICATION_ROOT+"/public/images/"+image_location+"'/>"
 };
 
