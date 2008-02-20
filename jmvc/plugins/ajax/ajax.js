@@ -25,7 +25,7 @@ Ajax.Request = function(url,options){
     }
 	
 
-	if (this.options.method == 'get')
+	if (this.options.method == 'get' && this.options.parameters != '' )
 	   this.url += (this.url.include('?') ? '&' : '?') + Object.toQueryString(this.options.parameters);
 	else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
 	   params += '&_=';
@@ -35,9 +35,9 @@ Ajax.Request = function(url,options){
 	
 	
 	if(this.options.asynchronous == false){
-	   this.transport.open("GET", this.url, false);
+	   this.transport.open(this.options.method, this.url, this.options.asynchronous);
 	   this.setRequestHeaders();
-	   try{this.transport.send(null);}
+	   try{this.transport.send(Object.toQueryString(this.options.parameters));}
 	   catch(e){return null;}
 	   return;
 	}else{

@@ -34,7 +34,10 @@
 
 			include(	"../jmvc/jmvc")
 			include( "test_apps/"+JMVCTest.APPLICATION_NAME+"/config/environment" )
-		}else{
+		}else if(JMVCTest.PLUGINS){
+			include.plugins.apply(null,JMVCTest.PLUGINS )
+		}
+		else{
 			TEST = {order: 1}
 			include.setup(JMVCTest.TEST_MODE)
 			include('test_apps/include/load1','test_apps/include/load2')

@@ -167,6 +167,7 @@ if(typeof $ == 'undefined'){
 
 Object.toQueryString = function(object,name){
 	if(!object) return null;
+	if(typeof object == 'string') return object;
 	return Object.toQueryString.worker(object,name).join('&');
 };
 Object.toQueryString.worker = function(obj,name){
