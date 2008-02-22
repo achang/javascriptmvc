@@ -126,12 +126,12 @@ View.Scanner = function(source, left, right) {
 };
 
 View.Helpers = function(data){
-	this.data = data
-}
+	this.data = data;
+};
 View.Helpers.prototype.partial = function(options, data){
 	if(!data) data = this.data;
 	return new View(options).render(data);
-}
+};
 
 
 View.Scanner.to_text = function(input){
