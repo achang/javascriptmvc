@@ -8,7 +8,7 @@ Ajax.Request = function(url,options){
       encoding:     'UTF-8',
       parameters:   ''
     };
-	this.url = url
+	this.url = url;
     Object.extend(this.options, options || { });
     
 	//var params = Object.clone(this.options.parameters);
@@ -18,7 +18,7 @@ Ajax.Request = function(url,options){
 	if (!['get', 'post'].include(this.options.method)) {
       // simulate other verbs over post
       if(this.options.parameters == ''){
-	  	this.options.parameters = {_method : this.options.method}
+	  	this.options.parameters = {_method : this.options.method};
 	  }else
 	  	this.options.parameters['_method'] = this.options.method;
       this.options.method = 'post';

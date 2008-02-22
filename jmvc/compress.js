@@ -1721,6 +1721,9 @@ compress = function(total, srcs, production_name){
 		var txt=''
 		for(var s=0; s < total.length; s++){
 			txt += "<p id='file_"+s+"'>'"+total[s].name+"'</p>"
+			if(total[s].process) {
+				total[s].text = total[s].process(total[s])
+			}
 			collection += "include.set_path('"+total[s].start+"')"+";\n"+total[s].text + ";\n"
 		}
 		collection += "include.end_of_production();"

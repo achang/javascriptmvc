@@ -93,7 +93,7 @@
 			for(var i=0; i < arguments.length; i++){
 				var newInclude = arguments[i];
 				if(typeof newInclude == 'string'){
-					newInclude = {name: newInclude};
+					newInclude = {name: newInclude.indexOf('.js') == -1  ? newInclude+'.js' : newInclude};
 				}
 				
 				if(newInclude.base62 == null)
@@ -185,11 +185,11 @@
 			insert_head(name);
 			return;
 		}
-		newInclude.name = include.normalize(  name.indexOf('.js') == -1  ? name+'.js' : name  );
+		newInclude.name = include.normalize(  name  );
 		//this doesn't take into account /file.js == mydomain.com/file.js
 		newInclude.absolute = newInclude.name;
 		if(is_relative(newInclude.absolute)){
-			newInclude.absolute = join(include.get_absolute_path()+'/', name.indexOf('.js') == -1  ? name+'.js' : name);
+			newInclude.absolute = join(include.get_absolute_path()+'/', name);
 		}
 		if(is_included(newInclude.absolute)) return;
 		var ar = newInclude.name.split('/');
@@ -243,7 +243,10 @@
 			latest.text = syncrequest(latest.name);
 			total.push( latest);
 		}
-		insert(latest.name);
+		if(latest.ignore){
+			insert();
+		}else
+			insert(latest.name);
 	}
 	include.end_of_production = function(){
 		first_wave_done = true;

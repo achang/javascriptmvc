@@ -38,6 +38,13 @@ if(typeof Object.extend == 'undefined'){
 
 View = function( options ){
 	this.set_options(options);
+	if(options.precompiled){
+		this.template = {};
+		this.template.process = options.precompiled;
+		View.update(this.name, this);
+		return;
+	}
+	
 	
 	if(options.url){
 		var template = View.get(options.url, this.cache);
@@ -73,7 +80,48 @@ View = function( options ){
 	View.update(this.name, this);
 	this.template = template;
 };
-
+View.prototype = {
+	render : function(object){
+		var v = new View.Helpers(object);
+		return this.template.process.call(v, object,v);
+	},
+	out : function(){
+		return this.template.out;
+	},
+	set_options : function(options){
+		this.type = options.type != null ? options.type : View.type;
+		this.cache = options.cache != null ? options.cache : View.cache;
+		this.text = options.text != null ? options.text : null;
+		this.name = options.name != null ? options.name : null;
+	},
+	// called without options, returns a function that takes the object
+	// called with options being a string, uses that as a url
+	// called with options as an object
+	update : function(element, options){
+		if(typeof element == 'string'){
+			element = document.getElementById(element);
+		}
+		if(options == null){
+			_template = this;
+			return function(object){
+				View.prototype.update.call(_template, element, object);
+			};
+		}
+		if(typeof options == 'string'){
+			params = {};
+			params.url = options;
+			_template = this;
+			params.onComplete = function(request){
+				var object = eval( request.responseText );
+				View.prototype.update.call(_template, element, object);
+			};
+			new Ajax.Request(params.url, params)
+		}else
+		{
+			element.innerHTML = this.render(options);
+		}
+	}
+};
 
 
 /* Make a split function like Ruby's: "abc".split(/b/) -> ['a', 'b', 'c'] */
@@ -378,50 +426,27 @@ View.config = function(options){
 };
 View.config( {cache: include.get_env() == 'production', type: '<' } );
 
-View.prototype = {
-	render : function(object){
-		var v = new View.Helpers(object);
-		return this.template.process.call(v, object,v);
-		
-		//return this.template.process.call(object, object);
-	},
-	out : function(){
-		return this.template.out;
-	},
-	set_options : function(options){
-		this.type = options.type != null ? options.type : View.type;
-		this.cache = options.cache != null ? options.cache : View.cache;
-		this.text = options.text != null ? options.text : null;
-		this.name = options.name != null ? options.name : null;
-	},
-	// called without options, returns a function that takes the object
-	// called with options being a string, uses that as a url
-	// called with options as an object
-	update : function(element, options){
-		if(typeof element == 'string'){
-			element = document.getElementById(element);
-		}
-		if(options == null){
-			_template = this;
-			return function(object){
-				View.prototype.update.call(_template, element, object);
-			};
-		}
-		if(typeof options == 'string'){
-			params = {};
-			params.url = options;
-			_template = this;
-			params.onComplete = function(request){
-				var object = eval( request.responseText );
-				View.prototype.update.call(_template, element, object);
-			};
-			new Ajax.Request(params.url, params)
-		}else
-		{
-			element.innerHTML = this.render(options);
-		}
+View.PreCompiledFunction = function(name, f){
+	new View({name: name, precompiled: f});
+};
+
+
+include.view = function(path){
+	if(include.get_env() == 'development'){
+		return new View({url: path});
+	}else if(include.get_env() == 'compress'){
+		include({name: path, process: View.process_include, ignore: true});
+		return new View({url: path});
+	}else{
+		//production, do nothing!
 	}
 };
 
+View.process_include = function(script){
+	var view = new View({text: script.text});
+	
+	return 'View.PreCompiledFunction("'+script.name+
+				'", function(_CONTEXT,_VIEW) { try { with(_VIEW) { with (_CONTEXT) {'+view.out()+" return ___ViewO;}}}catch(e){e.lineNumber=null;throw e;}})";
+};
 
 

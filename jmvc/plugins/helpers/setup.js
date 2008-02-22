@@ -177,7 +177,7 @@ Object.toQueryString.worker = function(obj,name){
 			var value = obj[thing];
 			if(typeof value != 'object'){
 				var nice_val = encodeURIComponent(value.toString());
-				var newer_name = encodeURIComponent(name ? name+'['+thing+']' : thing)
+				var newer_name = encodeURIComponent(name ? name+'['+thing+']' : thing) ;
 				parts2.push( newer_name+'='+nice_val )  ;
 			}else{
 				if(name){
@@ -206,4 +206,4 @@ JMVC.Browser = {
     WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
     Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1,
     MobileSafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/)
-  };
+};
