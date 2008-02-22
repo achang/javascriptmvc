@@ -33,9 +33,4 @@ include.resources = function(){
 	}
 	return include.apply(null, arguments);
 };
-include.views = function(){
-	for(var i=0; i< arguments.length; i++){
-		arguments[i] = 'app/views/'+arguments[i]+'.jstr';
-	}
-	return include.apply(null, arguments);
-};
+

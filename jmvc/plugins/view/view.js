@@ -433,18 +433,23 @@ View.PreCompiledFunction = function(name, f){
 
 include.view = function(path){
 	if(include.get_env() == 'development'){
-		return new View({url: path});
+		new View({url: path});
 	}else if(include.get_env() == 'compress'){
 		include({name: path, process: View.process_include, ignore: true});
-		return new View({url: path});
+		new View({url: path});
 	}else{
 		//production, do nothing!
 	}
 };
 
+include.views = function(){
+	for(var i=0; i< arguments.length; i++){
+		include.view('app/views/'+arguments[i]+'.ejs');
+	}
+};
+
 View.process_include = function(script){
 	var view = new View({text: script.text});
-	
 	return 'View.PreCompiledFunction("'+script.name+
 				'", function(_CONTEXT,_VIEW) { try { with(_VIEW) { with (_CONTEXT) {'+view.out()+" return ___ViewO;}}}catch(e){e.lineNumber=null;throw e;}})";
 };
