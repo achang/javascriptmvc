@@ -1,47 +1,55 @@
 <html>
 	<head>
-		
+		<style type='text/css'>
+			.success  {background-color: #80FF80}
+			.failure  {background-color: #FF8080}
+			.test {border: dotted 1px blue;}
+		</style>
 
 		
 	</head>
 	<body>
-		<div>
-			<div>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
-		<span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span><span class='thing'>SPAN</span>
+		<div id='load' class='failure'>
+			Test MainController#load
 		</div>
-		</div>	
-
+		<div id='mouseover' class='failure'>
+			Test TestsController#mousover
+		</div>
+		<div id='mouseout' class='failure'>
+			Test TestsController#mousout
+		</div>
+		<div id='click' class='failure'>
+			Test TestsController#click
+		</div>
+		<div id='focus' class='failure'>
+			Test TestsController#focus
+		</div>
+		<div id='blur' class='failure'>
+			Test TestsController#blur
+		</div>
+		<div id='submit' class='failure'>
+			Test TestsController#submit
+		</div>
+		<form id='tests'>
+			<input class='test' value='focus and blur' id='input' />
+			<input type='submit' />
+		</form>
 		
+		
+		<div id='output'>
+			
+		</div>
 		<script type='text/javascript' src='../../../jmvc/include.js'></script>
 		<script type='text/javascript'>
-			include.plugins('controller2');
+			include.plugins('controller');
 			include('test')
 			include.opera()
+			success = function(id){
+				$(id).className = 'success'
+			};
+			log = function(text){
+				$('output').innerHTML = '<p>'+text+'</p>'+$('output').innerHTML
+			};
 		</script>
 		
 		

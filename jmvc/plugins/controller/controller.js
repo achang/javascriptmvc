@@ -22,39 +22,28 @@ Controller = function(model, actions){
 	
 	//create actions
 	
-	var bubbling_actions = {};
-	var non_bubbling_actions = {};
+	var registered_actions = {};
 	var controller_actions = {};
-	
+	newmodel.add_register_action = function(action,observe_on, event_type, capture){
+		if(!registered_actions[event_type]){
+			registered_actions[event_type] = [];
+			Event.observe(observe_on, event_type, Controller.dispatch_event, capture)
+		}
+		registered_actions[event_type].push(action)
+	};
 	
 	for(var action_name in actions ){
 		var val = actions[action_name];
 		if( actions.hasOwnProperty(action_name) && typeof val == 'function') {
-			var action = new Controller.Action(action_name, val,className)
+			var action = new Controller.Action(action_name, val,newmodel)
 			controller_actions[action_name] = action;
-			if(! action.event_type) continue;
-			if(typeof action.selector != 'string'){
-				Event.observe(action.selector, action_name, Controller.event_closure(className, action_name, window) );
-			}else if(action.bubbles){
-				var et = action.event_type;
-				if(!bubbling_actions[et]){
-					bubbling_actions[et] = [];
-					Event.observe(document.documentElement, action.event_type, Controller.dispatch_event)
-				}
-				bubbling_actions[et].push(action)
-			}else{
-				non_bubbling_actions[action_name] = action;
-			}
 		}
 	}
 	newmodel.actions = function(){
 		return controller_actions;
 	};
-	newmodel.bubbling_actions = function(){
-		return bubbling_actions;
-	};
-	newmodel.non_bubbling_actions = function(){
-		return non_bubbling_actions;
+	newmodel.registered_actions = function(){
+		return registered_actions;
 	};
 	
 	if(window[ className.capitalize()+'View' ]){
@@ -184,6 +173,7 @@ Controller.dispatch = function(controller, action_name, params){
 	instance.action = action;
 	var ret_val = instance[action_name](params);
 	action.after_filters();
+	//params.event.stop();
 	return ret_val;
 }
 
@@ -192,13 +182,14 @@ Controller.dispatch_event = function(event){
 	var classes = Controller.klasses;
 	for(var c = 0 ; c < classes.length; c++){
 		var klass= Controller.klasses[c];
-		var actions = klass.bubbling_actions()[event.type];
+		var actions = klass.registered_actions()[event.type];
 		if(!actions) continue;
 		for(var i =0; i < actions.length;  i++){
 			var action = actions[i];
-			var action_name = action.name;
-			var match_result = action.match(target)
+			var match_result = action.match(target, event)
+			
 			if(match_result){
+				var action_name = action.name;
 				Controller.add_stop_event(event);
 				var params = new Controller.Params({event: event, element: match_result, action: action_name, controller: klass  });
 				return Controller.dispatch(klass, action_name, params)
@@ -316,50 +307,97 @@ Controller.Params.prototype = {
 	}
 };
 
-Controller.Action = function(name, f,className){
-	this.name = name;
-	this.func = f;
-	this.attach = null;
-	
+
+
+
+//Assume this takes only good and possible things for its browser
+// onsubmit is captured for everything other than IE
+// onsubmit becomes +' input', mouseup and onkeyup, mouseup in IE, 
+//		filter activated, mouseup and type == submit, keyup, type == value
+// onfocus becomes activate in IE, filter activated
+// onblur becomes deactivate in IE, filter activated
+
+
+
+Controller.Action = function(action_name, func ,controller){
+	this.name = action_name;
+	this.func = func;
+	this.controller = controller;
 	//selector
-	if(name.search(/change|click|contextmenu|dblclick|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|select|submit|dblclick|focus|blur|load|unload/) == -1 ) {
+	if(this.name.search(/change|click|contextmenu|dblclick|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|select|submit|dblclick|focus|blur|load|unload/) == -1 ) {
 		return;		
 	}
-	var last_space = name.lastIndexOf(' ');
-	
-	// click, mouseover, etc
-	this.event_type = last_space == -1 ? name :name.substring(last_space+1) ;
-	this.bubbles = this.event_type.search(/focus|blur|load|unload|submit/) == -1;
-	
-	var before_space = last_space == -1 ? '' : name.substring(0,last_space);
-	
-	var singular = className.is_singular()
-	
-	//now lets figure out the selector
-	if(className == 'main'){
-		if(last_space == -1){
-			//selector is body, or window
-			if(name  == 'load' || name == 'resize' || name == 'unload' ){ 
-				this.selector =  window
-			}else{
-				this.selector = '';  // basically makes it body since body is added to everything
-			}
-		}else{
-			this.selector = before_space;
-		}
-	}else if(singular){
-		this.selector = last_space == -1 ? '#'+className : '#'+className+' '+before_space;
-	}else{
-		if(name.substring(0,2) == "# "){
-			var newer_action_name = name.substring(2,name.length);
-			last_space = newer_action_name.lastIndexOf(' ');
-			this.selector = last_space == -1 ? '#'+className : '#'+className+' '+newer_action_name.substring(0,last_space);
-		}else{
-			this.selector = last_space == -1 ? '.'+className.singularize() : '.'+className.singularize()+' '+before_space;
-		}
+	this.parse_name();
+	if(this.className() == 'main')  {
+		this.main_controller()
+		return;
 	}
+	this.singular = this.className().is_singular();
+	
+	if(this.singular){
+		this.selector = this.last_space == -1 ? '#'+this.className() : '#'+this.className()+' '+this.before_space;
+	}else{
+		this.set_plural_selector();
+	}
+
+	if(this.event_type == 'submit' && JMVC.Browser.IE){
+		this.submit_for_ie();
+		return;
+	}
+	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 }
 Controller.Action.prototype = {
+	registered_event : function(){
+		if(JMVC.Browser.IE){
+			if(this.event_type == 'focus')
+				return 'activate';
+			else if(this.event_type == 'blur')
+				return 'deactivate'
+		}
+		return this.event_type;
+	},
+	set_plural_selector : function(){
+		if(this.name.substring(0,2) == "# "){
+			var newer_action_name = this.name.substring(2,this.name.length);
+			newlast_space = newer_action_name.lastIndexOf(' ');
+			this.selector = newlast_space == -1 ? '#'+this.className() : '#'+this.className()+' '+newer_action_name.substring(0,this.last_space);
+		}else{
+			this.selector = this.last_space == -1 ? '.'+this.className().singularize() : '.'+this.className().singularize()+' '+this.before_space;
+		}
+	},
+	parse_name : function(){
+		this.last_space = this.name.lastIndexOf(' ');
+		this.before_space = this.last_space == -1 ? '' : this.name.substring(0,this.last_space);
+		this.event_type = this.last_space == -1 ? this.name :this.name.substring(this.last_space+1);
+		this.event_type;
+	},
+	main_controller : function(){
+		if(['load','unload','resize'].include(this.event_type)){
+			Event.observe(window, this.event_type, Controller.event_closure(this.className(), this.event_type, window) );
+			return;
+		}
+		this.selector = this.before_space;
+		this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture())
+	},
+	submit_for_ie : function(){
+		this.controller.add_register_action(this,document.documentElement, 'click');
+		this.controller.add_register_action(this,document.documentElement, 'keypress');
+		this.filters= {
+			click : function(el, event){
+				return el.nodeName.toUpperCase() == 'INPUT' && el.type.toLowerCase() == 'submit'
+			},
+			keypress : function(el, event){
+				return el.nodeName.toUpperCase() == 'INPUT' && event.charCode == 13; // make event key match enter && el.type.toLowerCase() == 'submit'
+			}
+		}
+		//this.real_selector = this.selector+' input' //must be in an input element
+	},
+	className : function(){
+		return this.controller.className;
+	},
+	capture : function(){
+		return ['focus','blur'].include(this.event_type);
+	},
 	selector_order : function(){
 		if(this.order) return this.order;
 		
@@ -400,7 +438,10 @@ Controller.Action.prototype = {
 		}
 		return parents;
 	},
-	match : function(el){
+	match : function(el, event){
+		if(this.filters){
+			if(!this.filters[event.type](el, event)) return false;
+		}
 		var docEl = document.documentElement;
 		var body = document.body;
 		if(el == docEl || el==body) return false;
@@ -457,7 +498,7 @@ Model = {
 	}
 };
 
-Event.observe(window, "load",Controller.attach_all);
+//Event.observe(window, "load",Controller.attach_all);
 
 
 

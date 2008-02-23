@@ -1,28 +1,36 @@
-
 Controller('main',{
 	load : function(){
-		alert('loaded')
+		success('load')
 	}
 });
 
 
-Controller('things',{
+Controller('tests',{
 	mouseover : function(params){
-		params.element.style.backgroundColor = 'Green'
+		log('mouseover')
+		success('mouseover')
 	},
 	mouseout : function(params){
-		params.element.style.backgroundColor = 'Red'
-	}/*,
+		log('mouseout')
+		success('mouseout')
+	},
 	click : function(params){
-		alert('clicked '+params.element.id);
-		
+		log('click')
+		success('click')
 	},
-	'#click' :function(params){
-		params.element.style.backgroundColor = 'Blue'
+	focus : function(){
+		log('focused')
+		success('focus')
 	},
-	'input focus' :function(params){
-		alert('focus')
-	}*/
+	blur : function(){
+		log('blured')
+		success('blur')
+	},
+	'# submit' :function(params){
+		log('submit')
+		success('submit')
+		params.event.stop();
+	}
 });
 
 
