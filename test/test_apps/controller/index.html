@@ -1,40 +1,44 @@
 <html>
 	<head>
+		<title>Controller Test</title>
 		<style type='text/css'>
 			.success  {background-color: #80FF80}
 			.failure  {background-color: #FF8080}
-			.test {border: dotted 1px blue;}
+			.test {}
 		</style>
-
-		
 	</head>
 	<body>
+		<p><b>Instructions:</b>  The following form and input elements are
+		being matched by a Controller.  By performing various events on
+		the input element (mousover, click, focus, blur, mouseout), the event's
+		corresponding action logs the event and indicates successful event handling.
+		   
+		</p>
+		<form id='tests'>
+			<input class='test' value='mouseover, mouseout, click, focus, and blur me' id='input' size='50' />
+			<input type='submit' value='submit me'/>
+		</form>
 		<div id='load' class='failure'>
-			Test MainController#load
+			Test load
 		</div>
 		<div id='mouseover' class='failure'>
-			Test TestsController#mousover
+			Test mousover
 		</div>
 		<div id='mouseout' class='failure'>
-			Test TestsController#mousout
+			Test mousout
 		</div>
 		<div id='click' class='failure'>
-			Test TestsController#click
+			Test click
 		</div>
 		<div id='focus' class='failure'>
-			Test TestsController#focus
+			Test focus
 		</div>
 		<div id='blur' class='failure'>
-			Test TestsController#blur
+			Test blur
 		</div>
 		<div id='submit' class='failure'>
-			Test TestsController#submit
+			Test submit
 		</div>
-		<form id='tests'>
-			<input class='test' value='focus and blur' id='input' />
-			<input type='submit' />
-		</form>
-		
 		
 		<div id='output'>
 			

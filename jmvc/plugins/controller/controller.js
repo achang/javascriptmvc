@@ -75,43 +75,6 @@ Object.extend(Controller.functions.prototype, {
 			this[action].apply(this, arguments);
 			//this.attach_event_handlers()
 		}.bind(this)
-	},
-	attach_later : function(){
-		var thsOb = this;
-		if(this.className == 'main' && this.klass.attached) return;
-		if(this.timeout) window.clearTimeout(this.timeout)
-		this.timeout = setTimeout(function(){
-			thsOb.attach.apply(thsOb, arguments);
-		}, 100);
-	},
-	attach : function(){
-		this.klass.attached = true;
-		var action_css_pairs = this.klass.non_bubbling_actions();
-		for(var action_name in action_css_pairs){
-			if( action_css_pairs.hasOwnProperty(action_name)){
-				var action = action_css_pairs[action_name];
-				var els = $$(action.selector);
-				for(var e=0; e < els.length; e++){
-					this.attach_event_handlers_to(els[e],action_name);
-				}
-			}
-		}
-	},
-	attach_event_handlers_to : function(el,action_name){
-		var handler_name = action_name
-		var last_space = action_name.lastIndexOf(' ');
-		if(last_space != -1){
-			handler_name = action_name.substring(last_space+1)
-		}
-		
-		if(handler_name == 'contextmenu'){
-			el.oncontextmenu = Controller.event_closure(this.className, event_function,el);
-		}else if(handler_name == 'load' && this.klass_name != 'MainController'){
-			new this.klass().load({element: el});
-		}else{
-			Event.stopObserving(el, handler_name, Controller.event_closure(this.className, action_name,el ));
-			Event.observe(el, handler_name, Controller.event_closure(this.className, action_name,el ) );
-		}
 	}
 });
 
@@ -138,20 +101,7 @@ Controller.add_stop_event = function(event){
 		    return false;
 		};
 };
-/*
-Controller.dispatch = function(controller, action_name, params){
-	if(typeof controller == 'string'){
-		controller = window[controller.capitalize()+'Controller'];
-	}
-	var action = controller.actions()[action_name];
-	var instance = new controller();
-	instance.params = params;
-	instance.action = action;
-	var ret_val = instance[action_name](params);
-	if(action.attach)
-		Controller.attach_all();
-	return ret_val;
-}*/
+
 
 Controller.dispatch = function(controller, action_name, params){
 	var c_name = controller;
@@ -197,13 +147,8 @@ Controller.dispatch_event = function(event){
 		}
 	}
 	if(JMVC.Browser.Opera) Style.deleteRule(0);
-}
-Controller.attach_all = function(){
-	var classes = Controller.klasses;
-	for(var c = 0 ; c < classes.length; c++){
-		(new classes[c]()).attach_later();
-	}
 };
+
 
 (function(){
 
