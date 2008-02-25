@@ -553,6 +553,12 @@ View.Helpers.prototype.img_tag = function(image_location, options){
 		if(!dataAt) return null;
 		return data[parseInt(dataAt)];
 	};
+	View.Helpers.prototype.link_data = function(store){
+		return View.Helpers.link_data(store)
+	};
+	View.Helpers.prototype.get_data = function(el){
+		return View.Helpers.get_data(el)
+	};
 })()
 
 

@@ -8,11 +8,33 @@
 		</style>
 	</head>
 	<body>
-		<p><b>Instructions:</b>  The following form and input elements are
+<pre>
+Controller('tests',{
+	mouseover : function(params){
+		success('mouseover')
+	},
+	mouseout : function(params){
+		success('mouseout')
+	},
+	click : function(params){
+		success('click')
+	},
+	focus : function(){
+		success('focus')
+	},
+	blur : function(){
+		success('blur')
+	},
+	'# submit' :function(params){
+		success('submit')
+		params.event.stop();
+	}
+});
+</pre>
+<p><b>Instructions:</b>  The following form and input elements are
 		being matched by a Controller.  By performing various events on
 		the input element (mousover, click, focus, blur, mouseout), the event's
 		corresponding action logs the event and indicates successful event handling.
-		   
 		</p>
 		<form id='tests'>
 			<input class='test' value='mouseover, mouseout, click, focus, and blur me' id='input' size='50' />
@@ -49,7 +71,8 @@
 			include('test')
 			include.opera()
 			success = function(id){
-				$(id).className = 'success'
+				$(id).className = 'success';
+				log(id)
 			};
 			log = function(text){
 				$('output').innerHTML = '<p>'+text+'</p>'+$('output').innerHTML

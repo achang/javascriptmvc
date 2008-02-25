@@ -305,7 +305,7 @@ Controller.Action.prototype = {
 		if(this.name.substring(0,2) == "# "){
 			var newer_action_name = this.name.substring(2,this.name.length);
 			newlast_space = newer_action_name.lastIndexOf(' ');
-			this.selector = newlast_space == -1 ? '#'+this.className() : '#'+this.className()+' '+newer_action_name.substring(0,this.last_space);
+			this.selector = newlast_space == -1 ? '#'+this.className() : '#'+this.className()+' '+newer_action_name.substring(0,newlast_space);
 		}else{
 			this.selector = this.last_space == -1 ? '.'+this.className().singularize() : '.'+this.className().singularize()+' '+this.before_space;
 		}

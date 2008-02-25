@@ -735,7 +735,6 @@ dhtmlHistory.historyChange = function(newLocation, historyData) {
 		throw "Can't dispatch location "+folders;
 	}
 	var result = Controller.dispatch(controller_part, action_part,params);
-	Controller.attach_all();
 	return result;
 }
 
