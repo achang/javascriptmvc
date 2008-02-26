@@ -17,13 +17,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /*
-	dhtmlHistory: An object that provides history, history data, and bookmarking for DHTML and Ajax applications.
+	JMVC.History: An object that provides history, history data, and bookmarking for DHTML and Ajax applications.
 	
 	dependencies:
 		* the historyStorage object included in this file.
 
 */
-window.dhtmlHistory = {
+window.JMVC.History = {
 	
 	/*Public: User-agent booleans*/
 	isIE: false,
@@ -348,7 +348,7 @@ window.dhtmlHistory = {
 	/*Private: Create Opera-specific DOM nodes and overrides*/
 	createOpera: function() {
 		this.waitTime = 400;/*Opera needs longer between history updates*/
-		var imgHTML = '<img src="javascript:location.href=\'javascript:dhtmlHistory.checkLocation();\';" style="' + historyStorage.hideStyles + '" />';
+		var imgHTML = '<img src="javascript:location.href=\'javascript:JMVC.History.checkLocation();\';" style="' + historyStorage.hideStyles + '" />';
 		document.write(imgHTML);
 	},
 	
@@ -513,7 +513,7 @@ window.dhtmlHistory = {
 /*
 	historyStorage: An object that uses a hidden form to store history state across page loads. The mechanism for doing so relies on
 	the fact that browsers save the text in form data for the life of the browser session, which means the text is still there when
-	the user navigates back to the page. This object can be used independently of the dhtmlHistory object for caching of Ajax
+	the user navigates back to the page. This object can be used independently of the JMVC.History object for caching of Ajax
 	session information.
 	
 	dependencies: 
@@ -521,11 +521,11 @@ window.dhtmlHistory = {
 */
 window.historyStorage = {
 	
-	/*Public: Set up our historyStorage object for use by dhtmlHistory or other objects*/
+	/*Public: Set up our historyStorage object for use by JMVC.History or other objects*/
 	setup: function(options) {
 		
 		/*
-			options - object to store initialization parameters - passed in from dhtmlHistory or directly into historyStorage
+			options - object to store initialization parameters - passed in from JMVC.History or directly into historyStorage
 			options.debugMode - boolean that causes hidden form fields to be shown for development purposes.
 			options.toJSON - function to override default JSON stringifier
 			options.fromJSON - function to override default JSON parser
@@ -552,7 +552,7 @@ window.historyStorage = {
 			? 'width: 800px;height:80px;border:1px solid black;'
 			: historyStorage.hideStyles
 		);
-		if(dhtmlHistory.isSafari){
+		if(JMVC.History.isSafari){
 			var form = document.createElement('form')
 			form.id = formID;
 			form.setAttribute('style',formStyles);
@@ -677,9 +677,9 @@ window.historyStorage = {
 };
 
 if(typeof Prototype == 'undefined'){
-	window.dhtmlHistory.create();
+	window.JMVC.History.create();
 }else{
-	window.dhtmlHistory.create({
+	window.JMVC.History.create({
 	    toJSON: function(o) {
 	            return Object.toJSON(o);
 	    }
@@ -690,13 +690,12 @@ if(typeof Prototype == 'undefined'){
 }
 
 Event.observe(window, 'load', function(){
-	dhtmlHistory.initialize();
-	dhtmlHistory.addListener(dhtmlHistory.historyChange);
-	dhtmlHistory.historyChange();
+	JMVC.History.initialize();
+	JMVC.History.addListener(JMVC.History.historyChange);
+	JMVC.History.historyChange();
 	
 });
 
-//JMVC.JMVC_startup_tasks.push(dhtmlHistory.initialize_library)
 Controller.test_dispatch = function(controller, action){
 	if(!controller) return false;
 	var controller_name = controller.capitalize()+'Controller';
@@ -711,7 +710,8 @@ Controller.test_dispatch = function(controller, action){
 		return false;
 }
 
-dhtmlHistory.historyChange = function(newLocation, historyData) {
+
+JMVC.History.historyChange = function(newLocation, historyData) {
 
 	var path = new JMVC.Path(location.href);
 	var data = JMVC.Path.get_data(path);
@@ -813,41 +813,10 @@ JMVC.Path.get_data = function(path) {
 	return data;
 };
 
-
+//this should convert options to params
 Controller.functions.prototype.redirect_to = function(options){
 	var controller_name = options.controller || this.className;
 	var action_name = options.action || 'index';
 	var lhs = window.location.href.split('#')[0];
 	window.location = lhs+'#'+controller_name+'/'+action_name
 };
-
-
-/*
-dhtmlHistory.add_to_history = function(options){
-	var added_url =  JMVC.Routes.url_for(options)
-	dhtmlHistory.add(added_url, options);
-}
-
-JMVC.View.url_for = function(params, post) {
-    this.update_with_controller_and_action(params);
-    if(post == true)
-        return 'post(' + $H(params).toJSON() + ');'
-    else
-        return 'JMVC.Dispatcher.add_to_history_and_get(' + $H(params).toJSON() + ');'
-}
-
-JMVC.Dispatcher.add_to_history_and_get = function(options){
-	var options = Object.extend(
-	      { action: JMVC.Routes.params()['action'],
-	        controller: JMVC.Routes.params()['controller']
-	      }, options || {} );
-	var history_options = $H(Object.clone(options))
-	dhtmlHistory.add_to_history(history_options) // adds this to history
-	get(options);
-}
-
-
-JMVC.View.link_to_onclick_and_href = function(html_options, options, post) {
-    html_options.onclick=html_options.onclick+(options ? this.url_for(options, post) : '')+'return false;';
-    html_options.href='#'+(options ? JMVC.Routes.url_for(options) : '')
-}*/
