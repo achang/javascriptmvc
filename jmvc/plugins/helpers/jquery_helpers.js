@@ -158,7 +158,10 @@ Object.extend(Date.prototype, {
 
 
 //Array helpers
-Array.from = jQuery.makeArray
+Array.from = function(iterable){
+	if (!iterable) return [];
+	return jQuery.makeArray(iterable);
+}
 
 Array.prototype.include = function(thing){
 	return jQuery.inArray(thing, this) != -1;

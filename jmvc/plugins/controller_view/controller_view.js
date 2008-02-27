@@ -42,7 +42,7 @@ Controller.functions.prototype.render = function(options) {
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];
 		var element = null;
 		for(var l =0; l < locations.length; l++){
-			if( typeof  options[locations[l]] == 'string' ) options[locations[l]] = $(options[locations[l]]);
+			if( typeof  options[locations[l]] == 'string' ) options[locations[l]] = $E(options[locations[l]]);
 			
 			if(options[locations[l]]) element = options[locations[l]];
 		}
