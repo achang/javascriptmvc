@@ -113,7 +113,10 @@
 					newInclude.base62 = PACKER_OPTIONS.base62;
 				if(newInclude.shrink_variables == null)
 					newInclude.shrink_variables = PACKER_OPTIONS.shrink_variables;
-				include.add(newInclude);
+				setTimeout(function(){
+					include.add(newInclude);
+				}, 10);
+				
 			};
 			return;
 		}
@@ -147,7 +150,7 @@
 		if(options.remote != null)
 			PACK_FOR_REMOTE = options.remote;
 		
-		if(env == 'production'){
+		if(env == 'production' && ! navigator.userAgent.match(/Opera/)){
 			document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
 			return;
 		}
@@ -264,9 +267,12 @@
 	 */
 	include.opera = function(){
 		if(navigator.userAgent.match(/Opera/)){
-			include.end();
+			if(env == 'production')
+				document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
+			else
+				include.end();
 		}
-	}
+	};
 	include.srcs = [];
 	var insert_head = function(src){
 		var script= document.createElement("script");

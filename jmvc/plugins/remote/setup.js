@@ -33,7 +33,7 @@ RemoteModel.class_functions = {
 			callback(newObjects);
 		};
 		params.method = 'GET';
-		include(this.url+'/'+this.className.pluralize()+'.json?'+Object.toQueryString(params));
+		include(this.url+'/'+this.className.pluralize()+'.json?'+Object.toQueryString(params)+'&'+Math.random());
 	},
 	create : function(params, callback) {
 		params.callback = this.className.capitalize()+'.createCallback';
