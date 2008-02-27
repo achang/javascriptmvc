@@ -27,15 +27,15 @@ Controller = function(model, actions){
 	newmodel.add_register_action = function(action,observe_on, event_type, capture){
 		if(!registered_actions[event_type]){
 			registered_actions[event_type] = [];
-			Event.observe(observe_on, event_type, Controller.dispatch_event, capture)
+			Event.observe(observe_on, event_type, Controller.dispatch_event, capture);
 		}
-		registered_actions[event_type].push(action)
+		registered_actions[event_type].push(action);
 	};
 	
 	for(var action_name in actions ){
 		var val = actions[action_name];
 		if( actions.hasOwnProperty(action_name) && typeof val == 'function') {
-			var action = new Controller.Action(action_name, val,newmodel)
+			var action = new Controller.Action(action_name, val,newmodel);
 			controller_actions[action_name] = action;
 		}
 	}
@@ -73,7 +73,6 @@ Object.extend(Controller.functions.prototype, {
 		return function(){
 			this.action = this.klass.actions()[action];
 			this[action].apply(this, arguments);
-			//this.attach_event_handlers()
 		}.bind(this)
 	}
 });
@@ -125,7 +124,7 @@ Controller.dispatch = function(controller, action_name, params){
 	action.after_filters();
 	//params.event.stop();
 	return ret_val;
-}
+};
 
 Controller.dispatch_event = function(event){
 	var target = event.target;
@@ -136,13 +135,13 @@ Controller.dispatch_event = function(event){
 		if(!actions) continue;
 		for(var i =0; i < actions.length;  i++){
 			var action = actions[i];
-			var match_result = action.match(target, event)
+			var match_result = action.match(target, event);
 			
 			if(match_result){
 				var action_name = action.name;
 				Controller.add_stop_event(event);
 				var params = new Controller.Params({event: event, element: match_result, action: action_name, controller: klass  });
-				return Controller.dispatch(klass, action_name, params)
+				return Controller.dispatch(klass, action_name, params);
 			}
 		}
 	}
@@ -201,8 +200,8 @@ Controller.Params = function(params){
 String.is_number = function(value){
 	if(typeof value == 'number') return true;
 	if(typeof value != 'string') return false;
-	return value.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)
-}
+	return value.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/);
+};
 
 Controller.Params.prototype = {
 	form_params : function(){
@@ -238,8 +237,8 @@ Controller.Params.prototype = {
 		return data;
 	},
 	class_element : function(){
-		var start = this.element
-		var controller = this.controller
+		var start = this.element;
+		var controller = this.controller;
 		var className = controller.className.is_singular() ? controller.className : controller.className.singularize();
 		while(start && start.className.indexOf(className) == -1 ){
 			start = start.parentNode;
@@ -248,7 +247,7 @@ Controller.Params.prototype = {
 		return start;
 	},
 	object_data : function(){
-		return View.Helpers.get_data(this.class_element())
+		return View.Helpers.get_data(this.class_element());
 	}
 };
 
@@ -274,7 +273,7 @@ Controller.Action = function(action_name, func ,controller){
 	}
 	this.parse_name();
 	if(this.className() == 'main')  {
-		this.main_controller()
+		this.main_controller();
 		return;
 	}
 	this.singular = this.className().is_singular();
@@ -290,14 +289,15 @@ Controller.Action = function(action_name, func ,controller){
 		return;
 	}
 	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
-}
+};
+
 Controller.Action.prototype = {
 	registered_event : function(){
 		if(JMVC.Browser.IE){
 			if(this.event_type == 'focus')
 				return 'activate';
 			else if(this.event_type == 'blur')
-				return 'deactivate'
+				return 'deactivate';
 		}
 		return this.event_type;
 	},
@@ -322,19 +322,19 @@ Controller.Action.prototype = {
 			return;
 		}
 		this.selector = this.before_space;
-		this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture())
+		this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 	},
 	submit_for_ie : function(){
 		this.controller.add_register_action(this,document.documentElement, 'click');
 		this.controller.add_register_action(this,document.documentElement, 'keypress');
 		this.filters= {
 			click : function(el, event){
-				return el.nodeName.toUpperCase() == 'INPUT' && el.type.toLowerCase() == 'submit'
+				return el.nodeName.toUpperCase() == 'INPUT' && el.type.toLowerCase() == 'submit';
 			},
 			keypress : function(el, event){
 				return el.nodeName.toUpperCase() == 'INPUT' && event.charCode == 13; // make event key match enter && el.type.toLowerCase() == 'submit'
 			}
-		}
+		};
 		//this.real_selector = this.selector+' input' //must be in an input element
 	},
 	className : function(){
@@ -368,7 +368,7 @@ Controller.Action.prototype = {
 					}
 				}
 			}
-			order.push(v)
+			order.push(v);
 		}
 		this.order = order;
 		return this.order;
@@ -419,7 +419,7 @@ Controller.Action.prototype = {
 			Controller.attach_all();
 		}
 	}
-}
+};
 
 
 
