@@ -33,7 +33,7 @@ RemoteModel.class_functions = {
 			callback(newObjects);
 		};
 		params.method = 'GET';
-		include(this.url+'/'+this.className.pluralize()+'.json?'+Form.object_stringify(params));
+		include(this.url+'/'+this.className.pluralize()+'.json?'+Object.toQueryString(params));
 	},
 	create : function(params, callback) {
 		params.callback = this.className.capitalize()+'.createCallback';
@@ -49,8 +49,8 @@ RemoteModel.class_functions = {
 		params.method = 'POST';
 		
 		
-		var options = Form.object_stringify(params);
-		include(this.url+'/'+this.className.pluralize()+'.json?'+Form.object_stringify(params));
+		var options = Object.toQueryString(params);
+		include(this.url+'/'+this.className.pluralize()+'.json?'+Object.toQueryString(params));
 	}
 };
 
@@ -77,25 +77,4 @@ Object.extend(RemoteModel.functions.prototype, {
 		}
 	}
 });
-//now is Object.toQueryString
-Form = {};
-Form.object_stringify = function(object,name){
-	return Form.object_stringify.worker(object,name).join('&');
-};
-Form.object_stringify.worker = function(object,name){
-	var parts2 = [];
-	for(var thing in object){
-		var value = object[thing];
-		if(typeof value != 'object'){
-			var nice_val = encodeURIComponent(value.toString());
-			parts2.push( (name ? name+'['+thing+']='+nice_val : thing+'='+nice_val ) )  ;
-		}else{
-			if(name){
-				parts2 = parts2.concat( Form.object_stringify.worker(value, name+'['+thing+']')   );
-			}else{
-				parts2 = parts2.concat( Form.object_stringify.worker(value, thing)  );
-			}
-		}
-	}
-	return parts2;
-};
+

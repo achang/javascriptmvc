@@ -11,9 +11,9 @@ Controller.functions.prototype.render = function(options) {
         }
         else {
             if(options.action) {
-				var url_part =  options.template.include('/') ? 
-									options.template.split('/').join('/_') : 
-									controller_name+'/_'+options.template;
+				var url_part =  options.action.include('/') ? 
+									options.action.split('/').join('/_') : 
+									controller_name+'/'+options.action;
 				var url = 'app/views/'+url_part+'.ejs';
             }
 			else if(options.partial) {

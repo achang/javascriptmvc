@@ -21,9 +21,9 @@ Object.toQueryString.worker = function(obj,name){
 				parts2.push( newer_name+'='+nice_val )  ;
 			}else{
 				if(name){
-					parts2 = parts2.concat( Form.object_stringify.worker(value, name+'['+thing+']')   );
+					parts2 = parts2.concat( Object.toQueryString.worker(value, name+'['+thing+']')   );
 				}else{
-					parts2 = parts2.concat( Form.object_stringify.worker(value, thing)  );
+					parts2 = parts2.concat( Object.toQueryString.worker(value, thing)  );
 				}
 			}
 		}

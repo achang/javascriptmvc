@@ -7,5 +7,6 @@ if(typeof Prototype != 'undefined') {
 	$$.descendant = function(element, selector) {
 		return element.getElementsBySelector(selector);
 	};
+	Query = $$;
 }else
  	include("standard");

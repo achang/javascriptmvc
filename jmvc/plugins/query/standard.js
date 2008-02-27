@@ -9,3 +9,4 @@ $$ = cssQuery;
 $$.descendant = function(element,selector){
 	return $$(selector, element);
 };
+Query = $$

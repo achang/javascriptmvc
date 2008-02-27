@@ -433,10 +433,10 @@ View.PreCompiledFunction = function(name, f){
 
 include.view = function(path){
 	if(include.get_env() == 'development'){
-		new View({url: path});
+		new View({url: include.get_path()+'/'+path});
 	}else if(include.get_env() == 'compress'){
-		include({name: path, process: View.process_include, ignore: true});
-		new View({url: path});
+		include({name: include.get_path()+'/'+path, process: View.process_include, ignore: true});
+		new View({url: include.get_path()+'/'+path});
 	}else{
 		//production, do nothing!
 	}

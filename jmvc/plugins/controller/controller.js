@@ -68,12 +68,12 @@ Object.extend(Controller.functions.prototype, {
 	 * @param {Object} action
 	 */
 	continue_to :function(action){
-		if(!action) action = this.action.name+'ing'
-		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. '}
+		if(!action) action = this.action.name+'ing';
+		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. ';}
 		return function(){
 			this.action = this.klass.actions()[action];
 			this[action].apply(this, arguments);
-		}.bind(this)
+		}.bind(this);
 	}
 });
 
@@ -322,6 +322,10 @@ Controller.Action.prototype = {
 			return;
 		}
 		this.selector = this.before_space;
+		if(this.event_type == 'submit' && JMVC.Browser.IE){
+			this.submit_for_ie();
+			return;
+		}
 		this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 	},
 	submit_for_ie : function(){
