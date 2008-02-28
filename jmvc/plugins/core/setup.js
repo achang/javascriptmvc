@@ -2,13 +2,18 @@
 include('../helpers/setup', 
 		'../inflector/inflector'
 		);
+	
 if(typeof Prototype == 'undefined') {
 	include("../event/standard");
 	include("../ajax/ajax");
+}else{
+	$MVC.Event = Event;
+	$MVC.Ajax = Ajax
 }
 
 if(typeof Prototype != 'undefined') {
-	$$.descendant = function(element, selector) {
+	$MVC.Query = $$
+	$MVC.Query.descendant = function(element, selector) {
 		return element.getElementsBySelector(selector);
 	};
 }else
