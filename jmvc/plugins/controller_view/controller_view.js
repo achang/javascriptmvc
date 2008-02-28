@@ -4,7 +4,7 @@ Controller.functions.prototype.render = function(options) {
 		var action_name = this.action.name;
         if(!options) options = {};
 		if(typeof options == 'string'){
-			result = new View({url:  options  }).render(this);
+			result = new $MVC.View({url:  options  }).render(this);
 		}
 		else if(options.text) {
             result = options.text;   
@@ -36,7 +36,7 @@ Controller.functions.prototype.render = function(options) {
 				var path = url;
 			else
 				var path = JMVC.get_application_root()+'/'+url;
-			result = new View({url:  path  }).render(data_to_render);
+			result = new $MVC.View({url:  path  }).render(data_to_render);
 		}
 		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];

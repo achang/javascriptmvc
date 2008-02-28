@@ -21,7 +21,7 @@ window.onerror = JMVC.error_handler;
 
 JMVC.handle_error = function(error){
 	if(include.get_env() == 'production')
-		new Ajax.Request('/errors', {method: 'post', postBody: 'title='+encodeURIComponent(error.title())+'&message='+encodeURIComponent(error.message()), onComplete: function(){
+		new $MVC.Ajax.Request('/errors', {method: 'post', postBody: 'title='+encodeURIComponent(error.title())+'&message='+encodeURIComponent(error.message()), onComplete: function(){
 				alert('sent errror');
 		}} );
 	else

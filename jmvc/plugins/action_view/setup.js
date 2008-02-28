@@ -1,14 +1,14 @@
-JMVC.ActionViewGenerator = function(model, name, proto) {
+JMVC.Action$MVC.ViewGenerator = function(model, name, proto) {
 	name = name ? name : 'show'
 	proto = proto || {}
 	if(!model) throw 'model doesnt exist'
 	
 	var action_view;
 	
-	var new_class_name = name.capitalize() //AR_Todo.View.Show
+	var new_class_name = name.capitalize() //AR_Todo.$MVC.View.Show
 
-	model.View[new_class_name] = Class.create(JMVC.ActiveView, proto); 
-	var new_class = model.View[new_class_name]
+	model.$MVC.View[new_class_name] = Class.create(JMVC.Active$MVC.View, proto); 
+	var new_class = model.$MVC.View[new_class_name]
 
 	new_class.view_name = name;
 
@@ -30,18 +30,18 @@ JMVC.ActionViewGenerator = function(model, name, proto) {
 }
 
 
-JMVC.ActiveView = Class.create({
+JMVC.Active$MVC.View = Class.create({
 	initialize : function(object) {
 		this.fields = []
 		this.klass.get_columns().each(function(column_name){
 			var column = object.klass().columns_hash()[column_name]
 			if(column){
-				var view_klass = object.klass().View[this.klass.view_name.capitalize()]
+				var view_klass = object.klass().$MVC.View[this.klass.view_name.capitalize()]
 				var column_class
 				if(view_klass)
-					column_class = object.klass().View[this.klass.view_name.capitalize()][column_name.capitalize()] //AR_Todo.View.Show.Complete
+					column_class = object.klass().$MVC.View[this.klass.view_name.capitalize()][column_name.capitalize()] //AR_Todo.$MVC.View.Show.Complete
 				
-				var sql_type_column_class = JMVC.ColumnView[column.sql_type.capitalize()]
+				var sql_type_column_class = JMVC.Column$MVC.View[column.sql_type.capitalize()]
 				var created_column;
 				
 				if(column_class)
@@ -49,7 +49,7 @@ JMVC.ActiveView = Class.create({
 				else if(sql_type_column_class){
 					created_column = new sql_type_column_class(this, column_name, object[column_name]) 
 				}else
-					created_column = new JMVC.ColumnView(this, column_name, object[column_name])
+					created_column = new JMVC.Column$MVC.View(this, column_name, object[column_name])
 					
 				this.fields.push(created_column)
 				this[column_name] = function(){
@@ -110,7 +110,7 @@ JMVC.ActiveView = Class.create({
 		}
 	},
 	replace_with : function(new_view_name){
-		new_view_klass = this.model_klass.View[new_view_name.capitalize()]
+		new_view_klass = this.model_klass.$MVC.View[new_view_name.capitalize()]
 		if(!new_view_klass) throw 'bad view name'
 		// build object ...
 		var new_attributes = {id: this.id}
@@ -122,27 +122,27 @@ JMVC.ActiveView = Class.create({
 		this.element.replace(new_view.toElement() )
 		return new_view
 		// 
-		//this.model_klass.View[new_class_name]
+		//this.model_klass.$MVC.View[new_class_name]
 		//return new [new_view_name](this)
 	}
 });
 
-JMVC.ActiveView.get_columns = function(){
+JMVC.Active$MVC.View.get_columns = function(){
 	return this.model_klass.columns().collect(function(column){column.name})
 }
-JMVC.ActiveView.show_columns = function(){
+JMVC.Active$MVC.View.show_columns = function(){
 	var show_columns = $A(arguments)
 	this.get_columns = function(){
 		return show_columns;
 	}
 }
-JMVC.ActiveView.get_controller = function(){
+JMVC.Active$MVC.View.get_controller = function(){
 	return window[this.model_klass.klass_name+'Controller']
 }
-JMVC.ActiveView.controller_name = function(){
+JMVC.Active$MVC.View.controller_name = function(){
 	return this.model_klass.klass_name.toLowerCase()
 }
-JMVC.ActiveView.set_controller = function(controller_name){
+JMVC.Active$MVC.View.set_controller = function(controller_name){
 	this.get_controller = function(){
 		return window[controller_name.capitalize()+'Controller']
 	}
@@ -158,7 +158,7 @@ JMVC.ActiveView.set_controller = function(controller_name){
  //you would have to rewrite it
  //
 
-JMVC.ColumnView = Class.create({
+JMVC.Column$MVC.View = Class.create({
 	//probably need to be able to not have a real column
 	initialize: function(view_instance, column_name, value) {
 		//if() we check to make sure we were built right
@@ -229,7 +229,7 @@ JMVC.ColumnView = Class.create({
 	} //no label, no container, information should be intrinsic to element
 })
 
-JMVC.ColumnView.Boolean = Class.create(JMVC.ColumnView, {
+JMVC.Column$MVC.View.Boolean = Class.create(JMVC.Column$MVC.View, {
 	make_content : function(){
 		var content=document.createElement('input')
 		content.type='checkbox'
@@ -238,16 +238,16 @@ JMVC.ColumnView.Boolean = Class.create(JMVC.ColumnView, {
 		return content;
 	}
 })
-JMVC.ColumnView.Boolean.Edit = Class.create(JMVC.ColumnView.Boolean, {
+JMVC.Column$MVC.View.Boolean.Edit = Class.create(JMVC.Column$MVC.View.Boolean, {
 	make_content : function($super){
 		var content = $super()
 		content.disabled = false;
 		return content;
 	}
 })
-JMVC.ColumnView.String = Class.create(JMVC.ColumnView, {
+JMVC.Column$MVC.View.String = Class.create(JMVC.Column$MVC.View, {
 })
-JMVC.ColumnView.String.Edit = Class.create(JMVC.ColumnView.String, {
+JMVC.Column$MVC.View.String.Edit = Class.create(JMVC.Column$MVC.View.String, {
 	make_content : function(){
 		var content=document.createElement('input')
 		content.type='text'
@@ -258,13 +258,13 @@ JMVC.ColumnView.String.Edit = Class.create(JMVC.ColumnView.String, {
 
 
 /*JMVC.ActiveRecord.prototype.render = function(type, params){
-	var klass = this.klass().Views[type.capitalize()]
+	var klass = this.klass().$MVC.Views[type.capitalize()]
 	if(typeof klass != 'function'){
-		klass = JMVC.ActionViewGenerator(this.klass(), type,klass) 
+		klass = JMVC.Action$MVC.ViewGenerator(this.klass(), type,klass) 
 	}
 	return new klass(this)
 }*/
-JMVC.ActiveRecord.View = {}
-JMVC.ActiveRecord.ColumnViews = {}
+JMVC.ActiveRecord.$MVC.View = {}
+JMVC.ActiveRecord.Column$MVC.Views = {}
 
 JMVC.library_loaded()

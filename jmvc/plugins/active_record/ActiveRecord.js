@@ -269,7 +269,7 @@ JMVC.BooleanColumn = Class.create(JMVC.Column,{
  * <pre class='example'>var tasks = Task.find('all');</pre>
  * <p>This saves an array of Task objects in tasks.  It also populates the client database with the
  * same data.
- * @see JMVC.View
+ * @see JMVC.$MVC.View
  * @see JMVC.Controller
  */
 JMVC.ActiveRecord = function(){}
@@ -880,13 +880,13 @@ JMVC.ActiveRecord.klass = function(){
 JMVC.ActiveRecord.load_from_schema = function(schema_source) {
     if(!schema_source || !APPLICATION_ROOT) 
 		throw new JMVC.Error(new Error(), 'schema_source or APPLICATION_ROOT not defined');
-	var response = new Ajax.Request(schema_source, {asynchronous: false, method: "get"});
+	var response = new $MVC.Ajax.Request(schema_source, {asynchronous: false, method: "get"});
     eval('var applicationinfo = '+response.transport.responseText);
     JMVC.app_schema = applicationinfo;
     for (var i=0; i<JMVC.app_schema.tables.length; i++) {
 		var file_name = JMVC.ActiveRecord.table_name_to_model_name(JMVC.app_schema.tables[i].name).uncapitalize();
 		try {
-	        include(JFile.join(APPLICATION_ROOT, "app", "models", file_name+".js"), {cache: (JMVC.ENV.ENVIRONMENT == 'development' ? false : true)  });
+	        include($MVC.JFile.join(APPLICATION_ROOT, "app", "models", file_name+".js"), {cache: (JMVC.ENV.ENVIRONMENT == 'development' ? false : true)  });
 		} catch(e) {} // swallow any errors here in case of weird table names that will be set with set_table_name
     }
 }

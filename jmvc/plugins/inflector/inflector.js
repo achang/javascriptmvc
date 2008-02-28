@@ -1,4 +1,4 @@
-Inflector = {
+$MVC.Inflector = {
   Inflections: {
     plural: [
     [/(quiz)$/i,               "$1zes"  ],
@@ -77,44 +77,44 @@ Inflector = {
     }
   },
   pluralize: function(word) {
-    for (var i = 0; i < Inflector.Inflections.uncountable.length; i++) {
-      var uncountable = Inflector.Inflections.uncountable[i];
+    for (var i = 0; i < $MVC.Inflector.Inflections.uncountable.length; i++) {
+      var uncountable = $MVC.Inflector.Inflections.uncountable[i];
       if (word.toLowerCase() == uncountable) {
         return uncountable;
       }
     }
-    for (var i = 0; i < Inflector.Inflections.irregular.length; i++) {
-      var singular = Inflector.Inflections.irregular[i][0];
-      var plural   = Inflector.Inflections.irregular[i][1];
+    for (var i = 0; i < $MVC.Inflector.Inflections.irregular.length; i++) {
+      var singular = $MVC.Inflector.Inflections.irregular[i][0];
+      var plural   = $MVC.Inflector.Inflections.irregular[i][1];
       if ((word.toLowerCase() == singular) || (word == plural)) {
         return word.substring(0,1)+plural.substring(1);
       }
     }
-    for (var i = 0; i < Inflector.Inflections.plural.length; i++) {
-      var regex          = Inflector.Inflections.plural[i][0];
-      var replace_string = Inflector.Inflections.plural[i][1];
+    for (var i = 0; i < $MVC.Inflector.Inflections.plural.length; i++) {
+      var regex          = $MVC.Inflector.Inflections.plural[i][0];
+      var replace_string = $MVC.Inflector.Inflections.plural[i][1];
       if (regex.test(word)) {
         return word.replace(regex, replace_string);
       }
     }
   },
   singularize: function(word) {
-    for (var i = 0; i < Inflector.Inflections.uncountable.length; i++) {
-      var uncountable = Inflector.Inflections.uncountable[i];
+    for (var i = 0; i < $MVC.Inflector.Inflections.uncountable.length; i++) {
+      var uncountable = $MVC.Inflector.Inflections.uncountable[i];
       if (word.toLowerCase() == uncountable) {
         return uncountable;
       }
     }
-    for (var i = 0; i < Inflector.Inflections.irregular.length; i++) {
-      var singular = Inflector.Inflections.irregular[i][0];
-      var plural   = Inflector.Inflections.irregular[i][1];
+    for (var i = 0; i < $MVC.Inflector.Inflections.irregular.length; i++) {
+      var singular = $MVC.Inflector.Inflections.irregular[i][0];
+      var plural   = $MVC.Inflector.Inflections.irregular[i][1];
       if ((word.toLowerCase() == singular) || (word.toLowerCase() == plural)) {
         return word.substring(0,1)+singular.substring(1);
       }
     }
-    for (var i = 0; i < Inflector.Inflections.singular.length; i++) {
-      var regex          = Inflector.Inflections.singular[i][0];
-      var replace_string = Inflector.Inflections.singular[i][1];
+    for (var i = 0; i < $MVC.Inflector.Inflections.singular.length; i++) {
+      var regex          = $MVC.Inflector.Inflections.singular[i][0];
+      var replace_string = $MVC.Inflector.Inflections.singular[i][1];
       if (regex.test(word)) {
         return word.replace(regex, replace_string);
       }
@@ -123,22 +123,22 @@ Inflector = {
 };
 
 function ordinalize(number) {
-  return Inflector.ordinalize(number);
+  return $MVC.Inflector.ordinalize(number);
 };
 
 Object.extend(String.prototype, {
   pluralize: function(count, plural) {
     if (typeof count == 'undefined') {
-      return Inflector.pluralize(this);
+      return $MVC.Inflector.pluralize(this);
     } else {
-      return count + ' ' + (1 == parseInt(count) ? this : plural || Inflector.pluralize(this));
+      return count + ' ' + (1 == parseInt(count) ? this : plural || $MVC.Inflector.pluralize(this));
     }
   },
   singularize: function(count) {
     if (typeof count == 'undefined') {
-      return Inflector.singularize(this);
+      return $MVC.Inflector.singularize(this);
     } else {
-      return count + " " + Inflector.singularize(this);
+      return count + " " + $MVC.Inflector.singularize(this);
     }
   },
   is_singular: function(){

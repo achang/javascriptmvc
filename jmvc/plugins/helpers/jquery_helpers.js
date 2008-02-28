@@ -185,7 +185,7 @@ $E = function(id){
 };
 
 
-JMVC.Browser = {
+$MVC.Browser = {
     IE:     !!(window.attachEvent && !window.opera),
     Opera:  !!window.opera,
     WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,

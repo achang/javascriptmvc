@@ -124,7 +124,7 @@ Object.extend(Jester.Resource, {
     model.requestAndParse(model._format, buildWork, model._new_instance_url(), {asynchronous: async, remote: model._remote}, callback);
   },
   
-  loadRemotViewON : function(url, callback, user_callback) {
+  loadRemot$MVC.ViewON : function(url, callback, user_callback) {
     // tack on user_callback if there is one, and only if it's really a function
     if (typeof(user_callback) == "function")
       jesterCallback = function(doc) {user_callback(callback(doc));}
@@ -147,7 +147,7 @@ Object.extend(Jester.Resource, {
 
   requestAndParse : function(format, callback, url, options, user_callback) {
     if (options && options.remote && format == "json")
-      return this.loadRemotViewON(url, callback, user_callback)
+      return this.loadRemot$MVC.ViewON(url, callback, user_callback)
     
     parse_and_callback = null;
     if (format.toLowerCase() == "json") {
@@ -190,12 +190,12 @@ Object.extend(Jester.Resource, {
       options.onComplete = function(transport, json) {
 	  	user_callback(callback(transport), json);
 	}
-      return new Ajax.Request(url, options).transport;
+      return new $MVC.Ajax.Request(url, options).transport;
     }
     else
     {
       options.asynchronous = false; // Make sure it's set, to avoid being overridden.
-      return callback(new Ajax.Request(url, options).transport);
+      return callback(new $MVC.Ajax.Request(url, options).transport);
     }
   },
 
@@ -669,7 +669,7 @@ Object.extend(Jester.Resource.prototype, {
     
     
     if(remote)
-      return this.klass.loadRemotViewON(url, saveWork, callback)
+      return this.klass.loadRemot$MVC.ViewON(url, saveWork, callback)
     // send the request
     return this.klass.request(saveWork, url, {parameters: params, method: method}, callback);
   },
@@ -884,51 +884,6 @@ if(typeof(Resource) == "undefined")
 
 
 
-/* 
-  Inflector library, contributed graciously to Jester by Ryan Schuft.
-  The library in full is a complete port of Rails' Inflector, though Jester only uses its pluralization.
-  Its home page can be found at: http://code.google.com/p/inflection-js/
-*/
-
-if (!String.prototype.pluralize) String.prototype.pluralize = function(plural) {
-  var str=this;
-  if(plural)str=plural;
-  else {
-    var uncountable_words=['equipment','information','rice','money','species','series','fish','sheep','moose'];
-    var uncountable=false;
-    for(var x=0;!uncountable&&x<uncountable_words.length;x++)uncountable=(uncountable_words[x].toLowerCase()==str.toLowerCase());
-    if(!uncountable) {
-      var rules=[
-        [new RegExp('(m)an$','gi'),'$1en'],
-        [new RegExp('(pe)rson$','gi'),'$1ople'],
-        [new RegExp('(child)$','gi'),'$1ren'],
-        [new RegExp('(ax|test)is$','gi'),'$1es'],
-        [new RegExp('(octop|vir)us$','gi'),'$1i'],
-        [new RegExp('(alias|status)$','gi'),'$1es'],
-        [new RegExp('(bu)s$','gi'),'$1ses'],
-        [new RegExp('(buffal|tomat)o$','gi'),'$1oes'],
-        [new RegExp('([ti])um$','gi'),'$1a'],
-        [new RegExp('sis$','gi'),'ses'],
-        [new RegExp('(?:([^f])fe|([lr])f)$','gi'),'$1$2ves'],
-        [new RegExp('(hive)$','gi'),'$1s'],
-        [new RegExp('([^aeiouy]|qu)y$','gi'),'$1ies'],
-        [new RegExp('(x|ch|ss|sh)$','gi'),'$1es'],
-        [new RegExp('(matr|vert|ind)ix|ex$','gi'),'$1ices'],
-        [new RegExp('([m|l])ouse$','gi'),'$1ice'],
-        [new RegExp('^(ox)$','gi'),'$1en'],
-        [new RegExp('(quiz)$','gi'),'$1zes'],
-        [new RegExp('s$','gi'),'s'],
-        [new RegExp('$','gi'),'s']
-      ];
-      var matched=false;
-      for(var x=0;!matched&&x<=rules.length;x++) {
-        matched=str.match(rules[x][0]);
-        if(matched)str=str.replace(rules[x][0],rules[x][1]);
-      }
-    }
-  }
-  return str;
-};
 
 /*
 
@@ -945,7 +900,7 @@ which I will do instead of keeping this documentation like it is.
 
 */
 
-eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('5(p(o)==\'w\')o=v(){};o.r=v(){m 9};o.r.1i="0.1b";o.r.u.14=\'<?L 1s="1.0" 1o="1n-8" ?>\\n\';o.r.u.Y=\'-\';o.r.u.1c=\'1a/L\';o.r.u.N=v(a){6 b;5(W.U){6 c=K U();6 d=c.1r(a,"1p/L");5(!d)m;b=d.A}q 5(W.10){c=K 10(\'1k.1h\');c.1g=z;c.1e(a);b=c.A}5(!b)m;m 9.E(b)};o.r.u.1d=v(c,d,e){6 f={};y(6 g 19 d){f[g]=d[g]}5(!f.M){5(p(f.18)=="w"&&p(f.17)=="w"&&p(f.16)=="w"){f.M="15"}q{f.M="13"}}5(e){f.X=V;6 h=9;6 i=e;6 j=f.T;f.T=v(a){6 b;5(a&&a.x&&a.x.A){b=h.E(a.x.A)}q 5(a&&a.J){b=h.N(a.J)}i(b,a);5(j)j(a)}}q{f.X=z}6 k;5(p(S)!="w"&&S.I){f.1q=c;6 l=K S.I(f);5(l)k=l.12}q 5(p(Q)!="w"&&Q.I){6 l=K Q.I(c,f);5(l)k=l.12}5(e)m k;5(k&&k.x&&k.x.A){m 9.E(k.x.A)}q 5(k&&k.J){m 9.N(k.J)}};o.r.u.E=v(a){5(!a)m;9.H={};5(9.P){y(6 i=0;i<9.P.t;i++){9.H[9.P[i]]=1}}6 b=9.O(a);5(9.H[a.F]){b=[b]}5(a.B!=11){6 c={};c[a.F]=b;b=c}m b};o.r.u.O=v(a){5(a.B==7){m}5(a.B==3||a.B==4){6 b=a.G.1j(/[^\\1f-\\1l]/);5(b==1m)m z;m a.G}6 c;6 d={};5(a.D&&a.D.t){c={};y(6 i=0;i<a.D.t;i++){6 e=a.D[i].F;5(p(e)!="Z")C;6 f=a.D[i].G;5(!f)C;e=9.Y+e;5(p(d[e])=="w")d[e]=0;d[e]++;9.R(c,e,d[e],f)}}5(a.s&&a.s.t){6 g=V;5(c)g=z;y(6 i=0;i<a.s.t&&g;i++){6 h=a.s[i].B;5(h==3||h==4)C;g=z}5(g){5(!c)c="";y(6 i=0;i<a.s.t;i++){c+=a.s[i].G}}q{5(!c)c={};y(6 i=0;i<a.s.t;i++){6 e=a.s[i].F;5(p(e)!="Z")C;6 f=9.O(a.s[i]);5(f==z)C;5(p(d[e])=="w")d[e]=0;d[e]++;9.R(c,e,d[e],f)}}}m c};o.r.u.R=v(a,b,c,d){5(9.H[b]){5(c==1)a[b]=[];a[b][a[b].t]=d}q 5(c==1){a[b]=d}q 5(c==2){a[b]=[a[b],d]}q{a[b][a[b].t]=d}};',62,91,'|||||if|var|||this|||||||||||||return||XML|typeof|else|ObjTree|childNodes|length|prototype|function|undefined|responseXML|for|false|documentElement|nodeType|continue|attributes|parseDOM|nodeName|nodeValue|__force_array|Request|responseText|new|xml|method|parseXML|parseElement|force_array|Ajax|addNode|HTTP|onComplete|DOMParser|true|window|asynchronous|attr_prefix|string|ActiveXObject||transport|post|xmlDecl|get|parameters|postbody|postBody|in|text|24|overrideMimeType|parseHTTP|loadXML|x00|async|XMLDOM|VERSION|match|Microsoft|x20|null|UTF|encoding|application|uri|parseFromString|version'.split('|'),0,{}))
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('5(p(o)==\'w\')o=v(){};o.r=v(){m 9};o.r.1i="0.1b";o.r.u.14=\'<?L 1s="1.0" 1o="1n-8" ?>\\n\';o.r.u.Y=\'-\';o.r.u.1c=\'1a/L\';o.r.u.N=v(a){6 b;5(W.U){6 c=K U();6 d=c.1r(a,"1p/L");5(!d)m;b=d.A}q 5(W.10){c=K 10(\'1k.1h\');c.1g=z;c.1e(a);b=c.A}5(!b)m;m 9.E(b)};o.r.u.1d=v(c,d,e){6 f={};y(6 g 19 d){f[g]=d[g]}5(!f.M){5(p(f.18)=="w"&&p(f.17)=="w"&&p(f.16)=="w"){f.M="15"}q{f.M="13"}}5(e){f.X=V;6 h=9;6 i=e;6 j=f.T;f.T=v(a){6 b;5(a&&a.x&&a.x.A){b=h.E(a.x.A)}q 5(a&&a.J){b=h.N(a.J)}i(b,a);5(j)j(a)}}q{f.X=z}6 k;5(p(S)!="w"&&S.I){f.1q=c;6 l=K S.I(f);5(l)k=l.12}q 5(p(Q)!="w"&&Q.I){6 l=K Q.I(c,f);5(l)k=l.12}5(e)m k;5(k&&k.x&&k.x.A){m 9.E(k.x.A)}q 5(k&&k.J){m 9.N(k.J)}};o.r.u.E=v(a){5(!a)m;9.H={};5(9.P){y(6 i=0;i<9.P.t;i++){9.H[9.P[i]]=1}}6 b=9.O(a);5(9.H[a.F]){b=[b]}5(a.B!=11){6 c={};c[a.F]=b;b=c}m b};o.r.u.O=v(a){5(a.B==7){m}5(a.B==3||a.B==4){6 b=a.G.1j(/[^\\1f-\\1l]/);5(b==1m)m z;m a.G}6 c;6 d={};5(a.D&&a.D.t){c={};y(6 i=0;i<a.D.t;i++){6 e=a.D[i].F;5(p(e)!="Z")C;6 f=a.D[i].G;5(!f)C;e=9.Y+e;5(p(d[e])=="w")d[e]=0;d[e]++;9.R(c,e,d[e],f)}}5(a.s&&a.s.t){6 g=V;5(c)g=z;y(6 i=0;i<a.s.t&&g;i++){6 h=a.s[i].B;5(h==3||h==4)C;g=z}5(g){5(!c)c="";y(6 i=0;i<a.s.t;i++){c+=a.s[i].G}}q{5(!c)c={};y(6 i=0;i<a.s.t;i++){6 e=a.s[i].F;5(p(e)!="Z")C;6 f=9.O(a.s[i]);5(f==z)C;5(p(d[e])=="w")d[e]=0;d[e]++;9.R(c,e,d[e],f)}}}m c};o.r.u.R=v(a,b,c,d){5(9.H[b]){5(c==1)a[b]=[];a[b][a[b].t]=d}q 5(c==1){a[b]=d}q 5(c==2){a[b]=[a[b],d]}q{a[b][a[b].t]=d}};',62,91,'|||||if|var|||this|||||||||||||return||XML|typeof|else|ObjTree|childNodes|length|prototype|function|undefined|responseXML|for|false|documentElement|nodeType|continue|attributes|parseDOM|nodeName|nodeValue|__force_array|Request|responseText|new|xml|method|parseXML|parseElement|force_array|$MVC.Ajax|addNode|HTTP|onComplete|DOMParser|true|window|asynchronous|attr_prefix|string|ActiveXObject||transport|post|xmlDecl|get|parameters|postbody|postBody|in|text|24|overrideMimeType|parseHTTP|loadXML|x00|async|XMLDOM|VERSION|match|Microsoft|x20|null|UTF|encoding|application|uri|parseFromString|version'.split('|'),0,{}))
 
 /*
 

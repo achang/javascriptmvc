@@ -1,21 +1,21 @@
-var Event = {};
+var $MVC.Event = {};
 
 // In DOM-compliant browsers, our functions are trivial wrappers around
-// addEventListener() and removeEventListener().
-if (document.addEventListener) {
-	Event.observe = function(element, eventType, handler, capture) {
+// add$MVC.EventListener() and remove$MVC.EventListener().
+if (document.add$MVC.EventListener) {
+	$MVC.Event.observe = function(element, eventType, handler, capture) {
 		if(capture == null) capture = false;
-        element.addEventListener(eventType, handler, capture);
+        element.add$MVC.EventListener(eventType, handler, capture);
     };
-    Event.stopObserving = function(element, eventType, handler) {
+    $MVC.Event.stopObserving = function(element, eventType, handler) {
         //if(capture == null) capture = false;
-        element.removeEventListener(eventType, handler, false);
+        element.remove$MVC.EventListener(eventType, handler, false);
     };
-}else if(document.attachEvent) {
-    Event.observe = function(element, eventType, handler) {
+}else if(document.attach$MVC.Event) {
+    $MVC.Event.observe = function(element, eventType, handler) {
         // Don't allow duplicate handler registrations
         // _find() is a private utility function defined below.
-        if (Event._find(element, eventType, handler) != -1) return;
+        if ($MVC.Event._find(element, eventType, handler) != -1) return;
         
         // To invoke the handler function as a method of the
         // element, we've got to define this nested function and register
@@ -27,7 +27,7 @@ if (document.addEventListener) {
             // with DOM events.
             var event = {
                 _event: e,    // In case we really want the IE event object
-                type: e.type,           // Event type
+                type: e.type,           // $MVC.Event type
                 target: e.srcElement,   // Where the event happened
                 currentTarget: element, // Where we're handling it
                 relatedTarget: e.fromElement?e.fromElement:e.toElement,
@@ -41,7 +41,7 @@ if (document.addEventListener) {
                 altKey: e.altKey, ctrlKey: e.ctrlKey,
                 shiftKey: e.shiftKey, charCode: e.keyCode,
 
-                // Event management functions
+                // $MVC.Event management functions
                 stopPropagation: function() {this._event.cancelBubble = true;},
                 preventDefault: function() {this._event.returnValue = false;}
             };
@@ -60,7 +60,7 @@ if (document.addEventListener) {
         };
 
         // Now register that nested function as our event handler.
-        element.attachEvent("on" + eventType, wrappedHandler);
+        element.attach$MVC.Event("on" + eventType, wrappedHandler);
         
         // Now we must do some record keeping to associate the user-supplied
         // handler function and the nested function that invokes it.
@@ -86,7 +86,7 @@ if (document.addEventListener) {
 
         // We have to associate this handler with the window,
         // so we can remove it when the window is unloaded
-        var id = Event._uid();  // Generate a unique property name
+        var id = $MVC.Event._uid();  // Generate a unique property name
         if (!w._allHandlers) w._allHandlers = {};  // Create object if needed
         w._allHandlers[id] = h; // Store the handler info in this object
 
@@ -98,13 +98,13 @@ if (document.addEventListener) {
         // register one now.
         if (!w._onunloadHandlerRegistered) {
             w._onunloadHandlerRegistered = true;
-            w.attachEvent("onunload", Event._removeAllHandlers);
+            w.attach$MVC.Event("onunload", $MVC.Event._removeAllHandlers);
         }
     };
 
-    Event.stopObserving = function(element, eventType, handler) {
+    $MVC.Event.stopObserving = function(element, eventType, handler) {
         // Find this handler in the element._handlers[] array.
-        var i = Event._find(element, eventType, handler);
+        var i = $MVC.Event._find(element, eventType, handler);
         if (i == -1) return;  // If the handler was not registered, do nothing
 
         // Get the window of this element
@@ -116,7 +116,7 @@ if (document.addEventListener) {
         // And use that to look up the handler info
         var h = w._allHandlers[handlerId];
         // Using that info, we can detach the handler from the element
-        element.detachEvent("on" + eventType, h.wrappedHandler);
+        element.detach$MVC.Event("on" + eventType, h.wrappedHandler);
         // Remove one element from the element._handlers array
         element._handlers.splice(i, 1);
         // And delete the handler info from the per-window _allHandlers object
@@ -125,7 +125,7 @@ if (document.addEventListener) {
 
     // A utility function to find a handler in the element._handlers array
     // Returns an array index or -1 if no matching handler is found
-    Event._find = function(element, eventType, handler) {
+    $MVC.Event._find = function(element, eventType, handler) {
         var handlers = element._handlers;
         if (!handlers) return -1;  // if no handlers registered, nothing found
 
@@ -147,9 +147,9 @@ if (document.addEventListener) {
         return -1;  // No match found
     };
 
-    Event._removeAllHandlers = function() {
+    $MVC.Event._removeAllHandlers = function() {
         // This function is registered as the onunload handler with 
-        // attachEvent.  This means that the this keyword refers to the
+        // attach$MVC.Event.  This means that the this keyword refers to the
         // window in which the event occurred.
         var w = this;
 
@@ -158,13 +158,13 @@ if (document.addEventListener) {
             // Get handler info for this handler id
             var h = w._allHandlers[id]; 
             // Use the info to detach the handler
-            h.element.detachEvent("on" + h.eventType, h.wrappedHandler);
+            h.element.detach$MVC.Event("on" + h.eventType, h.wrappedHandler);
             // Delete the handler info from the window
             delete w._allHandlers[id];
         }
     };
 
     // Private utility to generate unique handler ids
-    Event._counter = 0;
-    Event._uid = function() { return "h" + Event._counter++; };
+    $MVC.Event._counter = 0;
+    $MVC.Event._uid = function() { return "h" + $MVC.Event._counter++; };
 }

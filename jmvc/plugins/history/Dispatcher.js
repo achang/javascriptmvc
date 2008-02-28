@@ -69,7 +69,7 @@ JMVC.Dispatcher.get_controller_name = function(controller_option){
 	if(!controller_option) throw 'no controller given to dispatcher'
 	var controller_name = controller_option.split('_').invoke('capitalize').join('')+ "Controller";
     if(!window[controller_name]){
-		include(JFile.join('app','controllers',controller_option+'_controller.js' ), 
+		include($MVC.JFile.join('app','controllers',controller_option+'_controller.js' ), 
 					{synchronous: true, cache: (JMVC.ENV.ENVIRONMENT == 'development' ? false : true)  })
 	}
 	var controller_class = window[controller_name];

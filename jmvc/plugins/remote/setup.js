@@ -1,4 +1,4 @@
-RemoteModel = function(model, url, functions){
+$MVC.RemoteModel = function(model, url, functions){
 	var className= model, newmodel = null;
 	model = model.capitalize();
 
@@ -6,7 +6,7 @@ RemoteModel = function(model, url, functions){
 				"this.initialize.apply(this, arguments);"+
 				"};");
 
-	var remote_model_functions = new RemoteModel.functions();
+	var remote_model_functions = new $MVC.RemoteModel.functions();
 	newmodel.prototype = remote_model_functions;
 	newmodel.prototype.klass_name = 	model;
 	newmodel.prototype.className = className;
@@ -14,13 +14,13 @@ RemoteModel = function(model, url, functions){
 	newmodel.url = url;
 	newmodel.className =className;
 	Object.extend(newmodel.prototype, functions );
-	Object.extend(newmodel, RemoteModel.class_functions);
+	Object.extend(newmodel, $MVC.RemoteModel.class_functions);
 	return newmodel;
 };
 
-RemoteModel.functions = function(){};
+$MVC.RemoteModel.functions = function(){};
 
-RemoteModel.class_functions = {
+$MVC.RemoteModel.class_functions = {
 	find : function(params, callback){
 		params.callback = this.className.capitalize()+'.listCallback';
 		var klass = this;
@@ -55,7 +55,7 @@ RemoteModel.class_functions = {
 };
 
 
-Object.extend(RemoteModel.functions.prototype, {
+Object.extend($MVC.RemoteModel.functions.prototype, {
 	initialize : function(params){
 		if(params.attributes)
 		this.attributes = params.attributes;

@@ -1,6 +1,6 @@
-Ajax = {};
+$MVC.Ajax = {};
 
-Ajax.Request = function(url,options){
+$MVC.Ajax.Request = function(url,options){
 	this.options = {
       method:       'post',
       asynchronous: true,
@@ -31,7 +31,7 @@ Ajax.Request = function(url,options){
 	//   params += '&_=';
     
 	
-	this.transport = Ajax.factory();
+	this.transport = $MVC.Ajax.factory();
 	
 	
 	if(this.options.asynchronous == false){
@@ -57,7 +57,7 @@ Ajax.Request = function(url,options){
 		this.transport.send(Object.toQueryString(this.options.parameters));
 	}
 };
-Ajax.Request.prototype.setRequestHeaders = function() {
+$MVC.Ajax.Request.prototype.setRequestHeaders = function() {
     var headers = {
       'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
     };
@@ -88,7 +88,7 @@ Ajax.Request.prototype.setRequestHeaders = function() {
 
 
 
-Ajax.factory = function(){
+$MVC.Ajax.factory = function(){
 	var factories = [function() { return new XMLHttpRequest(); },function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
 	    for(var i = 0; i < factories.length; i++) {
 	    try {

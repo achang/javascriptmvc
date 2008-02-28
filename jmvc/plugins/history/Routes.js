@@ -19,7 +19,7 @@
  *	})</pre>
  */
 
-//requires View!
+//requires $MVC.View!
 
 JMVC.Routes = function(){};
 

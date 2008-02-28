@@ -17,13 +17,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /*
-	JMVC.History: An object that provides history, history data, and bookmarking for DHTML and Ajax applications.
+	$MVC.History: An object that provides history, history data, and bookmarking for DHTML and Ajax applications.
 	
 	dependencies:
 		* the historyStorage object included in this file.
 
 */
-window.JMVC.History = {
+window.$MVC.History = {
 	
 	/*Public: User-agent booleans*/
 	isIE: false,
@@ -283,7 +283,7 @@ window.JMVC.History = {
 	/*Private: Constant for our own internal history event called when the page is loaded*/
 	PAGELOADEDSTRING: "DhtmlHistory_pageLoaded",
 	
-	blank_html_path: JMVC.root()+'plugins/history/',
+	blank_html_path: $MVC.root()+'plugins/history/',
 	
 	/*Private: Our history change listener.*/
 	listener: null,
@@ -348,7 +348,7 @@ window.JMVC.History = {
 	/*Private: Create Opera-specific DOM nodes and overrides*/
 	createOpera: function() {
 		this.waitTime = 400;/*Opera needs longer between history updates*/
-		var imgHTML = '<img src="javascript:location.href=\'javascript:JMVC.History.checkLocation();\';" style="' + historyStorage.hideStyles + '" />';
+		var imgHTML = '<img src="javascript:location.href=\'javascript:$MVC.History.checkLocation();\';" style="' + historyStorage.hideStyles + '" />';
 		document.write(imgHTML);
 	},
 	
@@ -513,7 +513,7 @@ window.JMVC.History = {
 /*
 	historyStorage: An object that uses a hidden form to store history state across page loads. The mechanism for doing so relies on
 	the fact that browsers save the text in form data for the life of the browser session, which means the text is still there when
-	the user navigates back to the page. This object can be used independently of the JMVC.History object for caching of Ajax
+	the user navigates back to the page. This object can be used independently of the $MVC.History object for caching of Ajax
 	session information.
 	
 	dependencies: 
@@ -521,11 +521,11 @@ window.JMVC.History = {
 */
 window.historyStorage = {
 	
-	/*Public: Set up our historyStorage object for use by JMVC.History or other objects*/
+	/*Public: Set up our historyStorage object for use by $MVC.History or other objects*/
 	setup: function(options) {
 		
 		/*
-			options - object to store initialization parameters - passed in from JMVC.History or directly into historyStorage
+			options - object to store initialization parameters - passed in from $MVC.History or directly into historyStorage
 			options.debugMode - boolean that causes hidden form fields to be shown for development purposes.
 			options.toJSON - function to override default JSON stringifier
 			options.fromJSON - function to override default JSON parser
@@ -552,7 +552,7 @@ window.historyStorage = {
 			? 'width: 800px;height:80px;border:1px solid black;'
 			: historyStorage.hideStyles
 		);
-		if(JMVC.History.isSafari){
+		if($MVC.History.isSafari){
 			var form = document.createElement('form')
 			form.id = formID;
 			form.setAttribute('style',formStyles);
@@ -672,14 +672,14 @@ window.historyStorage = {
 		return o.toJSONString();
 	},
 	fromJSON: function(s) {
-		return s.parsViewON();
+		return s.pars$MVC.ViewON();
 	}
 };
 
 if(typeof Prototype == 'undefined'){
-	window.JMVC.History.create();
+	window.$MVC.History.create();
 }else{
-	window.JMVC.History.create({
+	window.$MVC.History.create({
 	    toJSON: function(o) {
 	            return Object.toJSON(o);
 	    }
@@ -690,9 +690,9 @@ if(typeof Prototype == 'undefined'){
 }
 
 Event.observe(window, 'load', function(){
-	JMVC.History.initialize();
-	JMVC.History.addListener(JMVC.History.historyChange);
-	JMVC.History.historyChange();
+	$MVC.History.initialize();
+	$MVC.History.addListener($MVC.History.historyChange);
+	$MVC.History.historyChange();
 	
 });
 
@@ -711,10 +711,10 @@ Controller.test_dispatch = function(controller, action){
 }
 
 
-JMVC.History.historyChange = function(newLocation, historyData) {
+$MVC.History.historyChange = function(newLocation, historyData) {
 
-	var path = new JMVC.Path(location.href);
-	var data = JMVC.Path.get_data(path);
+	var path = new $MVC.Path(location.href);
+	var data = $MVC.Path.get_data(path);
 	var folders = path.folder();
 	var action_part = null, controller_part;
 	if(folders == null){folders = ''}
@@ -741,10 +741,10 @@ JMVC.History.historyChange = function(newLocation, historyData) {
 
 
 
-JMVC.Path = function(path) {
+$MVC.Path = function(path) {
 	this.path = path
 };
-JMVC.Path.prototype = {
+$MVC.Path.prototype = {
 	domain : function() {
 		var lhs = this.path.split('#')[0];
 		return '/'+lhs.split('/').slice(3).join('/')
@@ -778,7 +778,7 @@ JMVC.Path.prototype = {
 
 
 
-JMVC.Path.get_data = function(path) {
+$MVC.Path.get_data = function(path) {
 	var search = path.params();
 	if(! search || ! search.match(/([^?#]*)(#.*)?$/) ) return {}
 	var data = {}

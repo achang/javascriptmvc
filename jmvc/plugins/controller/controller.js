@@ -3,14 +3,14 @@
  * @param {String} model - The name of the controller type.  Example: todo.
  * @param {Object} actions - a hash of functions that get added to the controller's prototype
  */
-Controller = function(model, actions){
+$MVC.Controller = function(model, actions){
 	var className= model, newmodel = null, singular = model.is_singular();
-	model = model.capitalize()+'Controller';
+	model = model.capitalize()+'$MVC.Controller';
 	newmodel = eval(model + " = function() { this.klass = "+model+"; "+
 				"this.initialize.apply(this, arguments);"+
 				"};");
 
-	var controller_functions = new Controller.functions();
+	var controller_functions = new $MVC.Controller.functions();
 	newmodel.prototype = controller_functions;
 	newmodel.prototype.klass_name = 	model;
 	newmodel.prototype.className = className;
@@ -27,7 +27,7 @@ Controller = function(model, actions){
 	newmodel.add_register_action = function(action,observe_on, event_type, capture){
 		if(!registered_actions[event_type]){
 			registered_actions[event_type] = [];
-			Event.observe(observe_on, event_type, Controller.dispatch_event, capture);
+			$MVC.Event.observe(observe_on, event_type, $MVC.Controller.dispatch_event, capture);
 		}
 		registered_actions[event_type].push(action);
 	};
@@ -35,7 +35,7 @@ Controller = function(model, actions){
 	for(var action_name in actions ){
 		var val = actions[action_name];
 		if( actions.hasOwnProperty(action_name) && typeof val == 'function') {
-			var action = new Controller.Action(action_name, val,newmodel);
+			var action = new $MVC.Controller.Action(action_name, val,newmodel);
 			controller_actions[action_name] = action;
 		}
 	}
@@ -46,20 +46,20 @@ Controller = function(model, actions){
 		return registered_actions;
 	};
 	
-	if(window[ className.capitalize()+'View' ]){
-		Object.extend(window[ className.capitalize()+'View' ].prototype, Model ) ;
-		window[ className.capitalize()+'View' ].prototype.className = className;
+	if(window[ className.capitalize()+'$MVC.View' ]){
+		Object.extend(window[ className.capitalize()+'$MVC.View' ].prototype, Model ) ;
+		window[ className.capitalize()+'$MVC.View' ].prototype.className = className;
 	}
-	Controller.klasses.push(newmodel);
+	$MVC.Controller.klasses.push(newmodel);
 	
 	return newmodel;
 };
 
 /**
- * Controller prototype functions
+ * $MVC.Controller prototype functions
  */
-Controller.functions = function(){};
-Object.extend(Controller.functions.prototype, {
+$MVC.Controller.functions = function(){};
+Object.extend($MVC.Controller.functions.prototype, {
 	initialize : function(){
 		
 	},
@@ -78,11 +78,11 @@ Object.extend(Controller.functions.prototype, {
 });
 
 /**
- * Controller class functions
+ * $MVC.Controller class functions
  */
 
-Controller.klasses = [];
-Controller.add_stop_event = function(event){
+$MVC.Controller.klasses = [];
+$MVC.Controller.add_stop_event = function(event){
 	if(!event.stop)
 		event.stop = function(){
 			if(!event) event = window.event;
@@ -94,7 +94,7 @@ Controller.add_stop_event = function(event){
 		        
 		    if (event.preventDefault) 
 		        event.preventDefault();
-			if(Event.stop) Event.stop(event);
+			if($MVC.Event.stop) $MVC.Event.stop(event);
 		    }catch(e)
 		    {}
 		    return false;
@@ -102,12 +102,12 @@ Controller.add_stop_event = function(event){
 };
 
 
-Controller.dispatch = function(controller, action_name, params){
+$MVC.Controller.dispatch = function(controller, action_name, params){
 	var c_name = controller;
 	if(typeof controller == 'string'){
-		controller = window[controller.capitalize()+'Controller'];
+		controller = window[controller.capitalize()+'$MVC.Controller'];
 	}
-	if(!controller) 'No controller named '+c_name+' was found for Controller.dispatch.';
+	if(!controller) 'No controller named '+c_name+' was found for $MVC.Controller.dispatch.';
 	if(!action_name) action_name = 'index';
 	
 	if(typeof action_name == 'string'){
@@ -126,11 +126,11 @@ Controller.dispatch = function(controller, action_name, params){
 	return ret_val;
 };
 
-Controller.dispatch_event = function(event){
+$MVC.Controller.dispatch_event = function(event){
 	var target = event.target;
-	var classes = Controller.klasses;
+	var classes = $MVC.Controller.klasses;
 	for(var c = 0 ; c < classes.length; c++){
-		var klass= Controller.klasses[c];
+		var klass= $MVC.Controller.klasses[c];
 		var actions = klass.registered_actions()[event.type];
 		if(!actions) continue;
 		for(var i =0; i < actions.length;  i++){
@@ -139,13 +139,13 @@ Controller.dispatch_event = function(event){
 			
 			if(match_result){
 				var action_name = action.name;
-				Controller.add_stop_event(event);
-				var params = new Controller.Params({event: event, element: match_result, action: action_name, controller: klass  });
-				return Controller.dispatch(klass, action_name, params);
+				$MVC.Controller.add_stop_event(event);
+				var params = new $MVC.Controller.Params({event: event, element: match_result, action: action_name, controller: klass  });
+				return $MVC.Controller.dispatch(klass, action_name, params);
 			}
 		}
 	}
-	if(JMVC.Browser.Opera) Style.deleteRule(0);
+	if($MVC.Browser.Opera) Style.deleteRule(0);
 };
 
 
@@ -162,9 +162,9 @@ Controller.dispatch_event = function(event){
 	 */
 	var new_event_closure_function = function(controller_name, f_name, element){
 		return function(event){
-			Controller.add_stop_event(event);
-			var params = new Controller.Params({event: event, element: element, action: f_name, controller: controller_name   });
-			return Controller.dispatch(controller_name, f_name, params);
+			$MVC.Controller.add_stop_event(event);
+			var params = new $MVC.Controller.Params({event: event, element: element, action: f_name, controller: controller_name   });
+			return $MVC.Controller.dispatch(controller_name, f_name, params);
 		}
 	};
 	/**
@@ -173,7 +173,7 @@ Controller.dispatch_event = function(event){
 	 * @param {Object} f_name
 	 * @param {Object} element
 	 */
-	Controller.event_closure = function(controller_name, f_name, element){
+	$MVC.Controller.event_closure = function(controller_name, f_name, element){
 		if(!element.controller_id) element.controller_id = ++controller_id;
 		
 		if(! functions[controller_name]){
@@ -191,7 +191,7 @@ Controller.dispatch_event = function(event){
 })();
 
 
-Controller.Params = function(params){
+$MVC.Controller.Params = function(params){
 	for(var thing in params){
 		if( params.hasOwnProperty(thing) )
 			this[thing] = params[thing];
@@ -203,7 +203,7 @@ String.is_number = function(value){
 	return value.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/);
 };
 
-Controller.Params.prototype = {
+$MVC.Controller.Params.prototype = {
 	form_params : function(){
 		var data = {};
 		if(this.element.nodeName.toLowerCase() != 'form') return data;
@@ -247,7 +247,7 @@ Controller.Params.prototype = {
 		return start;
 	},
 	object_data : function(){
-		return View.Helpers.get_data(this.class_element());
+		return $MVC.View.Helpers.get_data(this.class_element());
 	}
 };
 
@@ -263,7 +263,7 @@ Controller.Params.prototype = {
 
 
 
-Controller.Action = function(action_name, func ,controller){
+$MVC.Controller.Action = function(action_name, func ,controller){
 	this.name = action_name;
 	this.func = func;
 	this.controller = controller;
@@ -284,16 +284,16 @@ Controller.Action = function(action_name, func ,controller){
 		this.set_plural_selector();
 	}
 
-	if(this.event_type == 'submit' && JMVC.Browser.IE){
+	if(this.event_type == 'submit' && $MVC.Browser.IE){
 		this.submit_for_ie();
 		return;
 	}
 	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 };
 
-Controller.Action.prototype = {
+$MVC.Controller.Action.prototype = {
 	registered_event : function(){
-		if(JMVC.Browser.IE){
+		if($MVC.Browser.IE){
 			if(this.event_type == 'focus')
 				return 'activate';
 			else if(this.event_type == 'blur')
@@ -318,11 +318,11 @@ Controller.Action.prototype = {
 	},
 	main_controller : function(){
 		if(['load','unload','resize'].include(this.event_type)){
-			Event.observe(window, this.event_type, Controller.event_closure(this.className(), this.event_type, window) );
+			$MVC.Event.observe(window, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
 			return;
 		}
 		this.selector = this.before_space;
-		if(this.event_type == 'submit' && JMVC.Browser.IE){
+		if(this.event_type == 'submit' && $MVC.Browser.IE){
 			this.submit_for_ie();
 			return;
 		}
@@ -420,19 +420,19 @@ Controller.Action.prototype = {
 	},
 	after_filters : function(){
 		if(this.attach){
-			Controller.attach_all();
+			$MVC.Controller.attach_all();
 		}
 	}
 };
 
 
 
-
+/*
 
 Model = {
 	appendAsChildOf : function(element){
 		this.element = element.appendChild( this.toElement() );
-		new window[this.className.capitalize()+'Controller']().attach_event_handlers_to(this.element);
+		new window[this.className.capitalize()+'$MVC.Controller']().attach_event_handlers_to(this.element);
 		return this.element;
 	},
 	toElement : function(){
@@ -442,12 +442,12 @@ Model = {
 	},
 	insertBefore : function(element){
 		this.element = element.parentNode.insertBefore(this.toElement() , element );
-		new window[this.className.capitalize()+'Controller']().attach_event_handlers_to(this.element);
+		new window[this.className.capitalize()+'$MVC.Controller']().attach_event_handlers_to(this.element);
 		return this.element;
 	}
-};
+};*/
 
-//Event.observe(window, "load",Controller.attach_all);
+
 
 
 

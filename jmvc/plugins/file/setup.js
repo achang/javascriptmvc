@@ -1,34 +1,34 @@
 /**
- * JFile provides convenient helper functions for URLs and file paths.
+ * $MVC.JFile provides convenient helper functions for URLs and file paths.
  * @constructor
  * 
  * @classDescription
- * JFile provides a set of methods and instance functions to help the user gain easy access to different features
+ * $MVC.JFile provides a set of methods and instance functions to help the user gain easy access to different features
  * associated with the path.
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * var test = new JFile('/dir2/dir1/file1.txt');
+ * var test = new $MVC.JFile('/dir2/dir1/file1.txt');
  * </pre>
  * 
  * @param {Object} path_name full path to file
  */
-JFile = function(path_name) {
+$MVC.JFile = function(path_name) {
     this.path_name = path_name;
     this.path_array = this.path_name.split('/'); //splits path
     this.last_index = this.path_array.length-1; //number things in array
 };
 
 /**
- * JFile instance functions
+ * $MVC.JFile instance functions
  */
-JFile.prototype = {
+$MVC.JFile.prototype = {
 	/**
 	 * Returns the extension at the end of the path if it exists.
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new JFile('/dir2/dir1/file1.txt').extension()
+ 	 * (new $MVC.JFile('/dir2/dir1/file1.txt').extension()
  	 * </pre>
  	 * returns "txt"
  	 * 
@@ -46,7 +46,7 @@ JFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new JFile('/dir2/dir1/file1.txt').file_name()
+ 	 * (new $MVC.JFile('/dir2/dir1/file1.txt').file_name()
  	 * </pre>
  	 * returns "file1"
   	 * "file1"
@@ -61,7 +61,7 @@ JFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new JFile('/dir2/dir1/file1.txt').is_absolute()
+ 	 * (new $MVC.JFile('/dir2/dir1/file1.txt').is_absolute()
  	 * </pre>
  	 * returns TRUE
  	 * 
@@ -75,7 +75,7 @@ JFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new JFile('/dir2/dir1/file1.txt').file_and_extension()
+ 	 * (new $MVC.JFile('/dir2/dir1/file1.txt').file_and_extension()
  	 * </pre>
  	 * returns "file1.txt"
  	 * 
@@ -90,14 +90,14 @@ JFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new JFile('/dir2/dir1/file1.txt').absolute()
+ 	 * (new $MVC.JFile('/dir2/dir1/file1.txt').absolute()
  	 * </pre>
  	 * returns "/dir2/dir1/file1.txt"
  	 * 
  	 * @return {string} absolute path
 	 */
 	absolute : function(){
-		return (this.is_absolute() ? this.path_name : JFile.get_cwd() + this.path_name);
+		return (this.is_absolute() ? this.path_name : $MVC.JFile.get_cwd() + this.path_name);
 	},
 	/**
 	 * Returns the file path up to the working directory
@@ -105,7 +105,7 @@ JFile.prototype = {
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * (new JFile('/dir2/dir1/file1.txt').directory()
+ 	 * (new $MVC.JFile('/dir2/dir1/file1.txt').directory()
  	 * </pre>
  	 * returns "/dir2/dir1"
  	 * 
@@ -122,13 +122,13 @@ JFile.prototype = {
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * JFile.join('test_apps', 'simple', 'holla.View')
+ * $MVC.JFile.join('test_apps', 'simple', 'holla.$MVC.View')
  * </pre>
- * Returns "test_apps/simple/holla.View"
+ * Returns "test_apps/simple/holla.$MVC.View"
  * 
  * @param two partial paths
  */
-JFile.join = function() {
+$MVC.JFile.join = function() {
     var cleaned = [];
 	for(var i=0; i < arguments.length ; i ++){
 		if(arguments[i].replace(/\s+/g, '') != '')
@@ -137,19 +137,19 @@ JFile.join = function() {
 	return (arguments[0].slice(0,1) == '/' ? '/' : '' )+cleaned.join("/");
 };
 
-//shortcut to filename from above - don't need to create a JFile to use
+//shortcut to filename from above - don't need to create a $MVC.JFile to use
 /**
  * Returns the filename (with extension) at the end of the path.
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * JFile.original_filename('/dir2/dir1/file1.txt')
+ * $MVC.JFile.original_filename('/dir2/dir1/file1.txt')
  * </pre>
  * Returns "file1.txt"
  * 
  * @param {Object} path file path
  */
-JFile.original_filename = function(path) {
+$MVC.JFile.original_filename = function(path) {
     var path_array = path.split('/');
     if(path_array.length == 1)
         path_array = path.split('\\');
@@ -162,21 +162,21 @@ JFile.original_filename = function(path) {
  * 
  * <p>Example: </p>
  * <pre class='example'>
- * JFile.setup()
+ * $MVC.JFile.setup()
  * </pre>
  */
-JFile.setup =  function(){
+$MVC.JFile.setup =  function(){
 	var cwd;
 	/**
 	 * Returns the current working directory.
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * var cwd = JFile.get_cwd()
+ 	 * var cwd = $MVC.JFile.get_cwd()
  	 * </pre>
  	 * Returns the current working directory
 	 */
-	JFile.get_cwd = function(){ return cwd;};
+	$MVC.JFile.get_cwd = function(){ return cwd;};
 	
 	//makes sure it always has an ending /
 	/**
@@ -184,19 +184,19 @@ JFile.setup =  function(){
 	 * 
 	 * <p>Example: </p>
  	 * <pre class='example'>
- 	 * JFile.set_cwd('http://something.com/here/')
+ 	 * $MVC.JFile.set_cwd('http://something.com/here/')
  	 * </pre>
 	 * 
 	 * @param {Object} newcwd
 	 */
-	JFile.set_cwd = function(newcwd){
+	$MVC.JFile.set_cwd = function(newcwd){
 		cwd = newcwd+(newcwd[newcwd.length - 1] == '/' ? '' : '/');
 	};
-	JFile.set_cwd(typeof APPLICATION_ROOT == 'undefined' ? 
+	$MVC.JFile.set_cwd(typeof APPLICATION_ROOT == 'undefined' ? 
 					location.href.substring(0, location.href.lastIndexOf('/') )+ '/' :
 					APPLICATION_ROOT);
 };
-JFile.setup();
+$MVC.JFile.setup();
 
 
 

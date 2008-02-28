@@ -199,7 +199,7 @@ $E = function(id){
 	return document.getElementById(id);
 };
 
-JMVC.Browser = {
+$MVC.Browser = {
     IE:     !!(window.attachEvent && !window.opera),
     Opera:  !!window.opera,
     WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
