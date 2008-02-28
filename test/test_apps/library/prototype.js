@@ -1883,7 +1883,7 @@ Element.Methods = {
     style = style == 'float' ? 'cssFloat' : style.camelize();
     var value = element.style[style];
     if (!value) {
-      var css = document.defaultView.getComputedStyle(element, null);
+      var css = document.default$MVC.View.getComputedStyle(element, null);
       value = css ? css[style] : null;
     }
     if (style == 'opacity') return value ? parseFloat(value) : 1.0;

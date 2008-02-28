@@ -1,17 +1,17 @@
-var $MVC.Event = {};
+$MVC.Event = {};
 
 // In DOM-compliant browsers, our functions are trivial wrappers around
-// add$MVC.EventListener() and remove$MVC.EventListener().
-if (document.add$MVC.EventListener) {
+// addEventListener() and remove$MVC.EventListener().
+if (document.addEventListener) {
 	$MVC.Event.observe = function(element, eventType, handler, capture) {
 		if(capture == null) capture = false;
-        element.add$MVC.EventListener(eventType, handler, capture);
+        element.addEventListener(eventType, handler, capture);
     };
     $MVC.Event.stopObserving = function(element, eventType, handler) {
         //if(capture == null) capture = false;
         element.remove$MVC.EventListener(eventType, handler, false);
     };
-}else if(document.attach$MVC.Event) {
+}else if(document.attachEvent) {
     $MVC.Event.observe = function(element, eventType, handler) {
         // Don't allow duplicate handler registrations
         // _find() is a private utility function defined below.
@@ -60,7 +60,7 @@ if (document.add$MVC.EventListener) {
         };
 
         // Now register that nested function as our event handler.
-        element.attach$MVC.Event("on" + eventType, wrappedHandler);
+        element.attachEvent("on" + eventType, wrappedHandler);
         
         // Now we must do some record keeping to associate the user-supplied
         // handler function and the nested function that invokes it.
@@ -98,7 +98,7 @@ if (document.add$MVC.EventListener) {
         // register one now.
         if (!w._onunloadHandlerRegistered) {
             w._onunloadHandlerRegistered = true;
-            w.attach$MVC.Event("onunload", $MVC.Event._removeAllHandlers);
+            w.attachEvent("onunload", $MVC.Event._removeAllHandlers);
         }
     };
 
@@ -149,7 +149,7 @@ if (document.add$MVC.EventListener) {
 
     $MVC.Event._removeAllHandlers = function() {
         // This function is registered as the onunload handler with 
-        // attach$MVC.Event.  This means that the this keyword refers to the
+        // attachEvent.  This means that the this keyword refers to the
         // window in which the event occurred.
         var w = this;
 

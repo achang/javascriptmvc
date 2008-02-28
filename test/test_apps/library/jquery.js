@@ -839,7 +839,7 @@ jQuery.extend({
 			if ( !jQuery.browser.safari )
 				return false;
 
-			var ret = document.defaultView.getComputedStyle( elem, null );
+			var ret = document.default$MVC.View.getComputedStyle( elem, null );
 			return !ret || ret.getPropertyValue("color") == "";
 		}
 
@@ -865,7 +865,7 @@ jQuery.extend({
 		if ( !force && elem.style && elem.style[ name ] )
 			ret = elem.style[ name ];
 
-		else if ( document.defaultView && document.defaultView.getComputedStyle ) {
+		else if ( document.default$MVC.View && document.default$MVC.View.getComputedStyle ) {
 
 			// Only "float" is needed here
 			if ( name.match( /float/i ) )
@@ -873,7 +873,7 @@ jQuery.extend({
 
 			name = name.replace( /([A-Z])/g, "-$1" ).toLowerCase();
 
-			var getComputedStyle = document.defaultView.getComputedStyle( elem, null );
+			var getComputedStyle = document.default$MVC.View.getComputedStyle( elem, null );
 
 			if ( getComputedStyle && !color( elem ) )
 				ret = getComputedStyle.getPropertyValue( name );

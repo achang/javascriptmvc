@@ -19,7 +19,7 @@ Event.simulateMouse = function(element, eventName) {
     metaKey:  false
   }, arguments[2] || {});
   var oEvent = document.createEvent("MouseEvents");
-  oEvent.initMouseEvent(eventName, true, true, document.defaultView, 
+  oEvent.initMouseEvent(eventName, true, true, document.default$MVC.View, 
     options.buttons, options.pointerX, options.pointerY, options.pointerX, options.pointerY, 
     options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, 0, $(element));
   

@@ -24,7 +24,7 @@
             argument. A whitelist is an array of strings. If it is provided,
             keys in objects not found in the whitelist are excluded.
 
-        string.pars$MVC.ViewON(filter)
+        string.parseJSON(filter)
             This method parses a JSON text to produce an object or
             array. It can throw a SyntaxError exception.
 
@@ -39,7 +39,7 @@
             // Parse the text. If a key contains the string 'date' then
             // convert the value to a date.
 
-            myData = text.pars$MVC.ViewON(function (key, value) {
+            myData = text.parseJSON(function (key, value) {
                 return key.indexOf('date') >= 0 ? new Date(value) : value;
             });
 
@@ -241,7 +241,7 @@ if (!Object.prototype.toJSONString) {
         };
 
 
-        s.pars$MVC.ViewON = function (filter) {
+        s.parseJSON = function (filter) {
             var j;
 
             function walk(k, v) {
@@ -288,7 +288,7 @@ if (!Object.prototype.toJSONString) {
 
 // If the text is not JSON parseable, then a SyntaxError is thrown.
 
-            throw new SyntaxError('pars$MVC.ViewON');
+            throw new SyntaxError('parseJSON');
         };
 
 

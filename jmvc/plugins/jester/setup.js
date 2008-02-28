@@ -124,7 +124,7 @@ Object.extend(Jester.Resource, {
     model.requestAndParse(model._format, buildWork, model._new_instance_url(), {asynchronous: async, remote: model._remote}, callback);
   },
   
-  loadRemot$MVC.ViewON : function(url, callback, user_callback) {
+  loadRemotViewON : function(url, callback, user_callback) {
     // tack on user_callback if there is one, and only if it's really a function
     if (typeof(user_callback) == "function")
       jesterCallback = function(doc) {user_callback(callback(doc));}
@@ -147,7 +147,7 @@ Object.extend(Jester.Resource, {
 
   requestAndParse : function(format, callback, url, options, user_callback) {
     if (options && options.remote && format == "json")
-      return this.loadRemot$MVC.ViewON(url, callback, user_callback)
+      return this.loadRemotViewON(url, callback, user_callback)
     
     parse_and_callback = null;
     if (format.toLowerCase() == "json") {
@@ -669,7 +669,7 @@ Object.extend(Jester.Resource.prototype, {
     
     
     if(remote)
-      return this.klass.loadRemot$MVC.ViewON(url, saveWork, callback)
+      return this.klass.loadRemotViewON(url, saveWork, callback)
     // send the request
     return this.klass.request(saveWork, url, {parameters: params, method: method}, callback);
   },

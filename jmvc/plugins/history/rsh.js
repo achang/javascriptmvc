@@ -672,7 +672,7 @@ window.historyStorage = {
 		return o.toJSONString();
 	},
 	fromJSON: function(s) {
-		return s.pars$MVC.ViewON();
+		return s.parseJSON();
 	}
 };
 
@@ -689,14 +689,14 @@ if(typeof Prototype == 'undefined'){
 	});
 }
 
-Event.observe(window, 'load', function(){
+$MVC.Event.observe(window, 'load', function(){
 	$MVC.History.initialize();
 	$MVC.History.addListener($MVC.History.historyChange);
 	$MVC.History.historyChange();
 	
 });
 
-Controller.test_dispatch = function(controller, action){
+$MVC.Controller.test_dispatch = function(controller, action){
 	if(!controller) return false;
 	var controller_name = controller.capitalize()+'Controller';
 	if(!action) action = 'index';
@@ -721,20 +721,20 @@ $MVC.History.historyChange = function(newLocation, historyData) {
 	
 	var first_s = folders.indexOf('/');
 	
-	var params = new Controller.Params(data);
+	var params = new $MVC.Controller.Params(data);
 	
 	if(first_s != -1){
 		controller_part = folders.substring(0,first_s);
 		action_part = folders.substring(first_s+1);
-	}else if( Controller.test_dispatch(folders) ){
+	}else if( $MVC.Controller.test_dispatch(folders) ){
 		controller_part = folders;
-	}else if( Controller.test_dispatch('main',folders) ){
+	}else if( $MVC.Controller.test_dispatch('main',folders) ){
 		controller_part = 'main'
 		action_part = folders;
 	}else{
 		throw "Can't dispatch location "+folders;
 	}
-	var result = Controller.dispatch(controller_part, action_part,params);
+	var result = $MVC.Controller.dispatch(controller_part, action_part,params);
 	return result;
 }
 
@@ -814,7 +814,7 @@ $MVC.Path.get_data = function(path) {
 };
 
 //this should convert options to params
-Controller.functions.prototype.redirect_to = function(options){
+$MVC.Controller.functions.prototype.redirect_to = function(options){
 	var controller_name = options.controller || this.className;
 	var action_name = options.action || 'index';
 	var lhs = window.location.href.split('#')[0];

@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------------
- *  View - Embedded JavaScript, version 0.1.0
+ *  $MVC.View - Embedded JavaScript, version 0.1.0
  *  Copyright (c) 2007 Edward Benson
- *  http://www.edwardbenson.com/projects/View
+ *  http://www.edwardbenson.com/projects/$MVC.View
  *  ------------------------------------------------------------------------
  *
  *  EJS is freely distributable under the terms of an MIT-style license.
@@ -19,7 +19,7 @@
  *      // source should be either a string or a DOM node whose innerHTML
  *      // contains EJB source.
  *  	var source = "<% var ejb="EJB"; %><h1>Hello, <%= ejb %>!</h1>"; 
- *      var compiler = new View.Compiler(source);		
+ *      var compiler = new $MVC.View.Compiler(source);		
  *	    compiler.compile();	
  *	    var output = eval(compiler.out);
  *      alert(output); // -> "<h1>Hello, EJB!</h1>"
@@ -36,24 +36,24 @@ if(typeof Object.extend == 'undefined'){
 	};
 }
 
-View = function( options ){
+$MVC.View = function( options ){
 	this.set_options(options);
 	if(options.precompiled){
 		this.template = {};
 		this.template.process = options.precompiled;
-		View.update(this.name, this);
+		$MVC.View.update(this.name, this);
 		return;
 	}
 	
 	
 	if(options.url){
-		var template = View.get(options.url, this.cache);
+		var template = $MVC.View.get(options.url, this.cache);
 		if (template) return template;
-	    if (template == View.INVALID_PATH) return null;
-		this.text = new Ajax.Request(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get'}).transport.responseText;
+	    if (template == $MVC.View.INVALID_PATH) return null;
+		this.text = new $MVC.Ajax.Request(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get'}).transport.responseText;
 		
 		if(this.text == null){
-			//View.update(options.url, this.INVALID_PATH);
+			//$MVC.View.update(options.url, this.INVALID_PATH);
 			throw 'There is no template at '+options.url;
 		}
 		this.name = options.url;
@@ -72,25 +72,25 @@ View = function( options ){
 		this.name = options.element.id;
 		this.type = '[';
 	}
-	var template = new View.Compiler(this.text, this.type);
+	var template = new $MVC.View.Compiler(this.text, this.type);
 
 	template.compile(options);
 
 	
-	View.update(this.name, this);
+	$MVC.View.update(this.name, this);
 	this.template = template;
 };
-View.prototype = {
+$MVC.View.prototype = {
 	render : function(object){
-		var v = new View.Helpers(object);
+		var v = new $MVC.View.Helpers(object);
 		return this.template.process.call(v, object,v);
 	},
 	out : function(){
 		return this.template.out;
 	},
 	set_options : function(options){
-		this.type = options.type != null ? options.type : View.type;
-		this.cache = options.cache != null ? options.cache : View.cache;
+		this.type = options.type != null ? options.type : $MVC.View.type;
+		this.cache = options.cache != null ? options.cache : $MVC.View.cache;
 		this.text = options.text != null ? options.text : null;
 		this.name = options.name != null ? options.name : null;
 	},
@@ -104,7 +104,7 @@ View.prototype = {
 		if(options == null){
 			_template = this;
 			return function(object){
-				View.prototype.update.call(_template, element, object);
+				$MVC.View.prototype.update.call(_template, element, object);
 			};
 		}
 		if(typeof options == 'string'){
@@ -113,7 +113,7 @@ View.prototype = {
 			_template = this;
 			params.onComplete = function(request){
 				var object = eval( request.responseText );
-				View.prototype.update.call(_template, element, object);
+				$MVC.View.prototype.update.call(_template, element, object);
 			};
 			new Ajax.Request(params.url, params)
 		}else
@@ -156,7 +156,7 @@ String.prototype.chop = function() {
 };
 
 /* Adaptation from the Scanner of erb.rb  */
-View.Scanner = function(source, left, right) {
+$MVC.View.Scanner = function(source, left, right) {
 	this.left_delimiter = 	left +'%';	//<%
 	this.right_delimiter = 	'%'+right;	//>
 	this.double_left = 		left+'%%';
@@ -173,16 +173,16 @@ View.Scanner = function(source, left, right) {
 	this.lines = 0;
 };
 
-View.Helpers = function(data){
+$MVC.View.Helpers = function(data){
 	this.data = data;
 };
-View.Helpers.prototype.partial = function(options, data){
+$MVC.View.Helpers.prototype.partial = function(options, data){
 	if(!data) data = this.data;
-	return new View(options).render(data);
+	return new $MVC.View(options).render(data);
 };
 
 
-View.Scanner.to_text = function(input){
+$MVC.View.Scanner.to_text = function(input){
 	if(input == null || input === undefined)
         return '';
     if(input instanceof Date)
@@ -192,7 +192,7 @@ View.Scanner.to_text = function(input){
 	return '';
 };
 
-View.Scanner.prototype = {
+$MVC.View.Scanner.prototype = {
 
   /* For each line, scan! */
   scan: function(block) {
@@ -218,7 +218,7 @@ View.Scanner.prototype = {
 		   	try{
 	         	block(token, this);
 		 	}catch(e){
-				throw {type: 'View.Scanner', line: this.lines};
+				throw {type: '$MVC.View.Scanner', line: this.lines};
 			}
        }
 	 }
@@ -226,7 +226,7 @@ View.Scanner.prototype = {
 };
 
 /* Adaptation from the Buffer of erb.rb  */
-View.Buffer = function(pre_cmd, post_cmd) {
+$MVC.View.Buffer = function(pre_cmd, post_cmd) {
 	this.line = new Array();
 	this.script = "";
 	this.pre_cmd = pre_cmd;
@@ -236,7 +236,7 @@ View.Buffer = function(pre_cmd, post_cmd) {
 		this.push(pre_cmd[i]);
 	}
 };
-View.Buffer.prototype = {
+$MVC.View.Buffer.prototype = {
 	
   push: function(cmd) {
 	this.line.push(cmd);
@@ -263,7 +263,7 @@ View.Buffer.prototype = {
 };
 
 /* Adaptation from the Compiler of erb.rb  */
-View.Compiler = function(source, left) {
+$MVC.View.Compiler = function(source, left) {
 	this.pre_cmd = ['___ViewO = "";'];
 	this.post_cmd = new Array();
 	this.source = ' ';	
@@ -293,16 +293,16 @@ View.Compiler = function(source, left) {
 			throw left+' is not a supported deliminator';
 			break;
 	}
-	this.scanner = new View.Scanner(this.source, left, right);
+	this.scanner = new $MVC.View.Scanner(this.source, left, right);
 	this.out = '';
 };
-View.Compiler.prototype = {
+$MVC.View.Compiler.prototype = {
   compile: function(options) {
   	options = options || {};
 	this.out = '';
 	var put_cmd = "___ViewO += ";
 	var insert_cmd = put_cmd;
-	var buff = new View.Buffer(this.pre_cmd, this.post_cmd);		
+	var buff = new $MVC.View.Buffer(this.pre_cmd, this.post_cmd);		
 	var content = '';
 	var clean = function(content)
 	{
@@ -355,7 +355,7 @@ View.Compiler.prototype = {
 							}
 							break;
 						case scanner.left_equal:
-							buff.push(insert_cmd + "(View.Scanner.to_text(" + content + "))");
+							buff.push(insert_cmd + "($MVC.View.Scanner.to_text(" + content + "))");
 							break;
 					}
 					scanner.stag = null;
@@ -406,37 +406,37 @@ View.Compiler.prototype = {
 
 //type, cache, folder
 
-View.config = function(options){
-	View.cache = options.cache != null ? options.cache : View.cache;
-	View.type = options.type != null ? options.type : View.type;
+$MVC.View.config = function(options){
+	$MVC.View.cache = options.cache != null ? options.cache : $MVC.View.cache;
+	$MVC.View.type = options.type != null ? options.type : $MVC.View.type;
 	var templates_directory = {}; //nice and private container
 	
-	View.get = function(path, cache){
+	$MVC.View.get = function(path, cache){
 		if(cache == false) return null;
 		if(templates_directory[path]) return templates_directory[path];
   		return null;
 	};
 	
-	View.update = function(path, template) { 
+	$MVC.View.update = function(path, template) { 
 		if(path == null) return;
 		templates_directory[path] = template ;
 	};
 	
-	View.INVALID_PATH =  -1;
+	$MVC.View.INVALID_PATH =  -1;
 };
-View.config( {cache: include.get_env() == 'production', type: '<' } );
+$MVC.View.config( {cache: include.get_env() == 'production', type: '<' } );
 
-View.PreCompiledFunction = function(name, f){
-	new View({name: name, precompiled: f});
+$MVC.View.PreCompiledFunction = function(name, f){
+	new $MVC.View({name: name, precompiled: f});
 };
 
 
 include.view = function(path){
 	if(include.get_env() == 'development'){
-		new View({url: include.get_path()+'/'+path});
+		new $MVC.View({url: include.get_path()+'/'+path});
 	}else if(include.get_env() == 'compress'){
-		include({name: include.get_path()+'/'+path, process: View.process_include, ignore: true});
-		new View({url: include.get_path()+'/'+path});
+		include({name: include.get_path()+'/'+path, process: $MVC.View.process_include, ignore: true});
+		new $MVC.View({url: include.get_path()+'/'+path});
 	}else{
 		//production, do nothing!
 	}
@@ -448,9 +448,9 @@ include.views = function(){
 	}
 };
 
-View.process_include = function(script){
-	var view = new View({text: script.text});
-	return 'View.PreCompiledFunction("'+script.name+
+$MVC.View.process_include = function(script){
+	var view = new $MVC.View({text: script.text});
+	return '$MVC.View.PreCompiledFunction("'+script.name+
 				'", function(_CONTEXT,_VIEW) { try { with(_VIEW) { with (_CONTEXT) {'+view.out()+" return ___ViewO;}}}catch(e){e.lineNumber=null;throw e;}})";
 };
 

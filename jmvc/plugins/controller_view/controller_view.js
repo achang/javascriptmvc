@@ -1,5 +1,5 @@
-Controller.functions.prototype.render = function(options) {
-		var result, render_to_id = JMVC.RENDER_TO;
+$MVC.Controller.functions.prototype.render = function(options) {
+		var result, render_to_id = $MVC.RENDER_TO;
 		var controller_name = this.className;
 		var action_name = this.action.name;
         if(!options) options = {};
@@ -32,10 +32,10 @@ Controller.functions.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			if(JMVC.get_application_root() == '')
+			if($MVC.get_application_root() == '')
 				var path = url;
 			else
-				var path = JMVC.get_application_root()+'/'+url;
+				var path = $MVC.get_application_root()+'/'+url;
 			result = new $MVC.View({url:  path  }).render(data_to_render);
 		}
 		//return result;
@@ -62,7 +62,7 @@ Controller.functions.prototype.render = function(options) {
 		return result;
 		/*
 		if(!element){
-			element = ( this.params.element == window ? $(JMVC.RENDER_TO) : this.params.element)
+			element = ( this.params.element == window ? $($MVC.RENDER_TO) : this.params.element)
 		}
 		//if(options.to){
 			element.innerHTML = result

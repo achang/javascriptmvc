@@ -5,7 +5,7 @@
  */
 $MVC.Controller = function(model, actions){
 	var className= model, newmodel = null, singular = model.is_singular();
-	model = model.capitalize()+'$MVC.Controller';
+	model = model.capitalize()+'Controller';
 	newmodel = eval(model + " = function() { this.klass = "+model+"; "+
 				"this.initialize.apply(this, arguments);"+
 				"};");
@@ -105,7 +105,7 @@ $MVC.Controller.add_stop_event = function(event){
 $MVC.Controller.dispatch = function(controller, action_name, params){
 	var c_name = controller;
 	if(typeof controller == 'string'){
-		controller = window[controller.capitalize()+'$MVC.Controller'];
+		controller = window[controller.capitalize()+'Controller'];
 	}
 	if(!controller) 'No controller named '+c_name+' was found for $MVC.Controller.dispatch.';
 	if(!action_name) action_name = 'index';
