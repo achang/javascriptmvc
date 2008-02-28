@@ -129,6 +129,7 @@ $MVC.Controller.dispatch = function(controller, action_name, params){
 $MVC.Controller.dispatch_event = function(event){
 	var target = event.target;
 	var classes = $MVC.Controller.klasses;
+	var matched = false, ret_value = true;
 	for(var c = 0 ; c < classes.length; c++){
 		var klass= $MVC.Controller.klasses[c];
 		var actions = klass.registered_actions()[event.type];
@@ -141,7 +142,7 @@ $MVC.Controller.dispatch_event = function(event){
 				var action_name = action.name;
 				$MVC.Controller.add_stop_event(event);
 				var params = new $MVC.Controller.Params({event: event, element: match_result, action: action_name, controller: klass  });
-				return $MVC.Controller.dispatch(klass, action_name, params);
+				ret_value = $MVC.Controller.dispatch(klass, action_name, params) && ret_value;
 			}
 		}
 	}
