@@ -52,6 +52,9 @@
 	var get_domain = function(path){
 		return path.split('/')[2];
 	};
+	var get_href = function(path) {
+		return path.split('#')[0].split('?')[0];
+	};
 	var is_included = function(path){
 		for(var i = 0; i < includes.length; i++){
 			if(includes[i].absolute == path) return true;
@@ -80,7 +83,7 @@
 		var src = document.getElementsByTagName("script")[i].src;
 		if(src.match(INCLUDE_regex)){
 			INCLUDE_PATH = src;
-			if(!is_absolute(src) ) src = join(window.location.href, src);
+			if(!is_absolute(src) ) src = join(get_href(window.location.href), src);
 			INCLUDE_ROOT = src.replace(INCLUDE_regex,'');
 		}
 			
@@ -348,8 +351,10 @@
 	//sets default app root to whatever page we are currently loading
 	//can be changed by set application root
 	(function() {
-		var jmvc_root = INCLUDE_ROOT, 
-			application_root = location.href.substring(0, location.href.lastIndexOf('/') )+ '/';
+		var jmvc_root = INCLUDE_ROOT;
+		var href = get_href(location.href);
+		var href_directory = href.substring(0, href.lastIndexOf('/') );
+		var application_root = href_directory + (href_directory[href_directory.length-1] == '/' ? '' : '/');
 		$MVC.root = function(){
 			return jmvc_root;
 		};
@@ -360,7 +365,6 @@
 			return application_root;
 		};
 	})();
-	
 	
 	/**
 	 * <p>Loads the correct version of $MVC.</p>
@@ -377,7 +381,6 @@
 		include($MVC.root()+'/framework');
 	};
 	
-	
 	include.plugin = function(plugin_name) {
 		var current_path = include.get_path();
 		include.set_path($MVC.root());
@@ -389,7 +392,5 @@
 		for(var i=0; i < arguments.length; i++)
 			include.plugin(arguments[i]);
 	};
-	
-	
 	
 })();

@@ -116,7 +116,7 @@ if (document.addEventListener) {
         // And use that to look up the handler info
         var h = w._allHandlers[handlerId];
         // Using that info, we can detach the handler from the element
-        element.detach$MVC.Event("on" + eventType, h.wrappedHandler);
+        element.detachEvent("on" + eventType, h.wrappedHandler);
         // Remove one element from the element._handlers array
         element._handlers.splice(i, 1);
         // And delete the handler info from the per-window _allHandlers object
@@ -158,7 +158,8 @@ if (document.addEventListener) {
             // Get handler info for this handler id
             var h = w._allHandlers[id]; 
             // Use the info to detach the handler
-            h.element.detach$MVC.Event("on" + h.eventType, h.wrappedHandler);
+            if(h.element)
+				h.element.detachEvent("on" + h.eventType, h.wrappedHandler);
             // Delete the handler info from the window
             delete w._allHandlers[id];
         }

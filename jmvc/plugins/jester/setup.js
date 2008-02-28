@@ -602,7 +602,7 @@ Object.extend(Jester.Resource.prototype, {
           }
           else {
             var doc = Jester.Tree.parseXML(transport.responseText);
-            if (doc[this.klass._singular_xml])
+            if (doc && doc[this.klass._singular_xml])
               attributes = this._attributesFromTree(doc[this.klass._singular_xml]);
           }
           if (attributes)
@@ -752,7 +752,7 @@ Object.extend(Jester.Resource.prototype, {
     if (!xml) return false;
     var doc = Jester.Tree.parseXML(xml);
 
-    if (doc.errors) {
+    if (doc && doc.errors) {
       var errors = [];
       if (typeof(doc.errors.error) == "string")
         doc.errors.error = [doc.errors.error];
