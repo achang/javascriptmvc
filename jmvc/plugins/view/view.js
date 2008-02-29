@@ -450,7 +450,7 @@ include.views = function(){
 
 $MVC.View.process_include = function(script){
 	var view = new $MVC.View({text: script.text});
-	return '$MVC.View.PreCompiledFunction("'+script.name+
+	return '$MVC.View.PreCompiledFunction("'+script.path+
 				'", function(_CONTEXT,_VIEW) { try { with(_VIEW) { with (_CONTEXT) {'+view.out()+" return ___ViewO;}}}catch(e){e.lineNumber=null;throw e;}})";
 };
 
