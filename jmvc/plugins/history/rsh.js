@@ -264,7 +264,7 @@ window.$MVC.History = {
 		return r;
 	},*/
 	getCurrentLocation: function() {
-		var r = this.getCurrentHash()
+		var r = this.getCurrentHash();
 
 		return r;
 	},
@@ -340,7 +340,7 @@ window.$MVC.History = {
 			: historyStorage.hideStyles
 		);
 		var iframeID = "rshHistoryFrame";
-		var iframeHTML = '<iframe frameborder="0" id="' + iframeID + '" style="' + styles + '" src="'+this.blank_html_path+'blank.html?' + initialHash + '"></iframe>';
+		var iframeHTML = '<iframe frameborder=0" id="' + iframeID + '" style="' + styles + '" src="'+this.blank_html_path+'blank.html?' + initialHash + '"></iframe>';
 		document.write(iframeHTML);
 		this.iframe = document.getElementById(iframeID);
 	},
@@ -362,12 +362,12 @@ window.$MVC.History = {
 			? 'width:800px;height:20px;border:1px solid black;margin:0;padding:0;'
 			: historyStorage.hideStyles
 		);
-		var form = document.createElement('form')
+		var form = document.createElement('form');
 		form.id = formID;
 		form.setAttribute('style',formStyles);
 		form.innerHTML = '<input type="text" style="' + inputStyles + '" id="' + stackID + '" value="[]"/>'
-			+ '<input type="text" style="' + inputStyles + '" id="' + lengthID + '" value=""/>'
-		document.body.appendChild(form)
+			+ '<input type="text" style="' + inputStyles + '" id="' + lengthID + '" value=""/>';
+		document.body.appendChild(form);
 		this.safariStack = document.getElementById(stackID);
 		this.safariLength = document.getElementById(lengthID);
 		if (!historyStorage.hasKey(this.PAGELOADEDSTRING)) {
@@ -553,16 +553,16 @@ window.historyStorage = {
 			: historyStorage.hideStyles
 		);
 		if($MVC.History.isSafari){
-			var form = document.createElement('form')
+			var form = document.createElement('form');
 			form.id = formID;
 			form.setAttribute('style',formStyles);
-			form.innerHTML = '<textarea id="' + textareaID + '" style="' + textareaStyles + '"></textarea>'
-			document.body.appendChild(form)
+			form.innerHTML = '<textarea id="' + textareaID + '" style="' + textareaStyles + '"></textarea>';
+			document.body.appendChild(form);
 		}else{
 			var textareaHTML = '<form id="' + formID + '" style="' + formStyles + '">'
 				+ '<textarea id="' + textareaID + '" style="' + textareaStyles + '"></textarea>'
 			+ '</form>';
-			document.write(textareaHTML)
+			document.write(textareaHTML);
 		}
 		this.storageField = document.getElementById(textareaID);
 		if (typeof window.opera !== "undefined") {
@@ -708,7 +708,7 @@ $MVC.Controller.test_dispatch = function(controller, action){
 		}
 	}else
 		return false;
-}
+};
 
 
 $MVC.History.historyChange = function(newLocation, historyData) {
@@ -717,7 +717,7 @@ $MVC.History.historyChange = function(newLocation, historyData) {
 	var data = $MVC.Path.get_data(path);
 	var folders = path.folder();
 	var action_part = null, controller_part;
-	if(folders == null){folders = ''}
+	if(folders == null){folders = ''};
 	
 	var first_s = folders.indexOf('/');
 	
@@ -729,49 +729,49 @@ $MVC.History.historyChange = function(newLocation, historyData) {
 	}else if( $MVC.Controller.test_dispatch(folders) ){
 		controller_part = folders;
 	}else if( $MVC.Controller.test_dispatch('main',folders) ){
-		controller_part = 'main'
+		controller_part = 'main';
 		action_part = folders;
 	}else{
 		throw "Can't dispatch location "+folders;
 	}
 	var result = $MVC.Controller.dispatch(controller_part, action_part,params);
 	return result;
-}
+};
 
 
 
 
 $MVC.Path = function(path) {
-	this.path = path
+	this.path = path;
 };
 $MVC.Path.prototype = {
 	domain : function() {
 		var lhs = this.path.split('#')[0];
-		return '/'+lhs.split('/').slice(3).join('/')
+		return '/'+lhs.split('/').slice(3).join('/');
 	},
 	folder : function() {
-		var first_pound = this.path.indexOf('#')
+		var first_pound = this.path.indexOf('#');
 		if( first_pound == -1) return null;
-		var after_pound =  this.path.substring( first_pound+1 )
+		var after_pound =  this.path.substring( first_pound+1 );
 		
-		var first_amp = after_pound.indexOf("&")
-		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? null : after_pound
+		var first_amp = after_pound.indexOf("&");
+		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? null : after_pound;
 		
-		return after_pound.substring(0, first_amp)
+		return after_pound.substring(0, first_amp);
 	},
 	//types of urls
 	//  /someproject#action/controller&doo_doo=butter
 	//  /someproject#doo_doo=butter
 	params : function() {
-		var first_pound = this.path.indexOf('#')
+		var first_pound = this.path.indexOf('#');
 		if( first_pound == -1) return null;
-		var after_pound =  this.path.substring( first_pound+1 )
+		var after_pound =  this.path.substring( first_pound+1 );
 		
 		//now either return everything after the first & or everything
-		var first_amp = after_pound.indexOf("&")
-		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? after_pound : null
+		var first_amp = after_pound.indexOf("&");
+		if(first_amp == -1 ) return after_pound.indexOf("=") != -1 ? after_pound : null;
 		
-		return ( after_pound.substring(0,first_amp).indexOf("=") == -1 ? after_pound.substring(first_amp+1) : after_pound )
+		return ( after_pound.substring(0,first_amp).indexOf("=") == -1 ? after_pound.substring(first_amp+1) : after_pound );
 		 
 	}
 };
@@ -780,27 +780,27 @@ $MVC.Path.prototype = {
 
 $MVC.Path.get_data = function(path) {
 	var search = path.params();
-	if(! search || ! search.match(/([^?#]*)(#.*)?$/) ) return {}
-	var data = {}
-	var parts = search.split('&')
+	if(! search || ! search.match(/([^?#]*)(#.*)?$/) ) return {};
+	var data = {};
+	var parts = search.split('&');
 	for(var i=0; i < parts.length; i++){
-		var pair = parts[i].split('=')
+		var pair = parts[i].split('=');
 		if(pair.length != 2) continue;
 		var key = pair[0], value = pair[1];
-		var key_components = key.rsplit(/\[[^\]]*\]/)
+		var key_components = key.rsplit(/\[[^\]]*\]/);
 		
 		if( key_components.length > 1 ) {
 			var last = key_components.length - 1;
 			var nested_key = key_components[0].toString();
 			if(! data[nested_key] ) data[nested_key] = {};
-			var nested_hash = data[nested_key]
+			var nested_hash = data[nested_key];
 			
 			for(var k = 1; k < last; k++){
-				nested_key = key_components[k].substring(1, key_components[k].length - 1)
-				if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={}
-				nested_hash = nested_hash[nested_key]
+				nested_key = key_components[k].substring(1, key_components[k].length - 1);
+				if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={};
+				nested_hash = nested_hash[nested_key];
 			}
-			nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value
+			nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value;
 		} else {
 	        if (key in data) {
 	        	if (typeof data[key] == 'string' ) data[key] = [data[key]];
@@ -818,5 +818,5 @@ $MVC.Controller.functions.prototype.redirect_to = function(options){
 	var controller_name = options.controller || this.className;
 	var action_name = options.action || 'index';
 	var lhs = window.location.href.split('#')[0];
-	window.location = lhs+'#'+controller_name+'/'+action_name
+	window.location = lhs+'#'+controller_name+'/'+action_name;
 };
