@@ -82,9 +82,11 @@ Object.extend($MVC.Controller.functions.prototype, {
  */
 
 $MVC.Controller.klasses = [];
-$MVC.Controller.add_stop_event = function(event){
-	if(!event.stop)
-		event.stop = function(){
+$MVC.Controller.add_kill_event = function(event){
+	if(!event.kill){
+		var killed = false;
+		event.kill = function(){
+			killed = true;
 			if(!event) event = window.event;
 		    try{
 		    event.cancelBubble = true;
@@ -94,11 +96,18 @@ $MVC.Controller.add_stop_event = function(event){
 		        
 		    if (event.preventDefault) 
 		        event.preventDefault();
-			if($MVC.Event.stop) $MVC.Event.stop(event);
+
 		    }catch(e)
 		    {}
 		    return false;
 		};
+		event.is_killed = function(){
+			return killed;
+		}
+		
+	}
+		
+		
 };
 
 
@@ -126,27 +135,65 @@ $MVC.Controller.dispatch = function(controller, action_name, params){
 	return ret_val;
 };
 
+$MVC.Controller.node_path = function(el){
+		var body = document.body;
+		var parents = [];
+		var iterator =el;
+		while(iterator != body){
+			parents.unshift({tag: iterator.nodeName, className: iterator.className, id: iterator.id, element: iterator});
+			iterator = iterator.parentNode;
+			if(iterator == null)
+				return []; // this handles the case that something earlier removed the element or one of its parents.  We can't really match
+				//this
+		}
+		return parents;
+};
+
+
 $MVC.Controller.dispatch_event = function(event){
 	var target = event.target;
 	var classes = $MVC.Controller.klasses;
 	var matched = false, ret_value = true;
+	//this function wouldn't be called unless someone wanted to check something:
+	var parents_path = $MVC.Controller.node_path(target)
+	var matches = [];
 	for(var c = 0 ; c < classes.length; c++){
 		var klass= $MVC.Controller.klasses[c];
 		var actions = klass.registered_actions()[event.type];
 		if(!actions) continue;
+		//lets get node_list
+		
+		
 		for(var i =0; i < actions.length;  i++){
 			var action = actions[i];
-			var match_result = action.match(target, event);
+			var match_result = action.match(target, event, parents_path);
 			
 			if(match_result){
-				var action_name = action.name;
-				$MVC.Controller.add_stop_event(event);
-				var params = new $MVC.Controller.Params({event: event, element: match_result, action: action_name, controller: klass  });
-				ret_value = $MVC.Controller.dispatch(klass, action_name, params) && ret_value;
+				match_result.controller = klass;
+				matches.push(match_result);
 			}
 		}
 	}
-	if($MVC.Browser.Opera) Style.deleteRule(0);
+	if(matches.length == 0) return;
+	
+	$MVC.Controller.add_kill_event(event);
+	
+	matches.sort(function(a,b){
+		if(a.order < b.order) return 1;
+		if(b.order < a.order) return -1;
+		return 0;
+	})
+	
+	for(var m = 0; m < matches.length; m++){
+		var match = matches[m];
+		var action_name = match.action.name;
+		
+		var params = new $MVC.Controller.Params({event: event, element: match.node, action: action_name, controller: match.controller  });
+		ret_value = $MVC.Controller.dispatch(match.controller, action_name, params) && ret_value;
+		
+		if(event.is_killed()) return;
+	}
+	
 };
 
 
@@ -163,7 +210,7 @@ $MVC.Controller.dispatch_event = function(event){
 	 */
 	var new_event_closure_function = function(controller_name, f_name, element){
 		return function(event){
-			$MVC.Controller.add_stop_event(event);
+			$MVC.Controller.add_kill_event(event);
 			var params = new $MVC.Controller.Params({event: event, element: element, action: f_name, controller: controller_name   });
 			return $MVC.Controller.dispatch(controller_name, f_name, params);
 		}
@@ -378,26 +425,13 @@ $MVC.Controller.Action.prototype = {
 		this.order = order;
 		return this.order;
 	},
-	node_path : function(el){
-		var body = document.body;
-		var parents = [];
-		var iterator =el;
-		while(iterator != body){
-			parents.unshift({tag: iterator.nodeName, className: iterator.className, id: iterator.id, element: iterator});
-			iterator = iterator.parentNode;
-		}
-		return parents;
-	},
-	match : function(el, event){
+	match : function(el, event, parents){
 		if(this.filters){
 			if(!this.filters[event.type](el, event)) return false;
 		}
 		var docEl = document.documentElement;
 		var body = document.body;
 		if(el == docEl || el==body) return false;
-		
-		
-		var parents = this.node_path(el);
 
 		var matching = 0;
 		for(var n=0; n < parents.length; n++){
@@ -413,11 +447,11 @@ $MVC.Controller.Action.prototype = {
 			if(matched){
 				matching++;
 				if(matching >= this.selector_order().length){
-					return node.element;
+					return {node: node.element, order: n, action: this};
 				}
 			}
 		}
-		return false;
+		return null;
 	},
 	after_filters : function(){
 		if(this.attach){
@@ -428,25 +462,7 @@ $MVC.Controller.Action.prototype = {
 
 
 
-/*
 
-Model = {
-	appendAsChildOf : function(element){
-		this.element = element.appendChild( this.toElement() );
-		new window[this.className.capitalize()+'$MVC.Controller']().attach_event_handlers_to(this.element);
-		return this.element;
-	},
-	toElement : function(){
-		if(this.element) return this.element;
-		this.element = this.createElement();
-		return this.element;
-	},
-	insertBefore : function(element){
-		this.element = element.parentNode.insertBefore(this.toElement() , element );
-		new window[this.className.capitalize()+'$MVC.Controller']().attach_event_handlers_to(this.element);
-		return this.element;
-	}
-};*/
 
 
 
