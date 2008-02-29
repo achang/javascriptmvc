@@ -382,7 +382,12 @@ $MVC.Controller.Action.prototype = {
 				return el.nodeName.toUpperCase() == 'INPUT' && el.type.toLowerCase() == 'submit';
 			},
 			keypress : function(el, event){
-				return el.nodeName.toUpperCase() == 'INPUT' && event.charCode == 13; // make event key match enter && el.type.toLowerCase() == 'submit'
+				if(el.nodeName.toUpperCase()!= 'INPUT') return false;
+				if(typeof Prototype != 'undefined'){
+					return event.keyCode == 13;
+				}
+				return event.charCode == 13;
+				//return el.nodeName.toUpperCase() == 'INPUT' && event.charCode == 13; // make event key match enter && el.type.toLowerCase() == 'submit'
 			}
 		};
 		//this.real_selector = this.selector+' input' //must be in an input element
