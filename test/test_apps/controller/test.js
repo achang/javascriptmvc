@@ -1,9 +1,9 @@
-Controller('main',{
+$MVC.Controller('main',{
 	load : function(){
 		success('load')
 	}
 });
-Controller('tests',{
+$MVC.Controller('tests',{
 	mouseover : function(params){
 		success('mouseover')
 	},
@@ -21,6 +21,6 @@ Controller('tests',{
 	},
 	'# submit' :function(params){
 		success('submit')
-		params.event.stop();
+		params.event.kill();
 	}
 });

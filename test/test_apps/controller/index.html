@@ -71,11 +71,11 @@ Controller('tests',{
 			include('test')
 			include.opera()
 			success = function(id){
-				$(id).className = 'success';
+				$E(id).className = 'success';
 				log(id)
 			};
 			log = function(text){
-				$('output').innerHTML = '<p>'+text+'</p>'+$('output').innerHTML
+				$E('output').innerHTML = '<p>'+text+'</p>'+$E('output').innerHTML
 			};
 		</script>
 		
