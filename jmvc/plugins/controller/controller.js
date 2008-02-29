@@ -149,13 +149,12 @@ $MVC.Controller.node_path = function(el){
 		return parents;
 };
 
-
 $MVC.Controller.dispatch_event = function(event){
 	var target = event.target;
 	var classes = $MVC.Controller.klasses;
 	var matched = false, ret_value = true;
 	//this function wouldn't be called unless someone wanted to check something:
-	var parents_path = $MVC.Controller.node_path(target)
+	var parents_path = $MVC.Controller.node_path(target);
 	var matches = [];
 	for(var c = 0 ; c < classes.length; c++){
 		var klass= $MVC.Controller.klasses[c];
@@ -174,7 +173,7 @@ $MVC.Controller.dispatch_event = function(event){
 			}
 		}
 	}
-	if(matches.length == 0) return;
+	if(matches.length == 0) return true;
 	
 	$MVC.Controller.add_kill_event(event);
 	
@@ -182,7 +181,7 @@ $MVC.Controller.dispatch_event = function(event){
 		if(a.order < b.order) return 1;
 		if(b.order < a.order) return -1;
 		return 0;
-	})
+	});
 	
 	for(var m = 0; m < matches.length; m++){
 		var match = matches[m];
@@ -191,11 +190,10 @@ $MVC.Controller.dispatch_event = function(event){
 		var params = new $MVC.Controller.Params({event: event, element: match.node, action: action_name, controller: match.controller  });
 		ret_value = $MVC.Controller.dispatch(match.controller, action_name, params) && ret_value;
 		
-		if(event.is_killed()) return;
+		if(event.is_killed()) return true;
 	}
-	
-};
 
+};
 
 (function(){
 
@@ -459,12 +457,3 @@ $MVC.Controller.Action.prototype = {
 		}
 	}
 };
-
-
-
-
-
-
-
-
-
