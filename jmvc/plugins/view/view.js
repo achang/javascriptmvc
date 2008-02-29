@@ -435,7 +435,7 @@ include.view = function(path){
 	if(include.get_env() == 'development'){
 		new $MVC.View({url: include.get_path()+'/'+path});
 	}else if(include.get_env() == 'compress'){
-		include({name: include.get_path()+'/'+path, process: $MVC.View.process_include, ignore: true});
+		include({path: include.get_path()+'/'+path, process: $MVC.View.process_include, ignore: true});
 		new $MVC.View({url: include.get_path()+'/'+path});
 	}else{
 		//production, do nothing!

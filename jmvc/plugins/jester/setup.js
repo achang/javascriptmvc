@@ -1,1 +1,1 @@
-include({name: 'jester.js', shrink_variables: false});
+include({path: 'jester.js', shrink_variables: false});

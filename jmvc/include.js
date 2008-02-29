@@ -96,7 +96,7 @@
 			for(var i=0; i < arguments.length; i++){
 				var newInclude = arguments[i];
 				if(typeof newInclude == 'string'){
-					newInclude = {name: newInclude.indexOf('.js') == -1  ? newInclude+'.js' : newInclude};
+					newInclude = {path: newInclude.indexOf('.js') == -1  ? newInclude+'.js' : newInclude};
 				}
 				
 				if(newInclude.base62 == null)
@@ -110,7 +110,7 @@
 			for(var i=0; i < arguments.length; i++){
 				var newInclude = arguments[i];
 				if(typeof newInclude == 'string'){
-					newInclude = {name: newInclude};
+					newInclude = {path: newInclude};
 				}
 				if(newInclude.base62 == null)
 					newInclude.base62 = PACKER_OPTIONS.base62;
@@ -183,22 +183,22 @@
 	 * Adds a file to the of objects to be included.  If it is not absolute, it adds the current path
 	 * to the include path.
 	 * @param {Object} newInclude
-	 * {name: NAME, base62: true/false, shrink_variables: true/false }
+	 * {path: NAME, base62: true/false, shrink_variables: true/false }
 	 */
 	include.add = function(newInclude){
-		var name = newInclude.name;
+		var path = newInclude.path;
 		if(first_wave_done){ //add right away!
-			insert_head(name);
+			insert_head(path);
 			return;
 		}
-		newInclude.name = include.normalize(  name  );
+		newInclude.path = include.normalize(  path  );
 		//this doesn't take into account /file.js == mydomain.com/file.js
-		newInclude.absolute = newInclude.name;
+		newInclude.absolute = newInclude.path;
 		if(is_relative(newInclude.absolute)){
-			newInclude.absolute = join(include.get_absolute_path()+'/', name);
+			newInclude.absolute = join(include.get_absolute_path()+'/', path);
 		}
 		if(is_included(newInclude.absolute)) return;
-		var ar = newInclude.name.split('/');
+		var ar = newInclude.path.split('/');
 		ar.pop();
 		newInclude.start = ar.join('/');
 		current_includes.unshift(  newInclude );
@@ -246,13 +246,13 @@
 		include.set_path(latest.start);
 		
 		if(include.get_env()=='compress'){
-			latest.text = syncrequest(latest.name);
+			latest.text = syncrequest(latest.path);
 			total.push( latest);
 		}
 		if(latest.ignore){
 			insert();
 		}else
-			insert(latest.name);
+			insert(latest.path);
 	}
 	include.end_of_production = function(){
 		first_wave_done = true;

@@ -1720,7 +1720,7 @@ compress = function(total, srcs, production_name){
 		collection = '' //total.join(";\n")
 		var txt=''
 		for(var s=0; s < total.length; s++){
-			txt += "<p id='file_"+s+"'>'"+total[s].name+"'</p>"
+			txt += "<p id='file_"+s+"'>'"+total[s].path+"'</p>"
 			if(total[s].process) {
 				total[s].text = total[s].process(total[s])
 			}
@@ -1735,7 +1735,7 @@ compress = function(total, srcs, production_name){
 		document.getElementById('uncompressed_length').innerHTML = collection.length+' Characters';
 		save_production_name = production_name
 		document.getElementById('file_'+compress.working_script).style.backgroundColor = '#e5f0cf'
-		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing - '+compress.scripts[0].name.split('/').pop();
+		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing - '+compress.scripts[0].path.split('/').pop();
 		document.getElementById('compressed').value = 'Compressing ...'
 		setTimeout(pack,1)
 }
@@ -1755,7 +1755,7 @@ pack = function(){
 	compress.working_script++;
 	if(compress.working_script >= compress.scripts.length) setTimeout(finished,1);
 	else {
-		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing - '+compress.scripts[compress.working_script].name.split('/').pop();
+		document.getElementById('status').innerHTML = '<b>Status:</b> Compressing - '+compress.scripts[compress.working_script].path.split('/').pop();
 		document.getElementById('file_'+compress.working_script).style.backgroundColor = '#e5f0cf';
 		setTimeout(pack,1);
 	}
