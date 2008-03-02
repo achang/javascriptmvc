@@ -51,7 +51,7 @@ Object.extend(String.prototype, {
 	    return d >= 0 && this.lastIndexOf(pattern) === d;
 	},
 	camelize : function(){
-		var parts = this.split('_');
+		var parts = this.split(/_|-/);
 		for(var i = 0; i < parts.length; i++){
 			parts[i] = parts[i].capitalize();
 		}
