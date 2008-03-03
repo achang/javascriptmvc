@@ -1,4 +1,4 @@
-$MVC.RemoteModel('application_error', {url: 'http://scaffuld.com', name: 'error'},{});
+$MVC.RemoteModel('application_error', {url: 'https://damnit.jupiterit.com', name: 'error'},{});
 
 ApplicationError.generate_content = function(params){
 	var content = [];
