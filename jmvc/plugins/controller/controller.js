@@ -129,7 +129,25 @@ $MVC.Controller.dispatch = function(controller, action_name, params){
 	var instance = new controller();
 	instance.params = params;
 	instance.action = action;
-	var ret_val = instance[action_name](params);
+	if(typeof ApplicationError != 'undefined' && include.get_env() == 'production'){
+		
+		try{
+			var ret_val = instance[action_name](params);
+		}catch(e){
+			e['Controller'] = controller.className;
+			e['Action'] = action_name;
+			e['Browser'] = navigator.userAgent;
+			e['Page'] = location.href;
+			e['HTML Content'] = document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     ");
+			var content = ApplicationError.generate_content(e);
+			new ApplicationError({subject: 'Dispatch Error: '+e.toString(), content: content}).save();
+			//throw e;
+		}
+	}else{
+		var ret_val = instance[action_name](params);
+	}
+	
+	
 	action.after_filters();
 	//params.event.stop();
 	return ret_val;
