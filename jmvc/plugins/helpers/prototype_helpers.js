@@ -148,7 +148,7 @@ Date.prototype.number_of_days_in_month = function() {
 })();
 
 
-$E = $
+$E = $;
 
 
 

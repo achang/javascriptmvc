@@ -8,12 +8,12 @@ if(typeof Prototype == 'undefined') {
 	include("../ajax/ajax");
 }else{
 	$MVC.Event = Event;
-	$MVC.Ajax = Ajax
+	$MVC.Ajax = Ajax;
 }
 
 if(typeof Prototype != 'undefined') {
-	$MVC.Query = $$
-	$MVC.Query.descendant = function(element, selector) {
+	$MVC.CSSQuery = $$;
+	$MVC.CSSQuery.descendant = function(element, selector) {
 		return element.getElementsBySelector(selector);
 	};
 }else
