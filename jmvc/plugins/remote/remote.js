@@ -92,23 +92,15 @@ $MVC.RemoteModel.class_functions = {
 
 
 Object.extend($MVC.RemoteModel.functions.prototype, {
-	initialize : function(params){
-		if(params.attributes)
-		this.attributes = params.attributes;
-		for(var thing in params.attributes){
-			if(params.attributes.hasOwnProperty(thing)) {
+	initialize : function(attributes){
+		this.attributes = attributes ? attributes : {};
+
+		for(var thing in this.attributes){
+			if(this.attributes.hasOwnProperty(thing)) {
 				if(thing != 'created_at'){
-					this[thing] = params.attributes[thing];
+					this[thing] = this.attributes[thing];
 				}else
-					this[thing] = Date.parse( params.attributes[thing]);
-			}
-			
-		}
-		this.errors = params.errors ? params.errors : [];
-		if(params.errors){
-			for(var i=0; i< params.errors.length; i++){
-				var error = params.errors[i];
-				this.errors[error[0]] = error[1];
+					this[thing] = Date.parse( this.attributes[thing]);
 			}
 		}
 	},
@@ -116,9 +108,18 @@ Object.extend($MVC.RemoteModel.functions.prototype, {
 		if(this.id){
 			//update
 		}else{
-			var params = {}
+			var params = {};
 			params[this.klass.controller_name] = this.attributes
 			this.klass.create(params, callback);
+		}
+	},
+	add_errors : function(errors){
+		this.errors = errors ? errors : [];
+		if(errors){
+			for(var i=0; i< errors.length; i++){
+				var error = errors[i];
+				this.errors[error[0]] = error[1];
+			}
 		}
 	}
 });
@@ -139,9 +140,7 @@ $MVC.RemoteModel.top_level_length = function(params, url){
 }
 
 $MVC.RemoteModel.seperate = function(object, top_level_length, name){
-	var remainder = 2000 - top_level_length; // amount of characters we can send through
-	//before we even get to all the other guys, lets take into account all the 
-	
+	var remainder = 2000 - top_level_length; 
 	var send = {};
 	var postpone = {};
 	var send_in_parts = false;
