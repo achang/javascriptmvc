@@ -1,6 +1,6 @@
 $MVC.RemoteModel = function(model, url, functions){
 	var className= model, newmodel = null;
-	model = model.camelize();
+	model = $MVC.String.camelize(model);
 
 	newmodel = eval(model + " = function() { this.klass = "+model+"; "+
 				"this.initialize.apply(this, arguments);"+
@@ -17,7 +17,7 @@ $MVC.RemoteModel = function(model, url, functions){
 		newmodel.url = url;
 	}else{
 		newmodel.url = url.url;
-		newmodel.controller_name = url.name
+		newmodel.controller_name = url.name;
 	}
 	
 	
@@ -31,7 +31,7 @@ $MVC.RemoteModel.functions = function(){};
 
 $MVC.RemoteModel.class_functions = {
 	find : function(params, callback){
-		params.callback = this.className.camelize()+'.listCallback';
+		params.callback = $MVC.String.camelize(this.className)+'.listCallback';
 		var klass = this;
 		//make callback function create new and call the callback with them
 		if(!callback) callback = (function(){});
@@ -65,7 +65,7 @@ $MVC.RemoteModel.class_functions = {
 			klass.createCallback = function(callback_params){
 				params[this.controller_name] = postpone_params;
 				params.id = callback_params.id;
-				klass.create(params, callback)
+				klass.create(params, callback);
 			};
 			params[this.controller_name] = send_params;
 			params['_mutlirequest'] = 'true';
@@ -86,7 +86,7 @@ $MVC.RemoteModel.class_functions = {
 		if(APPLICATION_KEY)
 			params.user_crypted_key = APPLICATION_KEY;
 		params.referer = window.location.href;
-		params.callback = this.className.camelize()+'.'+callback_name+'Callback';
+		params.callback = $MVC.String.camelize(this.className)+'.'+callback_name+'Callback';
 	}
 };
 
@@ -109,7 +109,7 @@ Object.extend($MVC.RemoteModel.functions.prototype, {
 			//update
 		}else{
 			var params = {};
-			params[this.klass.controller_name] = this.attributes
+			params[this.klass.controller_name] = this.attributes;
 			this.klass.create(params, callback);
 		}
 	},
@@ -133,11 +133,11 @@ $MVC.RemoteModel.top_level_length = function(params, url){
 		if(typeof val == 'string'){
 			total += val.length+attr.length+2;
 		}else if(typeof val == 'number'){
-			total += val.toString().length+attr.length+2
+			total += val.toString().length+attr.length+2;
 		}
 	}
 	return total;
-}
+};
 
 $MVC.RemoteModel.seperate = function(object, top_level_length, name){
 	var remainder = 2000 - top_level_length; 
@@ -179,4 +179,4 @@ $MVC.RemoteModel.seperate = function(object, top_level_length, name){
 		}
 	}
 	return {send: send, postpone: postpone, send_in_parts: send_in_parts};
-}
+};

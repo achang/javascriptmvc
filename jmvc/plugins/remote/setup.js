@@ -1,2 +1,2 @@
-include.plugins('helpers','inflector')
-include('remote')
+include.plugins('helpers','inflector');
+include('remote');

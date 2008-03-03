@@ -37,6 +37,15 @@ Object.extend(String.prototype, {
 });
 
 String.prototype.ends_with = String.prototype.endsWith;
+$MVC.String.camelize = function(string){
+	var parts = string.split(/_|-/);
+		for(var i = 0; i < parts.length; i++){
+			parts[i] = parts[i].capitalize();
+		}
+		return parts.join('');
+};
+
+
 
 /* Cross-Browser Split v0.1; MIT-style license
 By Steven Levithan <http://stevenlevithan.com>

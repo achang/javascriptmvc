@@ -44,15 +44,15 @@ Object.extend(String.prototype, {
 	ends_with : function(pattern) {
 	    var d = this.length - pattern.length;
 	    return d >= 0 && this.lastIndexOf(pattern) === d;
-	},
-	camelize : function(){
-		var parts = this.split('_');
+	}
+});
+$MVC.String.camelize = function(string){
+	var parts = string.split(/_|-/);
 		for(var i = 0; i < parts.length; i++){
 			parts[i] = parts[i].capitalize();
 		}
 		return parts.join('');
-	}
-});
+};
 
 /* Cross-Browser Split v0.1; MIT-style license
 By Steven Levithan <http://stevenlevithan.com>
