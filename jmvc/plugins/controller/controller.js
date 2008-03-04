@@ -461,7 +461,11 @@ $MVC.Controller.Action.prototype = {
 			var matched = true;
 			for(var attr in match){
 				if(!match.hasOwnProperty(attr) || attr == 'element') continue;
-				if(match[attr] && node[attr] != match[attr]){
+				if(match[attr] && attr == 'className'){
+					if(! node.className.split(' ').include(match[attr])){
+						matched = false;
+					}
+				}else if(match[attr] && node[attr] != match[attr]){
 					matched = false;
 				}
 			}
