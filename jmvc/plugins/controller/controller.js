@@ -35,6 +35,7 @@ $MVC.Controller = function(model, actions){
 	for(var action_name in actions ){
 		var val = actions[action_name];
 		if( actions.hasOwnProperty(action_name) && typeof val == 'function') {
+			
 			var action = new $MVC.Controller.Action(action_name, val,newmodel);
 			controller_actions[action_name] = action;
 		}
@@ -146,13 +147,11 @@ $MVC.Controller.dispatch = function(controller, action_name, params){
 	}else{
 		var ret_val = instance[action_name](params);
 	}
-	
-	
-	action.after_filters();
 	//params.event.stop();
 	return ret_val;
 };
 
+//optimized
 $MVC.Controller.node_path = function(el){
 		var body = document.body;
 		var parents = [];
@@ -162,11 +161,9 @@ $MVC.Controller.node_path = function(el){
 			iterator = iterator.parentNode;
 			if(iterator == null)
 				return []; // this handles the case that something earlier removed the element or one of its parents.  We can't really match
-				//this
 		}
 		return parents;
 };
-
 $MVC.Controller.dispatch_event = function(event){
 	var target = event.target;
 	var classes = $MVC.Controller.klasses;
@@ -178,9 +175,6 @@ $MVC.Controller.dispatch_event = function(event){
 		var klass= $MVC.Controller.klasses[c];
 		var actions = klass.registered_actions()[event.type];
 		if(!actions) continue;
-		//lets get node_list
-		
-		
 		for(var i =0; i < actions.length;  i++){
 			var action = actions[i];
 			var match_result = action.match(target, event, parents_path);
@@ -192,26 +186,23 @@ $MVC.Controller.dispatch_event = function(event){
 		}
 	}
 	if(matches.length == 0) return true;
-	
 	$MVC.Controller.add_kill_event(event);
-	
-	matches.sort(function(a,b){
-		if(a.order < b.order) return 1;
-		if(b.order < a.order) return -1;
-		return 0;
-	});
-	
+	matches.sort($MVC.Controller.dispatch_event.sort_by_order);
 	for(var m = 0; m < matches.length; m++){
 		var match = matches[m];
 		var action_name = match.action.name;
-		
 		var params = new $MVC.Controller.Params({event: event, element: match.node, action: action_name, controller: match.controller  });
 		ret_value = $MVC.Controller.dispatch(match.controller, action_name, params) && ret_value;
-		
 		if(event.is_killed()) return true;
 	}
 
 };
+$MVC.Controller.dispatch_event.sort_by_order = function(a,b){
+	if(a.order < b.order) return 1;
+	if(b.order < a.order) return -1;
+	return 0;
+};
+
 
 (function(){
 
@@ -310,6 +301,9 @@ $MVC.Controller.Params.prototype = {
 		}
 		return start;
 	},
+	is_event_on_element : function(){
+		return this.event.target == this.element;
+	},
 	object_data : function(){
 		return $MVC.View.Helpers.get_data(this.class_element());
 	}
@@ -332,7 +326,7 @@ $MVC.Controller.Action = function(action_name, func ,controller){
 	this.func = func;
 	this.controller = controller;
 	//selector
-	if(this.name.search(/change|click|contextmenu|dblclick|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|select|submit|dblclick|focus|blur|load|unload/) == -1 ) {
+	if(this.name.search(/change|click|contextmenu|dblclick|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload/) == -1 ) {
 		return;		
 	}
 	this.parse_name();
@@ -381,7 +375,7 @@ $MVC.Controller.Action.prototype = {
 		this.event_type;
 	},
 	main_controller : function(){
-		if(['load','unload','resize'].include(this.event_type)){
+		if(['load','unload','resize','scroll'].include(this.event_type)){
 			$MVC.Event.observe(window, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
 			return;
 		}
@@ -448,7 +442,7 @@ $MVC.Controller.Action.prototype = {
 	},
 	match : function(el, event, parents){
 		if(this.filters){
-			if(!this.filters[event.type](el, event)) return false;
+			if(!this.filters[event.type](el, event)) return null;
 		}
 		var docEl = document.documentElement;
 		var body = document.body;
@@ -477,10 +471,5 @@ $MVC.Controller.Action.prototype = {
 			}
 		}
 		return null;
-	},
-	after_filters : function(){
-		if(this.attach){
-			$MVC.Controller.attach_all();
-		}
 	}
 };

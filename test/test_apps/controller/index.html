@@ -7,30 +7,7 @@
 			.test {}
 		</style>
 	</head>
-	<body>
-<pre>
-Controller('tests',{
-	mouseover : function(params){
-		success('mouseover')
-	},
-	mouseout : function(params){
-		success('mouseout')
-	},
-	click : function(params){
-		success('click')
-	},
-	focus : function(){
-		success('focus')
-	},
-	blur : function(){
-		success('blur')
-	},
-	'# submit' :function(params){
-		success('submit')
-		params.event.stop();
-	}
-});
-</pre>
+	<body></body>
 <p><b>Instructions:</b>  The following form and input elements are
 		being matched by a Controller.  By performing various events on
 		the input element (mousover, click, focus, blur, mouseout), the event's
@@ -61,13 +38,44 @@ Controller('tests',{
 		<div id='submit' class='failure'>
 			Test submit
 		</div>
+		<div id='resize' class='failure'>
+			Test resize
+		</div>
+		<div id='scroll' class='failure'>
+			Test scroll
+		</div>
+		<div id='unload' class='failure'>
+			Test unload
+		</div>
+		
+		<div id='mousedown' class='failure'>
+			Test mousedown
+		</div>
+		<div id='mousemove' class='failure'>
+			Test mousemove
+		</div>
+		<div id='mouseup' class='failure'>
+			Test mouseup
+		</div>
+		<div id='contextmenu' class='failure'>
+			Test contextmenu
+		</div>
 		
 		<div id='output'>
 			
 		</div>
+		<div>
+			<div>
+				<div>
+					<div>
+						<p><a href='#' id='node_path_test' onclick='node_path_test()'>Test</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
 		<script type='text/javascript' src='../../../jmvc/include.js'></script>
 		<script type='text/javascript'>
-			include.plugins('controller');
+			include.plugins('controller', 'query');
 			include('test')
 			include.opera()
 			success = function(id){
@@ -75,7 +83,7 @@ Controller('tests',{
 				log(id)
 			};
 			log = function(text){
-				$E('output').innerHTML = '<p>'+text+'</p>'+$E('output').innerHTML
+				$E('output').innerHTML = '<p>'+text+'</p>'
 			};
 		</script>
 		

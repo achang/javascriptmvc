@@ -8,16 +8,18 @@ if(typeof Prototype == 'undefined') {
 	include("../ajax/ajax");
 }else{
 	$MVC.Event = Event;
-	$MVC.Ajax = Ajax;
+	include("../ajax/prototype_ajax");;
 }
-
-if(typeof Prototype != 'undefined') {
+if(include.get_env() == 'test')
+	include('../ajax/testing')
+	
+/*if(typeof Prototype != 'undefined') {
 	$MVC.CSSQuery = $$;
 	$MVC.CSSQuery.descendant = function(element, selector) {
 		return element.getElementsBySelector(selector);
 	};
 }else
- 	include("../query/standard");
+ 	include("../query/standard");*/
 
 include('../file/setup',
 		'../view/view',

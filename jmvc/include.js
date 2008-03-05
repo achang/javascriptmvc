@@ -92,7 +92,7 @@
 	 * includes a list of files like 'abc','def'
 	 */
 	include = function(){
-		if(include.get_env()=='development' || include.get_env()=='compress'){
+		if(include.get_env()=='development' || include.get_env()=='compress' || include.get_env()=='test'){
 			for(var i=0; i < arguments.length; i++){
 				var newInclude = arguments[i];
 				if(typeof newInclude == 'string'){
