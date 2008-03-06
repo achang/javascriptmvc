@@ -38,7 +38,9 @@ $MVC.RemoteModel.class_functions = {
 		klass.listCallback = function(callback_params){
 			var newObjects = [];
 			for(var i=0;i<callback_params.length;i++){
-				newObjects.push(new klass(callback_params[i]));
+				var newm = new klass(callback_params[i].attributes);
+				newObjects.push(newm);
+				if(callback_params[i].errors) newm.add_errors(callback_params[i].errors);
 			}
 			callback(newObjects);
 		};
