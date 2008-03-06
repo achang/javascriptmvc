@@ -8,10 +8,10 @@ if(typeof Prototype == 'undefined') {
 	include("../ajax/ajax");
 }else{
 	$MVC.Event = Event;
-	include("../ajax/prototype_ajax");;
+	include("../ajax/prototype_ajax");
 }
 if(include.get_env() == 'test')
-	include('../ajax/testing')
+	include('../ajax/testing');
 	
 /*if(typeof Prototype != 'undefined') {
 	$MVC.CSSQuery = $$;
