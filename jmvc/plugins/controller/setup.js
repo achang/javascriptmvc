@@ -1,2 +1,2 @@
-include.plugins('helpers','inflector','event')
-include('controller')
+include.plugins('helpers','inflector','event');
+include('controller');

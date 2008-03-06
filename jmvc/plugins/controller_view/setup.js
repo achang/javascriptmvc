@@ -1,2 +1,2 @@
-include.plugins('view', 'controller')
-include('controller_view')
+include.plugins('view', 'controller');
+include('controller_view');
