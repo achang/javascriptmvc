@@ -1,8 +1,38 @@
-$MVC.Element = function(id){
+$MVC.Element = function(element){
 	if(typeof id == 'string')
-		return document.getElementById(id);
-	return id;
+		element = document.getElementById(id);
+	return element;//Element.extend(element);
 };
+/*
+$MVC.Element.extend = function(element) {
+  if (!element || _nativeExtensions || element.nodeType == 3) return element;
+
+  if (!element._extended && element.tagName && element != window) {
+    //var methods = Object.clone(Element.Methods), cache = Element.extend.cache;
+
+    //if (element.tagName == 'FORM')
+    //  Object.extend(methods, Form.Methods);
+    //if (['INPUT', 'TEXTAREA', 'SELECT'].include(element.tagName))
+    //  Object.extend(methods, Form.Element.Methods);
+	
+	for(var thing in $MVC.Element){
+		
+	}
+	
+    Object.extend(methods, Element.Methods.Simulated);
+
+    for (var property in methods) {
+      var value = methods[property];
+      if (typeof value == 'function' && !(property in element))
+        element[property] = cache.findOrStore(value);
+    }
+  }
+
+  element._extended = true;
+  return element;
+};*/
+
+
 $MVC.Object.extend($MVC.Element, {
 	insert: function(element, insertions) {
 		element = $E(element);
@@ -49,6 +79,18 @@ $MVC.Object.extend($MVC.Element, {
 		}
 	  }else div.innerHTML = html;
 	  return $MVC.Array.from(div.childNodes);
+	},
+	next : function(element){
+		var next = element.nextSibling;
+		while(next && next.nodeType != 1)
+			next = next.nextSibling;
+		return next;
+	},
+	toggle : function(element){
+		if(element.style.display == 'none')
+			element.style.display = '';
+		else
+			element.style.display = 'none';
 	}
 });
 if(!$MVC._no_conflict){

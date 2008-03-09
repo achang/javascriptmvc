@@ -25,3 +25,5 @@ include('../view/view',
 		'../controller/controller',
 		'../controller_view/controller_view',
 		'../includer/includer');
+		
+if(include.get_env() == 'development')	include('../view/fulljslint');

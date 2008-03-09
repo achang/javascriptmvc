@@ -1,3 +1,29 @@
+$MVC.Native.extend = function(class_name, source){
+	if(!$MVC[class_name]) $MVC[class_name] = {};
+	var destination = $MVC[class_name];
+	for (var property in source){
+		destination[property] = source[property];
+		if(!$MVC._no_conflict){
+			window[class_name][property] = source[property];
+			if(typeof source[property] == 'function'){
+				var names = source[property].toString().match(/^[\s\(]*function[^(]*\((.*?)\)/)[1].split(",");
+    			if( names.length == 1 && !names[0]) continue;
+				var first_arg = names[0].replace(/^\s+/, '').replace(/\s+$/, '');
+				if( first_arg.match(class_name.toLowerCase() || (first_arg == 'func' && class_name == 'Function' ) ) ){
+					$MVC.Native.set_prototype(class_name, property, source[property]);
+				}
+			}
+		}
+	}
+};
+$MVC.Native.set_prototype = function(class_name, property_name, func){
+	window[class_name].prototype[property_name] = function(){
+		var args = [this];
+		for (var i = 0, length = arguments.length; i < length; i++) args.push(arguments[i]);
+		return func.apply(this,args  );
+	};
+};
+
 //Object helpers
 $MVC.Object = {};
 $MVC.Object.extend = function(destination, source) {
