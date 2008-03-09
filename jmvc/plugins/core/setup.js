@@ -20,8 +20,7 @@ if(include.get_env() == 'test')
 }else
  	include("../query/standard");*/
 
-include('../file/setup',
-		'../view/view',
+include('../view/view',
 		'../view/helpers', 
 		'../controller/controller',
 		'../controller_view/controller_view',

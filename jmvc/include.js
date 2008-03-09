@@ -194,12 +194,12 @@
 	include.end = function(){
 		includes = includes.concat(current_includes);
 		var latest = includes.pop();
-		total.push( latest);
 		if(!latest) {
 			first_wave_done = true;
 			if(include.get_env()=='compress') setTimeout( include.compress, 10 );
 			return;
 		};
+		total.push( latest);
 		current_includes = [];
 		include.set_path(latest.start);
 		
