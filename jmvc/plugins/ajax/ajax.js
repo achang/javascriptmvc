@@ -15,7 +15,7 @@ $MVC.Ajax.Request = function(url,options){
 	
 	this.options.method = this.options.method.toLowerCase();
 	
-	if (!['get', 'post'].include(this.options.method)) {
+	if (!$MVC.Array.include(['get', 'post'],this.options.method)) {
       // simulate other verbs over post
       if(this.options.parameters == ''){
 	  	this.options.parameters = {_method : this.options.method};
@@ -26,7 +26,7 @@ $MVC.Ajax.Request = function(url,options){
 	
 
 	if (this.options.method == 'get' && this.options.parameters != '' )
-	   this.url += (this.url.include('?') ? '&' : '?') + Object.toQueryString(this.options.parameters);
+	   this.url += ($MVC.String.include(this.url,'?') ? '&' : '?') + $MVC.Object.toQueryString(this.options.parameters);
 	//else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
 	//   params += '&_=';
     
@@ -54,7 +54,7 @@ $MVC.Ajax.Request = function(url,options){
 		
 		this.transport.open(this.options.method, this.url);
 		this.setRequestHeaders();
-		this.transport.send(Object.toQueryString(this.options.parameters));
+		this.transport.send($MVC.Object.toQueryString(this.options.parameters));
 	}
 };
 $MVC.Ajax.Request.prototype.setRequestHeaders = function() {

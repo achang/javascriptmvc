@@ -1,17 +1,6 @@
 $MVC.Controller('main',{
 	load : function(){
 		success('load');
-		
-		
-		//$E('input').mouseover();
-		//$E('input').mouseout();
-		//$E('input').click();
-		//$E('input').focus();
-		//$E('input').blur();
-		//$E('input').mousemove();
-		//$E('input').mousedown();
-		//$E('input').mouseup();
-		
 	},
 	resize : function(){
 		success('resize')

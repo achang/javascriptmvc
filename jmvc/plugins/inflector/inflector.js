@@ -64,18 +64,6 @@ $MVC.Inflector = {
     "equipment"
     ]
   },
-  ordinalize: function(number) {
-    if (11 <= parseInt(number) % 100 && parseInt(number) % 100 <= 13) {
-      return number + "th";
-    } else {
-      switch (parseInt(number) % 10) {
-        case  1: return number + "st";
-        case  2: return number + "nd";
-        case  3: return number + "rd";
-        default: return number + "th";
-      }
-    }
-  },
   pluralize: function(word) {
     for (var i = 0; i < $MVC.Inflector.Inflections.uncountable.length; i++) {
       var uncountable = $MVC.Inflector.Inflections.uncountable[i];
@@ -122,29 +110,25 @@ $MVC.Inflector = {
   }
 };
 
-function ordinalize(number) {
-  return $MVC.Inflector.ordinalize(number);
-};
 
-Object.extend(String.prototype, {
-  pluralize: function(count, plural) {
+$MVC.Native.extend('String', {
+  pluralize: function(string, count, plural) {
     if (typeof count == 'undefined') {
-      return $MVC.Inflector.pluralize(this);
+      return $MVC.Inflector.pluralize(string);
     } else {
-      return count + ' ' + (1 == parseInt(count) ? this : plural || $MVC.Inflector.pluralize(this));
+      return count + ' ' + (1 == parseInt(count) ? string : plural || $MVC.Inflector.pluralize(string));
     }
   },
-  singularize: function(count) {
+  singularize: function(string, count) {
     if (typeof count == 'undefined') {
-      return $MVC.Inflector.singularize(this);
+      return $MVC.Inflector.singularize(string);
     } else {
-      return count + " " + $MVC.Inflector.singularize(this);
+      return count + " " + $MVC.Inflector.singularize(string);
     }
   },
-  is_singular: function(){
-    if(this.singularize() == null && this)
+  is_singular: function(string){
+    if($MVC.String.singularize(string) == null && string)
         return true;
     return false;
   }
 });
-String.prototype.isSingular = String.prototype.is_singular  //copy for people who might still use this

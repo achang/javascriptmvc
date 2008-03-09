@@ -12,6 +12,7 @@ $MVC.RemoteModel = function(model, url, functions){
 	newmodel.prototype.className = className;
 	newmodel.prototype.klass = newmodel;
 	newmodel.controller_name = className;
+	newmodel.plural_controller_name = $MVC.String.pluralize(className);
 	newmodel.url = url;
 	if(typeof url == 'string'){
 		newmodel.url = url;
@@ -45,7 +46,7 @@ $MVC.RemoteModel.class_functions = {
 			callback(newObjects);
 		};
 		params['_method'] = 'GET';
-		include(this.url+'/'+this.controller_name.pluralize()+'.json?'+Object.toQueryString(params)+'&'+Math.random());
+		include(this.url+'/'+this.plural_controller_name+'.json?'+$MVC.Object.toQueryString(params)+'&'+Math.random());
 	},
 	create : function(params, callback) {
 		this.add_standard_params(params, 'create');
@@ -54,14 +55,14 @@ $MVC.RemoteModel.class_functions = {
 		
 		if(!callback) callback = (function(){});
 		
-		var tll = $MVC.RemoteModel.top_level_length(params, this.url+'/'+this.controller_name.pluralize()+'.json?');
+		var tll = $MVC.RemoteModel.top_level_length(params, this.url+'/'+this.plural_controller_name+'.json?');
 		var result = $MVC.RemoteModel.seperate(params[this.controller_name], tll,this.controller_name );
 		
 		var postpone_params = result.postpone;
 		var send_params = result.send;
 		params['_method'] = 'POST';
 		
-		var url = this.url+'/'+this.controller_name.pluralize()+'.json?';
+		var url = this.url+'/'+this.plural_controller_name+'.json?';
 		
 		if(result.send_in_parts){
 			klass.createCallback = function(callback_params){
@@ -71,17 +72,19 @@ $MVC.RemoteModel.class_functions = {
 			};
 			params[this.controller_name] = send_params;
 			params['_mutlirequest'] = 'true';
-			include(url+Object.toQueryString(params));
+			include(url+$MVC.Object.toQueryString(params));
 		}else{
 			klass.createCallback = function(callback_params){
 				if(callback_params[className]){
-					callback(new klass(callback_params[className]));
+					var inst = new klass(callback_params[className]);
+					inst.add_errors(callback_params.errors);
+					callback(inst);
 				}else{
 					callback(new klass(callback_params));
 				}
 			};
 			params['_mutlirequest'] = null;
-			include(url+Object.toQueryString(params));
+			include(url+$MVC.Object.toQueryString(params));
 		}
 	},
 	add_standard_params : function(params, callback_name){
@@ -102,9 +105,10 @@ Object.extend($MVC.RemoteModel.functions.prototype, {
 				if(thing != 'created_at'){
 					this[thing] = this.attributes[thing];
 				}else
-					this[thing] = Date.parse( this.attributes[thing]);
+					this[thing] = $MVC.Date.parse( this.attributes[thing]);
 			}
 		}
+		this.errors = [];
 	},
 	save : function(callback){
 		if(this.id){
@@ -116,7 +120,7 @@ Object.extend($MVC.RemoteModel.functions.prototype, {
 		}
 	},
 	add_errors : function(errors){
-		this.errors = errors ? errors : [];
+		this.errors = errors;
 		if(errors){
 			for(var i=0; i< errors.length; i++){
 				var error = errors[i];

@@ -11,14 +11,14 @@ $MVC.Controller.functions.prototype.render = function(options) {
         }
         else {
             if(options.action) {
-				var url_part =  options.action.include('/') ? 
+				var url_part =  $MVC.String.include(options.action,'/') ? 
 									options.action.split('/').join('/_') : 
 									controller_name+'/'+options.action;
 				var url = 'app/views/'+url_part+'.ejs';
             }
 			else if(options.partial) {
                 
-				var url_part = options.partial.include('/') ? 
+				var url_part = $MVC.String.include(options.action,'/') ? 
 									options.partial.split('/').join('/_') : 
 									controller_name+'/_'+options.partial;		
 				var url = 'app/views/'+url_part+'.ejs';
@@ -42,7 +42,7 @@ $MVC.Controller.functions.prototype.render = function(options) {
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];
 		var element = null;
 		for(var l =0; l < locations.length; l++){
-			if( typeof  options[locations[l]] == 'string' ) options[locations[l]] = $E(options[locations[l]]);
+			if( typeof  options[locations[l]] == 'string' ) options[locations[l]] = document.getElementById(options[locations[l]]);
 			
 			if(options[locations[l]]) element = options[locations[l]];
 		}

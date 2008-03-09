@@ -57,7 +57,7 @@ Object.extend(Jester.Resource, {
     };
     options              = Object.extend(default_options, options);
     options.format       = options.format.toLowerCase();
-    options.plural       = options.singular.pluralize(options.plural);
+    options.plural       = $MVC.String.pluralize(options.singular,options.plural);
     options.singular_xml = options.singular.replace(/_/g, "-");
     options.plural_xml   = options.plural.replace(/_/g, "-");
     options.remote       = false;
@@ -228,7 +228,7 @@ Object.extend(Jester.Resource, {
       if (!base || base._properties.length == 0) return null;
 
       // even if the ID didn't come back, we obviously knew the ID to search with, so set it
-      if (!base._properties.include("id")) base._setAttribute("id", parseInt(id));
+      if (!$MVC.String.include(base._properties,"id")) base._setAttribute("id", parseInt(id));
 
       return base;
     });
@@ -348,7 +348,7 @@ Object.extend(Jester.Resource, {
     	params.method = method;
 	}
     var url = this._interpolate(this._prefix + this._urls[action], params);
-	var qs = Object.toQueryString(params);
+	var qs = $MVC.Object.toQueryString(params);
     return url + (params && qs != '' ? "?" + qs : "");
   },
   
@@ -442,7 +442,7 @@ Object.extend(Jester.Resource, {
         if (relation[singular] && typeof(relation[singular]) == "object" && i == 1) {
           var value = [];
           var plural = attr;
-          var name = singular.camelize().capitalize();
+          var name = $MVC.String.camelize(singular);
           
           // force array
           if (!(elements[plural][singular].length > 0))
@@ -462,7 +462,7 @@ Object.extend(Jester.Resource, {
         // has_one or belongs_to
         else {
           singular = attr;
-          var name = singular.capitalize();
+          var name = $MVC.String.camelize(capitalize);
           
           // if the association hasn't been modeled, do a default modeling here
           // hosted object's prefix and format are inherited, singular is set from the XML
@@ -807,13 +807,13 @@ Object.extend(Jester.Resource.prototype, {
       
   _setProperty : function(property, value) {  
     this[property] = value;
-    if (!(this._properties.include(property)))
+    if (!($MVC.Array.include(this._properties,property)))
       this._properties.push(property);  
   },
   
   _setAssociation : function(association, value) {
     this[association] = value;
-    if (!(this._associations.include(association)))
+    if (!($MVC.Array.include(this._associations,association)))
       this._associations.push(association);
   },
   

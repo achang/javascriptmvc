@@ -1,4 +1,3 @@
-$MVC.String = function(){};
 
 if(typeof Prototype != 'undefined'){
 	include('prototype_helpers')

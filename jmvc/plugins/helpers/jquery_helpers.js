@@ -1,12 +1,12 @@
-Object.extend = jQuery.extend
+$MVC.Object.extend = jQuery.extend
 
 
-Object.toQueryString = function(object,name){
+$MVC.Object.toQueryString = function(object,name){
 	if(!object) return null;
 	if(typeof object == 'string') return object;
 	return Object.toQueryString.worker(object,name).join('&');
 };
-Object.toQueryString.worker = function(obj,name){
+$MVC.Object.toQueryString.worker = function(obj,name){
 	var parts2 = [];
 	for(var thing in obj){
 		if(obj.hasOwnProperty(thing)) {
@@ -54,62 +54,6 @@ $MVC.String.camelize = function(string){
 		return parts.join('');
 };
 
-/* Cross-Browser Split v0.1; MIT-style license
-By Steven Levithan <http://stevenlevithan.com>
-An ECMA-compliant, uniform cross-browser split method */
-( function(){
-var nativeSplit = nativeSplit || String.prototype.split;
-String.prototype.split = function (s /* separator */, limit) {
-	// If separator is not a regex, use the native split method
-	if (!(s instanceof RegExp))
-		return nativeSplit.apply(this, arguments);
-	if (limit === undefined || +limit < 0) {
-		limit = false;
-	} else {
-		limit = Math.floor(+limit);
-		if (!limit) return [];
-	}
-	var	flags = (s.global ? "g" : "") + (s.ignoreCase ? "i" : "") + (s.multiline ? "m" : ""),
-		s2 = new RegExp("^" + s.source + "$", flags),
-		output = [],
-		lastLastIndex = 0,
-		i = 0,
-		match;
-
-	if (!s.global) s = new RegExp(s.source, "g" + flags);
-
-	while ((!limit || i++ <= limit) && (match = s.exec(this))) {
-		var zeroLengthMatch = !match[0].length;
-
-		// Fix IE's infinite-loop-resistant but incorrect lastIndex
-		if (zeroLengthMatch && s.lastIndex > match.index)
-			s.lastIndex = match.index; // The same as s.lastIndex--
-
-		if (s.lastIndex > lastLastIndex) {
-			// Fix browsers whose exec methods don't consistently return undefined for non-participating capturing groups
-			if (match.length > 1) {
-				match[0].replace(s2, function () {
-					for (var j = 1; j < arguments.length - 2; j++) {
-						if (arguments[j] === undefined)
-							match[j] = undefined;
-					}
-				});
-			}
-
-			output = output.concat(this.slice(lastLastIndex, match.index), (match.index === this.length ? [] : match.slice(1)));
-			lastLastIndex = s.lastIndex;
-		}
-
-		if (zeroLengthMatch)
-			s.lastIndex++;
-	}
-
-	return (lastLastIndex === this.length) ?
-		(s.test("") ? output : output.concat("")) :
-		(limit      ? output : output.concat(this.slice(lastLastIndex)));
-};
-})();
-
 
 Date.month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -127,34 +71,6 @@ Object.extend(Date.prototype, {
 	    return m[1] + 1;
 	}
 });
-
-//steal old date parse
-(function(){
-	var parse = Date.parse;
-	Date.parse = function(data) {
-		if(typeof data != "string") return null;
-		var f1 = /\d{4}-\d{1,2}-\d{1,2}/, 
-		    f2 = /\d{4}\/\d{1,2}\/\d{1,2}/, 
-			f3 = /\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}/;
-		
-		if(data.match(f3)) {
-			var timeArr = data.match(f3)[0].split(' ')[1].split(':');
-			var dateArr = data.match(f3)[0].split(' ')[0].split('-');
-
-			return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10),
-				parseInt(timeArr[0], 10), parseInt(timeArr[1], 10), parseInt(timeArr[2], 10)) );
-		}
-		if(data.match(f1)) {
-			var dateArr = data.match(date_format_1)[0].split('-');
-			return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10)) );
-		}
-		if(data.match(f2)) {
-			var dateArr = data.match(date_format_2)[0].split('/');
-			return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10)) );
-		}
-		return parse(data);
-	};
-})();
 
 
 //Array helpers

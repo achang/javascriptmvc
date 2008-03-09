@@ -1,14 +1,13 @@
-//I want this to include the standard set on its own ...
-include('../helpers/setup', 
-		'../inflector/inflector'
-		);
-	
 if(typeof Prototype == 'undefined') {
-	include("../event/standard");
-	include("../ajax/ajax");
+	include("../helpers/standard_helpers",
+			"../inflector/inflector",
+			"../event/standard",
+			"../ajax/ajax");
 }else{
 	$MVC.Event = Event;
-	include("../ajax/prototype_ajax");
+	include("../helpers/prototype_helpers",
+			"../inflector/inflector",
+			"../ajax/prototype_ajax");
 }
 if(include.get_env() == 'test')
 	include('../ajax/testing');

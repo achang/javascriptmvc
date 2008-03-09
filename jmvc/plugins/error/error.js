@@ -26,5 +26,20 @@ $MVC.error_handler = function(msg, url, l){
 	ApplicationError.create(params);
 	return false;
 };
+if($MVC.Controller){
+	$MVC.Controller._dispatch_action = function(instance, action_name, params){
+		try{
+			return instance[action_name](params);
+		}catch(e){
+			e['Controller'] = instance.klass.className;
+			e['Action'] = action_name;
+			e['Browser'] = navigator.userAgent;
+			e['Page'] = location.href;
+			e['HTML Content'] = document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     ");
+			var content = ApplicationError.generate_content(e);
+			new ApplicationError({subject: 'Dispatch Error: '+e.toString(), content: content}).save();
+		}
+	};
+}
 
 window.onerror = $MVC.error_handler;
