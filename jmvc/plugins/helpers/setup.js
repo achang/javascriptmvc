@@ -1,8 +1,7 @@
 
-if(typeof Prototype != 'undefined'){
-	include('prototype_helpers')
-}else if(typeof jQuery != 'undefined'){
-	include('jquery_helpers')
-}else{
-	include('standard_helpers')
-}
+if(typeof Prototype != 'undefined')
+	include({path: 'prototype_helpers.js', shrink_variables: false})
+else if(typeof jQuery != 'undefined')
+	include({path: 'jquery_helpers.js', shrink_variables: false})
+else
+	include({path: 'standard_helpers.js', shrink_variables: false})

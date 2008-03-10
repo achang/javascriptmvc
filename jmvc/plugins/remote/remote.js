@@ -96,7 +96,7 @@ $MVC.RemoteModel.class_functions = {
 };
 
 
-Object.extend($MVC.RemoteModel.functions.prototype, {
+$MVC.Object.extend($MVC.RemoteModel.functions.prototype, {
 	initialize : function(attributes){
 		this.attributes = attributes ? attributes : {};
 
@@ -120,6 +120,7 @@ Object.extend($MVC.RemoteModel.functions.prototype, {
 		}
 	},
 	add_errors : function(errors){
+		if(!errors) return;
 		this.errors = errors;
 		if(errors){
 			for(var i=0; i< errors.length; i++){

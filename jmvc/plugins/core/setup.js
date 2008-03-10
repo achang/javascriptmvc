@@ -1,11 +1,11 @@
 if(typeof Prototype == 'undefined') {
-	include("../helpers/standard_helpers",
+	include({path: '../helpers/standard_helpers.js', shrink_variables: false},
 			"../inflector/inflector",
 			"../event/standard",
 			"../ajax/ajax");
 }else{
 	$MVC.Event = Event;
-	include("../helpers/prototype_helpers",
+	include({path: '../helpers/prototype_helpers.js', shrink_variables: false},
 			"../inflector/inflector",
 			"../ajax/prototype_ajax");
 }
