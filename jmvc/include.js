@@ -11,6 +11,8 @@
 	if(typeof include != 'undefined'  && typeof include.end != 'undefined'){
 		include.end();
 		return;
+	} else if(typeof include != 'undefined' && typeof include.end == 'undefined') {
+		throw("You have defined include either as a function or an id of an element, please change it.")
 	}
 	//Saves root of the page that include is loaded on;
 	var PAGE_ROOT = window.location.href;
