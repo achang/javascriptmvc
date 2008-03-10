@@ -199,9 +199,7 @@ $MVC.Controller.Action = function(action_name, func ,controller){
 	this.name = action_name;
 	this.func = func;
 	this.controller = controller;
-	if(this.name.search(/change|click|contextmenu|dblclick|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload/) == -1 ) {
-		return;		
-	}
+	if(! $MVC.Array.include($MVC.Controller.Action.actions, this.name) ) return;		
 	this.parse_name();
 	if(this.className() == 'main') return this.main_controller();
 	this.singular = $MVC.String.is_singular(this.className());
@@ -212,6 +210,8 @@ $MVC.Controller.Action = function(action_name, func ,controller){
 	if(this.event_type == 'submit' && $MVC.Browser.IE) return this.submit_for_ie();
 	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 };
+
+$MVC.Controller.Action.actions = ['change','click','contextmenu','dblclick','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload'];
 
 $MVC.Controller.Action.prototype = {
 	registered_event : function(){
