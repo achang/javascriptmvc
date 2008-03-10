@@ -35,7 +35,7 @@ $MVC.Element.extend = function(element) {
 
 $MVC.Object.extend($MVC.Element, {
 	insert: function(element, insertions) {
-		element = $E(element);
+		element = $MVC.Element(element);
 		if(typeof insertions == 'string'){insertions = {bottom: insertions};};
 		var content, insert, tagName, childNodes;
 		for (position in insertions) {
