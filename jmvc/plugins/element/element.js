@@ -1,6 +1,6 @@
 $MVC.Element = function(element){
-	if(typeof id == 'string')
-		element = document.getElementById(id);
+	if(typeof element == 'string')
+		element = document.getElementById(element);
 	return element;//Element.extend(element);
 };
 /*
@@ -47,8 +47,7 @@ $MVC.Object.extend($MVC.Element, {
 		    insert(element, content);
 		    continue;
 		  }
-		  tagName = ((position == 'before' || position == 'after')
-		    ? element.parentNode : element).tagName.toUpperCase();
+		  tagName = ((position == 'before' || position == 'after') ? element.parentNode : element).tagName.toUpperCase();
 		  childNodes = $MVC.Element._getContentFromAnonymousElement(tagName, content);
 		  if (position == 'top' || position == 'after') childNodes.reverse();
 		  for(var c = 0; c < childNodes.length; c++){
