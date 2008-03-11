@@ -133,6 +133,12 @@ Object.extend($MVC.Controller , {
 			var params = new $MVC.Controller.Params({event: event, element: element, action: f_name, controller: controller_name   });
 			return $MVC.Controller.dispatch(controller_name, f_name, params);
 		}
+	},
+	callback: function(controller_name, action_name){
+		return function(){
+			var params = new $MVC.Controller.Params(arguments);
+			return $MVC.Controller.dispatch(controller_name, action_name, params);
+		}
 	}
 });
 
