@@ -20,7 +20,7 @@ $MVC.Native.extend = function(class_name, source){
 		}
 	}
 };
-
+$MVC.Object = {};
 //Object helpers
 $MVC.Object.extend = Object.extend;
 //these are really only for forms
@@ -77,9 +77,10 @@ $MVC.Object.extend($MVC.String,{
 	}
 });
 
-
-$MVC.Array.from = Array.from
+$MVC.Array = {};
+$MVC.Array.from = Array.from;
 $MVC.Array.include = function(array, thing){return array.include(thing);}
+$MVC.Function = {};
 $MVC.Function.bind = function(func){
 	var args = $MVC.Array.from(arguments);
 	args.shift();args.shift();
@@ -87,5 +88,5 @@ $MVC.Function.bind = function(func){
 	return function() {
 		return __method.apply(object, args.concat($MVC.Array.from(arguments) )  );
 	}
-}
+};
 $MVC.Browser = Prototype.Browser;
