@@ -93,5 +93,5 @@ $MVC.Object.extend($MVC.Element, {
 	}
 });
 if(!$MVC._no_conflict){
-	//$E = Element = $MVC.Element;
+	$E = Element = $MVC.Element;
 }

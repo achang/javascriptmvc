@@ -327,3 +327,6 @@ $MVC.Controller.Action.prototype = {
 		return null;
 	}
 };
+if(!$MVC._no_conflict){
+	Controller = $MVC.Controller;
+}

@@ -454,4 +454,6 @@ $MVC.View.process_include = function(script){
 				'", function(_CONTEXT,_VIEW) { try { with(_VIEW) { with (_CONTEXT) {'+view.out()+" return ___ViewO;}}}catch(e){e.lineNumber=null;throw e;}})";
 };
 
-
+if(!$MVC._no_conflict){
+	View = $MVC.View;
+}
