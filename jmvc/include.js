@@ -33,7 +33,7 @@
 		cwd = '', 
 		includes=[], 
 		current_includes=[],
-		total = []; //used to store text
+		total = [], script_options= null; //used to store text
 
 	var is_absolute = function(path){
 		return is_local_absolute(path) || is_domain_absolute(path);
@@ -75,7 +75,12 @@
 		if(src.match(INCLUDE_regex)){
 			INCLUDE_PATH = src;
 			if(!is_absolute(src) ) src = join(get_href(window.location.href), src);
-			INCLUDE_ROOT = src.replace(INCLUDE_regex,'');
+			if(src.indexOf('?') == -1)
+				INCLUDE_ROOT = src.replace(INCLUDE_regex,'');
+			else{ //set to call setup and load app file
+				INCLUDE_ROOT = src.split('?')[0].replace(INCLUDE_regex,'');
+				var script_options = src.split('?')[1].split(',')
+			}
 		}
 	}
 	var add_with_defaults = function(newInclude){
@@ -322,12 +327,6 @@
 	 * <p>Saves the user defined app_init_func to be executed later (once $MVC files are included).</p>
 	 */
 	$MVC.Initializer = function(user_initialize_function) {
-		if(include.get_path().lastIndexOf('/') == -1) {
-			$MVC.set_application_root('');
-		} else {
-			var config_folder = include.get_path();
-			$MVC.set_application_root(include.get_path().substring(0, config_folder.lastIndexOf('/')));
-		}
 		$MVC.user_initialize_function = user_initialize_function;
 		include($MVC.root()+'/framework');
 	};
@@ -342,5 +341,15 @@
 	include.plugins = function(){
 		for(var i=0; i < arguments.length; i++) include.plugin(arguments[i]);
 	};
+	
+	if(script_options){
+		var app_root = INCLUDE_ROOT.replace('jmvc/','')
+		$MVC.set_application_root(app_root);
+		if(script_options.length > 1){
+			include.setup({env: script_options[1], production: app_root+'apps/'+script_options[0]+'_production'})
+		}
+		include(app_root+'apps/'+script_options[0]);
+		include.opera();
+	}
 	
 })();
