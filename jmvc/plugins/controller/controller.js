@@ -136,8 +136,7 @@ Object.extend($MVC.Controller , {
 	},
 	callback: function(controller_name, action_name){
 		return function(){
-			var params = new $MVC.Controller.Params(arguments);
-			return $MVC.Controller.dispatch(controller_name, action_name, params);
+			return $MVC.Controller.dispatch(controller_name, action_name);
 		}
 	}
 });
