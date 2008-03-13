@@ -117,12 +117,11 @@ $MVC.Object.extend(ApplicationError,{
 	}
 });
 
-
-
-
-
-
 $MVC.error_handler = function(msg, url, l){
+	var e = msg;
+	msg = (typeof msg == 'string'? msg : (e.message? e.message : e.name));
+	url = (typeof url == 'string' ? url : (e.fileName? e.fileName : (e.sourceURL? e.sourceURL : url)));
+	l = (typeof l == 'number' || typeof l == 'string' ? l : (e.lineNumber? e.lineNumber : (e.line ? e.line : l)));
 	var error = {
 		'Error Message' : msg,
 		'File' :  url,
@@ -151,6 +150,7 @@ if($MVC.Controller){
 			e['Page'] = location.href;
 			e['HTML Content'] = document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     ");
 			e.subject = 'Dispatch Error: '+e.toString();
+			e.subject = (e.subject.length > 100? e.subject.substring(0,100)+'...' : e.subject);
 			ApplicationError.create_dom(e);
 		}
 	};
