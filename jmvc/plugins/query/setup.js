@@ -4,7 +4,7 @@
  * 	$$.descendant
  */
 if(typeof Prototype != 'undefined') {
-	$MVC.CSSQuery = $$
+	$MVC.CSSQuery = $$;
 	$MVC.CSSQuery.descendant = function(element, selector) {
 		return element.getElementsBySelector(selector);
 	};

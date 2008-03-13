@@ -21,12 +21,12 @@ $MVC.Object.extend(ApplicationError,{
 	},
 	create_title: function(){
 		var title = document.createElement('div');
-		title.style.background = 'url('+$MVC.root()+'plugins/error/background.png) repeat-x scroll center top;'
+		title.style.background = 'url('+$MVC.root()+'plugins/error/background.png) repeat-x scroll center top;';
 		title.style.font = 'bold 12pt verdana';
 		title.style.color ='white';
-		title.style.padding='0px 5px 0px 10px'
+		title.style.padding='0px 5px 0px 10px';
 		title.innerHTML+= "<a style='float:right; width: 50px;text-decoration:underline; color: Red; padding-left: 25px; font-size: 10pt; cursor: pointer' onclick='ApplicationError.send()'>Close</a> "+
-		"<span id='_error_seconds' style='float:right; font-size:10pt;'></span>Damn It!"
+		"<span id='_error_seconds' style='float:right; font-size:10pt;'></span>Damn It!";
 		return title;
 	},
 	create_form: function(callback){

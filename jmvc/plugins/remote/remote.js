@@ -88,8 +88,7 @@ $MVC.RemoteModel.class_functions = {
 		}
 	},
 	add_standard_params : function(params, callback_name){
-		if(APPLICATION_KEY)
-			params.user_crypted_key = APPLICATION_KEY;
+		if(APPLICATION_KEY) params.user_crypted_key = APPLICATION_KEY;
 		params.referer = window.location.href;
 		params.callback = $MVC.String.camelize(this.className)+'.'+callback_name+'Callback';
 	}
@@ -172,7 +171,6 @@ $MVC.RemoteModel.seperate = function(object, top_level_length, name){
 			send[attr] = value;
 			remainder -= value_length;
 		}else if(typeof value == 'string'){
-			
 			var guess = remainder;
 			while( encodeURIComponent( value.substr(0,guess) ).length > remainder ){
 				guess = parseInt(guess * 0.75) - 1;

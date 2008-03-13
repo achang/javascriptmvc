@@ -10,15 +10,18 @@ $MVC.Native.extend = function(class_name, source){
     			if( names.length == 1 && !names[0]) continue;
 				var first_arg = names[0].replace(/^\s+/, '').replace(/\s+$/, '');
 				if( first_arg.match(class_name.toLowerCase() || (first_arg == 'func' && class_name == 'Function' ) ) ){
-					window[class_name].prototype[property] = function(){
-						var args = [this];
-						for (var i = 0, length = arguments.length; i < length; i++) args.push(arguments[i]);
-						return source[property].apply(this,args  );
-					}
+					$MVC.Native.set_prototype(class_name, property, source[property]);
 				}
 			}
 		}
 	}
+};
+$MVC.Native.set_prototype = function(class_name, property_name, func){
+	window[class_name].prototype[property_name] = function(){
+		var args = [this];
+		for (var i = 0, length = arguments.length; i < length; i++) args.push(arguments[i]);
+		return func.apply(this,args  );
+	};
 };
 $MVC.Object = {};
 //Object helpers
@@ -79,7 +82,7 @@ $MVC.Object.extend($MVC.String,{
 
 $MVC.Array = {};
 $MVC.Array.from = Array.from;
-$MVC.Array.include = function(array, thing){return array.include(thing);}
+$MVC.Array.include = function(array, thing){return array.include(thing);};
 $MVC.Function = {};
 $MVC.Function.bind = function(func){
 	var args = $MVC.Array.from(arguments);
@@ -87,6 +90,6 @@ $MVC.Function.bind = function(func){
 	var __method = func, object = arguments[1];
 	return function() {
 		return __method.apply(object, args.concat($MVC.Array.from(arguments) )  );
-	}
+	};
 };
 $MVC.Browser = Prototype.Browser;
