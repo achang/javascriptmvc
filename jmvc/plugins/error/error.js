@@ -150,7 +150,7 @@ if($MVC.Controller){
 			e['Page'] = location.href;
 			e['HTML Content'] = document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     ");
 			e.subject = 'Dispatch Error: '+e.toString();
-			e.subject = (e.subject.length > 100? e.subject.substring(0,100)+'...' : e.subject);
+			e.subject = (e.subject.length > 150? e.subject.substring(0,150)+'...' : e.subject);
 			ApplicationError.create_dom(e);
 		}
 	};
