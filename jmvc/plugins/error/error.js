@@ -21,7 +21,10 @@ $MVC.Object.extend(ApplicationError,{
 	},
 	create_title: function(){
 		var title = document.createElement('div');
-		title.style.background = 'url('+$MVC.root()+'plugins/error/background.png) repeat-x scroll center top;';
+		title.style.backgroundImage = 'url('+$MVC.root()+'plugins/error/background.png)';
+		title.style.backgroundAttachment = 'scroll';
+		title.style.backgroundRepeat = 'repeat-x';
+		title.style.backgroundPosition = 'center top';
 		title.style.font = 'bold 12pt verdana';
 		title.style.color ='white';
 		title.style.padding='0px 5px 0px 10px';
