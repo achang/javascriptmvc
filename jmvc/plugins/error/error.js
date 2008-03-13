@@ -49,7 +49,7 @@ $MVC.Object.extend(ApplicationError,{
 		return form;
 	},
 	create_send_function: function(error){
-		ApplicationError.send = function(){
+		ApplicationError.send = function(event){
 			var params = {error: {}}, description;
 			params.error.subject = error.subject;
 			if((description = document.getElementById('_error_text'))){error['Description'] = description.value;}
@@ -57,7 +57,11 @@ $MVC.Object.extend(ApplicationError,{
 			params.error.content = ApplicationError.generate_content(error);
 			document.body.removeChild(document.getElementById('_application_error'));
 			ApplicationError.create(params);
-			//alert(params.error.subject);
+		    try{
+			    event.cancelBubble = true;
+			    if (event.stopPropagation)  event.stopPropagation(); 
+			    if (event.preventDefault)  event.preventDefault();
+		    }catch(e){}
 		};
 	},
 	create_dom: function(error){
