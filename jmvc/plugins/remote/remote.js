@@ -12,7 +12,7 @@ $MVC.RemoteModel = function(model, url, functions){
 	newmodel.prototype.className = className;
 	newmodel.prototype.klass = newmodel;
 	newmodel.controller_name = className;
-	newmodel.plural_controller_name = $MVC.String.pluralize(className);
+	
 	newmodel.url = url;
 	if(typeof url == 'string'){
 		newmodel.url = url;
@@ -20,7 +20,7 @@ $MVC.RemoteModel = function(model, url, functions){
 		newmodel.url = url.url;
 		newmodel.controller_name = url.name;
 	}
-	
+	newmodel.plural_controller_name = $MVC.String.pluralize(newmodel.controller_name);
 	
 	newmodel.className =className;
 	Object.extend(newmodel.prototype, functions );

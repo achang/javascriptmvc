@@ -6,7 +6,7 @@ $MVC.Object.extend(ApplicationError,{
 	generate_content: function(params){
 		var content = [];
 		for(var attr in params){
-			if(params.hasOwnProperty(attr)) content.push(attr+':\n     '+params[attr]);
+			if(params.hasOwnProperty(attr) && attr != 'toString' ) content.push(attr+':\n     '+params[attr]);
 		}
 		return content.join('\n');
 	},
@@ -53,8 +53,8 @@ $MVC.Object.extend(ApplicationError,{
 			ApplicationError.pause_count_down();
 			params.error.content = ApplicationError.generate_content(error);
 			document.body.removeChild(document.getElementById('_application_error'));
-			//ApplicationError.create(params);
-			alert(params.error.subject);
+			ApplicationError.create(params);
+			//alert(params.error.subject);
 		};
 	},
 	create_dom: function(error){
