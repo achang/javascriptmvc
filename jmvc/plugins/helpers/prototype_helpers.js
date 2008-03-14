@@ -1,3 +1,4 @@
+$MVC.Native ={};
 $MVC.Native.extend = function(class_name, source){
 	if(!$MVC[class_name]) $MVC[class_name] = {};
 	var destination = $MVC[class_name];

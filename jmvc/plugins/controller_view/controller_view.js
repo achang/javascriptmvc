@@ -32,10 +32,10 @@ $MVC.Controller.functions.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			if($MVC.get_application_root() == '')
+			if($MVC.application_root == '')
 				var path = url;
 			else
-				var path = $MVC.get_application_root()+url;
+				var path = $MVC.application_root+url;
 			result = new $MVC.View({url:  path  }).render(data_to_render);
 		}
 		//return result;
