@@ -21,7 +21,8 @@ $MVC.Object.extend(ApplicationError,{
 	},
 	create_title: function(){
 		var title = document.createElement('div');
-		title.style.backgroundImage = 'url('+$MVC.root()+'plugins/error/background.png)';
+		title.style.background = 'url('+$MVC.root+'plugins/error/background.png) repeat-x scroll center top;';
+		title.style.backgroundImage = 'url('+$MVC.root+'plugins/error/background.png)';
 		title.style.backgroundAttachment = 'scroll';
 		title.style.backgroundRepeat = 'repeat-x';
 		title.style.backgroundPosition = 'center top';
@@ -39,7 +40,7 @@ $MVC.Object.extend(ApplicationError,{
 		form.onsubmit = callback;
 		form.innerHTML ="<div style='float: left; width: 300px;margin-left:"+leftmargin+"px;'>Something just went wrong.  Please describe your most recent actions and let us know what happenned. We'll fix the problem.</div>"+
 		    "<input type='submit' value='Send' style='font-size: 12pt; float:right; margin: 17px 5px 0px 0px; width:60px;padding:5px;'/>"+
-			"<textarea style='width: 335px; color: gray;' rows='"+($MVC.Browser.IE || $MVC.Browser.Opera || $MVC.Browser.WebKit ? 3 : 2)+"' name='description' id='_error_text' "+
+			"<textarea style='width: 335px; color: gray;' rows='"+($MVC.Browser.IE ? 3 : 2)+"' name='description' id='_error_text' "+
 			"onfocus='ApplicationError.text_area_focus();' "+
 			"onblur='ApplicationError.text_area_blur();' >"+this.textarea_text+"</textarea>";
 		form.style.padding = '0px';
