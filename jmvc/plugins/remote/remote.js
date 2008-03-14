@@ -23,8 +23,8 @@ $MVC.RemoteModel = function(model, url, functions){
 	newmodel.plural_controller_name = $MVC.String.pluralize(newmodel.controller_name);
 	
 	newmodel.className =className;
-	Object.extend(newmodel.prototype, functions );
-	Object.extend(newmodel, $MVC.RemoteModel.class_functions);
+	$MVC.Object.extend(newmodel.prototype, functions );
+	$MVC.Object.extend(newmodel, $MVC.RemoteModel.class_functions);
 	return newmodel;
 };
 
