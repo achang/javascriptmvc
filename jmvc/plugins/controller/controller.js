@@ -39,7 +39,7 @@ $MVC.Controller = function(model, actions){
  * $MVC.Controller prototype functions
  */
 $MVC.Controller.functions = function(){};
-Object.extend($MVC.Controller.functions.prototype, {
+$MVC.Object.extend($MVC.Controller.functions.prototype, {
 	initialize : function(){},
 	continue_to :function(action){
 		if(!action) action = this.action.name+'ing';
@@ -54,7 +54,7 @@ Object.extend($MVC.Controller.functions.prototype, {
 /**
  * $MVC.Controller class functions
  */
-Object.extend($MVC.Controller , {
+$MVC.Object.extend($MVC.Controller , {
 	klasses: [],
 	add_kill_event: function(event){
 		if(!event.kill){
