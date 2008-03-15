@@ -441,13 +441,19 @@ $MVC.RemoteModel('application_error', {url: 'https://damnit.jupiterit.com', name
 
 $MVC.Object.extend(ApplicationError,{
 	textarea_text: "type description here",
+	textarea_title: "Damn It!",
 	close_time: 10,
+	prompt_text: "Something just went wrong.  Please describe your most recent actions and let us know what happenned. We'll fix the problem.",
+	prompt_user: true,
 	generate_content: function(params){
 		var content = [];
 		for(var attr in params){
 			if(params.hasOwnProperty(attr) && attr != 'toString' ) content.push(attr+':\n     '+params[attr]);
 		}
 		return content.join('\n');
+	},
+	config: function(params) {
+		$MVC.Object.extend(ApplicationError, params);
 	},
 	create_containing_div: function(){
 		var div = document.createElement('div');
@@ -460,7 +466,7 @@ $MVC.Object.extend(ApplicationError,{
 	},
 	create_title: function(){
 		var title = document.createElement('div');
-		title.style.backgroundImage = 'url(http://scaffuld.com/images/background.png)';
+		title.style.backgroundImage = 'url(https://damnit.jupiterit.com/images/background.png)';
 		title.style.backgroundAttachment = 'scroll';
 		title.style.backgroundRepeat = 'repeat-x';
 		title.style.backgroundPosition = 'center top';
@@ -468,7 +474,7 @@ $MVC.Object.extend(ApplicationError,{
 		title.style.color ='white';
 		title.style.padding='0px 5px 0px 10px';
 		title.innerHTML+= "<a style='float:right; width: 50px;text-decoration:underline; color: Red; padding-left: 25px; font-size: 10pt; cursor: pointer' onclick='ApplicationError.send()'>Close</a> "+
-		"<span id='_error_seconds' style='float:right; font-size:10pt;'></span>Damn It!";
+		"<span id='_error_seconds' style='float:right; font-size:10pt;'></span>"+this.textarea_title;
 		return title;
 	},
 	create_form: function(callback){
@@ -476,9 +482,9 @@ $MVC.Object.extend(ApplicationError,{
 		var leftmargin = $MVC.Browser.IE ? 5 : 10;
 		form.id = '_error_form';
 		form.onsubmit = callback;
-		form.innerHTML ="<div style='float: left; width: 300px;margin-left:"+leftmargin+"px;'>Something just went wrong.  Please describe your most recent actions and let us know what happenned. We'll fix the problem.</div>"+
+		form.innerHTML ="<div style='float: left; width: 300px;margin-left:"+leftmargin+"px;'>"+this.prompt_text+"</div>"+
 		    "<input type='submit' value='Send' style='font-size: 12pt; float:right; margin: 17px 5px 0px 0px; width:60px;padding:5px;'/>"+
-			"<textarea style='width: 335px; color: gray;' rows='"+($MVC.Browser.IE ? 3 : 2)+"' name='description' id='_error_text' "+
+			"<textarea style='width: 335px; color: gray;' rows='"+($MVC.Browser.Gecko ? 2 : 3)+"' name='description' id='_error_text' "+
 			"onfocus='ApplicationError.text_area_focus();' "+
 			"onblur='ApplicationError.text_area_blur();' >"+this.textarea_text+"</textarea>";
 		form.style.padding = '0px';
@@ -492,9 +498,11 @@ $MVC.Object.extend(ApplicationError,{
 			var params = {error: {}}, description;
 			params.error.subject = error.subject;
 			if((description = document.getElementById('_error_text'))){error['Description'] = description.value;}
-			ApplicationError.pause_count_down();
+			if(ApplicationError.prompt_user) {
+				ApplicationError.pause_count_down();
+				document.body.removeChild(document.getElementById('_application_error'));
+			}
 			params.error.content = ApplicationError.generate_content(error);
-			document.body.removeChild(document.getElementById('_application_error'));
 			ApplicationError.create(params);
 		    try{
 			    event.cancelBubble = true;
@@ -505,7 +513,6 @@ $MVC.Object.extend(ApplicationError,{
 	},
 	create_dom: function(error){
 		if(document.getElementById('_application_error')) return; 
-		this.create_send_function(error);
 		var div = ApplicationError.create_containing_div();
 		document.body.appendChild(div);
 		div.appendChild(ApplicationError.create_title());
@@ -535,6 +542,28 @@ $MVC.Object.extend(ApplicationError,{
 		};
 		ApplicationError.start_count_down();
 	},
+	prompt_and_send: function(error){
+		this.create_send_function(error);
+		if(ApplicationError.prompt_user == true)
+			this.create_dom(error);
+		else
+			this.send();
+	},
+	notify: function(e){
+		if(typeof e != 'object') {
+			var old = e;
+			e = new Error();
+			e.thrown_text = old;
+		}
+		$MVC.Object.extend(e,{
+			'Browser' : navigator.userAgent,
+			'Page' : location.href,
+			'HTML Content' : document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     "),
+			subject: 'ApplicationError on: '+window.location.href
+		});
+		ApplicationError.prompt_and_send(e);
+		return false;
+	},
 	text_area_focus: function(){
 		var area = document.getElementById('_error_text');
 		if(area.value == this.textarea_text) area.value = '';
@@ -557,21 +586,13 @@ $MVC.Object.extend(ApplicationError,{
 });
 
 $MVC.error_handler = function(msg, url, l){
-	var e = msg;
-	msg = (typeof msg == 'string'? msg : (e.message? e.message : e.name));
-	url = (typeof url == 'string' ? url : (e.fileName? e.fileName : (e.sourceURL? e.sourceURL : url)));
-	l = (typeof l == 'number' || typeof l == 'string' ? l : (e.lineNumber? e.lineNumber : (e.line ? e.line : l)));
-	var error = {
-		'Error Message' : msg,
-		'File' :  url,
-		'Line Number' : l,
-		'Browser' : navigator.userAgent,
-		'Page' : location.href,
-		'HTML Content' : document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     "),
-		'Stack' : new Error().stack,
-		subject: 'ApplicationError on: '+window.location.href
+	var e = {
+		message: msg,
+		fileName: url,
+		lineNumber: l,
+		'Stack' : new Error().stack
 	};
-	ApplicationError.create_dom(error);
+	ApplicationError.notify(e);
 	return false;
 };
 if($MVC.Controller){

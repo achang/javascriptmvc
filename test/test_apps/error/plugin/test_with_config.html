@@ -1,0 +1,18 @@
+<html>
+	<head></head>
+	<body>
+		<h1>Testing Damnit with Configuration Changed</h1>
+		<a href='#' onclick='breakme2()'>Try/Catch, cause an error</a>
+		
+		<script type='text/javascript' src='../../../../jmvc/include.js'></script>
+		<script type='text/javascript'>
+			APPLICATION_KEY='68dee8a700d952d69350c23e67eb456648a5ceee';
+			include.setup({env: 'development'});
+			include.plugins('core','remote');
+			include('../../../../jmvc/plugins/error/error.js');
+			include('test_config.js');
+			include.opera();
+		</script>
+		
+	</body>
+</html>

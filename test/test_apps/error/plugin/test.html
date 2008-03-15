@@ -1,0 +1,21 @@
+<html>
+	<head></head>
+	<body>
+		
+		<a href='#' onclick='breakme()'>Onerror, throw a string</a>
+		<br/>
+		<a href='#' onclick='breakme2()'>Try/Catch, throw a string</a>
+		<br/>
+		<a href='#' onclick='breakme3()'>Try/Catch, cause an error</a>
+		
+		<script type='text/javascript' src='../../../../jmvc/include.js'></script>
+		<script type='text/javascript'>
+			APPLICATION_KEY='68dee8a700d952d69350c23e67eb456648a5ceee';
+			include.setup({env: 'development'});
+			include.plugins('core','remote');
+			include('../../../../jmvc/plugins/error/error.js');
+			include('test.js');
+			include.opera();
+		</script>
+	</body>
+</html>
