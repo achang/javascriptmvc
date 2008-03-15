@@ -8,12 +8,12 @@ for(var i=0; i<document.getElementsByTagName("script").length; i++) {
 
 $MVC = {};
 $MVC.insert_head = function(src){
-		var script = document.createElement('script');
-		script.type = 'text/javascript';
-		script.src= src;
-		script.charset= "UTF-8";
-		document.getElementsByTagName("head")[0].appendChild(script);
-	}
+	var script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.src= src;
+	script.charset= "UTF-8";
+	document.getElementsByTagName("head")[0].appendChild(script);
+};
 
 $MVC.Native ={};
 $MVC.Native.extend = function(class_name, source){
