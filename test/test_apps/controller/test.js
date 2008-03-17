@@ -187,6 +187,6 @@ $MVC.run_tests = function(){
 }
 
 node_path_test = function(){
-	TestsTestController.run();
+	//TestsTestController.run();
 }
 //Write something that can call event
