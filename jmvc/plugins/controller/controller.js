@@ -220,6 +220,7 @@ $MVC.Controller.Action = function(action_name, func ,controller){
 	else
 		this.set_plural_selector();
 	if(this.event_type == 'submit' && $MVC.Browser.IE) return this.submit_for_ie();
+	if(this.event_type == 'change' ) return this.change_for_ie();
 	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 };
 
@@ -274,6 +275,22 @@ $MVC.Controller.Action.prototype = {
 				if(el.nodeName.toUpperCase()!= 'INPUT') return false;
 				if(typeof Prototype != 'undefined'){ return event.keyCode == 13; }
 				return event.charCode == 13;
+			}
+		};
+	},
+	change_for_ie : function(){
+		this.controller.add_register_action(this,document.documentElement, 'click');
+		this.filters= {
+			click : function(el, event){
+				var old = el.getAttribute('_old_value')
+				if(el.nodeName.toUpperCase() == 'SELECT' && !old){
+					el.setAttribute('_old_value', el.selectedIndex)
+					return false;
+				}else if(el.nodeName.toUpperCase() == 'SELECT' && el._old_value){
+					if(old == el.selectedIndex.toString()) return false;
+					 el.setAttribute('_old_value', null)
+					 return true;
+				}
 			}
 		};
 	},
