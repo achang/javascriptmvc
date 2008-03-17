@@ -153,11 +153,11 @@ $MVC.Object.extend(ApplicationError,{
 		return error;
 	},
 	kill_event: function(event) {
-	    try{
-		    event.cancelBubble = true;
-		    if (event.stopPropagation)  event.stopPropagation(); 
-		    if (event.preventDefault)  event.preventDefault();
-	    }catch(e){}
+	    if(! event) return;
+	    event.cancelBubble = true;
+	    if (event.stopPropagation)  event.stopPropagation(); 
+	    if (event.preventDefault)  event.preventDefault();
+
 	}
 });
 
