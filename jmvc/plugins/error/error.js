@@ -65,11 +65,7 @@ $MVC.Object.extend(ApplicationError,{
 			}
 			params.error.content = ApplicationError.generate_content(error);
 			ApplicationError.create(params);
-		    try{
-			    event.cancelBubble = true;
-			    if (event.stopPropagation)  event.stopPropagation(); 
-			    if (event.preventDefault)  event.preventDefault();
-		    }catch(e){}
+			ApplicationError.kill_event(event);
 		};
 	},
 	create_dom: function(error){
@@ -112,17 +108,14 @@ $MVC.Object.extend(ApplicationError,{
 			this.send();
 	},
 	notify: function(e){
-		if(typeof e != 'object') {
-			var old = e;
-			e = new Error();
-			e.thrown_text = old;
-		}
+		e = ApplicationError.transform_error(e);
 		$MVC.Object.extend(e,{
 			'Browser' : navigator.userAgent,
 			'Page' : location.href,
-			'HTML Content' : document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     "),
-			subject: 'ApplicationError on: '+window.location.href
+			'HTML Content' : document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     ")
 		});
+		if(Error && new Error().stack) e.Stack = new Error().stack;
+		if(!e.subject) e.subject = 'ApplicationError on: '+window.location.href;
 		ApplicationError.prompt_and_send(e);
 		return false;
 	},
@@ -144,6 +137,27 @@ $MVC.Object.extend(ApplicationError,{
 		width = document.body.clientWidth;
 		cont.style.width = width+'px';
 		document.getElementById('_error_text').style.width = (width-400)+'px';
+	},
+	transform_error: function(error){
+		if(typeof error == 'string'){
+			var old = error; error = { toString: function(){return old;}};
+		}
+		if($MVC.Browser.Opera && error.message) {
+			var error_arr = error.message.match('Backtrace');
+			if(error_arr) {
+				var message = error.message;
+				error.message = message.substring(0,error_arr.index);
+				error.backtrace = message.substring(error_arr.index,message.length);
+			}
+		}
+		return error;
+	},
+	kill_event: function(event) {
+	    try{
+		    event.cancelBubble = true;
+		    if (event.stopPropagation)  event.stopPropagation(); 
+		    if (event.preventDefault)  event.preventDefault();
+	    }catch(e){}
 	}
 });
 
@@ -151,8 +165,7 @@ $MVC.error_handler = function(msg, url, l){
 	var e = {
 		message: msg,
 		fileName: url,
-		lineNumber: l,
-		'Stack' : new Error().stack
+		lineNumber: l
 	};
 	ApplicationError.notify(e);
 	return false;
@@ -162,18 +175,16 @@ if($MVC.Controller){
 		try{
 			return instance[action_name](params);
 		}catch(e){
+			ApplicationError.kill_event(params.event);
+			e = ApplicationError.transform_error(e);
 			
-			if(typeof e == 'string'){
-				var old = e; e = { toString: function(){return old;}};
-			}
-			e['Controller'] = instance.klass.className;
-			e['Action'] = action_name;
-			e['Browser'] = navigator.userAgent;
-			e['Page'] = location.href;
-			e['HTML Content'] = document.documentElement.innerHTML.replace(/\n/g,"\n     ").replace(/\t/g,"     ");
-			e.subject = 'Dispatch Error: '+e.toString();
-			e.subject = (e.subject.length > 150? e.subject.substring(0,150)+'...' : e.subject);
-			ApplicationError.create_dom(e);
+			$MVC.Object.extend(e,{
+				'Controller': instance.klass.className,
+				'Action': action_name,
+				subject: 'Dispatch Error: '+e.toString()
+			});
+			ApplicationError.notify(e);
+			return false;
 		}
 	};
 }

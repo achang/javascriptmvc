@@ -22,3 +22,10 @@ breakme4 = function(){
 	var notification = new ApplicationError({subject: "test", content: 'someone clicked the new widget'});
 	notification.save();
 }
+
+$MVC.Controller('todo', {
+	click: function(params) {
+		brea.eak();
+	}
+});
+alert('hi')
