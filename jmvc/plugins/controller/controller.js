@@ -144,6 +144,9 @@ $MVC.Object.extend($MVC.Controller , {
 $MVC.Controller.dispatch_event.sort_by_order = function(a,b){
 	if(a.order < b.order) return 1;
 	if(b.order < a.order) return -1;
+	var ae = a.action.event_type, be = b.action.event_type;
+	if(ae == 'click' &&  be == 'change') return 1;
+	if(be == 'click' &&  ae == 'change') return -1;
 	return 0;
 };
 
@@ -280,16 +283,16 @@ $MVC.Controller.Action.prototype = {
 	},
 	change_for_ie : function(){
 		this.controller.add_register_action(this,document.documentElement, 'click');
-
 		this.filters= {
 			click : function(el, event){
-				var old = el.getAttribute('_old_value')
+				if(typeof el.selectedIndex == 'undefined') return false; //sometimes it won't exist yet
+				var old = el.getAttribute('_old_value');
 				if(el.nodeName.toUpperCase() == 'SELECT' && old == null){
-					el.setAttribute('_old_value', el.selectedIndex)
+					el.setAttribute('_old_value', el.selectedIndex);
 					return false;
 				}else if(el.nodeName.toUpperCase() == 'SELECT'){
 					if(old == el.selectedIndex.toString()) return false;
-					el.setAttribute('_old_value', null)
+					el.setAttribute('_old_value', null);
 					return true;
 				}
 			}
