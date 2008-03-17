@@ -17,3 +17,8 @@ breakme3 = function(){
 		ApplicationError.notify(e);
 	}
 }
+
+breakme4 = function(){
+	var notification = new ApplicationError({subject: "test", content: 'someone clicked the new widget'});
+	notification.save();
+}
