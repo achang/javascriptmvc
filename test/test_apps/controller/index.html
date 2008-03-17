@@ -14,6 +14,7 @@
 		corresponding action logs the event and indicates successful event handling.
 		</p>
 		<form id='tests'>
+			<select class='test' ><option>one</option><option>two</option></select>
 			<input class='test' value='mouseover, mouseout, click, focus, and blur me' id='input' size='50' />
 			<input type='submit' value='submit me'/>
 		</form>
@@ -60,7 +61,9 @@
 		<div id='contextmenu' class='failure'>
 			Test contextmenu
 		</div>
-		
+		<div id='change' class='failure'>
+			Test change
+		</div>
 		<div id='output'>
 			
 		</div>
@@ -79,11 +82,11 @@
 			include('test')
 			include.opera()
 			success = function(id){
-				$E(id).className = 'success';
+				document.getElementById(id).className = 'success';
 				log(id)
 			};
 			log = function(text){
-				$E('output').innerHTML = '<p>'+text+'</p>'
+				document.getElementById('output').innerHTML = '<p>'+text+'</p>'+document.getElementById('output').innerHTML
 			};
 		</script>
 		

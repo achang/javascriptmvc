@@ -14,13 +14,15 @@ $MVC.Controller('main',{
 	}
 });
 $MVC.Controller('tests',{
-	
+	change: function(){
+		success('change')
+	}
 	/*click : function(params){
 		success('click')
 	},
 	focus : function(){
 		success('focus')
-	},*/
+	},
 	blur : function(){
 		success('blur')
 	},
@@ -28,7 +30,7 @@ $MVC.Controller('tests',{
 		success('submit')
 		params.event.kill();
 	},
-	/*mousedown : function(params){
+	mousedown : function(params){
 		success('mousedown')
 	},
 	mousemove : function(params){
@@ -42,10 +44,10 @@ $MVC.Controller('tests',{
 	},
 	mouseout : function(params){
 		success('mouseout')
-	},*/
+	},
 	contextmenu : function(params){
 		success('contextmenu')
-	}
+	}*/
 });
 
 DispatchTest = function(model_name, actions){
