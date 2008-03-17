@@ -354,11 +354,17 @@ $MVC.Object.extend(include,{
 	   return request.responseText
 	};
 	
-
+	include.app = function(f){
+		return function(){
+			for(var i=0; i< arguments.length; i++) arguments[i] = f(arguments[i]);
+			return include.apply(null, arguments);
+		}
+	};
 	
-
-
-
+	include.controllers = include.app(function(i){return '../controllers/'+i+'_controller'});
+	include.models = include.app(function(i){return '../models/'+i});
+	include.resources = include.app(function(i){return '../resources/'+i});
+	
 
 	
 	if($MVC.script_options){

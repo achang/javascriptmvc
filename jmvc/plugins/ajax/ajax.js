@@ -9,7 +9,7 @@ $MVC.Ajax.Request = function(url,options){
       parameters:   ''
     };
 	this.url = url;
-    Object.extend(this.options, options || { });
+    $MVC.Object.extend(this.options, options || { });
     
 	//var params = Object.clone(this.options.parameters);
 	
@@ -41,7 +41,7 @@ $MVC.Ajax.Request = function(url,options){
 	   catch(e){return null;}
 	   return;
 	}else{
-	   this.transport.onreadystatechange = (function(){
+	   this.transport.onreadystatechange = $MVC.Function.bind(function(){
 			if(this.transport.readyState == 4){
 				if(this.transport.status == 200){
 					this.options.onComplete(this.transport);
@@ -50,9 +50,9 @@ $MVC.Ajax.Request = function(url,options){
 					this.options.onComplete(this.transport);
 				}
 			}
-		}).bind(this);
+		},this);
 		
-		this.transport.open(this.options.method, this.url);
+		this.transport.open(this.options.method, this.url, true);
 		this.setRequestHeaders();
 		this.transport.send($MVC.Object.toQueryString(this.options.parameters));
 	}
@@ -98,3 +98,8 @@ $MVC.Ajax.factory = function(){
 	    catch(e) { continue;}
    }
 };
+
+
+if(!$MVC._no_conflict){
+	Ajax = $MVC.Ajax;
+}

@@ -69,14 +69,18 @@ $MVC.Object.extend($MVC.View.Helpers.prototype, {
 	select_tag: function(name, value, choices, html_options) {     
 	    html_options = html_options || {};
 	    html_options.id  = html_options.id  || name;
-	    html_options.value = value;
+	    //html_options.value = value;
 		html_options.name = name;
 	    var txt = '';
 	    txt += this.start_tag_for('select', html_options);
 	    for(var i = 0; i < choices.length; i++)
 	    {
 	        var choice = choices[i];
-	        var optionOptions = {value: choice.value};
+	        if(typeof choice == 'string') choice = {value: choice};
+			if(!choice.text) choice.text = choice.value;
+			if(!choice.value) choice.text = choice.text;
+			
+			var optionOptions = {value: choice.value};
 	        if(choice.value == value)
 	            optionOptions.selected ='selected';
 	        txt += this.start_tag_for('option', optionOptions )+choice.text+this.tag_end('option');
