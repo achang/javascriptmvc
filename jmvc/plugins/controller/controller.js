@@ -224,7 +224,7 @@ $MVC.Controller.Action = function(action_name, func ,controller){
 		this.set_plural_selector();
 	if(this.event_type == 'submit' && $MVC.Browser.IE) return this.submit_for_ie();
 	if(this.event_type == 'change' && $MVC.Browser.IE) return this.change_for_ie();
-	if(this.event_type == 'change' ) return this.change_for_webkit();
+	if(this.event_type == 'change' && $MVC.Browser.WebKit) return this.change_for_webkit();
 	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 };
 
