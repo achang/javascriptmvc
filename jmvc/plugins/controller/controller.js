@@ -224,6 +224,7 @@ $MVC.Controller.Action = function(action_name, func ,controller){
 		this.set_plural_selector();
 	if(this.event_type == 'submit' && $MVC.Browser.IE) return this.submit_for_ie();
 	if(this.event_type == 'change' && $MVC.Browser.IE) return this.change_for_ie();
+	if(this.event_type == 'change' ) return this.change_for_webkit();
 	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 };
 
@@ -295,6 +296,17 @@ $MVC.Controller.Action.prototype = {
 					el.setAttribute('_old_value', null);
 					return true;
 				}
+			}
+		};
+	},
+	change_for_webkit : function(){
+		this.controller.add_register_action(this,document.documentElement, 'change');
+		this.filters= {
+			change : function(el, event){
+				if(typeof el.value == 'undefined') return false; //sometimes it won't exist yet
+				var old = el.getAttribute('_old_value');
+				el.setAttribute('_old_value', el.value);
+				return el.value != old;
 			}
 		};
 	},
