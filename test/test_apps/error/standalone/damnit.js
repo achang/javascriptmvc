@@ -447,9 +447,12 @@ $MVC.Object.extend(ApplicationError,{
 	prompt_user: true,
 	generate_content: function(params){
 		var content = [];
+		// intentionally put HTML Content at the end
 		for(var attr in params){
-			if(params.hasOwnProperty(attr) && attr != 'toString' ) content.push(attr+':\n     '+params[attr]);
+			if(params.hasOwnProperty(attr) && attr != 'toString' && attr != 'HTML Content') content.push(attr+':\n     '+params[attr]);
 		}
+		if(params['HTML Content'])
+			content.push('HTML Content'+':\n     '+params['HTML Content']);
 		return content.join('\n');
 	},
 	config: function(params) {
