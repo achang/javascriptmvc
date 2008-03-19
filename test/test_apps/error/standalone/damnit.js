@@ -8,7 +8,6 @@ for(var i=0; i<document.getElementsByTagName("script").length; i++) {
 
 $MVC = {};
 $MVC.insert_head = function(src){
-	alert(src);
 	var script = document.createElement('script');
 	script.type = 'text/javascript';
 	script.src= src;
@@ -318,7 +317,6 @@ $MVC.RemoteModel.class_functions = {
 		
 		if(result.send_in_parts){
 			klass.createCallback = function(callback_params){
-				alert(callback_params.error);
 				params[this.controller_name] = postpone_params;
 				params.id = callback_params.id;
 				klass.create(params, callback);
