@@ -469,7 +469,7 @@ $MVC.Object.extend(ApplicationError,{
 	},
 	create_title: function(){
 		var title = document.createElement('div');
-		title.style.backgroundImage = 'url('+$MVC.root+'/plugins/error/background.png)';
+		title.style.backgroundImage = 'url(https://damnit.jupiterit.com/images/background.png)';
 		title.style.backgroundAttachment = 'scroll';
 		title.style.backgroundRepeat = 'repeat-x';
 		title.style.backgroundPosition = 'center top';
