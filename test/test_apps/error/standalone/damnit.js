@@ -397,7 +397,7 @@ $MVC.RemoteModel.top_level_length = function(params, url){
 };
 
 $MVC.RemoteModel.seperate = function(object, top_level_length, name){
-	var remainder = 2000 - top_level_length; 
+	var remainder = 2000 - 9 - top_level_length; 
 	var send = {};
 	var postpone = {};
 	var send_in_parts = false;
