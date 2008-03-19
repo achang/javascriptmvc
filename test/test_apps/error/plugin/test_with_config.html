@@ -2,7 +2,7 @@
 	<head></head>
 	<body>
 		<h1>Testing Damnit with Configuration Changed</h1>
-		<a href='#' onclick='breakme2()'>Try/Catch, cause an error</a>
+		<a href='javascript:void(0);' onclick='breakme2()'>Try/Catch, cause an error</a>
 		
 		<script type='text/javascript' src='../../../../jmvc/include.js'></script>
 		<script type='text/javascript'>
@@ -10,7 +10,7 @@
 			include.setup({env: 'development'});
 			include.plugins('core','remote');
 			include('../../../../jmvc/plugins/error/error.js');
-			include('test_config.js');
+			include('javascripts/test_config.js');
 			include.opera();
 		</script>
 		

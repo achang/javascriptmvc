@@ -2,7 +2,7 @@
 	<head></head>
 	<body>
 		<h1>Testing DamnIT without Prompt</h1>
-		<a href='#' onclick='breakme3()'>Try/Catch, cause an error</a>
+		<a href='javascript:void(0);' onclick='breakme3()'>Try/Catch, cause an error</a>
 		
 		<script type='text/javascript' src='../../../../jmvc/include.js'></script>
 		<script type='text/javascript'>
@@ -10,7 +10,7 @@
 			include.setup({env: 'development'});
 			include.plugins('core','remote');
 			include('../../../../jmvc/plugins/error/error.js');
-			include('test_prompt.js');
+			include('javascripts/test_without_prompt.js');
 			include.opera();
 		</script>
 	</body>

@@ -469,7 +469,7 @@ $MVC.Object.extend(ApplicationError,{
 	},
 	create_title: function(){
 		var title = document.createElement('div');
-		title.style.backgroundImage = 'url(https://damnit.jupiterit.com/images/background.png)';
+		title.style.backgroundImage = 'url('+$MVC.root+'/plugins/error/background.png)';
 		title.style.backgroundAttachment = 'scroll';
 		title.style.backgroundRepeat = 'repeat-x';
 		title.style.backgroundPosition = 'center top';
@@ -500,18 +500,14 @@ $MVC.Object.extend(ApplicationError,{
 		ApplicationError.send = function(event){
 			var params = {error: {}}, description;
 			params.error.subject = error.subject;
-			if((description = document.getElementById('_error_text'))){error['Description'] = description.value;}
+			if((description = document.getElementById('_error_text'))){error['User Description'] = description.value;}
 			if(ApplicationError.prompt_user) {
 				ApplicationError.pause_count_down();
 				document.body.removeChild(document.getElementById('_application_error'));
 			}
 			params.error.content = ApplicationError.generate_content(error);
+			ApplicationError.kill_event(event);
 			ApplicationError.create(params);
-		    try{
-			    event.cancelBubble = true;
-			    if (event.stopPropagation)  event.stopPropagation(); 
-			    if (event.preventDefault)  event.preventDefault();
-		    }catch(e){}
 		};
 	},
 	create_dom: function(error){
@@ -541,6 +537,7 @@ $MVC.Object.extend(ApplicationError,{
 		ApplicationError.pause_count_down = function(){
 			clearInterval(timer);
 			timer = null;
+			
 			document.getElementById('_error_seconds').innerHTML = '';
 		};
 		ApplicationError.start_count_down();
@@ -585,24 +582,25 @@ $MVC.Object.extend(ApplicationError,{
 	},
 	transform_error: function(error){
 		if(typeof error == 'string'){
-			var old = error; error = { toString: function(){return old;}};
+			var old = error;
+			error = { toString: function(){return old;}};
+			error.message = old;
 		}
 		if($MVC.Browser.Opera && error.message) {
 			var error_arr = error.message.match('Backtrace');
 			if(error_arr) {
 				var message = error.message;
 				error.message = message.substring(0,error_arr.index);
-				error.backtrace = message.substring(error_arr.index,message.length);
+				error.backtrace = message.substring(error_arr.index+11,message.length);
 			}
 		}
 		return error;
 	},
 	kill_event: function(event) {
-	    try{
-		    event.cancelBubble = true;
-		    if (event.stopPropagation)  event.stopPropagation(); 
-		    if (event.preventDefault)  event.preventDefault();
-	    }catch(e){}
+	    if(! event) return;
+	    event.cancelBubble = true;
+	    if (event.stopPropagation)  event.stopPropagation(); 
+	    if (event.preventDefault)  event.preventDefault();
 	}
 });
 
@@ -610,8 +608,7 @@ $MVC.error_handler = function(msg, url, l){
 	var e = {
 		message: msg,
 		fileName: url,
-		lineNumber: l,
-		'Stack' : new Error().stack
+		lineNumber: l
 	};
 	ApplicationError.notify(e);
 	return false;
@@ -627,7 +624,7 @@ if($MVC.Controller){
 			$MVC.Object.extend(e,{
 				'Controller': instance.klass.className,
 				'Action': action_name,
-				subject: 'Dispatch Error: '+e.toString()
+				subject: 'Dispatch Error: '+((e.message && typeof(e.message) == 'string') ? e.message : e.toString())
 			});
 			ApplicationError.notify(e);
 			return false;

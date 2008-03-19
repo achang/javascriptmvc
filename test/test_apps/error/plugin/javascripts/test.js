@@ -28,4 +28,4 @@ $MVC.Controller('todo', {
 		brea.eak();
 	}
 });
-alert('hi')
+alert('reloaded');
