@@ -72,7 +72,7 @@ $MVC.RemoteModel.class_functions = {
 			};
 			params[this.controller_name] = send_params;
 			params['_mutlirequest'] = 'true';
-			include(url+$MVC.Object.toQueryString(params));
+			include(url+$MVC.Object.toQueryString(params)+'&'+Math.random());
 		}else{
 			klass.createCallback = function(callback_params){
 				if(callback_params[className]){
@@ -80,7 +80,7 @@ $MVC.RemoteModel.class_functions = {
 					inst.add_errors(callback_params.errors);
 					callback(inst);
 				}else{
-					callback(new klass(callback_params));
+					callback(new klass(callback_params)+'&'+Math.random());
 				}
 			};
 			params['_mutlirequest'] = null;
