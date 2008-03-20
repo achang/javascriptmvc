@@ -8,11 +8,19 @@ for(var i=0; i<document.getElementsByTagName("script").length; i++) {
 
 $MVC = {};
 $MVC.insert_head = function(src){
-	var script = document.createElement('script');
-	script.type = 'text/javascript';
+	var script= script_tag();
 	script.src= src;
 	script.charset= "UTF-8";
-	document.getElementsByTagName("head")[0].appendChild(script);
+	$MVC.head().appendChild(script);
+};
+
+$MVC.head = function(){
+	var d = document, de = d.documentElement;
+	var heads = d.getElementsByTagName("head");
+	if(heads.length > 0 ) return heads[0];
+	var head = d.createElement('head');
+	de.insertBefore(head, de.firstChild);
+	return head;
 };
 
 $MVC.Native ={};
