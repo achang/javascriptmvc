@@ -8,7 +8,8 @@ for(var i=0; i<document.getElementsByTagName("script").length; i++) {
 
 $MVC = {};
 $MVC.insert_head = function(src){
-	var script= script_tag();
+	var script = document.createElement('script');
+	script.type = 'text/javascript';
 	script.src= src;
 	script.charset= "UTF-8";
 	$MVC.head().appendChild(script);
