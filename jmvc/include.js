@@ -281,6 +281,7 @@ $MVC.Object.extend(include,{
 			alert("Your popup blocker is keeping the compressor from running.\nPlease allow popups for this page and refresh this page.")
 	},
 	opera: function(){
+		include.opera_called = true;
 		if(navigator.userAgent.match(/Opera/)){
 			if(options.env == 'production')
 				document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
@@ -288,6 +289,7 @@ $MVC.Object.extend(include,{
 				include.end();
 		}
 	},
+	opera_called : false,
 	srcs: [],
 	plugin: function(plugin_name) {
 		var current_path = include.get_path();
@@ -379,6 +381,14 @@ $MVC.Object.extend(include,{
 		}
 		include($MVC.application_root+'apps/'+$MVC.script_options[0]);
 		include.opera();
+	}
+	
+	if(navigator.userAgent.match(/Opera/)){
+		setTimeout(function(){
+			if(!include.opera_called){
+				alert("You must call include.opera() after your includes if you want to support opera!");
+			};
+		}, 10000);
 	}
 	
 })();
