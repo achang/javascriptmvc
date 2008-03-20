@@ -300,15 +300,20 @@ $MVC.Object.extend(include,{
 	}
 })
 	
-
-	
-
+	var head = function(){
+		var d = document, de = d.documentElement;
+		var heads = d.getElementsByTagName("head")
+		if(heads.length > 0 ) return heads[0];
+		var head = d.createElement('head');
+		de.insertBefore(head, de.firstChild);
+		return head;
+	};
 	var insert_head = function(src){
 		var script= script_tag();
 		script.src= src;
 		script.charset= "UTF-8";
-		document.getElementsByTagName("head")[0].appendChild(script);
-	}
+		head().appendChild(script);
+	};
 	var script_tag = function(){
 		var start = document.createElement('script');
 		start.type = 'text/javascript';
