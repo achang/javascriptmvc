@@ -21,7 +21,8 @@
 		File: function(path){ this.path = path; },
 		Initializer: function(user_initialize_function) {
 			$MVC.user_initialize_function = user_initialize_function;
-			include($MVC.root+'/framework');
+			include.set_path($MVC.root);
+			include('framework');
 		}
 	};
 	var File = $MVC.File;
@@ -304,7 +305,7 @@ $MVC.Object.extend(include,{
 	
 	var head = function(){
 		var d = document, de = d.documentElement;
-		var heads = d.getElementsByTagName("head")
+		var heads = d.getElementsByTagName("head");
 		if(heads.length > 0 ) return heads[0];
 		var head = d.createElement('head');
 		de.insertBefore(head, de.firstChild);
@@ -368,9 +369,9 @@ $MVC.Object.extend(include,{
 		}
 	};
 	
-	include.controllers = include.app(function(i){return '../controllers/'+i+'_controller'});
-	include.models = include.app(function(i){return '../models/'+i});
-	include.resources = include.app(function(i){return '../resources/'+i});
+	include.controllers = include.app(function(i){return 'controllers/'+i+'_controller'});
+	include.models = include.app(function(i){return 'models/'+i});
+	include.resources = include.app(function(i){return 'resources/'+i});
 	
 
 	
@@ -379,7 +380,14 @@ $MVC.Object.extend(include,{
 		if($MVC.script_options.length > 1){
 			include.setup({env: $MVC.script_options[1], production: $MVC.application_root+'apps/'+$MVC.script_options[0]+'_production'})
 		}
+		if($MVC.script_options[1] == 'test')
+			include.plugins('test');
+
+		
 		include($MVC.application_root+'apps/'+$MVC.script_options[0]);
+		if($MVC.script_options[1] == 'test')
+			include($MVC.application_root+'apps/'+$MVC.script_options[0]+'_test');
+		
 		include.opera();
 	}
 	

@@ -260,7 +260,7 @@ $MVC.Controller.Action.prototype = {
 		if($MVC.Array.include(['load','unload','resize','scroll'],this.event_type))
 			return $MVC.Event.observe(window, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
 		if(this.name == 'click')
-			return $MVC.Event.observe(window, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
+			return $MVC.Event.observe(document.documentElement, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
 		
 		this.selector = this.before_space;
 		if(this.event_type == 'submit' && $MVC.Browser.IE)
