@@ -5,12 +5,12 @@ $MVC.Test.add_test = function(test){
 	$MVC.Test.window[test.toString()] = function(){
 		window.focus();
 		test.run();
-		$MVC.Test.window.focus();
+		//$MVC.Test.window.focus();
 	};
 	$MVC.Test.window[test.toString()].run_action = function(name){
 		window.focus();
 		test.run_action(name);
-		$MVC.Test.window.focus();
+		//$MVC.Test.window.focus();
 	};
 	$MVC.Tests.push(test);
 }
@@ -124,16 +124,21 @@ $MVC.Test.Controller.Action.prototype = {
 	run : function(controller, test){
 		var action = controller.actions()[this.name];
 		var selector, number;
+		var options = {};
 		if(typeof this.selector == 'string'){
 			selector = this.selector;
 			number = 0;
+		} else if(typeof this.selector == 'object') {
+			selector = action.selector;
+			options.write = this.selector.write || '';
+			number = this.selector.selector || 0;
 		}else{
 			selector = action.selector;
 			number = this.selector;
 		}
 		var target = $MVC.CSSQuery(selector)[number];
 		
-		var e = new $MVC.SyntheticEvent(action.event_type, {}).send( target)
+		var e = new $MVC.SyntheticEvent(action.event_type, options).send( target)
 		
 		this.func.call(test, {event: e, element: target})
 	},
@@ -156,20 +161,22 @@ $MVC.SyntheticEvent.prototype = {
 		if(this.type == 'focus') return element.focus();
 		if(this.type == 'blur') return element.blur();
 		if(this.type == 'submit') return element.submit();
-
-		if(document.createEvent) 			this.createEvent();
-		else if(document.createEventObject) this.createEventObject();
+		
+		if(document.createEvent) 			this.createEvent(element);
+		else if(document.createEventObject) this.createEventObject(element);
 		else								throw "Your browser doesn't support dispatching events"
 		if(element.dispatchEvent)			element.dispatchEvent(this.event)
 		else if(element.fireEvent)			element.fireEvent('on'+this.type, this.event);
 		else								throw "Your browser doesn't support dispatching events";
 		return this.event;
 	},
-	createEvent : function(){
+	createEvent : function(element){
 		if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
 			this.createMouseEvent();
+		else if(['keypress'].include(this.type))
+			this.createKeypressEvents(element);
 	},
-	createEventObject : function(){
+	createEventObject : function(element){
 		this.event = document.createEventObject();
 		var defaults =$MVC.Object.extend({
 			bubbles : true,
@@ -184,6 +191,28 @@ $MVC.SyntheticEvent.prototype = {
 		}, this.options);
 		
 		$MVC.Object.extend(this.event, defaults);
+	},
+	createKeypressEvents : function(element) {
+	  element.focus();
+	  for(var i=0; i<this.options.write.length; i++) {
+	    this.createKeypressEvent(element,this.options.write.charCodeAt(i));
+	  }
+	},
+	createKeypressEvent : function(element, character) {
+		  var options = $MVC.Object.extend({
+		    ctrlKey: false,
+		    altKey: false,
+		    shiftKey: false,
+		    metaKey: false,
+		    keyCode: 0,
+		    charCode: character
+		  }, arguments[2] || {});
+		
+		  var oEvent = document.createEvent("KeyEvents");
+		  oEvent.initKeyEvent(this.type, true, true, window, 
+		    options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
+		    options.keyCode, options.charCode );
+		  element.dispatchEvent(oEvent);
 	},
 	createMouseEvent : function(){
 		this.event = document.createEvent('MouseEvents');
