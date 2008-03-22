@@ -1,8 +1,80 @@
 <html>
 	<head>
+		<title>JavaScriptMVC Testing</title>
+		<style>
+			body {font: normal 12pt verdana; margin: 0px; padding: 0px;
+				
+			
+			}
+			.test_type {padding: 10px; background-color: white;
+				border-top: solid 1px #8FBA3C;
+			}
+			h1{
+				font-size: 12pt;background:#D5E7B3;
+				margin: 0px;
+				padding: 3px 5px 5px 5px;
+			}
+			
+			#types {
+				padding-top: 1px;
+				margin:0px;
+				line-height: 28px;
+				position: relative;background:#D5E7B3;
+			}
+			h2 { 
+				text-decoration: none; 
+				border-top: solid 1px #8FBA3C;
+				padding: 3px 10px 4px 10px;
+				border-left: solid 1px #8FBA3C;
+				color: blue; cursor: pointer;
+				display: inline;
+				font-size: 14pt;
+			}
+			h2 span {
+				font-size: 10px; 
+			}
+			
+			#app_button {
+				border-right: solid 1px #8FBA3C;
+			}
+			h2.selected { 
+				color: black;
+				background-color: white;
+			}
+			h3 {font-size: 12pt; margin: 0px;  }
+			#types[id] h2 {
+				padding: 2px 10px 4px 10px;
+			}
+			#types[id] h2 span{
+				vertical-align:top;
+			}		
+			.run {font-size: 12pt; font-weight: normal;}
+			table {width: 100%; text-align: left; margin-top: 5px;}
+			.test {margin: 0px 10px 5px 10px; border: solid 1px #e0e0e0}
+			img {padding: 3px 4px 0px 5px}
+			.min {float: right;padding-right: 3px;}
+			p {margin: 5px 10px 10px 10px; background-color: #eeeeee; padding-bottom: 5px;padding-top: 3px;}
+			th { color: gray;}
+		</style>
 	</head>
 	<body>
-		welcome to testing
-		<script src='test_controller.js' type='text/javascript'></script>
+		<h1>JavaScriptMVC Testing</h1>
+		<div id='types'>
+			<h2>Unit</h2><h2 class='selected'> Functional </h2><h2 id='app_button'>Application</h2>
+		</div>
+		<div id='functional' class='test_type'>
+			 <p>
+			 	<img src='play.png' /> Functional tests <span class='result'>(0/0)</span>
+			 </p>
+			<div class='tests' id='functional_tests'>
+
+			</div>
+		</div>
+		
+		<script src='../../include.js' type='text/javascript'></script>
+		<script type='text/javascript'>
+			include.plugins('query')
+			include('test_controller')
+		</script>
 	</body>
 </html>
