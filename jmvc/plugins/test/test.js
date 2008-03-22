@@ -1,16 +1,18 @@
 $MVC.Test = function(){};
 $MVC.Test.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes");
 $MVC.Test.add_test = function(test){
-	var d =  $MVC.Test.window.document;
-	var t = d.createElement('p')
-	t.innerHTML  = '<a href="javascript: void(0);" onclick="'+test.toString()+'();">'+test.toString();+'</a>'
-	d.body.appendChild(t);
-	$MVC.Tests.push(test);
+	$MVC.Test.window.add_test(test)
 	$MVC.Test.window[test.toString()] = function(){
 		window.focus();
 		test.run();
 		$MVC.Test.window.focus();
-	}
+	};
+	$MVC.Test.window[test.toString()].run_action = function(name){
+		window.focus();
+		test.run_action(name);
+		$MVC.Test.window.focus();
+	};
+	$MVC.Tests.push(test);
 }
 
 
@@ -66,9 +68,24 @@ $MVC.Test.Controller = function(model_name, actions){
 $MVC.Test.Controller.Functions = function(model_name, actions){
 	this.controller = window[model_name.camelize()+'Controller']
 	
+	var reg_actions = $MVC.Object.extend({}, this.controller.actions()) ;
+	
+	
 	this.actions = [];
+	this.untested = [];
+	
 	for(var i = 0; i < actions.length; i++){
-		this.actions.push(new $MVC.Test.Controller.Action(actions[i]))
+		var act = new $MVC.Test.Controller.Action(actions[i]);
+		act.controller = this;
+		this.actions.push(act);
+		if(reg_actions[act.name])
+			delete reg_actions[act.name];
+	}
+	for(var action_name in reg_actions){
+		if(!reg_actions[action_name].event_type) continue;
+		var act = new $MVC.Test.Controller.Action({action_name: action_name, func: function(){} } );
+		act.controller = this;
+		this.untested.push(act);
 	}
 };
 $MVC.Test.Controller.Functions.prototype = {
@@ -76,6 +93,17 @@ $MVC.Test.Controller.Functions.prototype = {
 		var newtest = new $MVC.Test()
 		for(var a = 0; a < this.actions.length; a++){
 			this.actions[a].run(this.controller, newtest);
+		}
+	},
+	run_action: function(name){
+		var newtest = new $MVC.Test()
+		for(var a = 0; a < this.actions.length; a++){
+			if(this.actions[a].name == name)
+				this.actions[a].run(this.controller, newtest);
+		}
+		for(var a = 0; a < this.untested.length; a++){
+			if(this.untested[a].name == name)
+				this.untested[a].run(this.controller, newtest);
 		}
 	},
 	toString : function(){
@@ -108,6 +136,12 @@ $MVC.Test.Controller.Action.prototype = {
 		var e = new $MVC.SyntheticEvent(action.event_type, {}).send( target)
 		
 		this.func.call(test, {event: e, element: target})
+	},
+	toString : function(){
+		return this.name;
+	},
+	toHTML : function(){
+		return "<li><a href='javascript: void(0);' onclick='"+this.controller.toString()+".run_action(\""+this.toString()+"\")'>"+this.toString()+"</a></li>"
 	}
 }
 
