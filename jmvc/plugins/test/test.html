@@ -50,11 +50,19 @@
 			}		
 			.run {font-size: 12pt; font-weight: normal;}
 			table {width: 100%; text-align: left; margin-top: 5px;}
-			.test {margin: 0px 10px 5px 10px; border: solid 1px #e0e0e0}
-			img {padding: 3px 4px 0px 5px}
-			.min {float: right;padding-right: 3px;}
+			.test {margin: 0px 10px 5px 10px; border: solid 1px #e0e0e0; padding: 3px;}
+			
+			.min {float: right;}
 			p {margin: 5px 10px 10px 10px; background-color: #eeeeee; padding-bottom: 5px;padding-top: 3px;}
+			p img {margin-top: 1px; margin-left: 3px;}
+			
 			th { color: gray;}
+			
+			.helpers {font-size: 10px; background-color: #eeeeee; margin-top: 3px;}
+			
+			.passed {background-color: #D5E7B3;}
+			.failure {background-color: #EEAAAA;}
+			.result {font-size: 10pt;}
 		</style>
 	</head>
 	<body>
@@ -73,7 +81,7 @@
 		
 		<script src='../../include.js' type='text/javascript'></script>
 		<script type='text/javascript'>
-			include.plugins('query')
+			include.plugins('helpers','query')
 			include('test_controller')
 		</script>
 	</body>
