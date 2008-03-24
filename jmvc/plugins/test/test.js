@@ -180,17 +180,22 @@ $MVC.Test.Functional = $MVC.Test.extend({
 	},
 	helpers : function(){
 		var helpers = this._super();
-		helpers.Action =   function(event, selector, number){
+		helpers.Action =   function(event, selector, options){
+			options = options || {};
+			options.type = event.type;
 			if(typeof event == 'string')
 				event = {type: event}
-			var se = new $MVC.SyntheticEvent(event.type, event)
-			number = number || 0;
+			if(typeof options == 'number')
+				number = number || 0;
+			else if (typeof options == 'object')
+				number = options.number || 0;
 			var element;
 			if(typeof selector == 'string')
 				element = $MVC.CSSQuery(selector)[number]
 			else element = selector;
+			var se = new $MVC.SyntheticEvent(event.type, options);
 			var event = se.send(element);
-			return {event: event, element: element}
+			return {event: event, element: element, options: options};
 		}
 		for(var e = 0; e < $MVC.Test.Functional.events.length; e++){
 			var event = $MVC.Test.Functional.events[e];
