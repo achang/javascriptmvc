@@ -21,8 +21,9 @@ add_test = function(test){
 
 
 find_and_run = function(t,s){
+	opener.focus();
 	var t = get_tests()[t];
-	if(s) t.run_step(s);
+	if(s != null) t.run_step(s);
 	else t.run();
 };
 

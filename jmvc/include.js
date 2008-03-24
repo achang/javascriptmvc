@@ -383,10 +383,7 @@ $MVC.Object.extend(include,{
 		if($MVC.script_options[1] == 'test')
 			include.plugins('test');
 
-		
 		include($MVC.application_root+'apps/'+$MVC.script_options[0]);
-		if($MVC.script_options[1] == 'test')
-			include($MVC.application_root+'apps/'+$MVC.script_options[0]+'_test');
 		
 		include.opera();
 	}
