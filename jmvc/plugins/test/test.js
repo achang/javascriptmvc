@@ -275,7 +275,6 @@ $MVC.SyntheticEvent.prototype = {
 		}
 	},
 	createKeypressEvent : function(element, character) {
-		if(!$MVC.Browser.Gecko) element.value = element.value + character;
 		if(document.createEvent) {
 			var options = $MVC.Object.extend({
 				ctrlKey: false,
@@ -297,6 +296,7 @@ $MVC.SyntheticEvent.prototype = {
 	  		this.event.keyCode = character.charCodeAt(0);
 		} else
 			throw "Your browser doesn't support dispatching events";
+		if(!$MVC.Browser.Gecko && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value = element.value + character;
 	},
 	createKeypressEventObject : function(element, character) {
 	    element.focus();
