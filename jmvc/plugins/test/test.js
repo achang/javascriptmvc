@@ -1,18 +1,18 @@
 (function() {
 	var checkExists = function(path){
-		var xhr=createXHR();
-		xhr.open("HEAD", path, false);
+		var xhr=createXHR(path);
 	    try{xhr.send(null);}
 	    catch(e){if ( xhr.status == 404 || xhr.status == 2 ||(xhr.status == 0 && xhr.responseText == '') ) return false}
 	    if ( xhr.status == 404 || xhr.status == 2 ||(xhr.status == 0 && xhr.responseText == '') ) return false;
 	    return true;
 	}
 	
-	function createXHR(){
-	   var factories = [function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); },function() { return new XMLHttpRequest(); }];
+	function createXHR(path){
+	   var factories = [function() { return new XMLHttpRequest(); }, function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
 	   for(var i = 0; i < factories.length; i++) {
 	        try {
 	            var request = factories[i]();
+				request.open("HEAD", path, false);
 	            if (request != null)  return request;
 	        }
 	        catch(e) { continue;}
