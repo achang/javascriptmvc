@@ -336,7 +336,7 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 
 $MVC.Test.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes,scrollbars=yes");
 if(!$MVC.Test.window)
-	alert('somethig is werid')
+	alert('Testing needs to open up a pop-up window.  Please enable popups for this site.')
 
 $MVC.Test.window.get_tests = function(){
 	return $MVC.Tests;
