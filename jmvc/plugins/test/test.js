@@ -209,6 +209,18 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	next: function(fname, params, delay){
 		this.delay(fname, delay, params)
 	},
+	next_callback: function(fname){
+		this._delays ++;
+		var assert = this;
+		func = this._test.tests[fname];
+		return function(){
+			try{
+				func.apply(assert, arguments);
+			}catch(e){ assert.error(e); }
+			assert._delays--;
+			assert._update();
+		}
+	},
 	_update : function(){
 		if(this._delays == 0){
 			$MVC.Test.window.update(this._test, this._test_name, this);
@@ -259,7 +271,7 @@ $MVC.Test.Functional = $MVC.Test.extend({
 		return helpers;
 	}
 });
-$MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload'];
+$MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag'];
 $MVC.Test.Functional.tests = [];
 $MVC.Test.Functional.run = function(callback){
 	var t = $MVC.Test.Functional;
@@ -412,7 +424,11 @@ $MVC.SyntheticEvent.prototype = {
 		if(this.type == 'blur') return element.blur();
 		if(this.type == 'submit') return element.submit();
 		if(this.type == 'write') return this.write(element);
+		if(this.type == 'drag') return this.drag(element);
 		
+		return this.create_event(element)
+	},
+	create_event: function(element){
 		if(document.createEvent) {
 			this.createW3CEvent(element);
 		} else if (document.createEventObject) {
@@ -534,8 +550,71 @@ $MVC.SyntheticEvent.prototype = {
 		
 		$MVC.Object.extend(this.event, defaults);
 		this.simulateEvent(element);
+	},
+	drag: function(target){
+		//get from and to
+		
+		if(this.options.duration){
+			return new $MVC.Test.Drag(target, this.options)
+		}
+		var x = this.options.from.x;
+		var y = this.options.from.y;
+		var steps = this.options.steps || 100;
+		
+		this.type = 'mousedown';
+		this.options.clientX = x;
+		this.options.clientY = y;
+		this.create_event(target);
+		
+		this.type = 'mousemove';
+		for(var i = 0; i < steps; i++){
+			x = this.options.from.x + (i * (this.options.to.x - this.options.from.x )) / steps;
+			y = this.options.from.y + (i * (this.options.to.y - this.options.from.y )) / steps;
+			this.options.clientX = x;
+			this.options.clientY = y;
+			this.create_event(target);
+		}
 	}
 }
+$MVC.Test.Drag = function(target , options){
+	this.callback = options.callback;
+	this.start_x = options.from.x;
+	this.end_x = options.to.x;
+	this.delta_x = this.end_x - this.start_x;
+	this.start_y = options.from.y;
+	this.end_y = options.to.y;
+	this.delta_y = this.end_y - this.start_y;
+	this.target = target;
+	this.duration = options.duration ? options.duration*1000 : 1000;
+	this.start = new Date();
+	new $MVC.SyntheticEvent('mousedown', {clientX: this.start_x, clientY: this.start_y}).send(target);
+	setTimeout(this.next_callback(), 20);
+}
+$MVC.Test.Drag.prototype = {
+	next: function(){
+		var now = new Date();
+		var difference = now - this.start;
+		if( difference > this.duration ){
+			new $MVC.SyntheticEvent('mousemove', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
+			var event = new $MVC.SyntheticEvent('mouseup', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
+			if(this.callback)
+				this.callback({event: event, element: this.target});
+		}else{
+			var percent = difference / this.duration;
+			var x =  this.start_x + percent * this.delta_x;
+			var y = this.start_y + percent * this.delta_y;
+			new $MVC.SyntheticEvent('mousemove', {clientX: x, clientY: y}).send(this.target);
+			setTimeout(this.next_callback(), 20);
+		}
+	},
+	next_callback : function(){
+		var t = this;
+		return function(){
+			t.next();
+		};
+	}
+}
+
 /*basically just converts this into an object ControllerTest will like*/
 $MVC.test = function(action_name, selector, f){
 	if(!f){ f = selector; selector = null;}
