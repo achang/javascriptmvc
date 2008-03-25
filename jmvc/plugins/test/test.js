@@ -195,7 +195,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	messages : [],
 	delay: function(func, delay, params){
 		this._delays ++;
-		delay = delay || 1000;
+		delay = delay ? delay*1000 : 1000;
 		var assert = this;
 		if(typeof func == 'string') func = this._test.tests[func];
 		setTimeout(function(){
@@ -209,17 +209,23 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	next: function(fname, params, delay){
 		this.delay(fname, delay, params)
 	},
-	next_callback: function(fname){
+	next_callback: function(fname,delay){
 		this._delays ++;
 		var assert = this;
 		func = this._test.tests[fname];
-		return function(){
+		var f = function(){
 			try{
 				func.apply(assert, arguments);
 			}catch(e){ assert.error(e); }
 			assert._delays--;
 			assert._update();
 		}
+		if(!delay) return f;
+		
+		return function(){
+			setTimeout(f, delay*1000)
+		}
+		
 	},
 	_update : function(){
 		if(this._delays == 0){
@@ -544,7 +550,7 @@ $MVC.SyntheticEvent.prototype = {
 			screenX : 1, screenY : 1,
 			clientX : center[0], clientY : center[1],
 			ctrlKey : false, altKey : false, shiftKey : false, metaKey : false,
-			button : 0, 
+			button : (this.type == 'contextmenu' ? 2 : 1), 
 			relatedTarget : null
 		}, this.options);
 		
@@ -554,6 +560,16 @@ $MVC.SyntheticEvent.prototype = {
 	drag: function(target){
 		//get from and to
 		
+		var addxy = function(part, options){
+			if(!options[part].x || !options[part].y ){
+				if(typeof options[part] == 'string') options[part] = document.getElementById(options[part])
+				var center = $MVC.Test.center(options[part]);
+				options[part].x = center.left;
+				options[part].y = center.top;
+			}
+		}
+		addxy('from', this.options);
+		addxy('to', this.options);
 		if(this.options.duration){
 			return new $MVC.Test.Drag(target, this.options)
 		}
@@ -588,7 +604,18 @@ $MVC.Test.Drag = function(target , options){
 	this.duration = options.duration ? options.duration*1000 : 1000;
 	this.start = new Date();
 	new $MVC.SyntheticEvent('mousedown', {clientX: this.start_x, clientY: this.start_y}).send(target);
+	
+	this.pointer = document.createElement('div')
+	this.pointer.style.width = '20px'
+	this.pointer.style.height = '20px'
+	this.pointer.style.backgroundColor = 'RED'
+	this.pointer.style.position = 'absolute'
+	this.pointer.style.left = ''+this.start_x+'px'
+	this.pointer.style.top = ''+this.start_y+'px'
+	document.body.appendChild(this.pointer)
 	setTimeout(this.next_callback(), 20);
+	
+	
 }
 $MVC.Test.Drag.prototype = {
 	next: function(){
@@ -603,6 +630,9 @@ $MVC.Test.Drag.prototype = {
 			var percent = difference / this.duration;
 			var x =  this.start_x + percent * this.delta_x;
 			var y = this.start_y + percent * this.delta_y;
+			
+			this.pointer.style.left = ''+x+'px';
+			this.pointer.style.top = ''+y+'px';
 			new $MVC.SyntheticEvent('mousemove', {clientX: x, clientY: y}).send(this.target);
 			setTimeout(this.next_callback(), 20);
 		}
@@ -624,11 +654,34 @@ $MVC.test = function(action_name, selector, f){
 
 
 test = $MVC.test;
+//from prototype
+$MVC.Test.get_dimensions = function(element){
 
+    var display = element.style.display;
+    if (display != 'none' && display != null) // Safari bug
+      return {width: element.offsetWidth, height: element.offsetHeight};
+
+    // All *Width and *Height properties give 0 on elements with display none,
+    // so enable the element temporarily
+    var els = element.style;
+    var originalVisibility = els.visibility;
+    var originalPosition = els.position;
+    var originalDisplay = els.display;
+    els.visibility = 'hidden';
+    els.position = 'absolute';
+    els.display = 'block';
+    var originalWidth = element.clientWidth;
+    var originalHeight = element.clientHeight;
+    els.display = originalDisplay;
+    els.position = originalPosition;
+    els.visibility = originalVisibility;
+    return {width: originalWidth, height: originalHeight};
+}
 
 $MVC.Test.center= function(element) {
-    var valueT = element.clientHeight / 2, valueL =element.clientWidth / 2;
-    do {
+    var d = $MVC.Test.get_dimensions(element)
+	var valueT = d.height / 2, valueL =d.width / 2;
+	do {
       valueT += element.offsetTop  || 0;
       valueL += element.offsetLeft || 0;
       element = element.offsetParent;
