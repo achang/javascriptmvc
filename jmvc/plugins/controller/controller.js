@@ -91,12 +91,13 @@ $MVC.Object.extend($MVC.Controller , {
 		return instance[action_name](params);
 	},
 	node_path: function(el){
-		var body = document.body,parents = [],iterator =el;
+		var body = document.documentElement,parents = [],iterator =el;
 		while(iterator != body){
 			parents.unshift({tag: iterator.nodeName, className: iterator.className, id: iterator.id, element: iterator});
 			iterator = iterator.parentNode;
 			if(iterator == null) return [];
 		}
+		parents.push(body)
 		return parents;
 	},
 	dispatch_event: function(event){
@@ -256,8 +257,9 @@ $MVC.Controller.Action.prototype = {
 	main_controller : function(){
 		if($MVC.Array.include(['load','unload','resize','scroll'],this.event_type))
 			return $MVC.Event.observe(window, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
-		if(this.name == 'click')
-			return $MVC.Event.observe(document.documentElement, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
+		
+		//if(this.name == 'click')
+		//	return $MVC.Event.observe(document.documentElement, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
 		
 		this.selector = this.before_space;
 		if(this.event_type == 'submit' && $MVC.Browser.IE)
@@ -339,11 +341,8 @@ $MVC.Controller.Action.prototype = {
 		return this.order;
 	},
 	match : function(el, event, parents){
-		if(this.filters){
-			if(!this.filters[event.type](el, event)) return null;
-		}
-		var docEl = document.documentElement, body = document.body;
-		if(el == docEl || el==body) return false;
+		if(this.filters && !this.filters[event.type](el, event)) return null;
+		if(this.controller.className != 'main' &&  (el == document.documentElement || el==document.body) ) return false;
 
 		var matching = 0;
 		for(var n=0; n < parents.length; n++){

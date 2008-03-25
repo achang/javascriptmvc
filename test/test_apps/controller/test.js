@@ -1,5 +1,5 @@
 $MVC.Controller('main',{
-	/*load : function(){
+	load : function(){
 		success('load');
 	},
 	resize : function(){
@@ -13,19 +13,19 @@ $MVC.Controller('main',{
 		//alert('unload')
 	},
 	click: function(){
-		//success('mainclick')
-	}*/
+		success('mainclick')
+	}
 });
 $MVC.Controller('tests',{
-	/*change: function(){
+	change: function(){
 		success('change')
-	},*/
+	},
 	click : function(params){
 		success('click')
 	},
 	focus : function(params){
 		success('focus')
-	}/*,
+	},
 	blur : function(){
 		success('blur')
 	},
@@ -50,7 +50,7 @@ $MVC.Controller('tests',{
 	},
 	contextmenu : function(params){
 		success('contextmenu')
-	}*/
+	}
 });
 
 //some of the things, we would want to do
