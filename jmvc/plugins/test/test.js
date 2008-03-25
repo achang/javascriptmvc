@@ -434,7 +434,9 @@ $MVC.SyntheticEvent.prototype = {
 			this.createIEKeypressEvent(element, this.options.character);
 		else if(this.type == 'submit')
 			this.createIESubmitEvent(element);
-		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
+		else if(this.type == 'click')
+			this.createIEClickEvent(element);
+		else if(['dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
 			this.createIEMouseEvent(element);
 	},
 	simulateEvent : function(element) {
