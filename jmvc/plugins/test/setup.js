@@ -1,2 +1,2 @@
-include.plugins('helpers','query')
+include.plugins('helpers','query','debug')
 include('test')

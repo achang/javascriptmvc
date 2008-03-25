@@ -39,4 +39,9 @@ update = function(controller, test_name, assertions){
 	
 }
 
-
+running = function(controller, test_name){
+	var step = document.getElementById('step_'+controller.name+'_'+test_name);
+	var result = step.childNodes[1];
+	result.innerHTML = 'Running ...'
+	
+}

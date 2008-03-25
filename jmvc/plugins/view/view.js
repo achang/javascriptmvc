@@ -50,7 +50,7 @@ $MVC.View = function( options ){
 		var template = $MVC.View.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == $MVC.View.INVALID_PATH) return null;
-		this.text = new $MVC.Ajax.Request(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get'}).transport.responseText;
+		this.text = new $MVC.Ajax.Request(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get', no_test: true}).transport.responseText;
 		
 		if(this.text == null){
 			//$MVC.View.update(options.url, this.INVALID_PATH);

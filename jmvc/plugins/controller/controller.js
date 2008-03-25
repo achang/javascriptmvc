@@ -207,15 +207,12 @@ $MVC.Controller.Action = function(action_name, func ,controller){
 	this.name = action_name;
 	this.func = func;
 	this.controller = controller;
-	var found = false;
-	for(var i = 0; i < $MVC.Controller.Action.actions.length; i++){
-		if($MVC.String.include(this.name, $MVC.Controller.Action.actions[i])){
-			found = true;
-			break;
-		}
-	}
-	if(!found) return;	
 	this.parse_name();
+	if(! $MVC.Array.include($MVC.Controller.Action.actions, this.event_type)){
+		this.event_type = null;
+		return;
+	}
+	
 	if(this.className() == 'main') return this.main_controller();
 	this.singular = $MVC.String.is_singular(this.className());
 	if(this.singular)

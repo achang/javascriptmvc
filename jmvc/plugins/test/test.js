@@ -1,5 +1,6 @@
 (function() {
 	var checkExists = function(path){
+		$MVC.Console.log('Checking if '+path+' exists')
 		var xhr=createXHR(path);
 	    try{xhr.send(null);}
 	    catch(e){if ( xhr.status == 404 || xhr.status == 2 ||(xhr.status == 0 && xhr.responseText == '') ) return false}
@@ -80,6 +81,8 @@ $MVC.Test = $MVC.Class.extend({
 	init: function( type,name, tests  ){
 		this.type = type;
 		this.tests = tests;
+		this.test_names = [];
+		for(var t in this.tests) if(t.indexOf('test') == 0) this.test_names.push(t);
 		this.name = name;
 		this.Assertions = $MVC.Test.Assertions.extend(this.helpers()); //overwrite helpers
 		this.assertions = 0;
@@ -96,22 +99,31 @@ $MVC.Test = $MVC.Class.extend({
 		return helpers;
 	},
 	run_test: function(test_id){
-		var assertions = new this.Assertions();
+		var assertions = new this.Assertions(this, test_id);
+		
 		this.tests[test_id].call(assertions);
-		$MVC.Test.window.update(this, test_id, assertions)
-		return assertions;
-		//get messages and totals here
+		assertions._update();
 	},
-	run: function(){
-		for(var t in this.tests){
-			if(t.indexOf('test') == 0)
-				this.run_test(t);
+	run: function(callback){
+		this.working_test = 0;
+		this.run_next();
+		this.callback = callback;
+	},
+	run_next: function(){
+		if(this.working_test != null && this.working_test < this.test_names.length){
+			this.working_test++;
+			this.run_test(this.test_names[this.working_test-1])
+		}else if(this.callback){
+			this.callback();
+			this.callback = null;
+			this.working_test = null;
 		}
 	},
 	toHTML : function(){
 		var txt = "<h3><img class='min' src='minimize.png'/>   <img src='play.png' onclick='find_and_run(\""+this.name+"\")'/> "+this.name+"</h3>";
 		txt+= "<table cellspacing='0px'><thead><tr><th>test</th><th>result</th></tr></thead><tbody>";
 		for(var t in this.tests ){
+			if(t.indexOf('test') != 0 ) continue;
 			txt+= '<tr class="step" id="step_'+this.name+'_'+t+'">'+
 			"<td class='name'>"+
 			"<a href='javascript: void(0);' onclick='find_and_run(\""+this.name+"\",\""+t+"\")'>"+t+'</a></td>'+
@@ -135,8 +147,15 @@ $MVC.Test.add = function(test){
 	$MVC.Test.window.add_test(test)
 }
 
-
+//almsot everything in here should be private
 $MVC.Test.Assertions =  $MVC.Class.extend({
+	init: function( test, test_name, remainder){
+		this._test = test;
+		this._test_name = test_name;
+		this._delays = 0;
+		this._remainder = remainder;
+		$MVC.Test.window.running(this._test, this._test_name);
+	},
 	assert: function(expression) {
 		var message = arguments[1] || 'assert: got "' + $MVC.Test.inspect(expression) + '"';
 		try { expression ? this.pass() : 
@@ -157,9 +176,36 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		this.failures++;
 		this.messages.push("Failure: " + message);
 	},
+	error: function(error) {
+	    this.errors++;
+	    this.messages.push(error.name + ": "+ error.message + "(" + $MVC.Test.inspect(error) +")");
+	 },
 	assertions : 0,
 	failures : 0,
-	messages : []
+	errors: 0,
+	messages : [],
+	delay: function(func, delay, params){
+		this._delays ++;
+		delay = delay || 1000;
+		var assert = this;
+		if(typeof func == 'string') func = this._test.tests[func];
+		setTimeout(function(){
+			try{
+				func.call(assert, params);
+			}catch(e){ assert.error(e); }
+			assert._delays--;
+			assert._update();
+		}, delay)
+	},
+	next: function(fname, params, delay){
+		this.delay(fname, delay, params)
+	},
+	_update : function(){
+		if(this._delays == 0){
+			$MVC.Test.window.update(this._test, this._test_name, this);
+			this._test.run_next();
+		}
+	}//this should also trigger next test probably
 });
 
 
@@ -183,10 +229,11 @@ $MVC.Test.Functional = $MVC.Test.extend({
 		helpers.Action =   function(event, selector, options){
 			options = options || {};
 			options.type = event.type;
+			var number = 0;
 			if(typeof event == 'string')
 				event = {type: event}
 			if(typeof options == 'number')
-				number = number || 0;
+				number = options || 0;
 			else if (typeof options == 'object')
 				number = options.number || 0;
 			var element;
@@ -209,7 +256,7 @@ $MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keypre
 
 $MVC.Test.Controller = $MVC.Test.Functional.extend({
 	init: function(name , tests ){
-		var controller_name = name.camelize()+'Controller';
+		var controller_name = $MVC.String.camelize(name)+'Controller';
 		this.controller = window[controller_name];
 		if(!this.controller) alert('There is no controller named '+controller_name);
 		this.unit = name;
@@ -390,11 +437,13 @@ $MVC.SyntheticEvent.prototype = {
 	createMouseEvent : function(element){
 		if(document.createEvent) {
 			this.event = document.createEvent('MouseEvents');
+			var center = $MVC.Test.center(element);
+
 			var defaults = $MVC.Object.extend({
 				bubbles : true,cancelable : true,
 				view : window,
 				detail : 1,
-				screenX : 366, screenY : 195,clientX : 169, clientY : 74,
+				screenX : 366, screenY : 195,clientX : center[0], clientY : center[1],
 				ctrlKey : false, altKey : false, shiftKey : false, metaKey : false,
 				button : (this.type == 'contextmenu' ? 2 : 0), 
 				relatedTarget : null
@@ -415,7 +464,7 @@ $MVC.SyntheticEvent.prototype = {
 				view : window,
 				detail : 1,
 				screenX : 1, screenY : 1,
-				clientX : 1, clientY : 1,
+				clientX : center[0], clientY : center[1],
 				ctrlKey : false, altKey : false, shiftKey : false, metaKey : false,
 				button : 0, 
 				relatedTarget : null
@@ -438,7 +487,18 @@ $MVC.test = function(action_name, selector, f){
 test = $MVC.test;
 
 
-
+$MVC.Test.center= function(element) {
+    var valueT = element.clientHeight / 2, valueL =element.clientWidth / 2;
+    do {
+      valueT += element.offsetTop  || 0;
+      valueL += element.offsetLeft || 0;
+      element = element.offsetParent;
+    } while (element);
+	var result = [valueL, valueT];
+	result.left = valueL;
+	result.top = valueT;
+    return result;
+};
 
 
 
@@ -447,7 +507,10 @@ test = $MVC.test;
 	var cont = include.controllers
 	include.controllers = function(){
 		cont.apply(null,arguments);
-		include.app(function(i){return 'test/functional/'+i+'_controller_test'}).apply(null, arguments);
+		include.app(function(i){
+			$MVC.Console.log('Trying to load: '+'test/functional/'+i+'_controller_test')
+			return 'test/functional/'+i+'_controller_test'
+		}).apply(null, arguments);
 		
 	};
 })()

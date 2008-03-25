@@ -23,7 +23,6 @@ if(include.get_env() == 'test')
 include('../view/view',
 		'../view/helpers', 
 		'../controller/controller',
-		'../controller_view/controller_view',
-		'../includer/includer');
+		'../controller_view/controller_view');
 		
 if(include.get_env() == 'development')	include('../view/fulljslint');
