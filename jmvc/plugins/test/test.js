@@ -230,15 +230,13 @@ $MVC.Test.Functional = $MVC.Test.extend({
 			options = options || {};
 			options.type = event.type;
 			var number = 0;
-			if(typeof event == 'string')
-				event = {type: event}
-			if(typeof options == 'number')
-				number = options || 0;
-			else if (typeof options == 'object')
-				number = options.number || 0;
+			if(typeof event == 'string') event = {type: event};
+			
+			if(typeof options == 'number') 		 number = options || 0;
+			else if (typeof options == 'object') number = options.number || 0;
 			var element;
-			if(typeof selector == 'string')
-				element = $MVC.CSSQuery(selector)[number]
+			
+			if(typeof selector == 'string') element = $MVC.CSSQuery(selector)[number]
 			else element = selector;
 			var se = new $MVC.SyntheticEvent(event.type, options);
 			var event = se.send(element);
@@ -260,7 +258,7 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 		this.controller = window[controller_name];
 		if(!this.controller) alert('There is no controller named '+controller_name);
 		this.unit = name;
-		this._super(name.camelize()+'TestController', tests);
+		this._super($MVC.String.camelize(name)+'TestController', tests);
 	},
 	helpers : function(){
 		var helpers = this._super();
@@ -310,7 +308,7 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 
 
 
-$MVC.Test.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes");
+$MVC.Test.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes,scrollbars=yes");
 
 
 $MVC.Test.window.get_tests = function(){

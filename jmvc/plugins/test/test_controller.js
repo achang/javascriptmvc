@@ -29,14 +29,18 @@ update = function(controller, test_name, assertions){
 	
 	if(assertions.failures == 0){
 		step.className = 'passed'
-		result.innerHTML = 'Passed: '+assertions.assertions+' assertion(s)'
+		result.innerHTML = 'Passed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)
 		
 	}else{
 		step.className = 'failure'
-		result.innerHTML = 'Failed: '+assertions.assertions+' assertion(s), '+assertions.failures+' failure(s) <br/>'+
+		result.innerHTML = 'Failed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)+', '+assertions.failures+' failure'+add_s(assertions.failures)+' <br/>'+
 			assertions.messages.join("<br/>")
 	}
 	
+}
+
+add_s = function(array){
+	return array > 1 ?'s' : ''
 }
 
 running = function(controller, test_name){
