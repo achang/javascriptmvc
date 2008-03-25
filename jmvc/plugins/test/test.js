@@ -119,7 +119,7 @@ $MVC.Test = $MVC.Class.extend({
 			this.working_test = null;
 		}
 	},
-	toHTML : function(){
+	toElement : function(){
 		var txt = "<h3><img class='min' src='minimize.png'/>   <img src='play.png' onclick='find_and_run(\""+this.name+"\")'/> "+this.name+"</h3>";
 		txt+= "<table cellspacing='0px'><thead><tr><th>test</th><th>result</th></tr></thead><tbody>";
 		for(var t in this.tests ){
@@ -137,14 +137,23 @@ $MVC.Test = $MVC.Class.extend({
 				helpers.push( "<a href='javascript: void(0)'>"+h+"</a>")
 			txt+= helpers.join(', ')+"</div>"
 		}
-		return txt;
+		var t = $MVC.Test.window.document.createElement('div');
+		t.className = 'test'
+		t.innerHTML  = txt;
+		return t;
 	}
 });
 
 $MVC.Tests = {};
 $MVC.Test.add = function(test){
 	$MVC.Tests[test.name] = test
-	$MVC.Test.window.add_test(test)
+	
+	var insert_into = $MVC.Test.window.document.getElementById(test.type+'_tests');
+	insert_into.appendChild(test.toElement());
+	
+	//if(!$MVC.Test.window.add_test)
+    //	alert($MVC.Test.window.add_test)
+	//$MVC.Test.window.add_test(test)
 }
 
 //almsot everything in here should be private
@@ -307,9 +316,9 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 
 
 
-
 $MVC.Test.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes,scrollbars=yes");
-
+if(!$MVC.Test.window)
+	alert('somethig is werid')
 
 $MVC.Test.window.get_tests = function(){
 	return $MVC.Tests;

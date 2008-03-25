@@ -5,15 +5,6 @@ add_step = function(name, checked, test_name){
 		'<td>&nbsp;</td></tr>';
 };
 
-add_test = function(test){
-	var t = document.createElement('div');
-	t.className = 'test'
-	t.innerHTML  = test.toHTML();
-	t.id = 'test_'+test.name
-	var insert_into = document.getElementById(test.type+'_tests');
-	insert_into.appendChild(t);
-}
-
 
 find_and_run = function(t,s){
 	opener.focus();	
