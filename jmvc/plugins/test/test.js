@@ -410,93 +410,127 @@ $MVC.SyntheticEvent.prototype = {
 	send : function(element){
 		if(this.type == 'focus') return element.focus();
 		if(this.type == 'blur') return element.blur();
-		if(this.type == 'submit') return element.submit();
+		if(this.type == 'write') return this.write(element);
 		
-		if(this.type == 'keypress')
-			this.createKeypressEvents(element);
-		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
-			this.createMouseEvent(element);
+		if(document.createEvent) {
+			this.createW3CEvent(element);
+		} else if (document.createEventObject) {
+			this.createIEEvent(element);
+		} else
+			throw "Your browser doesn't support dispatching events";
 		
 		return this.event;
+	},
+	createW3CEvent : function(element) {
+		if(this.type == 'keypress')
+			this.createW3CKeypressEvent(element, this.options.character);
+		else if(this.type == 'submit')
+			this.createW3CSubmitEvent(element);
+		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
+			this.createW3CMouseEvent(element);
+	},
+	createIEEvent : function(element) {
+		if(this.type == 'keypress')
+			this.createIEKeypressEvent(element, this.options.character);
+		else if(this.type == 'submit')
+			this.createIESubmitEvent(element);
+		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
+			this.createIEMouseEvent(element);
 	},
 	simulateEvent : function(element) {
 		if(element.dispatchEvent)			element.dispatchEvent(this.event)
 		else if(element.fireEvent)			element.fireEvent('on'+this.type, this.event);
 		else								throw "Your browser doesn't support dispatching events";
 	},
-	createKeypressEvents : function(element) {
+	createW3CSubmitEvent : function(element) {
+        this.event = document.createEvent("HTMLEvents");
+        this.event.initEvent(this.event, true, true ); 
+		this.simulateEvent(element);
+	},
+	createIESubmitEvent : function(element) {
+        this.event = document.createEventObject();
+        this.simulateEvent(element);
+	},
+	createIEClickEvent: function(element) {
+		return element.click();
+	},
+	write : function(element) {
 		element.focus();
-		for(var i=0; i<this.options.write.length; i++) {
-			this.createKeypressEvent(element,this.options.write.substr(i,1));
-			this.simulateEvent(element);
+		this.type = 'keypress';
+		var text = this.options.text || this.options;
+		for(var i = 0; i < text.length; i++) {
+			if(document.createEvent) {
+				this.createW3CKeypressEvent(element, text.substr(i,1));
+			} else if (document.createEventObject) {
+				this.createIEKeypressEvent(element, text.substr(i,1));
+			} else
+				throw "Your browser doesn't support dispatching events";
 		}
 	},
-	createKeypressEvent : function(element, character) {
-		if(document.createEvent) {
-			var options = $MVC.Object.extend({
-				ctrlKey: false,
-				altKey: false,
-				shiftKey: false,
-				metaKey: false,
-				keyCode: 0,
-				charCode: character.charCodeAt(0)
-			}, arguments[2] || {});
-			
-			this.event = document.createEvent("KeyEvents");
-			this.event.initKeyEvent(this.type, true, true, window, 
-			options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
-			options.keyCode, options.charCode );
-		} else if (document.createEventObject) {
-			this.event = document.createEventObject();
-			
-	  		this.event.charCode = character.charCodeAt(0);
-	  		this.event.keyCode = character.charCodeAt(0);
-		} else
-			throw "Your browser doesn't support dispatching events";
+	createW3CKeypressEvent : function(element, character) {
+		this.event = document.createEvent("KeyEvents");
+		var options = $MVC.Object.extend({
+			ctrlKey: false,
+			altKey: false,
+			shiftKey: false,
+			metaKey: false,
+			keyCode: 0,
+			charCode: character.charCodeAt(0)
+		}, arguments[2] || {});
+		this.event.initKeyEvent(this.type, true, true, window, 
+		options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
+		options.keyCode, options.charCode );
+		this.simulateEvent(element);
+		// check if isKilled
 		if(!$MVC.Browser.Gecko && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value = element.value + character;
 	},
-	createKeypressEventObject : function(element, character) {
-	    element.focus();
-		if(!$MVC.Browser.Gecko) element.value = element.value + character;
+	createIEKeypressEvent : function(element, character) {
+		this.event = document.createEventObject();
+		
+  		this.event.charCode = character.charCodeAt(0);
+  		this.event.keyCode = character.charCodeAt(0);
+		this.simulateEvent(element);
+		// check if isKilled
+		if(!$MVC.Browser.Gecko && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value = element.value + character;
 	},
-	createMouseEvent : function(element){
+	createW3CMouseEvent : function(element){
+		this.event = document.createEvent('MouseEvents');
 		var center = $MVC.Test.center(element);
-		if(document.createEvent) {
-			this.event = document.createEvent('MouseEvents');
-			var defaults = $MVC.Object.extend({
-				bubbles : true,cancelable : true,
-				view : window,
-				detail : 1,
-				screenX : 366, screenY : 195,clientX : center[0], clientY : center[1],
-				ctrlKey : false, altKey : false, shiftKey : false, metaKey : false,
-				button : (this.type == 'contextmenu' ? 2 : 0), 
-				relatedTarget : null
-			}, this.options);
-			
-			this.event.initMouseEvent(this.type, 
-				defaults.bubbles, defaults.cancelable, 
-				defaults.view, 
-				defaults.detail, 
-				defaults.screenX, defaults.screenY,defaults.clientX,defaults.clientY,
-				defaults.ctrlKey,defaults.altKey,defaults.shiftKey,defaults.metaKey,
-				defaults.button,defaults.relatedTarget);
-		} else if(document.createEventObject) {
-			this.event = document.createEventObject();
-			var defaults =$MVC.Object.extend({
-				bubbles : true,
-				cancelable : true,
-				view : window,
-				detail : 1,
-				screenX : 1, screenY : 1,
-				clientX : center[0], clientY : center[1],
-				ctrlKey : false, altKey : false, shiftKey : false, metaKey : false,
-				button : 0, 
-				relatedTarget : null
-			}, this.options);
-			
-			$MVC.Object.extend(this.event, defaults);
-		} else
-			throw "Your browser doesn't support dispatching events";
+		var defaults = $MVC.Object.extend({
+			bubbles : true,cancelable : true,
+			view : window,
+			detail : 1,
+			screenX : 366, screenY : 195,clientX : center[0], clientY : center[1],
+			ctrlKey : false, altKey : false, shiftKey : false, metaKey : false,
+			button : (this.type == 'contextmenu' ? 2 : 0), 
+			relatedTarget : null
+		}, this.options);
+		
+		this.event.initMouseEvent(this.type, 
+			defaults.bubbles, defaults.cancelable, 
+			defaults.view, 
+			defaults.detail, 
+			defaults.screenX, defaults.screenY,defaults.clientX,defaults.clientY,
+			defaults.ctrlKey,defaults.altKey,defaults.shiftKey,defaults.metaKey,
+			defaults.button,defaults.relatedTarget);
+		this.simulateEvent(element);
+	},
+	createIEMouseEvent : function(element){
+		this.event = document.createEventObject();
+		var center = $MVC.Test.center(element);
+		var defaults =$MVC.Object.extend({
+			bubbles : true,
+			cancelable : true,
+			view : window,
+			detail : 1,
+			screenX : 1, screenY : 1,
+			clientX : center[0], clientY : center[1],
+			ctrlKey : false, altKey : false, shiftKey : false, metaKey : false,
+			button : 0, 
+			relatedTarget : null
+		}, this.options);
+		
+		$MVC.Object.extend(this.event, defaults);
 		this.simulateEvent(element);
 	}
 }
