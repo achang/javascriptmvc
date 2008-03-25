@@ -410,6 +410,7 @@ $MVC.SyntheticEvent.prototype = {
 	send : function(element){
 		if(this.type == 'focus') return element.focus();
 		if(this.type == 'blur') return element.blur();
+		if(this.type == 'submit') return element.submit();
 		if(this.type == 'write') return this.write(element);
 		
 		if(document.createEvent) {
@@ -476,21 +477,20 @@ $MVC.SyntheticEvent.prototype = {
 			altKey: false,
 			shiftKey: false,
 			metaKey: false,
-			keyCode: 0,
-			charCode: character.charCodeAt(0)
+			keyCode: this.options.keyCode || 0,
+			charCode: (character? character.charCodeAt(0) : 0)
 		}, arguments[2] || {});
 		this.event.initKeyEvent(this.type, true, true, window, 
 		options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
 		options.keyCode, options.charCode );
 		this.simulateEvent(element);
-		// check if isKilled
 		if(!$MVC.Browser.Gecko && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value = element.value + character;
 	},
 	createIEKeypressEvent : function(element, character) {
 		this.event = document.createEventObject();
 		
-  		this.event.charCode = character.charCodeAt(0);
-  		this.event.keyCode = character.charCodeAt(0);
+  		this.event.charCode = (character? character.charCodeAt(0) : 0);
+  		this.event.keyCode = this.options.keyCode || (character? character.charCodeAt(0) : 0);
 		this.simulateEvent(element);
 		// check if isKilled
 		if(!$MVC.Browser.Gecko && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value = element.value + character;
