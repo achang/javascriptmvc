@@ -433,10 +433,9 @@ $MVC.SyntheticEvent.prototype = {
 		if(!$MVC.Browser.Gecko) element.value = element.value + character;
 	},
 	createMouseEvent : function(element){
+		var center = $MVC.Test.center(element);
 		if(document.createEvent) {
 			this.event = document.createEvent('MouseEvents');
-			var center = $MVC.Test.center(element);
-
 			var defaults = $MVC.Object.extend({
 				bubbles : true,cancelable : true,
 				view : window,
