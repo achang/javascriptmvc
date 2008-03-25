@@ -221,11 +221,9 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 			assert._update();
 		}
 		if(!delay) return f;
-		
 		return function(){
 			setTimeout(f, delay*1000)
 		}
-		
 	},
 	_update : function(){
 		if(this._delays == 0){
@@ -606,16 +604,15 @@ $MVC.Test.Drag = function(target , options){
 	new $MVC.SyntheticEvent('mousedown', {clientX: this.start_x, clientY: this.start_y}).send(target);
 	
 	this.pointer = document.createElement('div')
-	this.pointer.style.width = '20px'
-	this.pointer.style.height = '20px'
+	this.pointer.style.width = '10px'
+	this.pointer.style.height = '10px'
 	this.pointer.style.backgroundColor = 'RED'
 	this.pointer.style.position = 'absolute'
 	this.pointer.style.left = ''+this.start_x+'px'
 	this.pointer.style.top = ''+this.start_y+'px'
+	this.pointer.style.lineHeight = '1px'
 	document.body.appendChild(this.pointer)
 	setTimeout(this.next_callback(), 20);
-	
-	
 }
 $MVC.Test.Drag.prototype = {
 	next: function(){
@@ -624,8 +621,8 @@ $MVC.Test.Drag.prototype = {
 		if( difference > this.duration ){
 			new $MVC.SyntheticEvent('mousemove', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
 			var event = new $MVC.SyntheticEvent('mouseup', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
-			if(this.callback)
-				this.callback({event: event, element: this.target});
+			this.pointer.parentNode.removeChild(this.pointer);
+			if(this.callback) this.callback({event: event, element: this.target});
 		}else{
 			var percent = difference / this.duration;
 			var x =  this.start_x + percent * this.delta_x;
