@@ -1,10 +1,3 @@
-add_step = function(name, checked, test_name){
-	return '<tr class="step" id="step_'+test_name+'_'+name+'">'+
-		"<td class='name'>"+
-		"<a href='javascript: void(0);' onclick='find_and_run(\""+test_name+"\",\""+name+"\")'>"+name+'</a></td>'+
-		'<td>&nbsp;</td></tr>';
-};
-
 
 find_and_run = function(t,s){
 	opener.focus();	

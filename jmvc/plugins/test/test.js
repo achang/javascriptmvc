@@ -106,8 +106,8 @@ $MVC.Test = $MVC.Class.extend({
 	},
 	run: function(callback){
 		this.working_test = 0;
-		this.run_next();
 		this.callback = callback;
+		this.run_next();
 	},
 	run_next: function(){
 		if(this.working_test != null && this.working_test < this.test_names.length){
@@ -231,7 +231,8 @@ Function.prototype.curry = function() {
 
 $MVC.Test.Functional = $MVC.Test.extend({
 	init: function(name , tests ){
-		this._super('functional',  name, tests)
+		this._super('functional',  name, tests);
+		$MVC.Test.Functional.tests.push(this)
 	},
 	helpers : function(){
 		var helpers = this._super();
@@ -259,7 +260,24 @@ $MVC.Test.Functional = $MVC.Test.extend({
 	}
 });
 $MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload'];
-
+$MVC.Test.Functional.tests = [];
+$MVC.Test.Functional.run = function(callback){
+	var t = $MVC.Test.Functional;
+	t.working_test = 0;
+	t.callback = callback;
+	t.run_next();
+}
+$MVC.Test.Functional.run_next = function(){
+	var t = $MVC.Test.Functional;
+	if(t.working_test != null && t.working_test < t.tests.length){
+			t.working_test++;
+			t.tests[t.working_test-1].run( t.run_next )
+	}else if(t.callback){
+		t.working_test = null;
+		t.callback();
+		t.callback = null;
+	}
+}
 
 $MVC.Test.Controller = $MVC.Test.Functional.extend({
 	init: function(name , tests ){
