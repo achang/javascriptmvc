@@ -318,7 +318,7 @@ $MVC.Test.Functional = $MVC.Test.extend({
 		return helpers;
 	}
 });
-$MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag'];
+$MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag','write'];
 $MVC.Test.Functional.tests = [];
 $MVC.Test.Functional.run = function(callback){
 	var t = $MVC.Test.Functional;
@@ -650,6 +650,7 @@ $MVC.SyntheticEvent.prototype = {
 	},
 	write : function(element) {
 		element.focus();
+		return new $MVC.Test.Write(element, this.options)
 		this.type = 'keypress';
 		var text = this.options.text || this.options;
 		for(var i = 0; i < text.length; i++) {
@@ -663,34 +664,22 @@ $MVC.SyntheticEvent.prototype = {
 	}
 };
 
-$MVC.Test.Write = function(element , options){
+$MVC.Test.Write = function(element, options){
 	this.callback = options.callback;
-	this.text = options;
-	if(typeof options != 'string') this.text = options.text;
+	this.text = options.text;
 	this.element = element;
-	this.duration = options.duration ? options.duration*1000 : 1000;
-	this.start = new Date();
-	new $MVC.SyntheticEvent('mousedown', {clientX: this.start_x, clientY: this.start_y}).send(element);
-	setTimeout(this.next_callback(), 20);
+	this.text_index = 1;
+	new $MVC.SyntheticEvent('keypress', {character: this.text.substr(0,1)}).send(element);
+	setTimeout(this.next_callback(), 100);
 };
 $MVC.Test.Write.prototype = {
 	next: function(){
-		var now = new Date();
-		var difference = now - this.start;
-		if( difference > this.duration ){
-			new $MVC.SyntheticEvent('mousemove', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
-			var event = new $MVC.SyntheticEvent('mouseup', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
-			this.pointer.parentNode.removeChild(this.pointer);
-			if(this.callback) this.callback({event: event, element: this.target});
+		if( this.text_index >= this.text.length){
+			if(this.callback) this.callback({element: this.target});
 		}else{
-			var percent = difference / this.duration;
-			var x =  this.start_x + percent * this.delta_x;
-			var y = this.start_y + percent * this.delta_y;
-			
-			this.pointer.style.left = ''+x+'px';
-			this.pointer.style.top = ''+y+'px';
-			new $MVC.SyntheticEvent('mousemove', {clientX: x, clientY: y}).send(this.target);
-			setTimeout(this.next_callback(), 20);
+			new $MVC.SyntheticEvent('keypress', {character: this.text.substr(this.text_index,1)}).send(this.element);
+			this.text_index++;
+			setTimeout(this.next_callback(), 100);
 		}
 	},
 	next_callback : function(){
