@@ -507,17 +507,11 @@ $MVC.SyntheticEvent.prototype = {
 			this.createMouseObject(element);
 	},
 	simulateEvent : function(element) {
-
 		if(element.dispatchEvent) {
-		    try{	
-				element.dispatchEvent(this.event);
-				var i;
-		    }catch(e){
-				alert('caught')
-			}
-		} else if(element.fireEvent)			
-			element.fireEvent('on'+this.type, this.event);
-		else								
+			return element.dispatchEvent(this.event);
+		} else if(element.fireEvent) {
+			return element.fireEvent('on'+this.type, this.event);
+		} else
 			throw "Your browser doesn't support dispatching events";
 	},
 	createSubmit : function(element) {
@@ -578,17 +572,16 @@ $MVC.SyntheticEvent.prototype = {
 		options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
 		options.keyCode, options.charCode );
 		
-		this.simulateEvent(element);
-		if(!$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
+		var fire_event = this.simulateEvent(element);
+		if(fire_event && !$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createKeypressObject : function(element, character) {
 		this.event = document.createEventObject();
 		
   		this.event.charCode = (character? character.charCodeAt(0) : 0);
   		this.event.keyCode = this.options.keyCode || (character? character.charCodeAt(0) : 0);
-		this.simulateEvent(element);
-		// check if isKilled
-		if(!$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
+		var fire_event = this.simulateEvent(element);
+		if(fire_event && !$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createMouse : function(element){
 		this.event = document.createEvent('MouseEvents');
