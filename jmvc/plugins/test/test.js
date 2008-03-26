@@ -150,10 +150,6 @@ $MVC.Test.add = function(test){
 	
 	var insert_into = $MVC.Test.window.document.getElementById(test.type+'_tests');
 	insert_into.appendChild(test.toElement());
-	
-	//if(!$MVC.Test.window.add_test)
-    //	alert($MVC.Test.window.add_test)
-	//$MVC.Test.window.add_test(test)
 }
 
 //almsot everything in here should be private
@@ -426,7 +422,7 @@ $MVC.SyntheticEvent.prototype = {
 	send : function(element){
 		if(this.type == 'focus') return element.focus();
 		if(this.type == 'blur') return element.blur();
-		if(this.type == 'submit') return element.submit();
+		//if(this.type == 'submit') return element.submit();
 		if(this.type == 'write') return this.write(element);
 		if(this.type == 'drag') return this.drag(element);
 		
@@ -466,13 +462,34 @@ $MVC.SyntheticEvent.prototype = {
 		else								throw "Your browser doesn't support dispatching events";
 	},
 	createW3CSubmitEvent : function(element) {
-        this.event = document.createEvent("HTMLEvents");
-        this.event.initEvent(this.event, true, true ); 
+        this.event = document.createEvent("Events");
+        this.event.initEvent(this.type, true, true ); 
 		this.simulateEvent(element);
 	},
 	createIESubmitEvent : function(element) {
-        this.event = document.createEventObject();
-        this.simulateEvent(element);
+		// if using controller
+		if($MVC.Controller) {
+			// look for submit input
+			for(var i=0; i<element.elements.length; i++) {
+				var el = element.elements[i];
+				// if found, click it
+				if(el.nodeName.toLowerCase()=='input' && el.type.toLowerCase() == 'submit')
+					return (new $MVC.SyntheticEvent('click').send(el));
+			}
+			// if not, find a text input and click enter
+			// look for submit input
+			for(var i=0; i<element.elements.length; i++) {
+				var el = element.elements[i];
+				// if found, click it
+				if((el.nodeName.toLowerCase()=='input' && el.type.toLowerCase() == 'text') || el.nodeName.toLowerCase() == 'textarea')
+					return (new $MVC.SyntheticEvent('keypress', {keyCode: 13}).send(el));
+			}
+		} else {
+			// if not using controller, fire event normally 
+			//   - should trigger event handlers not using event delegation
+	        this.event = document.createEventObject();
+	        this.simulateEvent(element);
+		}
 	},
 	createIEClickEvent: function(element) {
 		return element.click();
@@ -504,7 +521,7 @@ $MVC.SyntheticEvent.prototype = {
 		options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
 		options.keyCode, options.charCode );
 		this.simulateEvent(element);
-		if(!$MVC.Browser.Gecko && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value = element.value + character;
+		if(!$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createIEKeypressEvent : function(element, character) {
 		this.event = document.createEventObject();
@@ -513,7 +530,7 @@ $MVC.SyntheticEvent.prototype = {
   		this.event.keyCode = this.options.keyCode || (character? character.charCodeAt(0) : 0);
 		this.simulateEvent(element);
 		// check if isKilled
-		if(!$MVC.Browser.Gecko && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value = element.value + character;
+		if(!$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createW3CMouseEvent : function(element){
 		this.event = document.createEvent('MouseEvents');
