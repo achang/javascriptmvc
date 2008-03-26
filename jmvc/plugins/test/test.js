@@ -589,7 +589,7 @@ $MVC.SyntheticEvent.prototype = {
 			this.create_event(target);
 		}
 	}
-}
+};
 $MVC.Test.Drag = function(target , options){
 	this.callback = options.callback;
 	this.start_x = options.from.x;
@@ -613,7 +613,7 @@ $MVC.Test.Drag = function(target , options){
 	this.pointer.style.lineHeight = '1px'
 	document.body.appendChild(this.pointer)
 	setTimeout(this.next_callback(), 20);
-}
+};
 $MVC.Test.Drag.prototype = {
 	next: function(){
 		var now = new Date();
@@ -640,7 +640,7 @@ $MVC.Test.Drag.prototype = {
 			t.next();
 		};
 	}
-}
+};
 
 /*basically just converts this into an object ControllerTest will like*/
 $MVC.test = function(action_name, selector, f){
