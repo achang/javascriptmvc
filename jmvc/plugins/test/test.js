@@ -82,7 +82,11 @@ $MVC.Test = $MVC.Class.extend({
 		this.type = type;
 		this.tests = tests;
 		this.test_names = [];
-		for(var t in this.tests) if(t.indexOf('test') == 0) this.test_names.push(t);
+		this.test_array = [];
+		for(var t in this.tests) {
+			if(t.indexOf('test') == 0) this.test_names.push(t);
+			this.test_array.push(t);
+		}
 		this.name = name;
 		this.Assertions = $MVC.Test.Assertions.extend(this.helpers()); //overwrite helpers
 		this.assertions = 0;
@@ -100,9 +104,6 @@ $MVC.Test = $MVC.Class.extend({
 	},
 	run_test: function(test_id){
 		var assertions = new this.Assertions(this, test_id);
-		
-		this.tests[test_id].call(assertions);
-		assertions._update();
 	},
 	run: function(callback){
 		this.working_test = 0;
@@ -159,7 +160,41 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		this._test_name = test_name;
 		this._delays = 0;
 		this._remainder = remainder;
+		this._last_called = test_name;
 		$MVC.Test.window.running(this._test, this._test_name);
+		
+		if(this.setup) 
+			this._setup();
+		else{
+			this._start();
+		}
+			
+		
+			
+	},
+	_start : function(){
+		this._test.tests[this._test_name].call(this);
+		this._update();
+	},
+	_setup : function(){
+		var next = this.next;
+		var time;
+		this.next = function(t){
+			time = t ? t*1000 : 1000;
+		}
+		this.setup();
+		this.next = next;
+		if(time){
+			var t = this;
+			var _start = this._start;
+			setTimeout(
+				function(){
+					_start.call(t);
+				}, time
+			);
+		}else{
+			this._start();	
+		}
 	},
 	assert: function(expression) {
 		var message = arguments[1] || 'assert: got "' + $MVC.Test.inspect(expression) + '"';
@@ -174,6 +209,12 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 			'", actual "' + $MVC.Test.inspect(actual) + '"'); }
 		catch(e) { this.error(e); }
   	},
+	assertNull: function(obj) {
+	    var message = arguments[1] || 'assertNull'
+	    try { (obj==null) ? this.pass() : 
+	      this.fail(message + ': got "' + $MVC.Test.inspect(obj) + '"'); }
+	    catch(e) { this.error(e); }
+	},
 	pass: function() {
     	this.assertions++;
 	},
@@ -189,21 +230,26 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	failures : 0,
 	errors: 0,
 	messages : [],
-	delay: function(func, delay, params){
+	next: function(params,delay, fname){
+		if(!fname){
+			for(var i = 0; i < this._test.test_array.length; i++){
+				if(this._test.test_array[i] == this._last_called){
+					fname = this._test.test_array[i+1]; break;
+				}
+			}
+		}
 		this._delays ++;
 		delay = delay ? delay*1000 : 1000;
 		var assert = this;
-		if(typeof func == 'string') func = this._test.tests[func];
+		var  func = this._test.tests[fname];
 		setTimeout(function(){
+			assert._last_called = fname;
 			try{
 				func.call(assert, params);
 			}catch(e){ assert.error(e); }
 			assert._delays--;
 			assert._update();
 		}, delay)
-	},
-	next: function(fname, params, delay){
-		this.delay(fname, delay, params)
 	},
 	next_callback: function(fname,delay){
 		this._delays ++;
@@ -223,6 +269,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	},
 	_update : function(){
 		if(this._delays == 0){
+			if(this.teardown) this.teardown()
 			$MVC.Test.window.update(this._test, this._test_name, this);
 			this._test.run_next();
 		}
