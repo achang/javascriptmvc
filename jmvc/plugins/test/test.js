@@ -544,7 +544,6 @@ $MVC.SyntheticEvent.prototype = {
 		}
 	},
 	createKeypress : function(element, character) {
-		this.event = document.createEvent("KeyEvents");
 		var options = $MVC.Object.extend({
 			ctrlKey: false,
 			altKey: false,
@@ -553,10 +552,21 @@ $MVC.SyntheticEvent.prototype = {
 			keyCode: this.options.keyCode || 0,
 			charCode: (character? character.charCodeAt(0) : 0)
 		}, arguments[2] || {});
-		this.event.initKeyEvent(this.type, true, true, window, 
-		options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
-		options.keyCode, options.charCode );
-		
+		try {
+			this.event = document.createEvent("KeyEvents");
+			this.event.initKeyEvent(this.type, true, true, window, 
+			options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
+			options.keyCode, options.charCode );
+		} catch(e) {
+			try {
+				this.event = document.createEvent("Events");
+			} catch(e2) {
+				this.event = document.createEvent("UIEvents");
+			} finally {
+				this.event.initEvent(this.type, true, true);
+				$MVC.Object.extend(this.event, options);
+			}
+		}
 		var fire_event = this.simulateEvent(element);
 		if(fire_event && this.type == 'keypress' && !$MVC.Browser.Gecko && character && 
 			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
