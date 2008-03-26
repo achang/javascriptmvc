@@ -498,9 +498,7 @@ $MVC.SyntheticEvent.prototype = {
 			this.createIEKeypressEvent(element, this.options.character);
 		else if(this.type == 'submit')
 			this.createIESubmitEvent(element);
-		else if(this.type == 'click')
-			this.createIEClickEvent(element);
-		else if(['dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
+		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
 			this.createIEMouseEvent(element);
 	},
 	simulateEvent : function(element) {
@@ -537,9 +535,6 @@ $MVC.SyntheticEvent.prototype = {
 	        this.event = document.createEventObject();
 	        this.simulateEvent(element);
 		}
-	},
-	createIEClickEvent: function(element) {
-		return element.click();
 	},
 	write : function(element) {
 		element.focus();
@@ -617,6 +612,10 @@ $MVC.SyntheticEvent.prototype = {
 		}, this.options);
 		
 		$MVC.Object.extend(this.event, defaults);
+		if(!$MVC.Browser.Gecko && 
+			(element.nodeName.toLowerCase() == 'input' || 
+			(element.type && element.type.toLowerCase() == 'checkbox'))) 
+			element.checked = (element.checked ? false : true);
 		this.simulateEvent(element);
 	},
 	drag: function(target){
