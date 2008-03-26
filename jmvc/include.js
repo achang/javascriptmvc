@@ -376,7 +376,7 @@ $MVC.Object.extend(include,{
 
 	
 	if($MVC.script_options){
-		$MVC.application_root =  $MVC.root.replace('jmvc','');
+		$MVC.application_root =  $MVC.root.replace(/jmvc$/,'');
 		if($MVC.script_options.length > 1){
 			include.setup({env: $MVC.script_options[1], production: $MVC.application_root+'apps/'+$MVC.script_options[0]+'_production'})
 		}
