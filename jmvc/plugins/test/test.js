@@ -467,6 +467,7 @@ $MVC.SyntheticEvent = function(type, options){
 }
 $MVC.SyntheticEvent.prototype = {
 	send : function(element){
+		this.firefox_autocomplete_off(element);
 		if(this.type == 'focus') return element.focus();
 		if(this.type == 'blur') return element.blur();
 		//if(this.type == 'submit') return element.submit();
@@ -474,6 +475,10 @@ $MVC.SyntheticEvent.prototype = {
 		if(this.type == 'drag') return this.drag(element);
 		
 		return this.create_event(element)
+	},
+	firefox_autocomplete_off : function(element) {
+		if($MVC.Browser.Gecko && element.nodeName.toLowerCase == 'input' && element.getAttribute('autocomplete') != 'off')
+			element.setAttribute('autocomplete','off');
 	},
 	create_event: function(element){
 		if(document.createEvent) {
@@ -502,9 +507,18 @@ $MVC.SyntheticEvent.prototype = {
 			this.createMouseObject(element);
 	},
 	simulateEvent : function(element) {
-		if(element.dispatchEvent)			element.dispatchEvent(this.event)
-		else if(element.fireEvent)			element.fireEvent('on'+this.type, this.event);
-		else								throw "Your browser doesn't support dispatching events";
+
+		if(element.dispatchEvent) {
+		    try{	
+				element.dispatchEvent(this.event);
+				var i;
+		    }catch(e){
+				alert('caught')
+			}
+		} else if(element.fireEvent)			
+			element.fireEvent('on'+this.type, this.event);
+		else								
+			throw "Your browser doesn't support dispatching events";
 	},
 	createSubmit : function(element) {
         this.event = document.createEvent("Events");
@@ -550,6 +564,7 @@ $MVC.SyntheticEvent.prototype = {
 		}
 	},
 	createKeypress : function(element, character) {
+		//element.setAttribute('autocomplete','off');
 		this.event = document.createEvent("KeyEvents");
 		var options = $MVC.Object.extend({
 			ctrlKey: false,
@@ -562,6 +577,7 @@ $MVC.SyntheticEvent.prototype = {
 		this.event.initKeyEvent(this.type, true, true, window, 
 		options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
 		options.keyCode, options.charCode );
+		
 		this.simulateEvent(element);
 		if(!$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
