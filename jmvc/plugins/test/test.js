@@ -318,7 +318,7 @@ $MVC.Test.Functional = $MVC.Test.extend({
 		return helpers;
 	}
 });
-$MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag','write'];
+$MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keyup','keydown','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag','write'];
 $MVC.Test.Functional.tests = [];
 $MVC.Test.Functional.run = function(callback){
 	var t = $MVC.Test.Functional;
@@ -470,7 +470,6 @@ $MVC.SyntheticEvent.prototype = {
 		this.firefox_autocomplete_off(element);
 		if(this.type == 'focus') return element.focus();
 		if(this.type == 'blur') return element.blur();
-		//if(this.type == 'submit') return element.submit();
 		if(this.type == 'write') return this.write(element);
 		if(this.type == 'drag') return this.drag(element);
 		
@@ -491,7 +490,7 @@ $MVC.SyntheticEvent.prototype = {
 		return this.event;
 	},
 	createEvent : function(element) {
-		if(this.type == 'keypress')
+		if(['keypress','keyup','keydown'].include(this.type))
 			this.createKeypress(element, this.options.character);
 		else if(this.type == 'submit')
 			this.createSubmit(element);
@@ -499,7 +498,7 @@ $MVC.SyntheticEvent.prototype = {
 			this.createMouse(element);
 	},
 	createEventObject : function(element) {
-		if(this.type == 'keypress')
+		if(['keypress','keyup','keydown'].include(this.type))
 			this.createKeypressObject(element, this.options.character);
 		else if(this.type == 'submit')
 			this.createSubmitObject(element);
@@ -545,7 +544,6 @@ $MVC.SyntheticEvent.prototype = {
 		}
 	},
 	createKeypress : function(element, character) {
-		//element.setAttribute('autocomplete','off');
 		this.event = document.createEvent("KeyEvents");
 		var options = $MVC.Object.extend({
 			ctrlKey: false,
@@ -560,7 +558,8 @@ $MVC.SyntheticEvent.prototype = {
 		options.keyCode, options.charCode );
 		
 		var fire_event = this.simulateEvent(element);
-		if(fire_event && !$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
+		if(fire_event && this.type == 'keypress' && !$MVC.Browser.Gecko && character && 
+			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createKeypressObject : function(element, character) {
 		this.event = document.createEventObject();
@@ -568,7 +567,8 @@ $MVC.SyntheticEvent.prototype = {
   		this.event.charCode = (character? character.charCodeAt(0) : 0);
   		this.event.keyCode = this.options.keyCode || (character? character.charCodeAt(0) : 0);
 		var fire_event = this.simulateEvent(element);
-		if(fire_event && !$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
+		if(fire_event && this.type == 'keypress' && !$MVC.Browser.Gecko && character && 
+			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createMouse : function(element){
 		this.event = document.createEvent('MouseEvents');

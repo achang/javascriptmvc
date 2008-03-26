@@ -67,6 +67,7 @@ $MVC.Object.extend($MVC.Controller , {
 				    if (event.stopPropagation)  event.stopPropagation(); 
 				    if (event.preventDefault)  event.preventDefault();
 			    }catch(e){}
+				var i;
 			};
 			event.is_killed = function(){return killed;};
 		}	
@@ -91,13 +92,12 @@ $MVC.Object.extend($MVC.Controller , {
 		return instance[action_name](params);
 	},
 	node_path: function(el){
-		var body = document.documentElement,parents = [],iterator =el;
+		var body = document.body,parents = [],iterator =el;
 		while(iterator != body){
 			parents.unshift({tag: iterator.nodeName, className: iterator.className, id: iterator.id, element: iterator});
 			iterator = iterator.parentNode;
 			if(iterator == null) return [];
 		}
-		parents.push(body)
 		return parents;
 	},
 	dispatch_event: function(event){
@@ -125,7 +125,7 @@ $MVC.Object.extend($MVC.Controller , {
 			var action_name = match.action.name;
 			var params = new $MVC.Controller.Params({event: event, element: match.node, action: action_name, controller: match.controller  });
 			ret_value = $MVC.Controller.dispatch(match.controller, action_name, params) && ret_value;
-			if(event.is_killed()) return true;
+			if(event.is_killed()) return false;
 		}
 	},
 	event_closure: function(controller_name, f_name, element){
@@ -226,7 +226,7 @@ $MVC.Controller.Action = function(action_name, func ,controller){
 	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 };
 
-$MVC.Controller.Action.actions = ['change','click','contextmenu','dblclick','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload'];
+$MVC.Controller.Action.actions = ['change','click','contextmenu','dblclick','keydown','keyup','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload'];
 
 $MVC.Controller.Action.prototype = {
 	registered_event : function(){
@@ -257,9 +257,8 @@ $MVC.Controller.Action.prototype = {
 	main_controller : function(){
 		if($MVC.Array.include(['load','unload','resize','scroll'],this.event_type))
 			return $MVC.Event.observe(window, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
-		
-		//if(this.name == 'click')
-		//	return $MVC.Event.observe(document.documentElement, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
+		if(this.name == 'click')
+			return $MVC.Event.observe(document.documentElement, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
 		
 		this.selector = this.before_space;
 		if(this.event_type == 'submit' && $MVC.Browser.IE)
@@ -341,8 +340,11 @@ $MVC.Controller.Action.prototype = {
 		return this.order;
 	},
 	match : function(el, event, parents){
-		if(this.filters && !this.filters[event.type](el, event)) return null;
-		if(this.controller.className != 'main' &&  (el == document.documentElement || el==document.body) ) return false;
+		if(this.filters){
+			if(!this.filters[event.type](el, event)) return null;
+		}
+		var docEl = document.documentElement, body = document.body;
+		if(el == docEl || el==body) return false;
 
 		var matching = 0;
 		for(var n=0; n < parents.length; n++){
