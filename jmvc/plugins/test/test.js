@@ -477,41 +477,41 @@ $MVC.SyntheticEvent.prototype = {
 	},
 	create_event: function(element){
 		if(document.createEvent) {
-			this.createW3CEvent(element);
+			this.createEvent(element);
 		} else if (document.createEventObject) {
-			this.createIEEvent(element);
+			this.createEventObject(element);
 		} else
 			throw "Your browser doesn't support dispatching events";
 		
 		return this.event;
 	},
-	createW3CEvent : function(element) {
+	createEvent : function(element) {
 		if(this.type == 'keypress')
-			this.createW3CKeypressEvent(element, this.options.character);
+			this.createKeypress(element, this.options.character);
 		else if(this.type == 'submit')
-			this.createW3CSubmitEvent(element);
+			this.createSubmit(element);
 		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
-			this.createW3CMouseEvent(element);
+			this.createMouse(element);
 	},
-	createIEEvent : function(element) {
+	createEventObject : function(element) {
 		if(this.type == 'keypress')
-			this.createIEKeypressEvent(element, this.options.character);
+			this.createKeypressObject(element, this.options.character);
 		else if(this.type == 'submit')
-			this.createIESubmitEvent(element);
+			this.createSubmitObject(element);
 		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
-			this.createIEMouseEvent(element);
+			this.createMouseObject(element);
 	},
 	simulateEvent : function(element) {
 		if(element.dispatchEvent)			element.dispatchEvent(this.event)
 		else if(element.fireEvent)			element.fireEvent('on'+this.type, this.event);
 		else								throw "Your browser doesn't support dispatching events";
 	},
-	createW3CSubmitEvent : function(element) {
+	createSubmit : function(element) {
         this.event = document.createEvent("Events");
         this.event.initEvent(this.type, true, true ); 
 		this.simulateEvent(element);
 	},
-	createIESubmitEvent : function(element) {
+	createSubmitObject : function(element) {
 		// if using controller
 		if($MVC.Controller) {
 			// look for submit input
@@ -542,14 +542,14 @@ $MVC.SyntheticEvent.prototype = {
 		var text = this.options.text || this.options;
 		for(var i = 0; i < text.length; i++) {
 			if(document.createEvent) {
-				this.createW3CKeypressEvent(element, text.substr(i,1));
+				this.createKeypress(element, text.substr(i,1));
 			} else if (document.createEventObject) {
-				this.createIEKeypressEvent(element, text.substr(i,1));
+				this.createKeypressObject(element, text.substr(i,1));
 			} else
 				throw "Your browser doesn't support dispatching events";
 		}
 	},
-	createW3CKeypressEvent : function(element, character) {
+	createKeypress : function(element, character) {
 		this.event = document.createEvent("KeyEvents");
 		var options = $MVC.Object.extend({
 			ctrlKey: false,
@@ -565,7 +565,7 @@ $MVC.SyntheticEvent.prototype = {
 		this.simulateEvent(element);
 		if(!$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
-	createIEKeypressEvent : function(element, character) {
+	createKeypressObject : function(element, character) {
 		this.event = document.createEventObject();
 		
   		this.event.charCode = (character? character.charCodeAt(0) : 0);
@@ -574,7 +574,7 @@ $MVC.SyntheticEvent.prototype = {
 		// check if isKilled
 		if(!$MVC.Browser.Gecko && character && (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
-	createW3CMouseEvent : function(element){
+	createMouse : function(element){
 		this.event = document.createEvent('MouseEvents');
 		var center = $MVC.Test.center(element);
 		var defaults = $MVC.Object.extend({
@@ -596,7 +596,7 @@ $MVC.SyntheticEvent.prototype = {
 			defaults.button,defaults.relatedTarget);
 		this.simulateEvent(element);
 	},
-	createIEMouseEvent : function(element){
+	createMouseObject : function(element){
 		this.event = document.createEventObject();
 		var center = $MVC.Test.center(element);
 		var defaults =$MVC.Object.extend({
