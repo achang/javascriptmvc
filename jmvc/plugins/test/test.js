@@ -193,7 +193,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 				}, time
 			);
 		}else{
-			this._start();	
+			this._start();
 		}
 	},
 	assert: function(expression) {
@@ -244,11 +244,11 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		var  func = this._test.tests[fname];
 		setTimeout(function(){
 			assert._last_called = fname;
-			try{
-				func.call(assert, params);
-			}catch(e){ assert.error(e); }
 			assert._delays--;
 			assert._update();
+			/*try{
+				func.call(assert, params);
+			}catch(e){ assert.error(e); }*/
 		}, delay)
 	},
 	next_callback: function(fname,delay){
@@ -544,19 +544,6 @@ $MVC.SyntheticEvent.prototype = {
 	        this.simulateEvent(element);
 		}
 	},
-	write : function(element) {
-		element.focus();
-		this.type = 'keypress';
-		var text = this.options.text || this.options;
-		for(var i = 0; i < text.length; i++) {
-			if(document.createEvent) {
-				this.createKeypress(element, text.substr(i,1));
-			} else if (document.createEventObject) {
-				this.createKeypressObject(element, text.substr(i,1));
-			} else
-				throw "Your browser doesn't support dispatching events";
-		}
-	},
 	createKeypress : function(element, character) {
 		//element.setAttribute('autocomplete','off');
 		this.event = document.createEvent("KeyEvents");
@@ -660,6 +647,57 @@ $MVC.SyntheticEvent.prototype = {
 			this.options.clientY = y;
 			this.create_event(target);
 		}
+	},
+	write : function(element) {
+		element.focus();
+		this.type = 'keypress';
+		var text = this.options.text || this.options;
+		for(var i = 0; i < text.length; i++) {
+			if(document.createEvent) {
+				this.createKeypress(element, text.substr(i,1));
+			} else if (document.createEventObject) {
+				this.createKeypressObject(element, text.substr(i,1));
+			} else
+				throw "Your browser doesn't support dispatching events";
+		}
+	}
+};
+
+$MVC.Test.Write = function(element , options){
+	this.callback = options.callback;
+	this.text = options;
+	if(typeof options != 'string') this.text = options.text;
+	this.element = element;
+	this.duration = options.duration ? options.duration*1000 : 1000;
+	this.start = new Date();
+	new $MVC.SyntheticEvent('mousedown', {clientX: this.start_x, clientY: this.start_y}).send(element);
+	setTimeout(this.next_callback(), 20);
+};
+$MVC.Test.Write.prototype = {
+	next: function(){
+		var now = new Date();
+		var difference = now - this.start;
+		if( difference > this.duration ){
+			new $MVC.SyntheticEvent('mousemove', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
+			var event = new $MVC.SyntheticEvent('mouseup', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
+			this.pointer.parentNode.removeChild(this.pointer);
+			if(this.callback) this.callback({event: event, element: this.target});
+		}else{
+			var percent = difference / this.duration;
+			var x =  this.start_x + percent * this.delta_x;
+			var y = this.start_y + percent * this.delta_y;
+			
+			this.pointer.style.left = ''+x+'px';
+			this.pointer.style.top = ''+y+'px';
+			new $MVC.SyntheticEvent('mousemove', {clientX: x, clientY: y}).send(this.target);
+			setTimeout(this.next_callback(), 20);
+		}
+	},
+	next_callback : function(){
+		var t = this;
+		return function(){
+			t.next();
+		};
 	}
 };
 $MVC.Test.Drag = function(target , options){
