@@ -481,7 +481,7 @@ $MVC.SyntheticEvent.prototype = {
 		return this.create_event(element)
 	},
 	firefox_autocomplete_off : function(element) {
-		if($MVC.Browser.Gecko && element.nodeName.toLowerCase == 'input' && element.getAttribute('autocomplete') != 'off')
+		if($MVC.Browser.Gecko && element.nodeName.toLowerCase() == 'input' && element.getAttribute('autocomplete') != 'off')
 			element.setAttribute('autocomplete','off');
 	},
 	create_event: function(element){
