@@ -1,3 +1,4 @@
+//adds check exist
 (function() {
 	var checkExists = function(path){
 		$MVC.Console.log('Checking if '+path+' exists')
@@ -24,6 +25,8 @@
 		include($MVC.application_root+'apps/'+$MVC.script_options[0]+'_test');
 })();
 
+
+//John Resig's class
 (function(){
   var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
   // The base Class implementation (does nothing)
@@ -95,11 +98,7 @@ $MVC.Test = $MVC.Class.extend({
 	},
 	helpers : function(){
 		var helpers = {};
-		for(var t in this.tests){
-			if(t.indexOf('test') != 0){
-				helpers[t] = this.tests[t];
-			}
-		}
+		for(var t in this.tests) if(t.indexOf('test') != 0) helpers[t] = this.tests[t];
 		return helpers;
 	},
 	run_test: function(test_id){
@@ -122,7 +121,7 @@ $MVC.Test = $MVC.Class.extend({
 	},
 	toElement : function(){
 		var txt = "<h3><img class='min' src='minimize.png'/>   <img src='play.png' onclick='find_and_run(\""+this.name+"\")'/> "+this.name+"</h3>";
-		txt+= "<table cellspacing='0px'><thead><tr><th>test</th><th>result</th></tr></thead><tbody>";
+		txt += "<table cellspacing='0px'><thead><tr><th>test</th><th>result</th></tr></thead><tbody>";
 		for(var t in this.tests ){
 			if(t.indexOf('test') != 0 ) continue;
 			txt+= '<tr class="step" id="step_'+this.name+'_'+t+'">'+
@@ -148,7 +147,6 @@ $MVC.Test = $MVC.Class.extend({
 $MVC.Tests = {};
 $MVC.Test.add = function(test){
 	$MVC.Tests[test.name] = test
-	
 	var insert_into = $MVC.Test.window.document.getElementById(test.type+'_tests');
 	insert_into.appendChild(test.toElement());
 }
@@ -162,15 +160,11 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		this._remainder = remainder;
 		this._last_called = test_name;
 		$MVC.Test.window.running(this._test, this._test_name);
-		
 		if(this.setup) 
 			this._setup();
 		else{
 			this._start();
 		}
-			
-		
-			
 	},
 	_start : function(){
 		this._test.tests[this._test_name].call(this);
@@ -179,19 +173,13 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	_setup : function(){
 		var next = this.next;
 		var time;
-		this.next = function(t){
-			time = t ? t*1000 : 1000;
-		}
+		this.next = function(t){ time = t ? t*1000 : 1000;}
 		this.setup();
 		this.next = next;
 		if(time){
 			var t = this;
 			var _start = this._start;
-			setTimeout(
-				function(){
-					_start.call(t);
-				}, time
-			);
+			setTimeout( function(){ _start.call(t); }, time);
 		}else{
 			this._start();
 		}
@@ -237,40 +225,33 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 			}
 		}
 	},
-	next: function(params,delay, fname){
-		if(!fname){
-			fname = this.get_next_name();
-		}
-		this._delays ++;
-		delay = delay ? delay*1000 : 1000;
+	_call_next_callback : function(fname, params){
+		if(!fname) fname = this.get_next_name();
 		var assert = this;
 		var  func = this._test.tests[fname];
-		setTimeout(function(){
+		return function(){
 			assert._last_called = fname;
+			var args = $MVC.Array.from(arguments);
+			if(params) args.unshift(params)
 			try{
-				func.call(assert, params);
+				func.apply(assert, args);
 			}catch(e){ assert.error(e); }
 			assert._delays--;
 			assert._update();
-		}, delay)
+		};
+	},
+	next: function(params,delay, fname){
+		this._delays ++;
+		delay = delay ? delay*1000 : 1000;
+		setTimeout(this._call_next_callback(fname, params), delay)
 	},
 	next_callback: function(fname,delay){
-		this._delays ++;
-		var assert = this;
-		if(!fname) fname = this.get_next_name();
-		
-		func = this._test.tests[fname];
-		var f = function(){
-			try{
-				func.apply(assert, arguments);
-			}catch(e){ assert.error(e); }
-			assert._delays--;
-			assert._update();
-		}
+		this._delays++;
+		var f = this._call_next_callback(fname)
 		if(!delay) return f;
 		return function(){
 			setTimeout(f, delay*1000)
-		}
+		};
 	},
 	_update : function(){
 		if(this._delays == 0){
@@ -278,10 +259,8 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 			$MVC.Test.window.update(this._test, this._test_name, this);
 			this._test.run_next();
 		}
-	}//this should also trigger next test probably
+	}
 });
-
-
 
 Function.prototype.curry = function() {
 	var fn = this, args = Array.prototype.slice.call(arguments);
@@ -300,31 +279,29 @@ $MVC.Test.Functional = $MVC.Test.extend({
 	},
 	helpers : function(){
 		var helpers = this._super();
-		helpers.Action =   function(event, selector, options){
+		helpers.Action =   function(event_type, selector, options){
 			options = options || {};
-			options.type = event.type;
+			options.type = event_type;
 			var number = 0;
-			if(typeof event == 'string') event = {type: event};
-			
+
 			if(typeof options == 'number') 		 number = options || 0;
 			else if (typeof options == 'object') number = options.number || 0;
-			var element;
 			
-			if(typeof selector == 'string') element = $MVC.CSSQuery(selector)[number]
-			else element = selector;
-			var se = new $MVC.SyntheticEvent(event.type, options);
-			var event = se.send(element);
+			var element = typeof selector == 'string' ? $MVC.CSSQuery(selector)[number] : selector; //if not a selector assume element
+
+			var event = new $MVC.SyntheticEvent(event_type, options).send(element);
 			return {event: event, element: element, options: options};
 		}
 		for(var e = 0; e < $MVC.Test.Functional.events.length; e++){
-			var event = $MVC.Test.Functional.events[e];
-			helpers[event.capitalize()] = helpers.Action.curry(event)
+			var event_name = $MVC.Test.Functional.events[e];
+			helpers[$MVC.String.capitalize(event_name)] = helpers.Action.curry(event_name)
 		}
 		return helpers;
 	}
 });
 $MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keyup','keydown','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag','write'];
 $MVC.Test.Functional.tests = [];
+
 $MVC.Test.Functional.run = function(callback){
 	var t = $MVC.Test.Functional;
 	t.working_test = 0;
@@ -359,28 +336,9 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 			if(!actions[action_name].event_type) continue;
 			var event_type = actions[action_name].event_type;
 			var cleaned_name = actions[action_name].selector.replace(/\.|#/g, '')+' '+event_type;
-			var helper_name = cleaned_name.replace(/(\w*)/g, function(m,part){ 
-				return $MVC.String.capitalize(part)}
-			).replace(/ /g, '');
-			var test_name = 'test_'+cleaned_name.replace(/ /g, '_');
-			
+			var helper_name = cleaned_name.replace(/(\w*)/g, function(m,part){ return $MVC.String.capitalize(part)}).replace(/ /g, '');
 			helpers[helper_name] = helpers[event_type.capitalize()].curry(actions[action_name].selector);
 			this.added_helpers[helper_name] = helpers[helper_name];
-			
-			//now go through tests and see if one of these is being tested			
-			/*var found = false;
-			for(var t in this.tests){
-				if(t.indexOf(test_name) == 0){
-					var test = this.tests[t];
-					this.tests[t] = function(){
-						test(helpers[helper_name]()); // might need to pass the thing into name
-					};
-					found = true;
-				}
-			}
-			if(!found){
-				this.tests[test_name] = helpers[helper_name]
-			}*/
 		}
 		return helpers;
 	}
@@ -402,11 +360,9 @@ $MVC.Test.window = window.open($MVC.root+'/plugins/test/test.html', null, "width
 if(!$MVC.Test.window)
 	alert('Testing needs to open up a pop-up window.  Please enable popups and REFRESH this page.')
 
-$MVC.Test.window.get_tests = function(){
-	return $MVC.Tests;
-} 
+$MVC.Test.window.get_tests = function(){return $MVC.Tests; } 
 
-
+//This function returns what something looks like
 $MVC.Test.inspect =  function(object) {
 	try {
 		if (object === undefined) return 'undefined';
@@ -418,54 +374,10 @@ $MVC.Test.inspect =  function(object) {
 	}
 };
 
-//we need to create the helper functions
-//maybe each class has its assertions class
 
 
 
-
-$MVC.Test.Controller.Action = function(action){
-	this.name = action.action_name;
-	this.selector = action.selector || 0;
-	this.func = action.func;
-	this.checked_default = true;
-}
-$MVC.Test.Controller.Action.prototype = {
-	//given a controller
-	//looks up the actions it is going to call
-	//uses a css selector or the first element it finds (you can pass in a css selector or number
-	//calls the event, calls the function
-	run : function(test){
-		var action = this.controller.actions()[this.name];
-		var selector, number;
-		var options = {};
-		if(typeof this.selector == 'string'){
-			selector = this.selector;
-			number = 0;
-		} else if(typeof this.selector == 'object') {
-			selector = action.selector;
-			options.write = this.selector.write || '';
-			number = this.selector.selector || 0;
-		}else{
-			selector = action.selector;
-			number = this.selector;
-		}
-		var target = $MVC.CSSQuery(selector)[number];
-		
-		var e = new $MVC.SyntheticEvent(action.event_type, options).send( target)
-		
-		this.func.call(test, {event: e, element: target})
-	},
-	toString : function(){
-		return this.name;
-	},
-	toHTML : function(){
-		return "<li><a href='javascript: void(0);' onclick='"+this.controller.toString()+".run_action(\""+this.toString()+"\")'>"+this.toString()+"</a></li>"
-	}
-}
-
-
-
+//Synthetic event class
 $MVC.SyntheticEvent = function(type, options){
 	this.type = type;
 	this.options = options || {};
@@ -656,12 +568,10 @@ $MVC.SyntheticEvent.prototype = {
 		var x = this.options.from.x;
 		var y = this.options.from.y;
 		var steps = this.options.steps || 100;
-		
 		this.type = 'mousedown';
 		this.options.clientX = x;
 		this.options.clientY = y;
 		this.create_event(target);
-		
 		this.type = 'mousemove';
 		for(var i = 0; i < steps; i++){
 			x = this.options.from.x + (i * (this.options.to.x - this.options.from.x )) / steps;
