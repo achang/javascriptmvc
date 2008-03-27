@@ -30,8 +30,8 @@
 
 
 $MVC.Test = $MVC.Class.extend({
-	init: function( type,name, tests  ){
-		this.type = type;
+	init: function( name, tests, type  ){
+		this.type = type || 'unit';
 		this.tests = tests;
 		this.test_names = [];
 		this.test_array = [];
@@ -141,7 +141,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	_setup : function(){
 		var next = this.next;
 		var time;
-		this.next = function(t){ time = t ? t*1000 : 1000;}
+		this.next = function(t){ time = t ? t*1000 : 500;}
 		this.setup();
 		this.next = next;
 		if(time){
@@ -213,7 +213,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	},
 	next: function(params,delay, fname){
 		this._delays ++;
-		delay = delay ? delay*1000 : 1000;
+		delay = delay ? delay*1000 : 500;
 		setTimeout(this._call_next_callback(fname, params), delay)
 	},
 	next_callback: function(fname,delay){
@@ -241,12 +241,36 @@ Function.prototype.curry = function() {
 	    Array.prototype.slice.call(arguments)));
 	};
 };
+$MVC.Test.Unit = $MVC.Test.extend({
+	init: function(name , tests ){
+		this._super(  name, tests, 'unit');
+		$MVC.Test.Unit.tests.push(this)
+	}
+});
+$MVC.Test.Unit.tests = [];
+$MVC.Test.Unit.run = function(callback){
+	var t = $MVC.Test.Unit;
+	t.working_test = 0;
+	t.callback = callback;
+	t.run_next();
+}
+$MVC.Test.Unit.run_next = function(){
+	var t = $MVC.Test.Unit;
+	if(t.working_test != null && t.working_test < t.tests.length){
+			t.working_test++;
+			t.tests[t.working_test-1].run( t.run_next )
+	}else if(t.callback){
+		t.working_test = null;
+		t.callback();
+		t.callback = null;
+	}
+}
 
 
 
 $MVC.Test.Functional = $MVC.Test.extend({
 	init: function(name , tests ){
-		this._super('functional',  name, tests);
+		this._super(  name, tests, 'functional');
 		$MVC.Test.Functional.tests.push(this)
 	},
 	helpers : function(){
@@ -362,4 +386,6 @@ $MVC.Test.inspect =  function(object) {
 		
 	};
 })()
+include.unit_test = include.app(function(i){ return '../test/unit/'+i+'_test'})
+		
 

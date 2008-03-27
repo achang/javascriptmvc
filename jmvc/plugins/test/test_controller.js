@@ -43,3 +43,18 @@ running = function(controller, test_name){
 	
 }
 
+show = function(type){
+	var types = ['unit','functional','application'];
+	var els = {}
+	var buttons = {};
+	for(var i = 0 ; i < types.length; i++){
+		els[types[i]] =  document.getElementById(types[i]);
+		buttons[types[i]] =  document.getElementById(types[i]+'_button');
+		els[types[i]].style.display = 'none'
+		buttons[types[i]].className = '';
+	}
+	els[type].style.display = 'block';
+	buttons[type].className = 'selected';
+
+}
+
