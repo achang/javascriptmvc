@@ -378,7 +378,7 @@ $MVC.Object.extend(include,{
 	if($MVC.script_options){
 		$MVC.application_root =  $MVC.root.replace(/jmvc$/,'')+'apps';
 		if($MVC.script_options.length > 1){
-			include.setup({env: $MVC.script_options[1], production: $MVC.application_root+'apps/'+$MVC.script_options[0]+'_production'})
+			include.setup({env: $MVC.script_options[1], production: $MVC.application_root+'/'+$MVC.script_options[0]+'_production'})
 		}
 		if($MVC.script_options[1] == 'test')
 			include.plugins('test');
