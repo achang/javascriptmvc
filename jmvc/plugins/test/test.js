@@ -741,7 +741,7 @@ $MVC.Test.center= function(element) {
 		cont.apply(null,arguments);
 		include.app(function(i){
 			$MVC.Console.log('Trying to load: '+'test/functional/'+i+'_controller_test')
-			return 'test/functional/'+i+'_controller_test'
+			return '../test/functional/'+i+'_controller_test'
 		}).apply(null, arguments);
 		
 	};

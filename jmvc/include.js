@@ -369,9 +369,9 @@ $MVC.Object.extend(include,{
 		}
 	};
 	
-	include.controllers = include.app(function(i){return 'controllers/'+i+'_controller'});
-	include.models = include.app(function(i){return 'models/'+i});
-	include.resources = include.app(function(i){return 'resources/'+i});
+	include.controllers = include.app(function(i){return '../controllers/'+i+'_controller'});
+	include.models = include.app(function(i){return '../models/'+i});
+	include.resources = include.app(function(i){return '../resources/'+i});
 	
 
 	
