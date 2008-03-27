@@ -34,7 +34,7 @@ new $MVC.Test.Controller('todos',{
 		   this.assertEqual($MVC.CSSQuery('.todo label input')[0].value, "Learn JavaScriptMVChello worldD");
            var params = this.TodoLabelInputKeypress({keyCode: 13});
 		   this.assertEqual($MVC.CSSQuery('.todo label')[0].innerHTML, "Learn JavaScriptMVChello worldD");
-		   this.next('blank');
+		   this.next(null, null, 'blank');
        },
 		test_todo_check_click : function() {
 			if($MVC.CSSQuery('.todo .check')[0].checked == true)
