@@ -20,7 +20,6 @@
 	        catch(e) { continue;}
 	   }
 	}
-	
 	if(checkExists($MVC.application_root+'apps/'+$MVC.script_options[0]+'_test.js'))
 		include($MVC.application_root+'apps/'+$MVC.script_options[0]+'_test');
 })();
@@ -740,8 +739,8 @@ $MVC.Test.center= function(element) {
 	include.controllers = function(){
 		cont.apply(null,arguments);
 		include.app(function(i){
-			$MVC.Console.log('Trying to load: '+'test/functional/'+i+'_controller_test')
-			return 'test/functional/'+i+'_controller_test'
+			$MVC.Console.log('Trying to load: '+'../test/functional/'+i+'_controller_test')
+			return '../test/functional/'+i+'_controller_test'
 		}).apply(null, arguments);
 		
 	};
