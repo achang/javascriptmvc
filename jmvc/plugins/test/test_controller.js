@@ -11,25 +11,35 @@ update = function(controller, test_name, assertions){
 	var step = document.getElementById('step_'+controller.name+'_'+test_name);
 	var result = step.childNodes[1];
 	
-	if(assertions.failures == 0){
+	if(assertions.failures == 0 && assertions.errors == 0){
 		step.className = 'passed'
 		result.innerHTML = 'Passed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)
 		
 	}else{
 		step.className = 'failure'
-		result.innerHTML = 'Failed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)+', '+assertions.failures+' failure'+add_s(assertions.failures)+' <br/>'+
+		result.innerHTML = 'Failed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)+
+		', '+assertions.failures+' failure'+add_s(assertions.failures)+
+		', '+assertions.errors+' error'+add_s(assertions.errors)+' <br/>'+
 			assertions.messages.join("<br/>")
 	}
 	
 }
 
+update_test = function(test){
+	var el = document.getElementById(test.name+"_results")
+	el.innerHTML = '('+test.passes+'/'+test.test_names.length+ ')'
+}
+
+
 add_s = function(array){
-	return array > 1 ?'s' : ''
+	return array == 1 ? '' : 's'
 }
 
 running = function(controller, test_name){
 	var step = document.getElementById('step_'+controller.name+'_'+test_name);
+	step.className = '';
 	var result = step.childNodes[1];
 	result.innerHTML = 'Running ...'
 	
 }
+
