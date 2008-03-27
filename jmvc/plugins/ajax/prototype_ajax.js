@@ -4,10 +4,17 @@
 	$MVC.Object.extend($MVC.Ajax, Ajax);
 	$MVC.Ajax.Request = function(url,options){
 		if( ! options.no_test  ){
-			$MVC.Console.log('Loading '+$MVC.application_root+'test/fixtures/ajax/'+url.replace(/\?|#|&/g,'-').replace(/\//g,'_').replace('=','-')+'.fix' )
+			var match = url.match(/^\/([^\?]*)\??(.*)?/)
+			var left = match[1];
+			var right = '';
+			if(match[2]){
+				left += '/';
+				right = match[2].replace(/\#|&/g,'-').replace(/\//g, '~')
+			}
+			$MVC.Console.log('Loading '+$MVC.application_root+'test/fixtures/ajax/'+left+right+'.fix' )
 		}
 		if(include.get_env() == 'test' && !options.no_test){
-			url = $MVC.application_root+'test/fixtures/ajax/'+ encodeURIComponent( url.replace(/\?|#|&/g,'-').replace(/\//g,'_').replace('=','-'))+'.fix';
+			url = $MVC.application_root+'test/fixtures/ajax/'+left+encodeURIComponent( right)+'.fix';
 			options.method = 'get';
 		}
 		return new request(url,options)
