@@ -461,7 +461,7 @@ $MVC.SyntheticEvent.prototype = {
 		}
 	},
 	createKeypress : function(element, character) {
-		if(character.match(/\n/)) {
+		if(character && character.match(/\n/)) {
 			this.options.keyCode = 13;
 			character = 0;
 		}
@@ -493,7 +493,7 @@ $MVC.SyntheticEvent.prototype = {
 			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createKeypressObject : function(element, character) {
-		if(character.match(/\n/)) {
+		if(character && character.match(/\n/)) {
 			this.options.keyCode = 13;
 			character = 0;
 		}
@@ -741,7 +741,7 @@ $MVC.Test.center= function(element) {
 		cont.apply(null,arguments);
 		include.app(function(i){
 			$MVC.Console.log('Trying to load: '+'test/functional/'+i+'_controller_test')
-			return '../test/functional/'+i+'_controller_test'
+			return 'test/functional/'+i+'_controller_test'
 		}).apply(null, arguments);
 		
 	};
