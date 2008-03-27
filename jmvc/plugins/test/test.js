@@ -230,13 +230,16 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	failures : 0,
 	errors: 0,
 	messages : [],
+	get_next_name :function(){
+		for(var i = 0; i < this._test.test_array.length; i++){
+			if(this._test.test_array[i] == this._last_called){
+				return this._test.test_array[i+1];
+			}
+		}
+	},
 	next: function(params,delay, fname){
 		if(!fname){
-			for(var i = 0; i < this._test.test_array.length; i++){
-				if(this._test.test_array[i] == this._last_called){
-					fname = this._test.test_array[i+1]; break;
-				}
-			}
+			fname = this.get_next_name();
 		}
 		this._delays ++;
 		delay = delay ? delay*1000 : 1000;
@@ -254,6 +257,8 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	next_callback: function(fname,delay){
 		this._delays ++;
 		var assert = this;
+		if(!fname) fname = this.get_next_name();
+		
 		func = this._test.tests[fname];
 		var f = function(){
 			try{
