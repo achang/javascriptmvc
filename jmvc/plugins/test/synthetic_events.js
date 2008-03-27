@@ -1,3 +1,6 @@
+
+
+
 $MVC.SyntheticEvent = function(type, options){
 	this.type = type;
 	this.options = options || {};

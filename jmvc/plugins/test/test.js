@@ -4,8 +4,8 @@
 		$MVC.Console.log('Checking if '+path+' exists')
 		var xhr=createXHR(path);
 	    try{xhr.send(null);}
-	    catch(e){if ( xhr.status == 404 || xhr.status == 2 ||(xhr.status == 0 && xhr.responseText == '') ) return false}
-	    if ( xhr.status == 404 || xhr.status == 2 ||(xhr.status == 0 && xhr.responseText == '') ) return false;
+	    catch(e){if ( xhr.status == 404 || xhr.status == 2 || xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) return false}
+		if ( xhr.status == 404 || xhr.status == 2|| xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) return false;
 	    return true;
 	}
 	
@@ -20,11 +20,13 @@
 	        catch(e) { continue;}
 	   }
 	}
-	if(checkExists($MVC.application_root+'apps/'+$MVC.script_options[0]+'_test.js'))
-		include($MVC.application_root+'apps/'+$MVC.script_options[0]+'_test');
+	if(checkExists($MVC.application_root+'/'+$MVC.script_options[0]+'_test.js')){
+		var path = include.get_path();
+		include.set_path($MVC.application_root)
+		include($MVC.script_options[0]+'_test')
+		include.set_path(path)
+	}
 })();
-
-
 
 
 
@@ -374,6 +376,8 @@ $MVC.Test.inspect =  function(object) {
 		
 	};
 })();
+
+
 include.unit_test = include.app(function(i){ return '../test/unit/'+i+'_test'});
 		
 
