@@ -261,6 +261,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		
 		func = this._test.tests[fname];
 		var f = function(){
+			assert._last_called = fname;
 			try{
 				func.apply(assert, arguments);
 			}catch(e){ assert.error(e); }
