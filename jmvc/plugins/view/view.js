@@ -444,7 +444,7 @@ include.view = function(path){
 
 include.views = function(){
 	for(var i=0; i< arguments.length; i++){
-		include.view('app/views/'+arguments[i]+'.ejs');
+		include.view('views/'+arguments[i]+'.ejs');
 	}
 };
 
