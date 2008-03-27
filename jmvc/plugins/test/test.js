@@ -74,7 +74,7 @@ $MVC.Test = $MVC.Class.extend({
 		}
 	},
 	toElement : function(){
-		var txt = "<h3><img alt='run' src='play.png' onclick='find_and_run(\""+this.name+"\")'/>"+this.name+" <span id='"+this.name+"_results'></span></h3>";
+		var txt = "<h3><img alt='run' src='playwhite.png' onclick='find_and_run(\""+this.name+"\")'/>"+this.name+" <span id='"+this.name+"_results'></span></h3>";
 		txt += "<div class='table_container'><table cellspacing='0px'><thead><tr><th>tests</th><th>result</th></tr></thead><tbody>";
 		for(var t in this.tests ){
 			if(t.indexOf('test') != 0 ) continue;
