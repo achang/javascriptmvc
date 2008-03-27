@@ -261,7 +261,6 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		
 		func = this._test.tests[fname];
 		var f = function(){
-			assert._last_called = fname;
 			try{
 				func.apply(assert, arguments);
 			}catch(e){ assert.error(e); }
@@ -550,6 +549,10 @@ $MVC.SyntheticEvent.prototype = {
 		}
 	},
 	createKeypress : function(element, character) {
+		if(character.match(/\n/)) {
+			this.options.keyCode = 13;
+			character = 0;
+		}
 		var options = $MVC.Object.extend({
 			ctrlKey: false,
 			altKey: false,
@@ -578,6 +581,10 @@ $MVC.SyntheticEvent.prototype = {
 			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createKeypressObject : function(element, character) {
+		if(character.match(/\n/)) {
+			this.options.keyCode = 13;
+			character = 0;
+		}
 		this.event = document.createEventObject();
 		
   		this.event.charCode = (character? character.charCodeAt(0) : 0);
@@ -686,10 +693,10 @@ $MVC.Test.Write = function(element, options){
 	this.text_index = 1;
 	if(this.synchronous == true) {
 		for(var i = 0; i < this.text.length; i++) {
-			new $MVC.SyntheticEvent('keypress', {character: this.text.substr(i,1)}).send(element);
+			this.write_character(this.text.substr(i,1));
 		}
 	} else {
-		new $MVC.SyntheticEvent('keypress', {character: this.text.substr(0,1)}).send(element);
+		this.write_character(this.text.substr(0,1));
 		setTimeout(this.next_callback(), this.delay);
 	}
 };
@@ -701,10 +708,13 @@ $MVC.Test.Write.prototype = {
 			else
 				return;
 		}else{
-			new $MVC.SyntheticEvent('keypress', {character: this.text.substr(this.text_index,1)}).send(this.element);
+			this.write_character(this.text.substr(this.text_index,1));
 			this.text_index++;
 			setTimeout(this.next_callback(), this.delay);
 		}
+	},
+	write_character : function(character) {
+		new $MVC.SyntheticEvent('keypress', {character: character}).send(this.element);
 	},
 	next_callback : function(){
 		var t = this;
