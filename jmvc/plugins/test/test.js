@@ -664,38 +664,46 @@ $MVC.SyntheticEvent.prototype = {
 			this.create_event(target);
 		}
 	},
+	// syntax 1: this.Write(input_params.element, 'Brian');
+	// syntax 2: this.Write(input_params.element, {text: 'Brian', callback: this.next_callback()});
 	write : function(element) {
 		element.focus();
 		return new $MVC.Test.Write(element, this.options)
-		this.type = 'keypress';
-		var text = this.options.text || this.options;
-		for(var i = 0; i < text.length; i++) {
-			if(document.createEvent) {
-				this.createKeypress(element, text.substr(i,1));
-			} else if (document.createEventObject) {
-				this.createKeypressObject(element, text.substr(i,1));
-			} else
-				throw "Your browser doesn't support dispatching events";
-		}
 	}
 };
 
 $MVC.Test.Write = function(element, options){
-	this.callback = options.callback;
-	this.text = options.text;
+	this.delay = 100;
+	if(typeof options == 'string') {
+		this.text = options;
+		this.synchronous = true;
+	} else {
+		if(options.callback) 			this.callback = options.callback;
+		if(options.text) 				this.text = options.text;
+		if(options.synchronous == true) this.synchronous = true;
+	}
 	this.element = element;
 	this.text_index = 1;
-	new $MVC.SyntheticEvent('keypress', {character: this.text.substr(0,1)}).send(element);
-	setTimeout(this.next_callback(), 100);
+	if(this.synchronous == true) {
+		for(var i = 0; i < this.text.length; i++) {
+			new $MVC.SyntheticEvent('keypress', {character: this.text.substr(i,1)}).send(element);
+		}
+	} else {
+		new $MVC.SyntheticEvent('keypress', {character: this.text.substr(0,1)}).send(element);
+		setTimeout(this.next_callback(), this.delay);
+	}
 };
 $MVC.Test.Write.prototype = {
 	next: function(){
 		if( this.text_index >= this.text.length){
-			if(this.callback) this.callback({element: this.target});
+			if(this.callback) 	
+				this.callback({element: this.target});
+			else
+				return;
 		}else{
 			new $MVC.SyntheticEvent('keypress', {character: this.text.substr(this.text_index,1)}).send(this.element);
 			this.text_index++;
-			setTimeout(this.next_callback(), 100);
+			setTimeout(this.next_callback(), this.delay);
 		}
 	},
 	next_callback : function(){
