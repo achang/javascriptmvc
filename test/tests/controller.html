@@ -1,0 +1,95 @@
+<html>
+	<head>
+		<title>Controller Test</title>
+		<style type='text/css'>
+			.success  {background-color: #80FF80}
+			.failure  {background-color: #FF8080}
+			.test {}
+		</style>
+	</head>
+	<body></body>
+<p><b>Instructions:</b>  The following form and input elements are
+		being matched by a Controller.  By performing various events on
+		the input element (mousover, click, focus, blur, mouseout), the event's
+		corresponding action logs the event and indicates successful event handling.
+		</p>
+		<form id='tests'>
+			<select class='test' id='sel'><option value='one'>one</option><option>two</option></select>
+			<input class='test' value='mouseover, mouseout, click, focus, and blur me' id='input' size='50' />
+			<input type='submit' value='submit me'/>
+		</form>
+		<div id='load' class='failure'>
+			Test load
+		</div>
+		<div id='mouseover' class='failure'>
+			Test mousover
+		</div>
+		<div id='mouseout' class='failure'>
+			Test mousout
+		</div>
+		<div id='click' class='failure'>
+			Test click
+		</div>
+		<div id='focus' class='failure'>
+			Test focus
+		</div>
+		<div id='blur' class='failure'>
+			Test blur
+		</div>
+		<div id='submit' class='failure'>
+			Test submit
+		</div>
+		<div id='resize' class='failure'>
+			Test resize
+		</div>
+		<div id='scroll' class='failure'>
+			Test scroll
+		</div>
+		<div id='unload' class='failure'>
+			Test unload
+		</div>
+		
+		<div id='mousedown' class='failure'>
+			Test mousedown
+		</div>
+		<div id='mousemove' class='failure'>
+			Test mousemove
+		</div>
+		<div id='mouseup' class='failure'>
+			Test mouseup
+		</div>
+		<div id='contextmenu' class='failure'>
+			Test contextmenu
+		</div>
+		<div id='change' class='failure'>
+			Test change
+		</div>
+		<div id='mainclick' class='failure'>
+			Test mainclick
+		</div>
+		<div id='output'>
+			
+		</div>
+		<div>
+			<div>
+				<div>
+					<div>
+						<p><a href='#' id='node_path' onclick='node_path_test()'>Test</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type='text/javascript' src='../../jmvc/include.js?controller_test'></script>
+		<script type='text/javascript'>
+			success = function(id){
+				document.getElementById(id).className = 'success';
+				log(id)
+			};
+			log = function(text){
+				document.getElementById('output').innerHTML = '<p>'+text+'</p>'
+			};
+		</script>
+		
+		
+	</body>
+</html>
