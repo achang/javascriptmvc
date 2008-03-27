@@ -22,26 +22,24 @@ update = function(controller, test_name, assertions){
 		', '+assertions.errors+' error'+add_s(assertions.errors)+' <br/>'+
 			assertions.messages.join("<br/>")
 	}
-	
-}
+};
 
 update_test = function(test){
 	var el = document.getElementById(test.name+"_results")
 	el.innerHTML = '('+test.passes+'/'+test.test_names.length+ ')'
-}
+};
 
 
 add_s = function(array){
 	return array == 1 ? '' : 's'
-}
+};
 
 running = function(controller, test_name){
 	var step = document.getElementById('step_'+controller.name+'_'+test_name);
 	step.className = '';
 	var result = step.childNodes[1];
 	result.innerHTML = 'Running ...'
-	
-}
+};
 
 show = function(type){
 	var types = ['unit','functional','application'];
@@ -56,5 +54,5 @@ show = function(type){
 	els[type].style.display = 'block';
 	buttons[type].className = 'selected';
 
-}
+};
 

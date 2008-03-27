@@ -264,7 +264,7 @@ $MVC.Test.Unit.run_next = function(){
 		t.callback();
 		t.callback = null;
 	}
-}
+};
 
 
 
@@ -341,17 +341,6 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
 $MVC.Test.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes,scrollbars=yes");
 if(!$MVC.Test.window)
 	alert('Testing needs to open up a pop-up window.  Please enable popups and REFRESH this page.')
@@ -374,7 +363,6 @@ $MVC.Test.inspect =  function(object) {
 };
 
 
-
 (function(){
 	var cont = include.controllers
 	include.controllers = function(){
@@ -385,7 +373,7 @@ $MVC.Test.inspect =  function(object) {
 		}).apply(null, arguments);
 		
 	};
-})()
-include.unit_test = include.app(function(i){ return '../test/unit/'+i+'_test'})
+})();
+include.unit_test = include.app(function(i){ return '../test/unit/'+i+'_test'});
 		
 
