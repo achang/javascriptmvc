@@ -244,11 +244,11 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		var  func = this._test.tests[fname];
 		setTimeout(function(){
 			assert._last_called = fname;
+			try{
+				func.call(assert, params);
+			}catch(e){ assert.error(e); }
 			assert._delays--;
 			assert._update();
-			/*try{
-				func.call(assert, params);
-			}catch(e){ assert.error(e); }*/
 		}, delay)
 	},
 	next_callback: function(fname,delay){
