@@ -4,7 +4,7 @@ $MVC.Object.extend(ApplicationError,{
 	textarea_text: "type description here",
 	textarea_title: "Damn It!",
 	close_time: 10,
-	prompt_text: "Something just went wrong.  Please describe your most recent actions and let us know what happenned. We'll fix the problem.",
+	prompt_text: "Something just went wrong.  Please describe your most recent actions and let us know what happened. We'll fix the problem.",
 	prompt_user: true,
 	generate_content: function(params){
 		var content = [];
