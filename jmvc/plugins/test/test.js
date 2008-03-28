@@ -252,21 +252,27 @@ $MVC.Test.Unit = $MVC.Test.extend({
 $MVC.Test.Unit.tests = [];
 $MVC.Test.Unit.run = function(callback){
 	var t = $MVC.Test.Unit;
+	t.passes = 0;
 	t.working_test = 0;
 	t.callback = callback;
 	t.run_next();
+	
 }
 $MVC.Test.Unit.run_next = function(){
 	var t = $MVC.Test.Unit;
 	if(t.working_test != null && t.working_test < t.tests.length){
+			if(t.tests[t.working_test].failures == 0 &&  t.tests[t.working_test].errors == 0) { t.passes++}
 			t.working_test++;
 			t.tests[t.working_test-1].run( t.run_next )
-	}else if(t.callback){
+	}else if(t.working_test != null) {
 		t.working_test = null;
-		t.callback();
-		t.callback = null;
+		$MVC.Test.window.document.getElementById('unit_result').innerHTML = '('+t.passes+'/'+t.tests.length+')'
+		if(t.callback){
+			t.callback();
+			t.callback = null;
+		}
 	}
-};
+}
 
 
 
@@ -302,19 +308,25 @@ $MVC.Test.Functional.tests = [];
 
 $MVC.Test.Functional.run = function(callback){
 	var t = $MVC.Test.Functional;
+	t.passes = 0;
 	t.working_test = 0;
 	t.callback = callback;
 	t.run_next();
+	
 }
 $MVC.Test.Functional.run_next = function(){
 	var t = $MVC.Test.Functional;
 	if(t.working_test != null && t.working_test < t.tests.length){
+			if(t.tests[t.working_test].failures == 0 && t.tests[t.working_test].errors == 0) { t.passes++}
 			t.working_test++;
 			t.tests[t.working_test-1].run( t.run_next )
-	}else if(t.callback){
+	}else if(t.working_test != null) {
 		t.working_test = null;
-		t.callback();
-		t.callback = null;
+		$MVC.Test.window.document.getElementById('functional_result').innerHTML = '('+t.passes+'/'+t.tests.length+')'
+		if(t.callback){
+			t.callback();
+			t.callback = null;
+		}
 	}
 }
 
