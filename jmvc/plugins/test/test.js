@@ -52,6 +52,10 @@ $MVC.Test = $MVC.Class.extend({
 		for(var t in this.tests) if(t.indexOf('test') != 0) helpers[t] = this.tests[t];
 		return helpers;
 	},
+	run_helper: function(helper_name){
+		var a = new this.Assertions(this);
+		a[helper_name](0);
+	},
 	run_test: function(test_id){
 		this.assertions = new this.Assertions(this, test_id);
 	},
@@ -91,7 +95,7 @@ $MVC.Test = $MVC.Class.extend({
 			txt+= "<div class='helpers'>Helpers: "
 			var helpers = [];
 			for(var h in this.added_helpers)
-				helpers.push( "<a href='javascript: void(0)'>"+h+"</a>")
+				helpers.push( "<a href='javascript: void(0)' onclick='run_helper(\""+this.name+"\",\""+h+"\")'>"+h+"</a>")
 			txt+= helpers.join(', ')+"</div>"
 		}
 		var t = $MVC.Test.window.document.createElement('div');
@@ -116,16 +120,16 @@ $MVC.Test.add = function(test){
 
 //almsot everything in here should be private
 $MVC.Test.Assertions =  $MVC.Class.extend({
-	init: function( test, test_name, remainder){
+	init: function( test, test_name){
 		this.assertions = 0;
 		this.failures = 0;
 		this.errors= 0;
 		this.messages = [];
-		
 		this._test = test;
-		this._test_name = test_name;
+		
+		if(!test_name) return;
 		this._delays = 0;
-		this._remainder = remainder;
+		this._test_name = test_name;
 		this._last_called = test_name;
 		$MVC.Test.window.running(this._test, this._test_name);
 		if(this.setup) 

@@ -5,7 +5,11 @@ find_and_run = function(t,s){
 	if(s) t.run_test(s);
 	else t.run();
 };
-
+run_helper = function(t, h){
+	opener.focus();	
+	var t = opener.$MVC.Tests[t]
+	t.run_helper(h);
+}
 
 update = function(controller, test_name, assertions){
 	var step = document.getElementById('step_'+controller.name+'_'+test_name);
