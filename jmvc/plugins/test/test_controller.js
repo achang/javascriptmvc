@@ -46,7 +46,7 @@ running = function(controller, test_name){
 };
 
 show = function(type){
-	var types = ['unit','functional','application'];
+	var types = ['unit','functional'];
 	var els = {}
 	var buttons = {};
 	for(var i = 0 ; i < types.length; i++){

@@ -31,7 +31,7 @@
 			h2 { 
 				text-decoration: none; 
 				border-top: solid 1px #8FBA3C;
-				padding: 3px 10px 4px 10px;
+				padding: 3px 20px 4px 20px;
 				border-left: solid 1px #8FBA3C;
 				color: blue; cursor: pointer;
 				display: inline;
@@ -41,7 +41,7 @@
 				font-size: 10px; 
 			}
 			
-			#application_button {
+			#functional_button {
 				border-right: solid 1px #8FBA3C;
 			}
 			h2.selected { 
@@ -51,7 +51,7 @@
 			h3 { margin: 0px; font-weight: normal;padding: 3px 3px 0px 2px;  }
 			h3 img {margin: 0px; padding: 0px 5px 0px 0px;}
 			#types[id] h2 {
-				padding: 2px 10px 4px 10px;
+				padding: 2px 20px 4px;
 			}
 			#types[id] h2 span{
 				vertical-align:top;
@@ -85,7 +85,7 @@
 	<body>
 		<h1>JavaScriptMVC Testing</h1>
 		<div id='types'>
-			<h2 id='unit_button' class='selected' onclick='show("unit");'>Unit</h2><h2 id='functional_button' onclick='show("functional");'> Functional </h2><h2  id='application_button' onclick='show("application");'>Application</h2>
+			<h2 id='unit_button' class='selected' onclick='show("unit");'>Unit</h2><h2 id='functional_button' onclick='show("functional");'>Functional </h2>
 		</div>
 		<div id='unit' class='test_type'>
 			 <p>
@@ -106,14 +106,7 @@
 			</div>
 		</div>
 		
-		<div id='application' class='test_type' style='display:none'>
-			 <p>
-			 	<img src='playgray.png' onclick='opener.$MVC.Test.Application.run()'/> Application tests <span class='result'></span>
-			 </p>
-			<div class='tests' id='application_tests'>
-
-			</div>
-		</div>
+		
 		
 		
 		
