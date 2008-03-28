@@ -29,7 +29,7 @@
 })();
 
 
-
+$MVC.Tests = {};
 
 $MVC.Test = $MVC.Class.extend({
 	init: function( name, tests, type  ){
@@ -45,19 +45,21 @@ $MVC.Test = $MVC.Class.extend({
 		this.Assertions = $MVC.Test.Assertions.extend(this.helpers()); //overwrite helpers
 		this.passes = 0;
 		this.failures = 0;
-		$MVC.Test.add(this);
+		
+		$MVC.Tests[this.name] = this
+		var insert_into = $MVC.Test.window.document.getElementById(this.type+'_tests');
+		insert_into.appendChild(this.toElement());
+	},
+	fail : function(){
+		this.failures++;
 	},
 	helpers : function(){
 		var helpers = {};
 		for(var t in this.tests) if(t.indexOf('test') != 0) helpers[t] = this.tests[t];
 		return helpers;
 	},
-	run_helper: function(helper_name){
-		var a = new this.Assertions(this);
-		a[helper_name](0);
-	},
-	run_test: function(test_id){
-		this.assertions = new this.Assertions(this, test_id);
+	pass : function(){
+		this.passes++;
 	},
 	run: function(callback){
 		this.working_test = 0;
@@ -65,6 +67,10 @@ $MVC.Test = $MVC.Class.extend({
 		this.passes = 0;
 		this.failures = 0;
 		this.run_next();
+	},
+	run_helper: function(helper_name){
+		var a = new this.Assertions(this);
+		a[helper_name](0);
 	},
 	run_next: function(){
 		if(this.working_test != null && this.working_test < this.test_names.length){
@@ -78,6 +84,9 @@ $MVC.Test = $MVC.Class.extend({
 				this.callback = null;
 			}
 		}
+	},
+	run_test: function(test_id){
+		this.assertions = new this.Assertions(this, test_id);
 	},
 	toElement : function(){
 		var txt = "<h3><img alt='run' src='playwhite.png' onclick='find_and_run(\""+this.name+"\")'/>"+this.name+" <span id='"+this.name+"_results'></span></h3>";
@@ -102,21 +111,36 @@ $MVC.Test = $MVC.Class.extend({
 		t.className = 'test'
 		t.innerHTML  = txt;
 		return t;
-	},
-	pass : function(){
-		this.passes++;
-	},
-	fail : function(){
-		this.failures++;
 	}
 });
 
-$MVC.Tests = {};
-$MVC.Test.add = function(test){
-	$MVC.Tests[test.name] = test
-	var insert_into = $MVC.Test.window.document.getElementById(test.type+'_tests');
-	insert_into.appendChild(test.toElement());
-}
+$MVC.Test.Runner = function(object, iterator_name,params){
+	var iterator_num;
+	object.run = function(callback){
+		object._callback = callback;
+		iterator_num = 0;
+		params.start.call(object);
+		object.run_next();
+	}
+	object.run_next = function(){
+		if(iterator_num != null && iterator_num < object[iterator_name].length){
+			if(iterator_num > 0) params.after.call(object, iterator_num-1);
+			iterator_num++;
+			object[iterator_name][iterator_num-1].run(object.run_next)
+		}else if(iterator_num != null){
+			if(iterator_num > 0) params.after.call(object, iterator_num-1);
+			params.done.call(object);
+			if(object._callback){
+				object._callback();
+				object._callback = null;
+			}else{
+				if($MVC.Browser.Gecko) window.blur();
+				else $MVC.Test.window.focus();
+			}
+		}
+	}
+};
+
 
 //almsot everything in here should be private
 $MVC.Test.Assertions =  $MVC.Class.extend({
@@ -192,7 +216,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	    this.errors++;
 	    this.messages.push(error.name + ": "+ error.message + "(" + $MVC.Test.inspect(error) +")");
 	 },
-	get_next_name :function(){
+	_get_next_name :function(){
 		for(var i = 0; i < this._test.test_array.length; i++){
 			if(this._test.test_array[i] == this._last_called){
 				if(i+1 >= this._test.test_array.length){
@@ -203,7 +227,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		}
 	},
 	_call_next_callback : function(fname, params){
-		if(!fname) fname = this.get_next_name();
+		if(!fname) fname = this._get_next_name();
 		var assert = this;
 		var  func = this._test.tests[fname];
 		return function(){
@@ -254,34 +278,22 @@ $MVC.Test.Unit = $MVC.Test.extend({
 	}
 });
 $MVC.Test.Unit.tests = [];
-$MVC.Test.Unit.run = function(callback){
-	window.focus();
-	var t = $MVC.Test.Unit;
-	t.passes = 0;
-	t.working_test = 0;
-	t.callback = callback;
-	t.run_next();
-	
-}
-$MVC.Test.Unit.run_next = function(){
-	var t = $MVC.Test.Unit;
-	if(t.working_test != null && t.working_test < t.tests.length){
-			if(t.working_test > 0 && t.tests[t.working_test-1].failures == 0) { t.passes++} //makes sure a test has run
-			t.working_test++;
-			t.tests[t.working_test-1].run( t.run_next )
-	}else if(t.working_test != null) {
-		t.working_test = null;
-		if(t.working_test > 0 && t.tests[t.working_test-1].failures == 0) { t.passes++} //makes sure a test has run
-		$MVC.Test.window.document.getElementById('unit_result').innerHTML = '('+t.passes+'/'+t.tests.length+')'+ (t.passes == t.tests.length ? ' Wow!' : '')
-		if(t.callback){
-			t.callback();
-			t.callback = null;
-		} else {
-			if($MVC.Browser.Gecko) window.blur();
-			else $MVC.Test.window.focus();
-		}
+
+
+$MVC.Test.Runner($MVC.Test.Unit, "tests", {
+	start : function(){
+		window.focus();
+		this.passes = 0;
+	},
+	after : function(number ){
+		if(this.tests[number].failures == 0 ) this.passes++;
+	},
+	done: function(){
+		$MVC.Test.window.document.getElementById('unit_result').innerHTML = 
+			'('+this.passes+'/'+this.tests.length+')' + (this.passes == this.tests.length ? ' Wow!' : '')
 	}
-};
+})
+
 
 
 
@@ -315,6 +327,24 @@ $MVC.Test.Functional = $MVC.Test.extend({
 $MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keyup','keydown','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag','write'];
 $MVC.Test.Functional.tests = [];
 
+
+
+
+$MVC.Test.Runner($MVC.Test.Functional, "tests", {
+	start : function(){
+		window.focus();
+		this.passes = 0;
+	},
+	after : function(number ){
+		if(this.tests[number].failures == 0 ) this.passes++;
+	},
+	done: function(){
+		$MVC.Test.window.document.getElementById('functional_result').innerHTML = 
+			'('+this.passes+'/'+this.tests.length+')' + (this.passes == this.tests.length ? ' Wow!' : '')
+	}
+})
+
+/*
 $MVC.Test.Functional.run = function(callback){
 	window.focus();
 	var t = $MVC.Test.Functional;
@@ -342,7 +372,7 @@ $MVC.Test.Functional.run_next = function(){
 			else $MVC.Test.window.focus();
 		}
 	}
-}
+}*/
 
 $MVC.Test.Controller = $MVC.Test.Functional.extend({
 	init: function(name , tests ){
