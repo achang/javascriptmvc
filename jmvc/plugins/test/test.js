@@ -20,9 +20,9 @@
 	        catch(e) { continue;}
 	   }
 	}
-	if(checkExists($MVC.application_root+'/'+$MVC.script_options[0]+'_test.js')){
+	if(checkExists($MVC.apps_root+'/'+$MVC.script_options[0]+'_test.js')){
 		var path = include.get_path();
-		include.set_path($MVC.application_root)
+		include.set_path($MVC.apps_root)
 		include($MVC.script_options[0]+'_test')
 		include.set_path(path)
 	}
@@ -266,12 +266,13 @@ $MVC.Test.Unit.run = function(callback){
 $MVC.Test.Unit.run_next = function(){
 	var t = $MVC.Test.Unit;
 	if(t.working_test != null && t.working_test < t.tests.length){
-			if(t.tests[t.working_test].failures == 0 &&  t.tests[t.working_test].errors == 0) { t.passes++}
+			if(t.working_test > 0 && t.tests[t.working_test-1].failures == 0) { t.passes++} //makes sure a test has run
 			t.working_test++;
 			t.tests[t.working_test-1].run( t.run_next )
 	}else if(t.working_test != null) {
 		t.working_test = null;
-		$MVC.Test.window.document.getElementById('unit_result').innerHTML = '('+t.passes+'/'+t.tests.length+')'
+		if(t.working_test > 0 && t.tests[t.working_test-1].failures == 0) { t.passes++} //makes sure a test has run
+		$MVC.Test.window.document.getElementById('unit_result').innerHTML = '('+t.passes+'/'+t.tests.length+')'+ (t.passes == t.tests.length ? ' Wow!' : '')
 		if(t.callback){
 			t.callback();
 			t.callback = null;
@@ -326,12 +327,13 @@ $MVC.Test.Functional.run = function(callback){
 $MVC.Test.Functional.run_next = function(){
 	var t = $MVC.Test.Functional;
 	if(t.working_test != null && t.working_test < t.tests.length){
-			if(t.tests[t.working_test].failures == 0 && t.tests[t.working_test].errors == 0) { t.passes++}
+			if(t.working_test > 0 && t.tests[t.working_test-1].failures == 0) { t.passes++} //do this on the last test
 			t.working_test++;
 			t.tests[t.working_test-1].run( t.run_next )
 	}else if(t.working_test != null) {
+		if(t.working_test > 0 && t.tests[t.working_test-1].failures == 0) { t.passes++} //makes sure a test has run
 		t.working_test = null;
-		$MVC.Test.window.document.getElementById('functional_result').innerHTML = '('+t.passes+'/'+t.tests.length+')'
+		$MVC.Test.window.document.getElementById('functional_result').innerHTML = '('+t.passes+'/'+t.tests.length+')' + (t.passes == t.tests.length ? ' Wow!' : '')
 		if(t.callback){
 			t.callback();
 			t.callback = null;
