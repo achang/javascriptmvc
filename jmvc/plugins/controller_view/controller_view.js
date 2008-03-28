@@ -14,17 +14,17 @@ $MVC.Controller.functions.prototype.render = function(options) {
 				var url_part =  $MVC.String.include(options.action,'/') ? 
 									options.action.split('/').join('/_') : 
 									controller_name+'/'+options.action;
-				var url = 'views/'+url_part+'.ejs';
+				var url = '/../views/'+url_part+'.ejs';
             }
 			else if(options.partial) {
                 
 				var url_part = $MVC.String.include(options.action,'/') ? 
 									options.partial.split('/').join('/_') : 
 									controller_name+'/_'+options.partial;		
-				var url = 'views/'+url_part+'.ejs';
+				var url = '/../views/'+url_part+'.ejs';
 			}
             else {
-                var url = 'views/'+controller_name+'/'+action_name.replace(/\.|#/g, '').replace(/ /g,'_')+'.ejs';
+                var url = '/../views/'+controller_name+'/'+action_name.replace(/\.|#/g, '').replace(/ /g,'_')+'.ejs';
             }
 			var data_to_render = this;
 			if(options.locals) {
