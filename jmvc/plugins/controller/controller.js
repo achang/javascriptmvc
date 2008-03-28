@@ -85,7 +85,7 @@ $MVC.Object.extend($MVC.Controller , {
 		var action = controller.actions()[action_name], instance = new controller();
 		instance.params = params;
 		instance.action = action;
-		return $MVC.Controller._dispatch_action(instance,action_name, params )
+		return $MVC.Controller._dispatch_action(instance,action_name, params );
 	},
 	_dispatch_action: function(instance, action_name, params){
 		return instance[action_name](params);
@@ -97,7 +97,7 @@ $MVC.Object.extend($MVC.Controller , {
 			iterator = iterator.parentNode;
 			if(iterator == null) return [];
 		}
-		parents.push(body)
+		parents.push(body);
 		return parents;
 	},
 	dispatch_event: function(event){
