@@ -255,6 +255,7 @@ $MVC.Test.Unit = $MVC.Test.extend({
 });
 $MVC.Test.Unit.tests = [];
 $MVC.Test.Unit.run = function(callback){
+	window.focus();
 	var t = $MVC.Test.Unit;
 	t.passes = 0;
 	t.working_test = 0;
@@ -274,9 +275,12 @@ $MVC.Test.Unit.run_next = function(){
 		if(t.callback){
 			t.callback();
 			t.callback = null;
+		} else {
+			if($MVC.Browser.Gecko) window.blur();
+			else $MVC.Test.window.focus();
 		}
 	}
-}
+};
 
 
 
@@ -311,6 +315,7 @@ $MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keyup'
 $MVC.Test.Functional.tests = [];
 
 $MVC.Test.Functional.run = function(callback){
+	window.focus();
 	var t = $MVC.Test.Functional;
 	t.passes = 0;
 	t.working_test = 0;
@@ -330,6 +335,9 @@ $MVC.Test.Functional.run_next = function(){
 		if(t.callback){
 			t.callback();
 			t.callback = null;
+		} else {
+			if($MVC.Browser.Gecko) window.blur();
+			else $MVC.Test.window.focus();
 		}
 	}
 }
