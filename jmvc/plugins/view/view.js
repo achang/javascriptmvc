@@ -45,7 +45,6 @@ $MVC.View = function( options ){
 		return;
 	}
 	
-	
 	if(options.url){
 		var template = $MVC.View.get(options.url, this.cache);
 		if (template) return template;
@@ -433,10 +432,13 @@ $MVC.View.PreCompiledFunction = function(name, f){
 
 include.view = function(path){
 	if(include.get_env() == 'development'){
-		new $MVC.View({url: include.get_path()+'/'+path});
+		new $MVC.View({url: $MVC.application_root+'/'+path});
 	}else if(include.get_env() == 'compress'){
-		include({path: include.get_path()+'/'+path, process: $MVC.View.process_include, ignore: true});
-		new $MVC.View({url: include.get_path()+'/'+path});
+		var oldp = include.get_path();
+		include.set_path($MVC.application_root);
+		include({path: path, process: $MVC.View.process_include, ignore: true});
+		include.set_path(oldp);
+		new $MVC.View({url: $MVC.application_root+'/'+path});
 	}else{
 		//production, do nothing!
 	}
@@ -444,7 +446,7 @@ include.view = function(path){
 
 include.views = function(){
 	for(var i=0; i< arguments.length; i++){
-		include.view('../views/'+arguments[i]+'.ejs');
+		include.view('views/'+arguments[i]+'.ejs');
 	}
 };
 

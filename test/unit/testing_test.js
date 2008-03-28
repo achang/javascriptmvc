@@ -10,12 +10,15 @@ new $MVC.Test.Unit('testing',{
 		   this.assertNull(null);
 		   this.assertNull(undefined);
 		   this.assertEqual(1,1);
+		   this.assertEqual(5, '5');
+		   this.assertEqual(0, false)
 		   this.assertEqual(null, null);
 		   this.assertEqual('s', 's');
        },
 	   test_assert_fails : function(){
 	   		this.assert('', "OK");
 			this.assert(false, "OK");
+			this.assert(0, "OK");
 			this.assertNotNull(null, "OK");
 			this.assertNotNull(undefined, "OK");
 			this.assertNull('', "OK");
