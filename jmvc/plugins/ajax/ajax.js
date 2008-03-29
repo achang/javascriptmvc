@@ -1,5 +1,6 @@
 //Modified version of Ajax.Request from prototype.
 
+
 $MVC.Ajax.Request = function(url,options){
 	this.options = {
       method:       'post',

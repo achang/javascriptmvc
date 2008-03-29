@@ -4,15 +4,14 @@
  * 
  */
 (function(){
-	
-	//check if included has been added, if it has, gets the next included file.
-	if(typeof include != 'undefined'  && typeof include.end != 'undefined'){
-		include.end();
-		return;
-	} else if(typeof include != 'undefined' && typeof include.end == 'undefined') {
-		throw("Include is defined as function or an element's id, please change it.")
+	var isundefined = typeof include != 'undefined';
+
+	if(isundefined && typeof include.end != 'undefined'){
+		return include.end();
+	}else if(isundefined && typeof include.end == 'undefined') {
+		throw("Include is defined as function or an element's id!")
 	}
-	//$MVC stuff
+
 	$MVC = {
 		OPTIONS: {},
 		Test: {},
@@ -23,6 +22,14 @@
 			$MVC.user_initialize_function = user_initialize_function;
 			include.set_path($MVC.root);
 			include('framework');
+		},
+		Ajax: {},
+		Browser: {
+		    IE:     !!(window.attachEvent && !window.opera),
+		    Opera:  !!window.opera,
+		    WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
+		    Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1,
+		    MobileSafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/)
 		}
 	};
 	var File = $MVC.File;
@@ -37,10 +44,10 @@
 		domain: function(){ 
 			if(this.path.indexOf('file:') == 0 ) return null;
 			var http = this.path.match(/^(?:https?:\/\/)([^\/]*)/);
-			return http ? http[1] : this.path.split('/')[2];
+			return http ? http[1] : null;
 		},
 		join_from: function( url){
-			if(this.has_protocol){
+			if(this.is_domain_absolute()){
 				var u = new File(url);
 				if(this.domain() && this.domain() == u.domain() ) 
 					return this.after_domain();
@@ -51,18 +58,21 @@
 			}else if(url == $MVC.page_dir){
 				return this.path;
 			}else{
-				alert('fu')
+				if(this.path == '') return url.substr(0,url.length-1)
+				var urls = url.split('/');
+				urls.pop();
+				var paths = this.path.split('/');
+				var path = paths[0];
+				while(path == '..' && paths.length > 0){
+					paths.shift();
+					urls.pop();
+					path =paths[0];
+				}
+				return urls.concat(paths).join('/');
 			}
 		},
-		relative: function(){
-			return path.match(/^(https?|file|\/)/) == null;
-		},
-		has_protocol: function(){
-			return this.path.indexOf('http') == 0 || this.path.indexOf('file://') == 0;
-		},
-		after_domain: function(){
-			return this.path.match(/(?:https?:\/\/[^\/]*)(.*)/)[1];
-		},
+		relative: function(){		return this.path.match(/^(https?|file|\/)/) == null;},
+		after_domain: function(){	return this.path.match(/(?:https?:\/\/[^\/]*)(.*)/)[1];},
 		to_reference_from_same_domain: function(url){
 			var parts = this.path.split('/');
 			var other_parts = url.split('/');
@@ -72,33 +82,33 @@
 			}
 			for(var i = 0; i< other_parts.length; i++) result += '../';
 			return result+ parts.join('/');
-		}
+		},
+		is_cross_domain : function(){
+			if(this.is_local_absolute()) return false;
+			return this.domain() != new File(location.href).domain()
+		},
+		is_local_absolute : function(){	return this.path.indexOf('/') === 0},
+		is_domain_absolute : function(){return this.path.match(/^(https?|file)/) != null}
 	};
 	$MVC.Object = {extend: function(d, s) {
-		  for (var property in s)
-		    d[property] = s[property];
+		  for (var property in s) d[property] = s[property];
 		  return d;
 	}};
 	
-	
-	$MVC.page_dir = new File(window.location.href).dir(); // the folder where this page is
-	$MVC.root = null;										  //where JMVC is
-	$MVC.include_path = null;								  //where include is
-	$MVC.application_root = null;							  //where your application is, if different than jmvc
-	
-	
-	
+	$MVC.page_dir = new File(window.location.href).dir();
+	$MVC.root = null;						 
+	$MVC.include_path = null;						  
+	$MVC.application_root = null;							  
 	
 	//find include and get its absolute path
-	for(var i=0; i<document.getElementsByTagName("script").length; i++) {
-		var src = document.getElementsByTagName("script")[i].src;
+	var scripts = document.getElementsByTagName("script");
+	for(var i=0; i<scripts.length; i++) {
+		var src = scripts[i].src;
 		if(src.match(/include\.js/)){
 			$MVC.include_path = src;
-			var inc = new File(src); 
-			$MVC.root = new File( inc.join_from( $MVC.page_dir ) ).dir();
+			$MVC.root = new File( new File(src).join_from( $MVC.page_dir ) ).dir();
 			if(src.indexOf('?') != -1)
 				$MVC.script_options = src.split('?')[1].split(',');
-			
 		}
 	}
 	
@@ -118,24 +128,7 @@
 		current_includes=[],
 		total = [];
 
-
-	//helper functions
-	var is_absolute = function(path){
-		return path.match(/^(https?|file|\/)/) != null;
-	};
-	var is_cross_domain = function(path){
-		if(path.indexOf('/') == 0) return false;
-		return (get_domain(location.href) != get_domain(path));
-	};
-	var is_local_absolute = function(path){		return path.indexOf('/') == 0};
-	var is_domain_absolute = function(path){ 	return path.match(/^(https?|file)/) != null};
-	var is_relative = function(path){			return !is_absolute(path); };
 	
-	var get_domain = function(path){	
-		if(path.indexOf('file:') == 0 ) return null;
-		var http = path.match(/^(?:https?:\/\/)([^\/]*)/);
-		return http ? http[1] : path.split('/')[2];
-	};
 	
 	var is_included = function(path){
 		for(var i = 0; i < includes.length; i++) if(includes[i].absolute == path) return true;
@@ -143,20 +136,7 @@
 		for(var i = 0; i < total.length; i++) if(total[i].absolute == path) return true;
 		return false;
 	};
-	//joins 2 folders.  This takes into account things like ../../
-	var join = function(first, second){
-		if(second == '') return first.substr(0,first.length-1)
-		var first_parts = first.split('/');
-		first_parts.pop();
-		var second_parts = second.split('/');
-		var second_part = second_parts[0];
-		while(second_part == '..' && second_parts.length > 0){
-			second_parts.shift();
-			first_parts.pop();
-			second_part =second_parts[0];
-		}
-		return first_parts.concat(second_parts).join('/');
-	}
+
 
 	var add_with_defaults = function(newInclude){
 		if(typeof newInclude == 'string')
@@ -164,11 +144,7 @@
 		$MVC.Object.extend( $MVC.Object.extend({},options), newInclude)
 		include.add(newInclude);
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * includes a list of files like 'abc','def'
 	 */
@@ -183,8 +159,7 @@
 			return;
 		}
 		if(first && !navigator.userAgent.match(/Opera/)){
-			first = false;
-			insert(); //insert include tag
+			first = false;insert();
 		}
 	};
 	
@@ -197,7 +172,7 @@ $MVC.Object.extend(include,{
 		//open window for compress
 		if(options.env == 'compress') include.compress_window = window.open($MVC.root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 		
-		if(options.env == 'production' && ! navigator.userAgent.match(/Opera/)){
+		if(options.env == 'production' && ! $MVC.Browser.Opera){
 			document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
 			return;
 		}
@@ -212,21 +187,17 @@ $MVC.Object.extend(include,{
 			return cwd;
 	},
 	get_absolute_path: function(){
-		if(is_absolute(cwd)) return cwd;
-		return join($MVC.page_dir+'/',cwd);
+		var fwd = new File(cwd);
+		if(! fwd.relative()) return cwd;
+		return fwd.join_from($MVC.page_dir);
 	},
 	add: function(newInclude){
 		var path = newInclude.path;
-		if(first_wave_done){ //add right away!
-			insert_head(path);
-			return;
-		}
+		if(first_wave_done) return insert_head(path);
+		
 		newInclude.path = include.normalize(  path  );
-		//this doesn't take into account /file.js == mydomain.com/file.js
-		newInclude.absolute = newInclude.path;
-		if(is_relative(newInclude.absolute)){
-			newInclude.absolute = join(include.get_absolute_path()+'/', path);
-		}
+		var pf = new File(newInclude.path)
+		newInclude.absolute = pf.relative() ? pf.join_from(include.get_absolute_path()+'/') : newInclude.path;
 		if(is_included(newInclude.absolute)) return;
 		var ar = newInclude.path.split('/');
 		ar.pop();
@@ -236,18 +207,19 @@ $MVC.Object.extend(include,{
 	normalize: function(path){
 		var current_path = include.get_path();
 		//if you are cross domain from the page, and providing a path that doesn't have an domain
-		if(is_cross_domain(include.get_absolute_path()) && !is_domain_absolute(path) ){
+		
+		var file = new File(path);
+		if(new File(include.get_absolute_path()).is_cross_domain() && !file.is_domain_absolute() ){
 			//if the path starts with /
-			if(is_local_absolute(path) ){
+			if( file.is_local_absolute() ){
 				var domain_part = current_path.split('/').slice(0,3).join('/')
 				path = domain_part+path;
 			}else{ //otherwise
-				path = join(current_path+'/', path);
+				path = file.join_from(current_path)
 			}
-		}else if(current_path != '' && !is_absolute(path)){
-			current_path.lastIndexOf('/') === current_path.length - 1
-			path = join(current_path+(current_path.lastIndexOf('/') === current_path.length - 1 ? '' : '/'), path);
-		}else if(current_path != '' && options.remote && !is_domain_absolute(path)){
+		}else if(current_path != '' && file.relative()){
+			path = file.join_from( current_path+(current_path.lastIndexOf('/') === current_path.length - 1 ? '' : '/')  )
+		}else if(current_path != '' && options.remote && ! file.is_domain_absolute()){
 			var domain_part = current_path.split('/').slice(0,3).join('/')
 			path = domain_part+path;
 		}
@@ -265,29 +237,20 @@ $MVC.Object.extend(include,{
 		current_includes = [];
 		include.set_path(latest.start);
 		
-		if(include.get_env()=='compress'){
-			latest.text = syncrequest(latest.path);
-		}
-		if(latest.ignore){
-			insert();
-		}else
-			insert(latest.path);
+		if(include.get_env()=='compress') latest.text = syncrequest(latest.path);
+		
+		latest.ignore ? insert() : insert(latest.path);
 	},
-	end_of_production: function(){ first_wave_done = true; 
-	},
+	end_of_production: function(){ first_wave_done = true; },
 	compress: function(){
-		if(include.compress_window)
-			include.compress_window.compress(total, include.srcs, include.get_production_name())
-		else
-			alert("Your popup blocker is keeping the compressor from running.\nPlease allow popups for this page and refresh this page.")
+		include.compress_window ? 
+			include.compress_window.compress(total, include.srcs, include.get_production_name()) :
+			alert("Your popup blocker is keeping the compressor from running.\nPlease allow popups and refresh this page.");
 	},
 	opera: function(){
 		include.opera_called = true;
-		if(navigator.userAgent.match(/Opera/)){
-			if(options.env == 'production')
-				document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
-			else
-				include.end();
+		if($MVC.Browser.Opera){
+			options.env == 'production' ? document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>') : include.end();
 		}
 	},
 	opera_called : false,
@@ -323,29 +286,26 @@ $MVC.Object.extend(include,{
 		return start;
 	}
 	var insert = function(src){
-		if(navigator.userAgent.match(/Safari|Opera/) ){
+		if($MVC.Browser.Opera||$MVC.Browser.Webkit ){
 			if(src) {
 				var script = script_tag();
 				script.src=src+'?'+Math.random()
 				document.body.appendChild(script)
 			}
 			var start = script_tag();
-			start.src = $MVC.include_path+'?'+Math.random()
+			start.src = $MVC.include_path+$MVC.random;
 			document.body.appendChild(start)
 		}
 		else
 		{
 			document.write(
-				(src? '<script type="text/javascript" src="'+src+(true ? '': '?'+Math.random() )+'"></script>':'')+
-				'<script type="text/javascript" src="'+$MVC.include_path+(navigator.userAgent.match(/Firefox/) ? '': '?'+Math.random() )+'"></script>'
+				(src? '<script type="text/javascript" src="'+src+(true ? '': $MVC.random )+'"></script>':'')+
+				'<script type="text/javascript" src="'+$MVC.include_path+($MVC.Browser.Gecko ? '': $MVC.random )+'"></script>'
 			);
 		}
 	}
-	
-	$MVC.Ajax = {};
-	$MVC.Ajax.factory = function(){
-		return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
-	};
+	$MVC.random = '?'+Math.random();
+	$MVC.Ajax.factory = function(){ return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();};
 	var syncrequest = function(path){
 	   var request = $MVC.Ajax.factory();
 	   request.open("GET", path, false);
@@ -382,12 +342,7 @@ $MVC.Object.extend(include,{
 		include.opera();
 	}
 	
-	if(navigator.userAgent.match(/Opera/)){
-		setTimeout(function(){
-			if(!include.opera_called){
-				alert("You must call include.opera() after your includes if you want to support opera!");
-			};
-		}, 10000);
+	if($MVC.Browser.Opera){
+		setTimeout(function(){ if(!include.opera_called){ alert("You forgot include.opera().")}}, 10000);
 	}
-	
 })();
