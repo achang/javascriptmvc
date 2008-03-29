@@ -72,7 +72,7 @@ $MVC.File.prototype = {
 			return urls.concat(paths).join('/');
 		}
 	},
-	relative: function(){		return this.path.match(/^(https?|file|\/)/) == null;},
+	relative: function(){		return this.path.match(/^(https?:|file:|\/)/) == null;},
 	after_domain: function(){	return this.path.match(/(?:https?:\/\/[^\/]*)(.*)/)[1];},
 	to_reference_from_same_domain: function(url){
 		var parts = this.path.split('/'), other_parts = url.split('/'), result = '';
@@ -87,7 +87,7 @@ $MVC.File.prototype = {
 		return this.domain() != new File(location.href).domain();
 	},
 	is_local_absolute : function(){	return this.path.indexOf('/') === 0},
-	is_domain_absolute : function(){return this.path.match(/^(https?|file)/) != null}
+	is_domain_absolute : function(){return this.path.match(/^(https?:|file:)/) != null}
 };
 
 
