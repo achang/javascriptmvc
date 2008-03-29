@@ -4,11 +4,11 @@
  */
 (function(){
 	
-var isundefined = typeof include != 'undefined';
-if(isundefined && typeof include.end != 'undefined')
+
+if(typeof include != 'undefined' && typeof include.end != 'undefined')
 	return include.end();
-else if(isundefined && typeof include.end == 'undefined')
-	throw("Include is defined as function or an element's id!")
+else if(typeof include != 'undefined' && typeof include.end == 'undefined')
+	throw("Include is defined as function or an element's id!");
 
 $MVC = {
 	OPTIONS: {},
@@ -31,7 +31,8 @@ $MVC = {
 	},
 	root: null,
 	include_path: null,
-	application_root: null
+	application_root: null,
+	Object:  { extend: function(d, s) { for (var p in s) d[p] = s[p]; return d;} }
 };
 	
 var File = $MVC.File;
@@ -41,7 +42,7 @@ $MVC.File.prototype = {
 	},
 	dir: function(){
 		var last = this.clean().lastIndexOf('/');
-		return last != -1 ? this.clean().substring(0,last) : this.clean()
+		return last != -1 ? this.clean().substring(0,last) : this.clean();
 	},
 	domain: function(){ 
 		if(this.path.indexOf('file:') == 0 ) return null;
@@ -54,13 +55,13 @@ $MVC.File.prototype = {
 			if(this.domain() && this.domain() == u.domain() ) 
 				return this.after_domain();
 			else if(this.domain() == u.domain()) { // we are from a file
-				return this.to_reference_from_same_domain(url)
+				return this.to_reference_from_same_domain(url);
 			}else
 				return this.path;
 		}else if(url == $MVC.page_dir){
 			return this.path;
 		}else{
-			if(this.path == '') return url.substr(0,url.length-1)
+			if(this.path == '') return url.substr(0,url.length-1);
 			var urls = url.split('/'), paths = this.path.split('/'), path = paths[0];
 			urls.pop();
 			while(path == '..' && paths.length > 0){
@@ -83,15 +84,13 @@ $MVC.File.prototype = {
 	},
 	is_cross_domain : function(){
 		if(this.is_local_absolute()) return false;
-		return this.domain() != new File(location.href).domain()
+		return this.domain() != new File(location.href).domain();
 	},
 	is_local_absolute : function(){	return this.path.indexOf('/') === 0},
 	is_domain_absolute : function(){return this.path.match(/^(https?|file)/) != null}
 };
-$MVC.Object = {extend: function(d, s) {
-	  for (var property in s) d[property] = s[property];
-	  return d;
-}};
+
+
 
 $MVC.page_dir = new File(window.location.href).dir();						  
 
@@ -175,7 +174,7 @@ $MVC.Object.extend(include,{
 		var path = newInclude.path;
 		if(first_wave_done) return insert_head(path);
 		newInclude.path = include.normalize(  path  );
-		var pf = new File(newInclude.path)
+		var pf = new File(newInclude.path);
 		newInclude.absolute = pf.relative() ? pf.join_from(include.get_absolute_path()+'/') : newInclude.path;
 		if(is_included(newInclude.absolute)) return;
 		var ar = newInclude.path.split('/');
@@ -191,15 +190,15 @@ $MVC.Object.extend(include,{
 		if(new File(include.get_absolute_path()).is_cross_domain() && !file.is_domain_absolute() ){
 			//if the path starts with /
 			if( file.is_local_absolute() ){
-				var domain_part = current_path.split('/').slice(0,3).join('/')
+				var domain_part = current_path.split('/').slice(0,3).join('/');
 				path = domain_part+path;
 			}else{ //otherwise
-				path = file.join_from(current_path)
+				path = file.join_from(current_path);
 			}
 		}else if(current_path != '' && file.relative()){
-			path = file.join_from( current_path+(current_path.lastIndexOf('/') === current_path.length - 1 ? '' : '/')  )
+			path = file.join_from( current_path+(current_path.lastIndexOf('/') === current_path.length - 1 ? '' : '/')  );
 		}else if(current_path != '' && options.remote && ! file.is_domain_absolute()){
-			var domain_part = current_path.split('/').slice(0,3).join('/')
+			var domain_part = current_path.split('/').slice(0,3).join('/');
 			path = domain_part+path;
 		}
 		return path;
@@ -277,7 +276,7 @@ var insert = function(src){
 		}
 		var start = script_tag();
 		start.src = $MVC.include_path+$MVC.random;
-		document.body.appendChild(start)
+		document.body.appendChild(start);
 	}else{
 		document.write(
 			(src? '<script type="text/javascript" src="'+src+(true ? '': $MVC.random )+'"></script>':'')+
@@ -293,7 +292,7 @@ var syncrequest = function(path){
    try{request.send(null);}
    catch(e){return null;}
    if ( request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
-   return request.responseText
+   return request.responseText;
 };
 
 include.controllers = include.app(function(i){return '../controllers/'+i+'_controller'});
@@ -301,9 +300,9 @@ include.models = include.app(function(i){return '../models/'+i});
 include.resources = include.app(function(i){return '../resources/'+i});
 
 if(scr_opt){
-	$MVC.application_root = $MVC.root.replace(/\/jmvc$/,'')
+	$MVC.application_root = $MVC.root.replace(/\/jmvc$/,'');
 	$MVC.apps_root =  $MVC.application_root+'/apps';
-	if(scr_opt.length > 1)	include.setup({env: scr_opt[1], production: $MVC.apps_root+'/'+scr_opt[0]+'_production'})
+	if(scr_opt.length > 1)	include.setup({env: scr_opt[1], production: $MVC.apps_root+'/'+scr_opt[0]+'_production'});
 	if(scr_opt[1] == 'test') include.plugins('test');
 	include($MVC.apps_root+'/'+scr_opt[0]);
 	include.opera();
