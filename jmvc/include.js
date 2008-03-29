@@ -168,7 +168,7 @@ $MVC.Object.extend(include,{
 	},
 	get_absolute_path: function(){
 		var fwd = new File(cwd);
-		return fwd.relative() ? cwd : fwd.join_from($MVC.page_dir);
+		return fwd.relative() ? fwd.join_from($MVC.page_dir) : cwd;
 	},
 	add: function(newInclude){
 		var path = newInclude.path;
