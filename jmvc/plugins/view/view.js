@@ -436,7 +436,7 @@ include.view = function(path){
 	}else if(include.get_env() == 'compress'){
 		var oldp = include.get_path();
 		include.set_path($MVC.application_root);
-		include({path: path, process: $MVC.View.process_include, ignore: true});
+		include({path: $MVC.application_root+'/'+path, process: $MVC.View.process_include, ignore: true});
 		include.set_path(oldp);
 		new $MVC.View({url: $MVC.application_root+'/'+path});
 	}else{
