@@ -11,10 +11,10 @@
 				left += '/';
 				right = match[2].replace(/\#|&/g,'-').replace(/\//g, '~')
 			}
-			$MVC.Console.log('Loading '+$MVC.application_root+'test/fixtures/ajax/'+left+right+'.fix' )
+			$MVC.Console.log('Loading '+$MVC.application_root+'/test/fixtures/ajax/'+left+right+'.fix' )
 		}
 		if(include.get_env() == 'test' && !options.no_test){
-			url = $MVC.application_root+'test/fixtures/ajax/'+left+encodeURIComponent( right)+'.fix';
+			url = $MVC.application_root+'/test/fixtures/ajax/'+left+encodeURIComponent( right)+'.fix';
 			options.method = 'get';
 		}
 		return new request(url,options)
