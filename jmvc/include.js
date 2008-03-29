@@ -342,6 +342,7 @@ $MVC.Object.extend(include,{
 		}
 	}
 	
+	$MVC.Ajax = {};
 	$MVC.Ajax.factory = function(){
 		return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
 	};

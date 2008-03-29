@@ -1,6 +1,5 @@
 //Modified version of Ajax.Request from prototype.
 
-$MVC.Ajax = {};
 $MVC.Ajax.Request = function(url,options){
 	this.options = {
       method:       'post',
@@ -43,7 +42,7 @@ $MVC.Ajax.Request = function(url,options){
 	   return;
 	}else{
 	   this.transport.onreadystatechange = $MVC.Function.bind(function(){
-			var state = $MVC.Ajax.Request.Events[this.transport.readyState]
+			var state = $MVC.Ajax.Request.Events[this.transport.readyState];
 			
 			if(state == 'Complete'){
 				if(this.transport.status == 200) if(this.options.onSuccess) this.options.onSuccess(this.transport);
