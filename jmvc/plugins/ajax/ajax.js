@@ -1,5 +1,6 @@
-$MVC.Ajax = {};
+//Modified version of Ajax.Request from prototype.
 
+$MVC.Ajax = {};
 $MVC.Ajax.Request = function(url,options){
 	this.options = {
       method:       'post',
@@ -42,13 +43,14 @@ $MVC.Ajax.Request = function(url,options){
 	   return;
 	}else{
 	   this.transport.onreadystatechange = $MVC.Function.bind(function(){
-			if(this.transport.readyState == 4){
-				if(this.transport.status == 200){
-					this.options.onComplete(this.transport);
-				}else
-				{
-					this.options.onComplete(this.transport);
-				}
+			var state = $MVC.Ajax.Request.Events[this.transport.readyState]
+			
+			if(state == 'Complete'){
+				if(this.transport.status == 200) if(this.options.onSuccess) this.options.onSuccess(this.transport);
+				else if(this.options.onFailure) this.options.onFailure(this.transport);
+			}
+			if(this.options['on'+state]){
+				this.options['on'+state](this.transport);
 			}
 		},this);
 		
@@ -57,19 +59,16 @@ $MVC.Ajax.Request = function(url,options){
 		this.transport.send($MVC.Object.toQueryString(this.options.parameters));
 	}
 };
+$MVC.Ajax.Request.Events =
+  ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
+
 $MVC.Ajax.Request.prototype.setRequestHeaders = function() {
-    var headers = {
-      'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
-    };
+    var headers = {'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'};
 
     if (this.options.method == 'post') {
       headers['Content-type'] = this.options.contentType +
         (this.options.encoding ? '; charset=' + this.options.encoding : '');
 
-      /* Force "Connection: close" for older Mozilla browsers to work
-       * around a bug where XMLHttpRequest sends an incorrect
-       * Content-length header. See Mozilla Bugzilla #246651.
-       */
       if (this.transport.overrideMimeType &&
           (navigator.userAgent.match(/Gecko\/(\d{4})/) || [0,2005])[1] < 2005)
             headers['Connection'] = 'close';
