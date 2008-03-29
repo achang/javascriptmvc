@@ -49,7 +49,7 @@ $MVC.File.prototype = {
 		var http = this.path.match(/^(?:https?:\/\/)([^\/]*)/);
 		return http ? http[1] : null;
 	},
-	join_from: function( url){
+	join_from: function( url, expand){
 		if(this.is_domain_absolute()){
 			var u = new File(url);
 			if(this.domain() && this.domain() == u.domain() ) 
@@ -58,7 +58,7 @@ $MVC.File.prototype = {
 				return this.to_reference_from_same_domain(url);
 			}else
 				return this.path;
-		}else if(url == $MVC.page_dir){
+		}else if(url == $MVC.page_dir && !expand){
 			return this.path;
 		}else{
 			if(this.path == '') return url.substr(0,url.length-1);
@@ -168,14 +168,14 @@ $MVC.Object.extend(include,{
 	},
 	get_absolute_path: function(){
 		var fwd = new File(cwd);
-		return fwd.relative() ? fwd.join_from($MVC.page_dir) : cwd;
+		return fwd.relative() ? fwd.join_from($MVC.page_dir+'/', true) : cwd;
 	},
 	add: function(newInclude){
 		var path = newInclude.path;
 		if(first_wave_done) return insert_head(path);
 		newInclude.path = include.normalize(  path  );
 		var pf = new File(newInclude.path);
-		newInclude.absolute = pf.relative() ? pf.join_from(include.get_absolute_path()+'/') : newInclude.path;
+		newInclude.absolute = pf.relative() ? pf.join_from(include.get_absolute_path(), true) : newInclude.path;
 		if(is_included(newInclude.absolute)) return;
 		var ar = newInclude.path.split('/');
 		ar.pop();
