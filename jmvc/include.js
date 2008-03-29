@@ -342,19 +342,11 @@ $MVC.Object.extend(include,{
 		}
 	}
 	
-	//ajax
-	var newRequest = function(){
-	   var factories = [function() { return new XMLHttpRequest(); },function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
-	   for(var i = 0; i < factories.length; i++) {
-	        try {
-	            var request = factories[i]();
-	            if (request != null)  return request;
-	        }
-	        catch(e) { continue;}
-	   }
+	$MVC.Ajax.factory = function(){
+		return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
 	};
 	var syncrequest = function(path){
-	   var request = newRequest();
+	   var request = $MVC.Ajax.factory();
 	   request.open("GET", path, false);
 	   try{request.send(null);}
 	   catch(e){return null;}

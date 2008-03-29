@@ -87,17 +87,7 @@ $MVC.Ajax.Request.prototype.setRequestHeaders = function() {
 
 
 
-$MVC.Ajax.factory = function(){
-	var i = window.ActiveXObject ? 1 : 0;
-	var factories = [function() { return new XMLHttpRequest(); },function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
-	    for(i; i < factories.length; i++) {
-	    try {
-	        var request = factories[i]();
-	        if (request != null)  return request;
-	    }
-	    catch(e) { continue;}
-   }
-};
+
 
 
 if(!$MVC._no_conflict){
