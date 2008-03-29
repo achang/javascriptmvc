@@ -1,6 +1,6 @@
 (function(){
 	var request = Ajax.Request;
-	$MVC.Ajax = {}
+
 	$MVC.Object.extend($MVC.Ajax, Ajax);
 	$MVC.Ajax.Request = function(url,options){
 		if( ! options.no_test  ){
