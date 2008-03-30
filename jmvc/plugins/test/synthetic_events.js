@@ -8,6 +8,9 @@ $MVC.SyntheticEvent = function(type, options){
 $MVC.SyntheticEvent.prototype = {
 	send : function(element){
 		this.firefox_autocomplete_off(element);
+		
+		if($MVC.Browser.Opera && $MVC.Array.include(['focus','blur'],this.type)) return this.createEvents(element);
+		
 		if(this.type == 'focus') return element.focus();
 		if(this.type == 'blur') return element.blur();
 		if(this.type == 'write') return this.write(element);
@@ -33,7 +36,7 @@ $MVC.SyntheticEvent.prototype = {
 		if(['keypress','keyup','keydown'].include(this.type))
 			this.createKeypress(element, this.options.character);
 		else if(this.type == 'submit')
-			this.createSubmit(element);
+			this.createEvents(element);
 		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
 			this.createMouse(element);
 	},
@@ -53,7 +56,7 @@ $MVC.SyntheticEvent.prototype = {
 		} else
 			throw "Your browser doesn't support dispatching events";
 	},
-	createSubmit : function(element) {
+	createEvents : function(element) {
         this.event = document.createEvent("Events");
         this.event.initEvent(this.type, true, true ); 
 		this.simulateEvent(element);

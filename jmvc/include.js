@@ -95,13 +95,13 @@ $MVC.File.prototype = {
 $MVC.page_dir = new File(window.location.href).dir();						  
 
 //find include and get its absolute path
-var scripts = document.getElementsByTagName("script"), scr_opt;
+var scripts = document.getElementsByTagName("script");
 for(var i=0; i<scripts.length; i++) {
 	var src = scripts[i].src;
 	if(src.match(/include\.js/)){
 		$MVC.include_path = src;
 		$MVC.root = new File( new File(src).join_from( $MVC.page_dir ) ).dir();
-		if(src.indexOf('?') != -1) scr_opt = src.split('?')[1].split(',');
+		if(src.indexOf('?') != -1) $MVC.script_options = src.split('?')[1].split(',');
 	}
 }
 
@@ -299,12 +299,12 @@ include.controllers = include.app(function(i){return '../controllers/'+i+'_contr
 include.models = include.app(function(i){return '../models/'+i});
 include.resources = include.app(function(i){return '../resources/'+i});
 
-if(scr_opt){
+if($MVC.script_options){
 	$MVC.application_root = $MVC.root.replace(/\/jmvc$/,'');
 	$MVC.apps_root =  $MVC.application_root+'/apps';
-	if(scr_opt.length > 1)	include.setup({env: scr_opt[1], production: $MVC.apps_root+'/'+scr_opt[0]+'_production'});
-	if(scr_opt[1] == 'test') include.plugins('test');
-	include($MVC.apps_root+'/'+scr_opt[0]);
+	if($MVC.script_options.length > 1)	include.setup({env: $MVC.script_options[1], production: $MVC.apps_root+'/'+$MVC.script_options[0]+'_production'});
+	if($MVC.script_options[1] == 'test') include.plugins('test');
+	include($MVC.apps_root+'/'+$MVC.script_options[0]);
 	include.opera();
 }
 if($MVC.Browser.Opera) setTimeout(function(){ if(!include.opera_called){ alert("You forgot include.opera().")}}, 10000);

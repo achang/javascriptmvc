@@ -410,7 +410,7 @@ $MVC.Test.inspect =  function(object) {
 	try {
 		if (object === undefined) return 'undefined';
 		if (object === null) return 'null';
-		if(object.length !=  null){
+		if(object.length !=  null && typeof object != 'string'){
 			return "[ ... ]"
 		}
 		return object.inspect ? object.inspect() : object.toString();
