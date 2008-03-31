@@ -1,0 +1,18 @@
+<html>
+	<head></head>
+	<body>
+		<script src='../../jmvc/include.js' type='text/javascript'></script>
+		<script type='text/javascript'>
+			order = []
+			include('../../apps/include_test','include/one' );
+			include.opera()
+			var order_num = 0;
+			order = function(o){
+				var p  = document.createElement('p');
+				p.style.backgroundColor = o == order_num ? '#ddffdd' : '#ffdddd'
+				p.innerHTML = ''+o+'='+(order_num++)+': '+include.get_path()+', '+include.current;
+				document.body.appendChild(p)
+			}
+		</script>
+	</body>
+</html>

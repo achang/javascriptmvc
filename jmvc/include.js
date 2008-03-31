@@ -214,6 +214,7 @@ $MVC.Object.extend(include,{
 		total.push( latest);
 		current_includes = [];
 		include.set_path(latest.start);
+		include.current = latest.path;
 		if(include.get_env()=='compress') latest.text = syncrequest(latest.path);
 		latest.ignore ? insert() : insert(latest.path);
 	},
