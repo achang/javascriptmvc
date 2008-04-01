@@ -1,0 +1,77 @@
+<html>
+	<head></head>
+	<body>
+		<p><a href='javascript: void(0)' onclick='normal()'>normal</a>
+		   <a href='javascript: void(0)' onclick='noconflict()'>no conflict</a></p>
+		
+		
+		<p><a href='javascript: void(0)' onclick='proto()'>Prototype</a>
+			<a href='javascript: void(0)' onclick='noproto()'>no prototype</a>
+			
+		</p>
+		
+		<p><a href='javascript: void(0)' onclick='jq()'>jQuery</a>
+			<a href='javascript: void(0)' onclick='nojq()'>no jQuery</a>
+			
+		</p>
+		<script src='../../jmvc/include.js' type='text/javascript'></script>
+		<script type='text/javascript'>
+			Object.prototype.justin = 'is awesome'
+			
+			
+			if(location.href.indexOf('no_conflict') != -1)
+				$MVC.no_conflict();
+			
+			if(location.href.indexOf('jquery') != -1)
+				include('../../resources/jquery-1.2.3');
+				
+			if(location.href.indexOf('prototype') != -1)
+				include('../../resources/prototype');
+			
+			include.setup({env: 'test'})
+			include('../../apps/helpers_test')
+			include.opera();
+			
+			var match = location.href.match(/#(.*)/)
+			current = match && match[1] ? match[1] : ''
+			var base = '?'+Math.random()+'#';
+			
+			noconflict = function(){
+				if(location.href.indexOf('no_conflict') == -1){
+					location.href=base+current+'no_conflict'
+				}
+			}
+			normal = function(){
+				if(location.href.indexOf('no_conflict') != -1){
+					location.href=base+current.replace(/no_conflict/, '')
+				}
+			}
+			
+			proto = function(){
+				if(location.href.indexOf('prototype') == -1){
+					location.href=base+current+'prototype'
+				}
+			}
+			noproto = function(){
+				if(location.href.indexOf('prototype') != -1){
+					location.href=base+current.replace(/prototype/, '')
+				}
+			}
+			
+			jq = function(){
+				if(location.href.indexOf('jquery') == -1){
+					location.href=base+current+'jquery'
+				}
+			}
+			nojq = function(){
+				if(location.href.indexOf('jquery') != -1){
+					location.href=base+current.replace(/jquery/, '')
+				}
+			}
+			
+			
+		</script>
+		
+		
+	</body>
+</html>

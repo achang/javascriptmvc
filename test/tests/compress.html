@@ -3,6 +3,7 @@
 	<body>
 		<script src='../../jmvc/include.js' type='text/javascript'></script>
 		<script type='text/javascript'>
+			
 			var order_num = 0;
 			order = function(o){
 				var p  = document.createElement('p');
@@ -10,7 +11,8 @@
 				p.innerHTML = ''+o+'='+(order_num++)+': '+include.get_path()+', '+include.current;
 				document.body.appendChild(p)
 			}
-
+			
+			include.setup({env: 'compress'});
 			include('../../apps/include_test','include/one' );
 			include.opera()
 			
