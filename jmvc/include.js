@@ -152,11 +152,11 @@ include = function(){
 $MVC.Object.extend(include,{
 	setup: function(o){
 		$MVC.Object.extend(options, o || {});
-		// in case there is no .js
-		options.production = options.production+(options.production.indexOf('.js') == -1 ? '.js' : '' );
-		//open window for compress
-		if(options.env == 'compress') include.compress_window = window.open($MVC.root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 
+		options.production = options.production+(options.production.indexOf('.js') == -1 ? '.js' : '' );
+
+		if(options.env == 'compress') include.compress_window = window.open($MVC.root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
+		if(options.env == 'test') include.plugins('test');
 		if(options.env == 'production' && ! $MVC.Browser.Opera)
 			return document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
 	},
@@ -304,7 +304,6 @@ if($MVC.script_options){
 	$MVC.application_root = $MVC.root.replace(/\/jmvc$/,'');
 	$MVC.apps_root =  $MVC.application_root+'/apps';
 	if($MVC.script_options.length > 1)	include.setup({env: $MVC.script_options[1], production: $MVC.apps_root+'/'+$MVC.script_options[0]+'_production'});
-	if($MVC.script_options[1] == 'test') include.plugins('test');
 	include($MVC.apps_root+'/'+$MVC.script_options[0]);
 	include.opera();
 }

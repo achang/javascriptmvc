@@ -75,7 +75,8 @@ if(document.addEventListener) {
 	_removeAllHandlers: function() {
         var w = this;
         for(var id in w._allHandlers) {
-            var h = w._allHandlers[id]; 
+            if(! w.allHandlers.hasOwnProperty(id) ) continue;
+			var h = w._allHandlers[id]; 
             if(h.element) h.element.detachEvent("on" + h.eventType, h.wrappedHandler);
             delete w._allHandlers[id];
         }

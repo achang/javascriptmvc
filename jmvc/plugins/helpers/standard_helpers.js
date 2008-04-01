@@ -1,16 +1,16 @@
 $MVC.Native ={};
 $MVC.Native.extend = function(class_name, source){
 	if(!$MVC[class_name]) $MVC[class_name] = {};
-	var destination = $MVC[class_name];
+	var dest = $MVC[class_name];
 	for (var property in source){
-		destination[property] = source[property];
+		dest[property] = source[property];
 		if(!$MVC._no_conflict){
 			window[class_name][property] = source[property];
 			if(typeof source[property] == 'function'){
 				var names = source[property].toString().match(/^[\s\(]*function[^(]*\((.*?)\)/)[1].split(",");
     			if( names.length == 1 && !names[0]) continue;
 				var first_arg = names[0].replace(/^\s+/, '').replace(/\s+$/, '');
-				if( first_arg.match(class_name.toLowerCase() || (first_arg == 'func' && class_name == 'Function' ) ) ){
+				if( first_arg.match(class_name.toLowerCase()) || (first_arg == 'func' && class_name == 'Function' )  ){
 					$MVC.Native.set_prototype(class_name, property, source[property]);
 				}
 			}
@@ -33,12 +33,12 @@ $MVC.Object.extend = function(destination, source) {
   return destination;
 };
 //these are really only for forms
-$MVC.Object.toQueryString = function(object,name){
+$MVC.Object.to_query_string = function(object,name){
 	if(!object) return null;
 	if(typeof object == 'string') return object;
-	return $MVC.Object.toQueryString.worker(object,name).join('&');
+	return $MVC.Object.to_query_string.worker(object,name).join('&');
 };
-$MVC.Object.toQueryString.worker = function(obj,name){
+$MVC.Object.to_query_string.worker = function(obj,name){
 	var parts2 = [];
 	for(var thing in obj){
 		if(obj.hasOwnProperty(thing)) {
@@ -49,9 +49,9 @@ $MVC.Object.toQueryString.worker = function(obj,name){
 				parts2.push( newer_name+'='+nice_val )  ;
 			}else{
 				if(name){
-					parts2 = parts2.concat( $MVC.Object.toQueryString.worker(value, name+'['+thing+']')   );
+					parts2 = parts2.concat( $MVC.Object.to_query_string.worker(value, name+'['+thing+']')   );
 				}else{
-					parts2 = parts2.concat( $MVC.Object.toQueryString.worker(value, thing)  );
+					parts2 = parts2.concat( $MVC.Object.to_query_string.worker(value, thing)  );
 				}
 			}
 		}
@@ -62,14 +62,10 @@ $MVC.Object.toQueryString.worker = function(obj,name){
 //String Helpers
 $MVC.Native.extend('String', {
 	capitalize : function(string) {
-		return string.slice(0,1).toUpperCase()+string.slice(1);
+		return string.charAt(0).toUpperCase()+string.substr(1).toLowerCase();
 	},
 	include : function(string, pattern){
 		return string.indexOf(pattern) > -1;
-	},
-	chomp : function(string, str){
-	    var index = string.lastIndexOf(str);
-	    return (index != -1 ? string.slice(0, index): string);
 	},
 	ends_with : function(string, pattern) {
 	    var d = string.length - pattern.length;
@@ -77,7 +73,7 @@ $MVC.Native.extend('String', {
 	},
 	camelize: function(string){
 		var parts = string.split(/_|-/);
-		for(var i = 0; i < parts.length; i++)
+		for(var i = 1; i < parts.length; i++)
 			parts[i] = $MVC.String.capitalize(parts[i]);
 		return parts.join('');
 	}

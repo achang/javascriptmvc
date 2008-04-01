@@ -135,7 +135,7 @@ JMVC.Routes.url_for = function(options){
 			return route.draw(options)
 	}
 	
-	return '&'+Hash.toQueryString(options);
+	return '&'+$MVC.Object.to_query_string(options);
 }
 
 
@@ -230,7 +230,7 @@ JMVC.Route.prototype = {
 				folders[i] = params[folders[i].substring(1)]
 			}
 		}
-		var leftovers = Hash.toQueryString(leftover_params)
+		var leftovers = $MVC.Object.to_query_string(leftover_params)
 		if(leftovers != '')
 			leftovers= '&'+ leftovers
 			

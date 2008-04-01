@@ -27,7 +27,7 @@ $MVC.Ajax.Request = function(url,options){
 	
 
 	if (this.options.method == 'get' && this.options.parameters != '' )
-	   this.url += ($MVC.String.include(this.url,'?') ? '&' : '?') + $MVC.Object.toQueryString(this.options.parameters);
+	   this.url += ($MVC.String.include(this.url,'?') ? '&' : '?') + $MVC.Object.to_query_string(this.options.parameters);
 	//else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
 	//   params += '&_=';
     
@@ -56,7 +56,7 @@ $MVC.Ajax.Request = function(url,options){
 		
 		this.transport.open(this.options.method, this.url, true);
 		this.setRequestHeaders();
-		this.transport.send($MVC.Object.toQueryString(this.options.parameters));
+		this.transport.send($MVC.Object.to_query_string(this.options.parameters));
 	}
 };
 $MVC.Ajax.Request.Events =

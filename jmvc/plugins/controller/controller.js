@@ -10,7 +10,7 @@ $MVC.Object.is_number = function(value){
  */
 $MVC.Controller = function(model, actions){
 	var className= model, newmodel = null, singular = $MVC.String.is_singular(model);
-	model = $MVC.String.camelize(model)+'Controller';
+	model = $MVC.String.capitalize($MVC.String.camelize(model))+'Controller';
 	newmodel = eval(model + " = function() { this.klass = "+model+";this.initialize.apply(this, arguments);};");
 	newmodel.prototype = new $MVC.Controller.functions();
 	newmodel.prototype.klass_name = model;
@@ -73,7 +73,7 @@ $MVC.Object.extend($MVC.Controller , {
 	},
 	dispatch: function(controller, action_name, params){
 		var c_name = controller;
-		if(typeof controller == 'string'){controller = window[ $MVC.String.camelize(controller)+'Controller'];}
+		if(typeof controller == 'string'){controller = window[ $MVC.String.capitalize($MVC.String.camelize(controller))+'Controller'];}
 		if(!controller) throw 'No controller named '+c_name+' was found for $MVC.Controller.dispatch.';
 		if(!action_name) action_name = 'index';
 		

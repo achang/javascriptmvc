@@ -2,25 +2,17 @@
 (function() {
 	var checkExists = function(path){
 		$MVC.Console.log('Checking if '+path+' exists')
-		var xhr=createXHR(path);
-	    try{xhr.send(null);}
+		
+		var xhr=$MVC.Ajax.factory();
+		xhr.open("HEAD", path, false);
+
+		try{xhr.send(null);}
 	    catch(e){if ( xhr.status == 404 || xhr.status == 2 || xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) return false}
 		if ( xhr.status == 404 || xhr.status == 2|| xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) return false;
 	    return true;
 	}
 	
-	function createXHR(path){
-	   var factories = [function() { return new XMLHttpRequest(); }, function() { return new ActiveXObject("Msxml2.XMLHTTP"); },function() { return new ActiveXObject("Microsoft.XMLHTTP"); }];
-	   for(var i = 0; i < factories.length; i++) {
-	        try {
-	            var request = factories[i]();
-				request.open("HEAD", path, false);
-	            if (request != null)  return request;
-	        }
-	        catch(e) { continue;}
-	   }
-	}
-	if(checkExists($MVC.apps_root+'/'+$MVC.script_options[0]+'_test.js')){
+	if($MVC.script_options && checkExists($MVC.apps_root+'/'+$MVC.script_options[0]+'_test.js')){
 		var path = include.get_path();
 		include.set_path($MVC.apps_root)
 		include($MVC.script_options[0]+'_test')
@@ -38,6 +30,7 @@ $MVC.Test = $MVC.Class.extend({
 		this.test_names = [];
 		this.test_array = [];
 		for(var t in this.tests) {
+			if(! this.tests.hasOwnProperty(t) ) continue;
 			if(t.indexOf('test') == 0) this.test_names.push(t);
 			this.test_array.push(t);
 		}
@@ -54,8 +47,8 @@ $MVC.Test = $MVC.Class.extend({
 		this.failures++;
 	},
 	helpers : function(){
-		var helpers = {};
-		for(var t in this.tests) if(t.indexOf('test') != 0) helpers[t] = this.tests[t];
+		var helpers = {}; 
+		for(var t in this.tests) if(this.tests.hasOwnProperty(t) && t.indexOf('test') != 0) helpers[t] = this.tests[t];
 		return helpers;
 	},
 	pass : function(){
@@ -92,6 +85,7 @@ $MVC.Test = $MVC.Class.extend({
 		var txt = "<h3><img alt='run' src='playwhite.png' onclick='find_and_run(\""+this.name+"\")'/>"+this.name+" <span id='"+this.name+"_results'></span></h3>";
 		txt += "<div class='table_container'><table cellspacing='0px'><thead><tr><th>tests</th><th>result</th></tr></thead><tbody>";
 		for(var t in this.tests ){
+			if(! this.tests.hasOwnProperty(t) ) continue;
 			if(t.indexOf('test') != 0 ) continue;
 			var name = t.substring(5)
 			txt+= '<tr class="step" id="step_'+this.name+'_'+t+'">'+
@@ -104,7 +98,8 @@ $MVC.Test = $MVC.Class.extend({
 			txt+= "<div class='helpers'>Helpers: "
 			var helpers = [];
 			for(var h in this.added_helpers)
-				helpers.push( "<a href='javascript: void(0)' onclick='run_helper(\""+this.name+"\",\""+h+"\")'>"+h+"</a>")
+				if( this.added_helpers.hasOwnProperty(h) ) 
+					helpers.push( "<a href='javascript: void(0)' onclick='run_helper(\""+this.name+"\",\""+h+"\")'>"+h+"</a>")
 			txt+= helpers.join(', ')+"</div>"
 		}
 		var t = $MVC.Test.window.document.createElement('div');
@@ -200,6 +195,12 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	    try { (obj==null) ? this.pass() : 
 	      this.fail(message + ': got "' + $MVC.Test.inspect(obj) + '"'); }
 	    catch(e) { this.error(e); }
+	},
+	assertNot: function(expression) {
+	   var message = arguments[1] || 'assert: got "' + $MVC.Test.inspect(expression) + '"';
+		try {! expression ? this.pass() : 
+			this.fail(message); }
+		catch(e) { this.error(e); }
 	},
 	assertNotNull: function(object) {
 	    var message = arguments[1] || 'assertNotNull';
@@ -376,18 +377,19 @@ $MVC.Test.Functional.run_next = function(){
 
 $MVC.Test.Controller = $MVC.Test.Functional.extend({
 	init: function(name , tests ){
-		var controller_name = $MVC.String.camelize(name)+'Controller';
+		var part = $MVC.String.capitalize($MVC.String.camelize(name))
+		var controller_name = part+'Controller';
 		this.controller = window[controller_name];
 		if(!this.controller) alert('There is no controller named '+controller_name);
 		this.unit = name;
-		this._super($MVC.String.camelize(name)+'TestController', tests);
+		this._super(part+'TestController', tests);
 	},
 	helpers : function(){
 		var helpers = this._super();
 		var actions = $MVC.Object.extend({}, this.controller.actions()) ;
 		this.added_helpers = {};
 		for(var action_name in actions){
-			if(!actions[action_name].event_type) continue;
+			if(actions.hasOwnProperty(action_name) &&  !actions[action_name].event_type) continue;
 			var event_type = actions[action_name].event_type;
 			var cleaned_name = actions[action_name].selector.replace(/\.|#/g, '')+' '+event_type;
 			var helper_name = cleaned_name.replace(/(\w*)/g, function(m,part){ return $MVC.String.capitalize(part)}).replace(/ /g, '');
@@ -435,5 +437,5 @@ $MVC.Test.inspect =  function(object) {
 
 
 include.unit_test = include.app(function(i){ return '../test/unit/'+i+'_test'});
-		
+include.functional_test = include.app(function(i){ return '../test/functional/'+i+'_test'});	
 
