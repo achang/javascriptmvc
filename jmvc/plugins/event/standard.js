@@ -84,4 +84,8 @@ if(document.addEventListener) {
 	_counter : 0,
 	_uid : function() { return "h" + $MVC.Event._counter++; }
   };
+};
+
+if(!$MVC._no_conflict){
+	Controller = $MVC.Event;
 }

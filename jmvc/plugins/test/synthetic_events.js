@@ -33,19 +33,19 @@ $MVC.SyntheticEvent.prototype = {
 		return this.event;
 	},
 	createEvent : function(element) {
-		if(['keypress','keyup','keydown'].include(this.type))
+		if($MVC.Array.include(['keypress','keyup','keydown'], this.type))
 			this.createKeypress(element, this.options.character);
 		else if(this.type == 'submit')
 			this.createEvents(element);
-		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
+		else if($MVC.Array.include(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'],this.type))
 			this.createMouse(element);
 	},
 	createEventObject : function(element) {
-		if(['keypress','keyup','keydown'].include(this.type))
+		if($MVC.Array.include(['keypress','keyup','keydown'],this.type))
 			this.createKeypressObject(element, this.options.character);
 		else if(this.type == 'submit')
 			this.createSubmitObject(element);
-		else if(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'].include(this.type))
+		else if($MVC.Array.include(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'],this.type))
 			this.createMouseObject(element);
 	},
 	simulateEvent : function(element) {

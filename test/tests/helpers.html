@@ -1,5 +1,14 @@
 <html>
-	<head></head>
+	<head>
+		
+		<style type='text/css'>
+			.success  {background-color: #80FF80}
+			.failure  {background-color: #FF8080}
+			.test {}
+		</style>
+		
+		
+	</head>
 	<body>
 		<p><a href='javascript: void(0)' onclick='normal()' id='normal'>normal</a>
 		   <a href='javascript: void(0)' onclick='noconflict()' id='no_conflict'>no conflict</a></p>
@@ -14,6 +23,66 @@
 			<a href='javascript: void(0)' onclick='nojq()' id='nojq'>no jQuery</a>
 			
 		</p>
+		
+		
+		<form id='tests'>
+			<select class='test' id='sel'><option value='one'>one</option><option>two</option></select>
+			<input class='test' value='mouseover, mouseout, click, focus, and blur me' id='input' size='50' />
+			<input type='submit' value='submit me'/>
+		</form>
+		<div id='load' class='failure'>
+			Test load
+		</div>
+		<div id='mouseover' class='failure'>
+			Test mousover
+		</div>
+		<div id='mouseout' class='failure'>
+			Test mousout
+		</div>
+		<div id='click' class='failure'>
+			Test click
+		</div>
+		<div id='focus' class='failure'>
+			Test focus
+		</div>
+		<div id='blur' class='failure'>
+			Test blur
+		</div>
+		<div id='submit' class='failure'>
+			Test submit
+		</div>
+		<div id='resize' class='failure'>
+			Test resize
+		</div>
+		<div id='scroll' class='failure'>
+			Test scroll
+		</div>
+		<div id='unload' class='failure'>
+			Test unload
+		</div>
+		
+		<div id='mousedown' class='failure'>
+			Test mousedown
+		</div>
+		<div id='mousemove' class='failure'>
+			Test mousemove
+		</div>
+		<div id='mouseup' class='failure'>
+			Test mouseup
+		</div>
+		<div id='contextmenu' class='failure'>
+			Test contextmenu
+		</div>
+		<div id='change' class='failure'>
+			Test change
+		</div>
+		<div id='mainclick' class='failure'>
+			Test mainclick
+		</div>
+		
+		
+		
+		
 		<script src='../../jmvc/include.js' type='text/javascript'></script>
 		<script type='text/javascript'>
 			
@@ -80,7 +149,9 @@
 				}
 			}
 			
-			
+			success = function(id){
+				document.getElementById(id).className = 'success';
+			};
 		</script>
 		
 		
