@@ -1,6 +1,4 @@
 //Modified version of Ajax.Request from prototype.
-
-
 $MVC.Ajax.Request = function(url,options){
 	this.options = {
       method:       'post',
@@ -46,7 +44,7 @@ $MVC.Ajax.Request = function(url,options){
 			var state = $MVC.Ajax.Request.Events[this.transport.readyState];
 			
 			if(state == 'Complete'){
-				if(this.transport.status == 200) if(this.options.onSuccess) this.options.onSuccess(this.transport);
+				if(this.success() && this.options.onSuccess) this.options.onSuccess(this.transport);
 				else if(this.options.onFailure) this.options.onFailure(this.transport);
 			}
 			if(this.options['on'+state]){
@@ -59,10 +57,20 @@ $MVC.Ajax.Request = function(url,options){
 		this.transport.send($MVC.Object.to_query_string(this.options.parameters));
 	}
 };
-$MVC.Ajax.Request.Events =
-  ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
+$MVC.Ajax.Request.Events = ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
 
-$MVC.Ajax.Request.prototype.setRequestHeaders = function() {
+$MVC.Ajax.Request.prototype = {
+  success: function() {
+    var status = this.getStatus();
+    return !status || (status >= 200 && status < 300);
+  },
+
+  getStatus: function() {
+    try {
+      return this.transport.status || 0;
+    } catch (e) { return 0 }
+  },
+  setRequestHeaders: function() {
     var headers = {'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'};
 
     if (this.options.method == 'post') {
@@ -74,22 +82,12 @@ $MVC.Ajax.Request.prototype.setRequestHeaders = function() {
             headers['Connection'] = 'close';
     }
 
-    // user-defined headers
-    
-
     for (var name in headers){
 		if(headers.hasOwnProperty(name)){
 			this.transport.setRequestHeader(name, headers[name]);
 		}
 	}
-      
+}
 };
 
-
-
-
-
-
-if(!$MVC._no_conflict){
-	Ajax = $MVC.Ajax;
-}
+if(!$MVC._no_conflict) Ajax = $MVC.Ajax;

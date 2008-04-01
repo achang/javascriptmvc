@@ -160,7 +160,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	_start : function(){
 		try{
 			this._test.tests[this._test_name].call(this);
-		}catch(e){ this.error(e); }
+		}catch(e){ this.error(e); this._delays = 0;}
 		this._update();
 	},
 	_setup : function(){

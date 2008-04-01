@@ -4,16 +4,24 @@ $MVC.Ajax.Request = function(url,options){
 	//map options
 	options.url = url;
 	this.transport = {};
-	if(options.onComplete){
-		options.complete = function(xmlhttp, status){
+
+	options.complete = function(xmlhttp, status){
+		if(options.onComplete){
 			options.onComplete(xmlhttp);
-		};
-	}
+		}
+		if(options.onSuccess && status == 'success')
+			options.onSuccess(xmlhttp);
+		
+		if(options.onFailure && status == 'error')
+			options.onFailure(xmlhttp);
+
+	};
+
 	if(options.asynchronous != null){
 		options.async = options.asynchronous;
 	}
 	if(options.parameters){
-		options.data = options.parameters
+		options.data = options.parameters;
 	}
 	if(options.method){
 		options.type = options.method
@@ -26,4 +34,6 @@ $MVC.Ajax.Request = function(url,options){
 		return {transport: jQuery.ajax(options) };
 	}
 	
-}
+};
+
+if(!$MVC._no_conflict) Ajax = $MVC.Ajax;

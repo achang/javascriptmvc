@@ -101,6 +101,7 @@ for(var i=0; i<scripts.length; i++) {
 	if(src.match(/include\.js/)){
 		$MVC.include_path = src;
 		$MVC.root = new File( new File(src).join_from( $MVC.page_dir ) ).dir();
+		$MVC.application_root = $MVC.root.replace(/\/jmvc$/,'');
 		if(src.indexOf('?') != -1) $MVC.script_options = src.split('?')[1].split(',');
 	}
 }
