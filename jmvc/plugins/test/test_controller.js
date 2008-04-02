@@ -20,7 +20,8 @@ prepare_page = function(type) {
 	document.getElementById(type+'_explanation').style.display = 'none';
 	document.getElementById(type+'_play').style.display = 'block';
 }
-document.getElementById('your_app_name').innerHTML = opener.$MVC.app_name;
+document.getElementById('your_app_name_unit').innerHTML = opener.$MVC.app_name;
+document.getElementById('your_app_name_functional').innerHTML = opener.$MVC.app_name;
 updateElements = function(test){
 	
 	if(test.type == 'unit')

@@ -1,8 +1,6 @@
 //adds check exist
 (function() {
-	var checkExists = function(path){
-		$MVC.Console.log('Checking if '+path+' exists')
-		
+	include.checkExists = function(path){		
 		var xhr=$MVC.Ajax.factory();
 		xhr.open("HEAD", path, false);
 
@@ -12,7 +10,7 @@
 	    return true;
 	}
 	
-	if($MVC.script_options && checkExists($MVC.apps_root+'/'+$MVC.script_options[0]+'_test.js')){
+	if($MVC.script_options && include.checkExists($MVC.apps_root+'/'+$MVC.script_options[0]+'_test.js')){
 		var path = include.get_path();
 		include.set_path($MVC.apps_root)
 		include($MVC.script_options[0]+'_test')
@@ -390,15 +388,21 @@ $MVC.Test.inspect =  function(object) {
 		throw e;
 	}
 };
-
+$MVC.Test.loaded_files = {};
 
 (function(){
 	var cont = include.controllers
 	include.controllers = function(){
 		cont.apply(null,arguments);
 		include.app(function(i){
-			$MVC.Console.log('Trying to load: '+'../test/functional/'+i+'_controller_test')
-			return '../test/functional/'+i+'_controller_test'
+			var path = $MVC.application_root+'test/functional/'+i+'_controller_test.js';
+			var exists = include.checkExists(path);
+			if(exists) {
+				$MVC.Test.loaded_files[i] = true;
+				$MVC.Console.log('Loading: '+path);
+			} else
+				$MVC.Console.log('Controller test not found at '+path+', you may want to add one.');
+			return path;
 		}).apply(null, arguments);
 		
 	};
