@@ -87,7 +87,8 @@ console_scroll = function(){
 		if(opener.$MVC.Browser.WebKit ){
 			setTimeout(function(){
 				var cl = document.getElementById('console_log');
-				cl.scrollTop = console_scroll_height;
+				var newHeight = cl.clientHeight;
+				cl.scrollTop = console_info.scrollTop;
 			},1);
 			
 		}
@@ -104,8 +105,13 @@ console_scroll = function(){
 
 console_log_scrolled = function(){
 	var cl = document.getElementById('console_log');
-	console_scrolled = cl.scrollTop - cl.scrollHeight+document.getElementById('console_log').clientHeight;
-	console_scroll_height = cl.scrollTop;
+	console_scrolled = cl.scrollTop - cl.scrollHeight+cl.clientHeight;
+	console_info = {
+		scrollTop : cl.scrollTop,
+		clientHeight : cl.clientHeight,
+		scrollHeight : cl.scrollHeight
+	}
+	
 };
 
 console_log_scrolled();
