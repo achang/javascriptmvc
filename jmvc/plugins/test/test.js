@@ -380,7 +380,7 @@ $MVC.Test.inspect =  function(object) {
 		if (object === undefined) return 'undefined';
 		if (object === null) return 'null';
 		if(object.length !=  null && typeof object != 'string'){
-			return "[ ... ]"
+			return "[ ... ]";
 		}
 		return object.inspect ? object.inspect() : object.toString();
 	} catch (e) {
@@ -391,7 +391,7 @@ $MVC.Test.inspect =  function(object) {
 $MVC.Test.loaded_files = {};
 
 (function(){
-	var cont = include.controllers
+	var cont = include.controllers;
 	include.controllers = function(){
 		cont.apply(null,arguments);
 		include.app(function(i){
@@ -404,11 +404,8 @@ $MVC.Test.loaded_files = {};
 				$MVC.Console.log('Controller test not found at '+path+'.');
 			return path;
 		}).apply(null, arguments);
-		
 	};
 })();
 
-
 include.unit_tests = include.app(function(i){ return '../test/unit/'+i+'_test'});
-include.functional_tests = include.app(function(i){ return '../test/functional/'+i+'_test'});	
-
+include.functional_tests = include.app(function(i){ return '../test/functional/'+i+'_test'});
