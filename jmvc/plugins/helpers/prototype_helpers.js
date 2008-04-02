@@ -29,8 +29,7 @@ $MVC.Object = {};
 $MVC.Object.extend = Object.extend;
 //these are really only for forms
 $MVC.Object.to_query_string = function(object,name){
-	if(!object) return null;
-	if(typeof object == 'string') return object;
+	if(typeof object != 'object') return object;
 	return $MVC.Object.to_query_string.worker(object,name).join('&');
 };
 $MVC.Object.to_query_string.worker = function(obj,name){
@@ -43,11 +42,7 @@ $MVC.Object.to_query_string.worker = function(obj,name){
 				var newer_name = encodeURIComponent(name ? name+'['+thing+']' : thing) ;
 				parts2.push( newer_name+'='+nice_val )  ;
 			}else{
-				if(name){
-					parts2 = parts2.concat( $MVC.Object.to_query_string.worker(value, name+'['+thing+']')   );
-				}else{
-					parts2 = parts2.concat( $MVC.Object.to_query_string.worker(value, thing)  );
-				}
+				parts2 = parts2.concat( $MVC.Object.to_query_string.worker(value,  name ? name+'['+thing+']' : thing ))
 			}
 		}
 	}
@@ -115,7 +110,6 @@ $MVC.Function = {
 	params: function(func){
 		return func.argumentNames();
 	}
-	
 };
 if(!$MVC._no_conflict){
 	Function.prototype.params =	Function.prototype.argumentNames

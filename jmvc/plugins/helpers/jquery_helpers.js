@@ -40,13 +40,10 @@ $MVC.Native.set_prototype = function(class_name, property_name, func){
 	};
 };
 
-
 $MVC.Object.extend = jQuery.extend
 
-
 $MVC.Object.to_query_string = function(object,name){
-	if(!object) return null;
-	if(typeof object == 'string') return object;
+	if(typeof object != 'object') return object;
 	return $MVC.Object.to_query_string.worker(object,name).join('&');
 };
 $MVC.Object.to_query_string.worker = function(obj,name){
@@ -59,11 +56,7 @@ $MVC.Object.to_query_string.worker = function(obj,name){
 				var newer_name = encodeURIComponent(name ? name+'['+thing+']' : thing) ;
 				parts2.push( newer_name+'='+nice_val )  ;
 			}else{
-				if(name){
-					parts2 = parts2.concat( $MVC.Object.to_query_string.worker(value, name+'['+thing+']')   );
-				}else{
-					parts2 = parts2.concat( $MVC.Object.to_query_string.worker(value, thing)  );
-				}
+				parts2 = parts2.concat( $MVC.Object.to_query_string.worker(value,  name ? name+'['+thing+']' : thing ))
 			}
 		}
 	}
