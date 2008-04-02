@@ -6,11 +6,12 @@
 		
 		<style>
 			body {font: normal 10pt verdana; margin: 0px; padding: 0px;
-				
+				overflow: hidden;
 			
 			}
-			.test_type {padding: 10px; background-color: white;
+			.test_type { background-color: white;
 				border-top: solid 1px #8FBA3C;
+				overflow: auto;
 			}
 			h1{
 				font-size: 12pt;background:#D5E7B3;
@@ -48,6 +49,7 @@
 				overflow: auto;
 			}
 			#console {padding: 0px;}
+			
 			h2.selected { 
 				color: black;
 				background-color: white;
@@ -70,15 +72,15 @@
 				font-size: 12pt; font-weight: bold;
 			}
 			p img {margin-top: 1px; margin-left: 3px;}
-			#console p {
+			#console pre, #console p {
 				background-color: white;
 				border-bottom: solid 1px #eeeeee;
+				padding: 2px 0px;
+				margin: 2px 10px;
 			}
 			th { color: gray;padding-left: 2px;}
 			td {border-top: solid 1px #eeeeee}
-			.helpers {font-size: 10px; background-color: #eeeeee; margin: 3px 3px 0px  23px;
-			
-			}
+			.helpers {font-size: 10px; background-color: #eeeeee; margin: 3px 3px 0px  23px;}
 			img {cursor: pointer}
 			.passed {background-color: #D5E7B3;}
 			.failure {background-color: #EEAAAA;}
@@ -90,17 +92,20 @@
 			
 			.explanation p {font-weight:normal;background-color:white;}
 			.explanation h3 {font-weight:bold;margin-left:10px;padding:0px;}
-			pre { 
+			code { 
 				border: solid 1px #D5E7B3; 
 				margin: 10px 40px 10px 40px; 
 				padding: 10px; background-color: #eeeeee;
+				display: block;
+				white-space: pre;
 			}
+
 			.highlight { background-color:#FFFFCC; }
 			.key {color: #800080; }
 			.attribute, .data {color: red;}
 		</style>
 	</head>
-	<body>
+	<body scroll='no'>
 		<h1>JavaScriptMVC Testing</h1>
 		<div id='types'>
 			<h2 id='unit_button' onclick='show("unit");'>Unit</h2><h2 id='functional_button' onclick='show("functional");'>Functional</h2><h2 class='selected' id='console_button' onclick='show("console");'>Console</h2>
@@ -117,11 +122,11 @@
 				your <span class='highlight'>'jmvc'</span> directory.</li>
 				<li>Create a file like <span class='highlight'>'animal_unit_test.js'</span> and add the following code:
 			
-<pre><code><span class='key'>new</span> $MVC.Test.Unit('animal',{
+<code><span class='key'>new</span> $MVC.Test.Unit('animal',{
    <span class='attribute'>test_truth</span>: function() {
       <span class='key'>this</span>.assert(<span class='key'>true</span>);
    }
-});</code></pre></li>
+});</code></li>
 
 				<li>Create a file called <span class='highlight'>'<span id='your_app_name_unit'>YOURAPPNAME</span>_test.js'</span> 
 				in your <span class='highlight'>'app'</span> directory and add the following code: <span class='highlight'>include('../test/unit/animal_unit_test.js')</span></li>
@@ -147,11 +152,11 @@
 				your <span class='highlight'>'jmvc'</span> directory.</li>
 				<li>Create a file like <span class='highlight'>'widget_functional_test.js'</span> and add the following code:
 			
-<pre><code><span class='key'>new</span> $MVC.Test.Functional('widget',{
+<code><span class='key'>new</span> $MVC.Test.Functional('widget',{
    <span class='attribute'>test_truth</span>: function() {
       <span class='key'>this</span>.assert(<span class='key'>true</span>);
    }
-});</code></pre></li>
+});</code></li>
 
 				<li>Create a file called <span class='highlight'>'<span id='your_app_name_functional'>YOURAPPNAME</span>_test.js'</span> 
 				in your <span class='highlight'>'app'</span> directory and add the following code: <span class='highlight'>include('../test/functional/widget_functional_test.js')</span></li>

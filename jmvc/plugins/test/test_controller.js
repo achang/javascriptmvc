@@ -12,7 +12,7 @@ run_helper = function(t, h){
 }
 clean_messages = function(messages){
 	for(var m = 0; m < messages.length; m++){
-		messages[m] = messages[m].replace(/</g,'&lt;').replace(/\n/g,'\\n')
+		messages[m] = messages[m].replace(/</g,'&lt;').replace(/\n/g,'\\n');
 	}
 	return messages
 }
@@ -119,6 +119,11 @@ if(window.innerHeight){
 window.onresize = window_resise =function(){
 	var cl = document.getElementById('console_log');
 	cl.style.height = ''+(getDimensions().height - 56)+'px';
+	var u = document.getElementById('unit')
+	u.style.height = ''+(getDimensions().height - 56)+'px';
+	
+	var f = document.getElementById('functional')
+	f.style.height = ''+(getDimensions().height - 56)+'px';
 }
 
 console_scroll = function(){
