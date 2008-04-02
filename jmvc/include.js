@@ -64,7 +64,7 @@ $MVC.File.prototype = {
 		}else{
 			if(this.path == '') return url.substr(0,url.length-1);
 			var urls = url.split('/'), paths = this.path.split('/'), path = paths[0];
-			urls.pop();
+			if(url.match(/\/$/) ) urls.pop();
 			while(path == '..' && paths.length > 0){
 				paths.shift();
 				urls.pop();
