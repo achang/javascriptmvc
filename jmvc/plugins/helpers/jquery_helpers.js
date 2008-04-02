@@ -1,3 +1,18 @@
+$MVC.String = {};
+$MVC.String.strip = function(string){
+	return string.replace(/^\s+/, '').replace(/\s+$/, '');
+};
+
+
+$MVC.Function = {};
+$MVC.Function.params = function(func){
+	var ps = func.toString().match(/^[\s\(]*function[^(]*\((.*?)\)/)[1].split(",");
+	if( ps.length == 1 && !ps[0]) return [];
+	for(var i = 0; i < ps.length; i++) ps[i] = $MVC.String.strip(ps[i]);
+	return ps;
+};
+
+
 $MVC.Native ={};
 $MVC.Native.extend = function(class_name, source){
 	if(!$MVC[class_name]) $MVC[class_name] = {};
@@ -7,9 +22,9 @@ $MVC.Native.extend = function(class_name, source){
 		if(!$MVC._no_conflict){
 			window[class_name][property] = source[property];
 			if(typeof source[property] == 'function'){
-				var names = source[property].toString().match(/^[\s\(]*function[^(]*\((.*?)\)/)[1].split(",");
-    			if( names.length == 1 && !names[0]) continue;
-				var first_arg = names[0].replace(/^\s+/, '').replace(/\s+$/, '');
+				var names = $MVC.Function.params(source[property]);
+    			if( names.length == 0) continue;
+				var first_arg = names[0];
 				if( first_arg.match(class_name.toLowerCase()) || (first_arg == 'func' && class_name == 'Function' )  ){
 					$MVC.Native.set_prototype(class_name, property, source[property]);
 				}
@@ -77,7 +92,8 @@ $MVC.Native.extend('String', {
 		for(var i = 0; i < parts.length; i++)
 			parts[i] = $MVC.String.capitalize(parts[i]);
 		return parts.join('');
-	}
+	},
+	strip : $MVC.String.strip
 });
 
 
@@ -115,7 +131,8 @@ $MVC.Native.extend('Function', {
 	  return function() {
 	    return __method.apply(object, args.concat($MVC.Array.from(arguments) )  );
 	  }
-	}
+	},
+	params: $MVC.Function.params
 });
 
 

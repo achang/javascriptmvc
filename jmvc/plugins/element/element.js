@@ -63,6 +63,13 @@ $MVC.Object.extend($MVC.Element, {
 	}
 });
 
+$MVC.Element.extend = function(el){
+	for(var f in $MVC.Element){
+		if()
+	}
+}
+
+
 if(!$MVC._no_conflict){
 	$E = Element = $MVC.Element;
 }

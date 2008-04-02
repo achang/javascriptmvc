@@ -7,9 +7,9 @@ $MVC.Native.extend = function(class_name, source){
 		if(!$MVC._no_conflict){
 			window[class_name][property] = source[property];
 			if(typeof source[property] == 'function'){
-				var names = source[property].toString().match(/^[\s\(]*function[^(]*\((.*?)\)/)[1].split(",");
-    			if( names.length == 1 && !names[0]) continue;
-				var first_arg = names[0].replace(/^\s+/, '').replace(/\s+$/, '');
+				var names = source[property].argumentNames();
+    			if( names.length == 0) continue;
+				var first_arg = names[0];
 				if( first_arg.match(class_name.toLowerCase()) || (first_arg == 'func' && class_name == 'Function' )  ){
 					$MVC.Native.set_prototype(class_name, property, source[property]);
 				}
@@ -78,6 +78,9 @@ $MVC.Object.extend($MVC.String,{
 		for(var i = 0; i < parts.length; i++)
 			parts[i] = $MVC.String.capitalize(parts[i]);
 		return parts.join('');
+	},
+	strip: function(string){
+		return string.strip();
 	}
 });
 
@@ -100,13 +103,24 @@ if(!$MVC._no_conflict){
 $MVC.Array = {};
 $MVC.Array.from = Array.from;
 $MVC.Array.include = function(array, thing){return array.include(thing);};
-$MVC.Function = {};
-$MVC.Function.bind = function(func){
-	var args = $MVC.Array.from(arguments);
-	args.shift();args.shift();
-	var __method = func, object = arguments[1];
-	return function() {
-		return __method.apply(object, args.concat($MVC.Array.from(arguments) )  );
-	};
+$MVC.Function = {
+	bind: function(func){
+		var args = $MVC.Array.from(arguments);
+		args.shift();args.shift();
+		var __method = func, object = arguments[1];
+		return function() {
+			return __method.apply(object, args.concat($MVC.Array.from(arguments) )  );
+		};
+	},
+	params: function(func){
+		return func.argumentNames();
+	}
+	
 };
+if(!$MVC._no_conflict){
+	Function.prototype.params =	Function.prototype.argumentNames
+}
+
+
+
 $MVC.Browser = Prototype.Browser;

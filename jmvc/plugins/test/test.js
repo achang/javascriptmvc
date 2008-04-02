@@ -206,6 +206,24 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	    var message = arguments[1] || 'assertNotNull';
 	    this.assert(object != null, message);
 	},
+	assert_each: function(expected, actual) {
+	    var message = arguments[2] || "assert_each";
+	    try { 
+			var e = $MVC.Array.from(expected);
+			var a = $MVC.Array.from(actual);
+			if(e.length != a.length){
+				return this.fail(message + ': expected ' + Test.Unit.inspect(expected)+', actual ' + Test.Unit.inspect(actual));
+				
+			}else{
+				for(var i =0; i< e.length; i++){
+					if(e[i] != a[i]){
+						return this.fail(message + ': expected '+Test.Unit.inspect(expected)+', actual ' + Test.Unit.inspect(actual));
+					}
+				}
+			}
+			this.pass();
+	    }catch(e) { this.error(e); }
+  	},
 	pass: function() {
     	this.assertions++;
 	},
