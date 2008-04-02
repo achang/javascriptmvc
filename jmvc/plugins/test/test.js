@@ -396,12 +396,12 @@ $MVC.Test.loaded_files = {};
 		cont.apply(null,arguments);
 		include.app(function(i){
 			var path = $MVC.application_root+'test/functional/'+i+'_controller_test.js';
-			var exists = include.checkExists(path);
+			var exists = include.checkExists(path);  
 			if(exists) {
 				$MVC.Test.loaded_files[i] = true;
 				$MVC.Console.log('Loading: '+path);
 			} else
-				$MVC.Console.log('Controller test not found at '+path+', you may want to add one.');
+				$MVC.Console.log('Controller test not found at '+path+'.');
 			return path;
 		}).apply(null, arguments);
 		
