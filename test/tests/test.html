@@ -14,6 +14,15 @@
 				<p class='clear'></p>
 			</div>
 		</div>
+		<a onclick='$MVC.Console.log("something")'>log</a>
+		
+		<script type='text/javascript'>
+			log = function(message){
+				var p = document.createElement('p')
+				p.innerHTML = message
+				document.body.appendChild(p)
+			}
+		</script>
 		<script src='../../jmvc/include.js?test,test' type='text/javascript'></script>
 	</body>
 </html>
