@@ -16,6 +16,45 @@ clean_messages = function(messages){
 	}
 	return messages
 }
+prepare_page = function(type) {
+	document.getElementById(type+'_explanation').style.display = 'none';
+	document.getElementById(type+'_play').style.display = 'block';
+}
+document.getElementById('your_app_name').innerHTML = opener.$MVC.app_name;
+updateElements = function(test){
+	
+	if(test.type == 'unit')
+		prepare_page('unit');
+	else
+		prepare_page('functional');
+	var insert_into = document.getElementById(test.type+'_tests');
+	var txt = "<h3><img alt='run' src='playwhite.png' onclick='find_and_run(\""+test.name+"\")'/>"+test.name+" <span id='"+test.name+"_results'></span></h3>";
+	txt += "<div class='table_container'><table cellspacing='0px'><thead><tr><th>tests</th><th>result</th></tr></thead><tbody>";
+	for(var t in test.tests ){
+		if(! test.tests.hasOwnProperty(t) ) continue;
+		if(t.indexOf('test') != 0 ) continue;
+		var name = t.substring(5)
+		txt+= '<tr class="step" id="step_'+test.name+'_'+t+'">'+
+		"<td class='name'>"+
+		"<a href='javascript: void(0);' onclick='find_and_run(\""+test.name+"\",\""+t+"\")'>"+name+'</a></td>'+
+		'<td class="result">&nbsp;</td></tr>'
+	}
+	txt+= "</tbody></table></div>";
+	if(this.added_helpers){
+		txt+= "<div class='helpers'>Helpers: "
+		var helpers = [];
+		for(var h in test.added_helpers)
+			if( test.added_helpers.hasOwnProperty(h) ) 
+				helpers.push( "<a href='javascript: void(0)' onclick='run_helper(\""+test.name+"\",\""+h+"\")'>"+h+"</a>")
+		txt+= helpers.join(', ')+"</div>";
+	}
+	//var t = document.getElementById('functional_tests');
+	var t = document.createElement('div');
+	t.className = 'test'
+	t.innerHTML  = txt;
+	insert_into.appendChild(t);
+}
+
 update = function(controller, test_name, assertions){
 	var step = document.getElementById('step_'+controller.name+'_'+test_name);
 	var result = step.childNodes[1];

@@ -39,9 +39,8 @@ $MVC.Test = $MVC.Class.extend({
 		this.passes = 0;
 		this.failures = 0;
 		
-		$MVC.Tests[this.name] = this
-		var insert_into = $MVC.Test.window.document.getElementById(this.type+'_tests');
-		insert_into.appendChild(this.toElement());
+		$MVC.Tests[this.name] = this;
+		$MVC.Test.window.updateElements(this);
 	},
 	fail : function(){
 		this.failures++;
@@ -80,32 +79,6 @@ $MVC.Test = $MVC.Class.extend({
 	},
 	run_test: function(test_id){
 		this.assertions = new this.Assertions(this, test_id);
-	},
-	toElement : function(){
-		var txt = "<h3><img alt='run' src='playwhite.png' onclick='find_and_run(\""+this.name+"\")'/>"+this.name+" <span id='"+this.name+"_results'></span></h3>";
-		txt += "<div class='table_container'><table cellspacing='0px'><thead><tr><th>tests</th><th>result</th></tr></thead><tbody>";
-		for(var t in this.tests ){
-			if(! this.tests.hasOwnProperty(t) ) continue;
-			if(t.indexOf('test') != 0 ) continue;
-			var name = t.substring(5)
-			txt+= '<tr class="step" id="step_'+this.name+'_'+t+'">'+
-			"<td class='name'>"+
-			"<a href='javascript: void(0);' onclick='find_and_run(\""+this.name+"\",\""+t+"\")'>"+name+'</a></td>'+
-			'<td class="result">&nbsp;</td></tr>'
-		}
-		txt+= "</tbody></table></div>";
-		if(this.added_helpers){
-			txt+= "<div class='helpers'>Helpers: "
-			var helpers = [];
-			for(var h in this.added_helpers)
-				if( this.added_helpers.hasOwnProperty(h) ) 
-					helpers.push( "<a href='javascript: void(0)' onclick='run_helper(\""+this.name+"\",\""+h+"\")'>"+h+"</a>")
-			txt+= helpers.join(', ')+"</div>"
-		}
-		var t = $MVC.Test.window.document.createElement('div');
-		t.className = 'test'
-		t.innerHTML  = txt;
-		return t;
 	}
 });
 
