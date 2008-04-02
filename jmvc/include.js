@@ -175,8 +175,9 @@ $MVC.Object.extend(include,{
 	add: function(newInclude){
 		var path = newInclude.path;
 		if(first_wave_done) return insert_head(path);
-		newInclude.path = include.normalize(  path  );
 		var pf = new File(newInclude.path);
+		newInclude.path = include.normalize(  path  );
+		
 		newInclude.absolute = pf.relative() ? pf.join_from(include.get_absolute_path(), true) : newInclude.path;
 		if(is_included(newInclude.absolute)) return;
 		var ar = newInclude.path.split('/');
