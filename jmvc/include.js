@@ -306,6 +306,7 @@ include.resources = include.app(function(i){return '../resources/'+i});
 if($MVC.script_options){
 	$MVC.application_root = $MVC.root.replace(/\/?jmvc$/,'');
 	$MVC.apps_root =  ($MVC.application_root ? $MVC.application_root+'/' : '') + 'apps';
+	$MVC.app_name = $MVC.script_options[0];
 	if($MVC.script_options.length > 1)	include.setup({env: $MVC.script_options[1], production: $MVC.apps_root+'/'+$MVC.script_options[0]+'_production'});
 	include($MVC.apps_root+'/'+$MVC.script_options[0]);
 	include.opera();
