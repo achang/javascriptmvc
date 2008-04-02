@@ -10,7 +10,12 @@ run_helper = function(t, h){
 	var t = opener.$MVC.Tests[t]
 	t.run_helper(h);
 }
-
+clean_messages = function(messages){
+	for(var m = 0; m < messages.length; m++){
+		messages[m] = messages[m].replace(/</g,'&lt;').replace(/\n/g,'\\n')
+	}
+	return messages
+}
 update = function(controller, test_name, assertions){
 	var step = document.getElementById('step_'+controller.name+'_'+test_name);
 	var result = step.childNodes[1];
@@ -24,7 +29,7 @@ update = function(controller, test_name, assertions){
 		result.innerHTML = 'Failed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)+
 		', '+assertions.failures+' failure'+add_s(assertions.failures)+
 		', '+assertions.errors+' error'+add_s(assertions.errors)+' <br/>'+
-			assertions.messages.join("<br/>").replace(/</g,'&lt;').replace(/\n/g,'\\n')
+			clean_messages(assertions.messages).join("<br/>")
 	}
 };
 

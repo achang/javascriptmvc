@@ -212,12 +212,12 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 			var e = $MVC.Array.from(expected);
 			var a = $MVC.Array.from(actual);
 			if(e.length != a.length){
-				return this.fail(message + ': expected ' + Test.Unit.inspect(expected)+', actual ' + Test.Unit.inspect(actual));
+				return this.fail(message + ': expected ' + $MVC.Test.inspect(expected)+', actual ' + $MVC.Test.inspect(actual));
 				
 			}else{
 				for(var i =0; i< e.length; i++){
 					if(e[i] != a[i]){
-						return this.fail(message + ': expected '+Test.Unit.inspect(expected)+', actual ' + Test.Unit.inspect(actual));
+						return this.fail(message + ': expected '+$MVC.Test.inspect(expected)+', actual ' + $MVC.Test.inspect(actual));
 					}
 				}
 			}

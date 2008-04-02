@@ -65,7 +65,7 @@ $MVC.Object.extend($MVC.Element, {
 
 $MVC.Element.extend = function(el){
 	for(var f in $MVC.Element){
-		if()
+
 	}
 }
 

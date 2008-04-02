@@ -35,6 +35,9 @@ new $MVC.Test.Unit('helpers',{
 	test_string_classize : function(){
 		this.assert_equal('OneTwo', $MVC.String.classize('one_two'))
 	},
+	test_string_strip : function(){
+		this.assert_equal('word', $MVC.String.strip(' word  '))
+	},
 	test_array_include : function(){
 		this.assert($MVC.Array.include([1,2,3], 2) );
 		this.assert_not($MVC.Array.include([1,2,3], 4) )
@@ -53,6 +56,9 @@ new $MVC.Test.Unit('helpers',{
 			this.assert(true);
 		}, this)
 		b();
+	},
+	test_function_params : function(){
+		this.assert_each(['one','two','three'], $MVC.Function.params(function( one, two ,three){ return 'yes'})  )
 	}
 });
 
@@ -82,6 +88,9 @@ new $MVC.Test.Unit('conflict_helpers',{
 	test_string_classize : function(){
 		this.assert_equal('OneTwo', 'one_two'.classize() )
 	},
+	test_string_strip : function(){
+		this.assert_equal('word', ' word  '.strip())
+	},
 	test_array_include : function(){
 		this.assert([1,2,3].include(2) );
 		this.assert_not([1,2,3].include( 4) )
@@ -100,5 +109,8 @@ new $MVC.Test.Unit('conflict_helpers',{
 			this.assert(true);
 		}.bind(this)
 		b();
+	},
+	test_function_params : function(){
+		this.assert_each(['one','two','three'], function( one, two ,three){ return 'yes'}.params()  )
 	}
 });

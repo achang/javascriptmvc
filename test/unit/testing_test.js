@@ -14,6 +14,7 @@ new $MVC.Test.Unit('testing',{
 		   this.assert_equal(0, false)
 		   this.assert_equal(null, null);
 		   this.assert_equal('s', 's');
+		   this.assert_each([1,2,3],[1,2,3]  )
        },
 	   test_assert_fails : function(){
 	   		this.assert('', "OK");
@@ -24,6 +25,8 @@ new $MVC.Test.Unit('testing',{
 			this.assert_null('', "OK");
 			this.assert_null(false, "OK");
 			this.assert_equal([],[], "OK");
+			this.assert_each([1,2,3],[1,2,3,4], "OK"  );
+			this.assert_each([1,2,3],[1,2,4], "OK"  );
 	   },
 	   test_next : function(){
 	   		this.assert(true);
