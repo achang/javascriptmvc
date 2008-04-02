@@ -698,7 +698,7 @@ $MVC.Event.observe(window, 'load', function(){
 
 $MVC.Controller.test_dispatch = function(controller, action){
 	if(!controller) return false;
-	var controller_name = $MVC.String.capitalize($MVC.String.camelize(controller))+'Controller';
+	var controller_name = $MVC.String.classize(controller)+'Controller';
 	if(!action) action = 'index';
 	if(window[controller_name]){
 		if(action in window[controller_name].prototype){

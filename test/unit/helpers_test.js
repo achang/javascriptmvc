@@ -32,6 +32,9 @@ new $MVC.Test.Unit('helpers',{
 	test_string_camelize : function(){
 		this.assertEqual('oneTwo', $MVC.String.camelize('one_two'))
 	},
+	test_string_classize : function(){
+		this.assertEqual('OneTwo', $MVC.String.classize('one_two'))
+	},
 	test_array_include : function(){
 		this.assert($MVC.Array.include([1,2,3], 2) );
 		this.assertNot($MVC.Array.include([1,2,3], 4) )
@@ -75,6 +78,9 @@ new $MVC.Test.Unit('conflict_helpers',{
 	},
 	test_string_camelize : function(){
 		this.assertEqual('oneTwo', 'one_two'.camelize(), "OK if Prototype"  )
+	},
+	test_string_classize : function(){
+		this.assertEqual('OneTwo', 'one_two'.classize() )
 	},
 	test_array_include : function(){
 		this.assert([1,2,3].include(2) );

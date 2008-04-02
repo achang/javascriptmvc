@@ -1,6 +1,6 @@
 
 find_and_run = function(t,s){
-	opener.focus();	
+	//opener.focus();	
 	var t = opener.$MVC.Tests[t]
 	if(s) t.run_test(s);
 	else t.run();
@@ -24,7 +24,7 @@ update = function(controller, test_name, assertions){
 		result.innerHTML = 'Failed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)+
 		', '+assertions.failures+' failure'+add_s(assertions.failures)+
 		', '+assertions.errors+' error'+add_s(assertions.errors)+' <br/>'+
-			assertions.messages.join("<br/>")
+			assertions.messages.join("<br/>").replace(/</g,'&lt;').replace(/\n/g,'\\n')
 	}
 };
 

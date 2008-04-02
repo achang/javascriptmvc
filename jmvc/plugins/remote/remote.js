@@ -1,6 +1,6 @@
 $MVC.RemoteModel = function(model, url, functions){
 	var className= model, newmodel = null;
-	model = $MVC.String.capitalize($MVC.String.camelize(model));
+	model = $MVC.String.classize(model);
 
 	newmodel = eval(model + " = function() { this.klass = "+model+"; "+
 				"this.initialize.apply(this, arguments);"+
@@ -32,7 +32,7 @@ $MVC.RemoteModel.functions = function(){};
 
 $MVC.RemoteModel.class_functions = {
 	find : function(params, callback){
-		params.callback = $MVC.String.capitalize($MVC.String.camelize(this.className))+'.listCallback';
+		params.callback = $MVC.String.classize(this.className)+'.listCallback';
 		var klass = this;
 		//make callback function create new and call the callback with them
 		if(!callback) callback = (function(){});

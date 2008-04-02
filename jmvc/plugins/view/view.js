@@ -46,10 +46,11 @@ $MVC.View = function( options ){
 	}
 	
 	if(options.url){
+		options.url = $MVC.application_root+'/views/'+options.url+ (options.url.match(/\.ejs/) ? '' : '.ejs' ) ;
 		var template = $MVC.View.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == $MVC.View.INVALID_PATH) return null;
-		this.text = new $MVC.Ajax.Request(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get', no_test: true}).transport.responseText;
+		this.text = new $MVC.Ajax.Request(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get', use_fixture: false}).transport.responseText;
 		
 		if(this.text == null){
 			//$MVC.View.update(options.url, this.INVALID_PATH);
@@ -81,6 +82,7 @@ $MVC.View = function( options ){
 };
 $MVC.View.prototype = {
 	render : function(object){
+		object = object || {};
 		var v = new $MVC.View.Helpers(object);
 		return this.template.process.call(v, object,v);
 	},
@@ -114,7 +116,7 @@ $MVC.View.prototype = {
 				var object = eval( request.responseText );
 				$MVC.View.prototype.update.call(_template, element, object);
 			};
-			new Ajax.Request(params.url, params)
+			new $MVC.Ajax.Request(params.url, params)
 		}else
 		{
 			element.innerHTML = this.render(options);
@@ -432,13 +434,13 @@ $MVC.View.PreCompiledFunction = function(name, f){
 
 include.view = function(path){
 	if(include.get_env() == 'development'){
-		new $MVC.View({url: $MVC.application_root+'/'+path});
+		new $MVC.View({url: path});
 	}else if(include.get_env() == 'compress'){
 		var oldp = include.get_path();
 		include.set_path($MVC.application_root);
 		include({path: $MVC.application_root+'/'+path, process: $MVC.View.process_include, ignore: true});
 		include.set_path(oldp);
-		new $MVC.View({url: $MVC.application_root+'/'+path});
+		new $MVC.View({url: path});
 	}else{
 		//production, do nothing!
 	}

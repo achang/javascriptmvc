@@ -68,7 +68,7 @@ $MVC.Test = $MVC.Class.extend({
 	run_next: function(){
 		if(this.working_test != null && this.working_test < this.test_names.length){
 			this.working_test++;
-			this.run_test(this.test_names[this.working_test-1])
+			this.run_test(this.test_names[this.working_test-1]);
 		}else if(this.working_test != null){
 			$MVC.Test.window.update_test(this)
 			this.working_test = null;
@@ -129,8 +129,8 @@ $MVC.Test.Runner = function(object, iterator_name,params){
 				object._callback();
 				object._callback = null;
 			}else{
-				if($MVC.Browser.Gecko) window.blur();
-				else $MVC.Test.window.focus();
+				//if($MVC.Browser.Gecko) window.blur();
+				//else $MVC.Test.window.focus();
 			}
 		}
 	}
@@ -258,10 +258,15 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	_update : function(){
 		if(this._delays == 0){
 			if(this.teardown) this.teardown()
+			if(this._do_blur_back)
+				this._blur_back();
 			$MVC.Test.window.update(this._test, this._test_name, this);
 			this.failures == 0 && this.errors == 0?  this._test.pass(): this._test.fail();
 			this._test.run_next();
 		}
+	},
+	_blur_back: function(){
+		$MVC.Browser.Gecko ? window.blur() : $MVC.Test.window.focus();
 	}
 });
 
@@ -283,7 +288,6 @@ $MVC.Test.Unit.tests = [];
 
 $MVC.Test.Runner($MVC.Test.Unit, "tests", {
 	start : function(){
-		window.focus();
 		this.passes = 0;
 	},
 	after : function(number ){
@@ -314,6 +318,12 @@ $MVC.Test.Functional = $MVC.Test.extend({
 			else if (typeof options == 'object') number = options.number || 0;
 			
 			var element = typeof selector == 'string' ? $MVC.CSSQuery(selector)[number] : selector; //if not a selector assume element
+			
+			if(event_type == 'focus'){
+				$MVC.Browser.Gecko ? $MVC.Test.window.blur() : window.focus();
+				this._do_blur_back =true;
+			}
+			
 
 			var event = new $MVC.SyntheticEvent(event_type, options).send(element);
 			return {event: event, element: element, options: options};
@@ -329,11 +339,8 @@ $MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keyup'
 $MVC.Test.Functional.tests = [];
 
 
-
-
 $MVC.Test.Runner($MVC.Test.Functional, "tests", {
 	start : function(){
-		window.focus();
 		this.passes = 0;
 	},
 	after : function(number ){
@@ -345,39 +352,10 @@ $MVC.Test.Runner($MVC.Test.Functional, "tests", {
 	}
 })
 
-/*
-$MVC.Test.Functional.run = function(callback){
-	window.focus();
-	var t = $MVC.Test.Functional;
-	t.passes = 0;
-	t.working_test = 0;
-	t.callback = callback;
-	t.run_next();
-	
-}
-$MVC.Test.Functional.run_next = function(){
-	var t = $MVC.Test.Functional;
-	if(t.working_test != null && t.working_test < t.tests.length){
-			if(t.working_test > 0 && t.tests[t.working_test-1].failures == 0) { t.passes++} //do this on the last test
-			t.working_test++;
-			t.tests[t.working_test-1].run( t.run_next )
-	}else if(t.working_test != null) {
-		if(t.working_test > 0 && t.tests[t.working_test-1].failures == 0) { t.passes++} //makes sure a test has run
-		t.working_test = null;
-		$MVC.Test.window.document.getElementById('functional_result').innerHTML = '('+t.passes+'/'+t.tests.length+')' + (t.passes == t.tests.length ? ' Wow!' : '')
-		if(t.callback){
-			t.callback();
-			t.callback = null;
-		} else {
-			if($MVC.Browser.Gecko) window.blur();
-			else $MVC.Test.window.focus();
-		}
-	}
-}*/
 
 $MVC.Test.Controller = $MVC.Test.Functional.extend({
 	init: function(name , tests ){
-		var part = $MVC.String.capitalize($MVC.String.camelize(name))
+		var part = $MVC.String.classize(name);
 		var controller_name = part+'Controller';
 		this.controller = window[controller_name];
 		if(!this.controller) alert('There is no controller named '+controller_name);

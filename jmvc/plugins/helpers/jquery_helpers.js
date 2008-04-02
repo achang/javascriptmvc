@@ -71,6 +71,12 @@ $MVC.Native.extend('String', {
 		for(var i = 1; i < parts.length; i++)
 			parts[i] = $MVC.String.capitalize(parts[i]);
 		return parts.join('');
+	},
+	classize: function(string){
+		var parts = string.split(/_|-/);
+		for(var i = 0; i < parts.length; i++)
+			parts[i] = $MVC.String.capitalize(parts[i]);
+		return parts.join('');
 	}
 });
 

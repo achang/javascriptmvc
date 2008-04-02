@@ -72,13 +72,27 @@ $MVC.Object.extend($MVC.String,{
 		for(var i = 1; i < parts.length; i++)
 			parts[i] = parts[i].capitalize();
 		return parts.join('');
+	},
+	classize: function(string){
+		var parts = string.split(/_|-/);
+		for(var i = 0; i < parts.length; i++)
+			parts[i] = $MVC.String.capitalize(parts[i]);
+		return parts.join('');
 	}
 });
 
 if(!$MVC._no_conflict){
-	String.prototype.ends_with = function(pattern){
-		return this.endsWith(pattern);
-	};
+	$MVC.Object.extend(String.prototype,{
+		ends_with: function(pattern){
+			return this.endsWith(pattern);
+		},
+		classize: function(){
+			var parts = this.split(/_|-/);
+			for(var i = 0; i < parts.length; i++)
+				parts[i] = parts[i].capitalize();
+			return parts.join('');
+		}
+	});
 }
 
 

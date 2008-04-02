@@ -442,7 +442,7 @@ Object.extend(Jester.Resource, {
         if (relation[singular] && typeof(relation[singular]) == "object" && i == 1) {
           var value = [];
           var plural = attr;
-          var name = $MVC.String.capitalize($MVC.String.camelize(singular));
+          var name = $MVC.String.classize(singular);
           
           // force array
           if (!(elements[plural][singular].length > 0))
@@ -462,7 +462,7 @@ Object.extend(Jester.Resource, {
         // has_one or belongs_to
         else {
           singular = attr;
-          var name = $MVC.String.capitalize($MVC.String.camelize(capitalize));
+          var name = $MVC.String.classize(capitalize);
           
           // if the association hasn't been modeled, do a default modeling here
           // hosted object's prefix and format are inherited, singular is set from the XML

@@ -14,17 +14,17 @@ $MVC.Controller.functions.prototype.render = function(options) {
 				var url_part =  $MVC.String.include(options.action,'/') ? 
 									options.action.split('/').join('/_') : 
 									controller_name+'/'+options.action;
-				var url = '/views/'+url_part+'.ejs';
+				var url = url_part+'.ejs';
             }
 			else if(options.partial) {
                 
 				var url_part = $MVC.String.include(options.action,'/') ? 
 									options.partial.split('/').join('/_') : 
 									controller_name+'/_'+options.partial;		
-				var url = '/views/'+url_part+'.ejs';
+				var url = url_part+'.ejs';
 			}
             else {
-                var url = '/views/'+controller_name+'/'+action_name.replace(/\.|#/g, '').replace(/ /g,'_')+'.ejs';
+                var url = controller_name+'/'+action_name.replace(/\.|#/g, '').replace(/ /g,'_')+'.ejs';
             }
 			var data_to_render = this;
 			if(options.locals) {
@@ -32,10 +32,6 @@ $MVC.Controller.functions.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			if($MVC.application_root == '')
-				var path = url;
-			else
-				var path = $MVC.application_root+url;
 			result = new $MVC.View({url:  path  }).render(data_to_render);
 		}
 		//return result;

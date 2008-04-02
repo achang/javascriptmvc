@@ -50,5 +50,9 @@ $MVC.Controller('tests',{
 	},
 	contextmenu : function(params){
 		success('contextmenu')
+	},
+	to : function(params){
+		this.data = 'HelloWorld'
+		this.render({to: 'render_here'});
 	}
 });
