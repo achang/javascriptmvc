@@ -82,16 +82,30 @@ window.onresize = window_resise =function(){
 }
 
 console_scroll = function(){
-	if(console_scrolled <= -10) return;
-	setTimeout(function(){
+	if(console_scrolled <= -10){
+		
+		if(opener.$MVC.Browser.WebKit ){
+			setTimeout(function(){
+				var cl = document.getElementById('console_log');
+				cl.scrollTop = console_scroll_height;
+			},1);
+			
+		}
+		
+	} else {
+		setTimeout(function(){
 		var cl = document.getElementById('console_log');
-		cl.scrollTop = cl.scrollHeight;
-	},1)
+			cl.scrollTop = cl.scrollHeight;
+		},1);
+		
+	}
+	
 };
 
 console_log_scrolled = function(){
 	var cl = document.getElementById('console_log');
 	console_scrolled = cl.scrollTop - cl.scrollHeight+document.getElementById('console_log').clientHeight;
+	console_scroll_height = cl.scrollTop;
 };
 
 console_log_scrolled();
