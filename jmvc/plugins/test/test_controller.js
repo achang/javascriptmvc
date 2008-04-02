@@ -51,7 +51,7 @@ running = function(controller, test_name){
 };
 
 show = function(type){
-	var types = ['unit','functional'];
+	var types = ['unit','functional','console'];
 	var els = {}
 	var buttons = {};
 	for(var i = 0 ; i < types.length; i++){
@@ -62,6 +62,36 @@ show = function(type){
 	}
 	els[type].style.display = 'block';
 	buttons[type].className = 'selected';
-
+	console_scroll();
 };
 
+if(window.innerHeight){
+	getDimensions = function(){
+		return {width: window.innerWidth, height: window.innerHeight};
+	};
+}else{
+	getDimensions = function(){
+		var el = document.documentElement;
+		return {width: el.clientWidth, height: el.clientHeight - 2};
+	};
+}
+
+window.onresize = window_resise =function(){
+	var cl = document.getElementById('console_log');
+	cl.style.height = ''+(getDimensions().height - 56)+'px';
+}
+
+console_scroll = function(){
+	if(console_scrolled <= -10) return;
+	setTimeout(function(){
+		var cl = document.getElementById('console_log');
+		cl.scrollTop = cl.scrollHeight;
+	},1)
+};
+
+console_log_scrolled = function(){
+	var cl = document.getElementById('console_log');
+	console_scrolled = cl.scrollTop - cl.scrollHeight+document.getElementById('console_log').clientHeight;
+};
+
+console_log_scrolled();
