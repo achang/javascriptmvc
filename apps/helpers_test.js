@@ -1,5 +1,3 @@
 include.plugins('ajax','controller','view');
-include.unit_test('helpers');
-include.unit_test('ajax');
-include.unit_test('view');
+include.unit_tests('helpers', 'ajax', 'view','controller_view');
 include.controllers('controllertest');

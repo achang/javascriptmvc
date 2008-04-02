@@ -3,48 +3,48 @@ new $MVC.Test.Unit('helpers',{
 	   var a = {one: 'two', two: 'three'}
 	   var b = {three: 'four'};
 	   $MVC.Object.extend(b,a)
-	   this.assertEqual('two', b.one)
-	   this.assertEqual('three', b.two)
-	   this.assertEqual('four', b.three)
+	   this.assert_equal('two', b.one)
+	   this.assert_equal('three', b.two)
+	   this.assert_equal('four', b.three)
 	},
 	test_to_query_string : function(){
-		   this.assertEqual('one=two&two=three', $MVC.Object.to_query_string({one: 'two', two: 'three'}))
-	   this.assertEqual('two=three', $MVC.Object.to_query_string({two: 'three'}))
-	   this.assertEqual(null, $MVC.Object.to_query_string());
-	   this.assertEqual('one=two&two=three&object%5Bhello%5D=world', $MVC.Object.to_query_string({one: 'two', two: 'three', object: {hello: 'world'} }))
+		   this.assert_equal('one=two&two=three', $MVC.Object.to_query_string({one: 'two', two: 'three'}))
+	   this.assert_equal('two=three', $MVC.Object.to_query_string({two: 'three'}))
+	   this.assert_equal(null, $MVC.Object.to_query_string());
+	   this.assert_equal('one=two&two=three&object%5Bhello%5D=world', $MVC.Object.to_query_string({one: 'two', two: 'three', object: {hello: 'world'} }))
 	},
 	test_string_capitalize : function(){
-		this.assertEqual('Yes', $MVC.String.capitalize('yes'));
-		this.assertEqual('Y', $MVC.String.capitalize('Y'));
-		this.assertEqual('Yes', $MVC.String.capitalize('YES'))
+		this.assert_equal('Yes', $MVC.String.capitalize('yes'));
+		this.assert_equal('Y', $MVC.String.capitalize('Y'));
+		this.assert_equal('Yes', $MVC.String.capitalize('YES'))
 	},
 	test_string_include : function(){
-		this.assertNot($MVC.String.include('Yes','bear') )
+		this.assert_not($MVC.String.include('Yes','bear') )
 		this.assert( $MVC.String.include('Justin','in') )
 		this.assert( $MVC.String.include('Justin','Just') )
 		this.assert( $MVC.String.include('Justin','Justin') )
-		this.assertNot( $MVC.String.include('Justin','nJ') )
+		this.assert_not( $MVC.String.include('Justin','nJ') )
 	},
 	test_string_ends_with : function(){
 		this.assert( $MVC.String.ends_with('Justin','in')   );
-		this.assertNot( $MVC.String.ends_with('Justin','is awesome')   );
+		this.assert_not( $MVC.String.ends_with('Justin','is awesome')   );
 	},
 	test_string_camelize : function(){
-		this.assertEqual('oneTwo', $MVC.String.camelize('one_two'))
+		this.assert_equal('oneTwo', $MVC.String.camelize('one_two'))
 	},
 	test_string_classize : function(){
-		this.assertEqual('OneTwo', $MVC.String.classize('one_two'))
+		this.assert_equal('OneTwo', $MVC.String.classize('one_two'))
 	},
 	test_array_include : function(){
 		this.assert($MVC.Array.include([1,2,3], 2) );
-		this.assertNot($MVC.Array.include([1,2,3], 4) )
+		this.assert_not($MVC.Array.include([1,2,3], 4) )
 	},
 	test_array_from : function(){
 		var f = function( ){
 			var arr = $MVC.Array.from(arguments);
 			this.assert(arr.join)
-			this.assertEqual(arr[0], 1)
-			this.assertEqual(arr[1], 2)
+			this.assert_equal(arr[0], 1)
+			this.assert_equal(arr[1], 2)
 		}
 		f.call(this, 1, 2)
 	},
@@ -61,37 +61,37 @@ new $MVC.Test.Unit('helpers',{
 
 new $MVC.Test.Unit('conflict_helpers',{
 	test_string_capitalize : function(){
-		this.assertEqual('Yes', 'yes'.capitalize());
-		this.assertEqual('Y', 'Y'.capitalize());
-		this.assertEqual('Yes', 'YES'.capitalize())
+		this.assert_equal('Yes', 'yes'.capitalize());
+		this.assert_equal('Y', 'Y'.capitalize());
+		this.assert_equal('Yes', 'YES'.capitalize())
 	},
 	test_string_include : function(){
-		this.assertNot('Yes'.include('bear') )
+		this.assert_not('Yes'.include('bear') )
 		this.assert( 'Justin'.include('in') )
 		this.assert( 'Justin'.include('Just') )
 		this.assert( 'Justin'.include('Justin') )
-		this.assertNot( 'Justin'.include('nJ') )
+		this.assert_not( 'Justin'.include('nJ') )
 	},
 	test_string_ends_with : function(){
 		this.assert( 'Justin'.ends_with('in')   );
-		this.assertNot( 'Justin'.ends_with('is awesome')   );
+		this.assert_not( 'Justin'.ends_with('is awesome')   );
 	},
 	test_string_camelize : function(){
-		this.assertEqual('oneTwo', 'one_two'.camelize(), "OK if Prototype"  )
+		this.assert_equal('oneTwo', 'one_two'.camelize(), "OK if Prototype"  )
 	},
 	test_string_classize : function(){
-		this.assertEqual('OneTwo', 'one_two'.classize() )
+		this.assert_equal('OneTwo', 'one_two'.classize() )
 	},
 	test_array_include : function(){
 		this.assert([1,2,3].include(2) );
-		this.assertNot([1,2,3].include( 4) )
+		this.assert_not([1,2,3].include( 4) )
 	},
 	test_array_from : function(){
 		var f = function( ){
 			var arr = Array.from(arguments);
 			this.assert(arr.join)
-			this.assertEqual(arr[0], 1)
-			this.assertEqual(arr[1], 2)
+			this.assert_equal(arr[0], 1)
+			this.assert_equal(arr[1], 2)
 		}
 		f.call(this, 1, 2)
 	},

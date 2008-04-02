@@ -183,26 +183,26 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 			this.fail(message); }
 		catch(e) { this.error(e); }
 	},
-  	assertEqual: function(expected, actual) {
+  	assert_equal: function(expected, actual) {
 		var message = arguments[2] || "assertEqual";
 		try { (expected == actual) ? this.pass() :
 			this.fail(message + ': expected "' + $MVC.Test.inspect(expected) + 
 			'", actual "' + $MVC.Test.inspect(actual) + '"'); }
 		catch(e) { this.error(e); }
   	},
-	assertNull: function(obj) {
+	assert_null: function(obj) {
 	    var message = arguments[1] || 'assertNull'
 	    try { (obj==null) ? this.pass() : 
 	      this.fail(message + ': got "' + $MVC.Test.inspect(obj) + '"'); }
 	    catch(e) { this.error(e); }
 	},
-	assertNot: function(expression) {
+	assert_not: function(expression) {
 	   var message = arguments[1] || 'assert: got "' + $MVC.Test.inspect(expression) + '"';
 		try {! expression ? this.pass() : 
 			this.fail(message); }
 		catch(e) { this.error(e); }
 	},
-	assertNotNull: function(object) {
+	assert_not_null: function(object) {
 	    var message = arguments[1] || 'assertNotNull';
 	    this.assert(object != null, message);
 	},
@@ -414,6 +414,6 @@ $MVC.Test.inspect =  function(object) {
 })();
 
 
-include.unit_test = include.app(function(i){ return '../test/unit/'+i+'_test'});
-include.functional_test = include.app(function(i){ return '../test/functional/'+i+'_test'});	
+include.unit_tests = include.app(function(i){ return '../test/unit/'+i+'_test'});
+include.functional_tests = include.app(function(i){ return '../test/functional/'+i+'_test'});	
 

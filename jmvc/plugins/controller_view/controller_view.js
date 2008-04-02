@@ -32,7 +32,7 @@ $MVC.Controller.functions.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			result = new $MVC.View({url:  path  }).render(data_to_render);
+			result = new $MVC.View({url:  url  }).render(data_to_render);
 		}
 		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];

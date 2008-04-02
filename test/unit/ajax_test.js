@@ -3,19 +3,19 @@ new $MVC.Test.Unit('ajax',{
 		new $MVC.Ajax.Request('ajax/request.xml', {onComplete: this.next_callback(), use_fixture: false } )
 	},
 	normal : function(response){
-		this.assertEqual("<data>one</data>", response.responseText);
+		this.assert_equal("<data>one</data>", response.responseText);
 	},
 	test_fixture_request : function(){
 		new $MVC.Ajax.Request('ajax/request.xml', {onComplete: this.next_callback() } )
 	},
 	fixture : function(response){
-		this.assertEqual("<data>two</data>", response.responseText)
+		this.assert_equal("<data>two</data>", response.responseText)
 	},
 	test_success_request : function(){
 		new $MVC.Ajax.Request('ajax/request.xml', {onSuccess: this.next_callback(), use_fixture: false } );
 	},
 	success : function(response){
-		this.assertEqual("<data>one</data>", response.responseText);
+		this.assert_equal("<data>one</data>", response.responseText);
 	},
 	test_fail_request : function(){
 		if(!location.href.match(/file:|c:\\/) )
@@ -31,6 +31,6 @@ new $MVC.Test.Unit('conflict_ajax',{
 		new Ajax.Request('ajax/request.xml', {onComplete: this.next_callback(), use_fixture: false } )
 	},
 	normal : function(response){
-		this.assertEqual("<data>one</data>", response.responseText);
+		this.assert_equal("<data>one</data>", response.responseText);
 	}
 })

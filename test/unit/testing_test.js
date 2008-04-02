@@ -4,26 +4,26 @@ new $MVC.Test.Unit('testing',{
 		   this.assert({});
 		   this.assert([]);
 		   this.assert(7);
-		   this.assertNotNull('');
-		   this.assertNotNull(false);
-		   this.assertNotNull(0);
-		   this.assertNull(null);
-		   this.assertNull(undefined);
-		   this.assertEqual(1,1);
-		   this.assertEqual(5, '5');
-		   this.assertEqual(0, false)
-		   this.assertEqual(null, null);
-		   this.assertEqual('s', 's');
+		   this.assert_not_null('');
+		   this.assert_not_null(false);
+		   this.assert_not_null(0);
+		   this.assert_null(null);
+		   this.assert_null(undefined);
+		   this.assert_equal(1,1);
+		   this.assert_equal(5, '5');
+		   this.assert_equal(0, false)
+		   this.assert_equal(null, null);
+		   this.assert_equal('s', 's');
        },
 	   test_assert_fails : function(){
 	   		this.assert('', "OK");
 			this.assert(false, "OK");
 			this.assert(0, "OK");
-			this.assertNotNull(null, "OK");
-			this.assertNotNull(undefined, "OK");
-			this.assertNull('', "OK");
-			this.assertNull(false, "OK");
-			this.assertEqual([],[], "OK");
+			this.assert_not_null(null, "OK");
+			this.assert_not_null(undefined, "OK");
+			this.assert_null('', "OK");
+			this.assert_null(false, "OK");
+			this.assert_equal([],[], "OK");
 	   },
 	   test_next : function(){
 	   		this.assert(true);
