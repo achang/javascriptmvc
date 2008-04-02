@@ -204,7 +204,7 @@ window.$MVC.History = {
 				/*IE has a strange bug; if the newLocation is the same as _any_ preexisting id in the
 				document, then the history action gets recorded twice; throw a programmer exception if
 				there is an element with this ID*/
-				if (document.getElementById(newLocation) && that.debugMode) {
+				if ($MVC.$E(newLocation) && that.debugMode) {
 					var e = "Exception: History locations can not have the same value as _any_ IDs that might be in the document,"
 					+ " due to a bug in IE; please ask the developer to choose a history location that does not match any HTML"
 					+ " IDs in this document. The following ID is already taken and cannot be a location: " + newLocation;
@@ -342,7 +342,7 @@ window.$MVC.History = {
 		var iframeID = "rshHistoryFrame";
 		var iframeHTML = '<iframe frameborder=0" id="' + iframeID + '" style="' + styles + '" src="'+this.blank_html_path+'blank.html?' + initialHash + '"></iframe>';
 		document.write(iframeHTML);
-		this.iframe = document.getElementById(iframeID);
+		this.iframe = $MVC.$E(iframeID);
 	},
 	
 	/*Private: Create Opera-specific DOM nodes and overrides*/
@@ -368,8 +368,8 @@ window.$MVC.History = {
 		form.innerHTML = '<input type="text" style="' + inputStyles + '" id="' + stackID + '" value="[]"/>'
 			+ '<input type="text" style="' + inputStyles + '" id="' + lengthID + '" value=""/>';
 		document.body.appendChild(form);
-		this.safariStack = document.getElementById(stackID);
-		this.safariLength = document.getElementById(lengthID);
+		this.safariStack = $MVC.$E(stackID);
+		this.safariLength = $MVC.$E(lengthID);
 		if (!historyStorage.hasKey(this.PAGELOADEDSTRING)) {
 			this.safariHistoryStartPoint = history.length;
 			this.safariLength.value = this.safariHistoryStartPoint;
@@ -564,7 +564,7 @@ window.historyStorage = {
 			+ '</form>';
 			document.write(textareaHTML);
 		}
-		this.storageField = document.getElementById(textareaID);
+		this.storageField = $MVC.$E(textareaID);
 		if (typeof window.opera !== "undefined") {
 			this.storageField.focus();/*Opera needs to focus this element before persisting values in it*/
 		}

@@ -61,10 +61,10 @@ $MVC.Object.extend(ApplicationError,{
 		ApplicationError.send = function(event){
 			var params = {error: {}}, description;
 			params.error.subject = error.subject;
-			if((description = document.getElementById('_error_text'))){error['User Description'] = description.value;}
+			if((description = $MVC.$E('_error_text'))){error['User Description'] = description.value;}
 			if(ApplicationError.prompt_user) {
 				ApplicationError.pause_count_down();
-				document.body.removeChild(document.getElementById('_application_error'));
+				document.body.removeChild($MVC.$E('_application_error'));
 			}
 			params.error.content = ApplicationError.generate_content(error);
 			ApplicationError.kill_event(event);
@@ -72,7 +72,7 @@ $MVC.Object.extend(ApplicationError,{
 		};
 	},
 	create_dom: function(error){
-		if(document.getElementById('_application_error')) return; 
+		if($MVC.$E('_application_error')) return; 
 		var div = ApplicationError.create_containing_div();
 		document.body.appendChild(div);
 		div.appendChild(ApplicationError.create_title());
@@ -92,14 +92,14 @@ $MVC.Object.extend(ApplicationError,{
 		};
 		ApplicationError.start_count_down = function(){
 			seconds_remaining = this.close_time;
-			document.getElementById('_error_seconds').innerHTML = 'This will close in '+seconds_remaining+' seconds.';
+			$MVC.$E('_error_seconds').innerHTML = 'This will close in '+seconds_remaining+' seconds.';
 			timer = setInterval(ApplicationError.count_down, 1000);
 		};
 		ApplicationError.pause_count_down = function(){
 			clearInterval(timer);
 			timer = null;
 			
-			document.getElementById('_error_seconds').innerHTML = '';
+			$MVC.$E('_error_seconds').innerHTML = '';
 		};
 		ApplicationError.start_count_down();
 	},
@@ -129,17 +129,17 @@ $MVC.Object.extend(ApplicationError,{
 		ApplicationError.pause_count_down();
 	},
 	text_area_blur: function(){
-		var area = document.getElementById('_error_text');
+		var area = $MVC.$E('_error_text');
 		if(area.value == this.textarea_text || area.value == '') area.value = this.textarea_text;
 		area.style.color = 'gray';
 		ApplicationError.start_count_down();
 	},
 	set_width: function(){
 		var cont, width;
-		if(!(cont = document.getElementById('_application_error') )) return;
+		if(!(cont = $MVC.$E('_application_error') )) return;
 		width = document.body.clientWidth;
 		cont.style.width = width+'px';
-		document.getElementById('_error_text').style.width = (width-400)+'px';
+		$MVC.$E('_error_text').style.width = (width-400)+'px';
 	},
 	transform_error: function(error){
 		if(typeof error == 'string'){

@@ -61,7 +61,7 @@ $MVC.View = function( options ){
 	{
 		if(typeof options.element == 'string'){
 			var name = options.element;
-			options.element = document.getElementById(  options.element );
+			options.element = $MVC.$E(  options.element );
 			if(options.element == null) throw name+'does not exist!';
 		}
 		if(options.element.value){
@@ -100,7 +100,7 @@ $MVC.View.prototype = {
 	// called with options as an object
 	update : function(element, options){
 		if(typeof element == 'string'){
-			element = document.getElementById(element);
+			element = $MVC.$E(element);
 		}
 		if(options == null){
 			_template = this;

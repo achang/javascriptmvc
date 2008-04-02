@@ -3,34 +3,7 @@ $MVC.Element = function(element){
 		element = document.getElementById(element);
 	return element;//Element.extend(element);
 };
-/*
-$MVC.Element.extend = function(element) {
-  if (!element || _nativeExtensions || element.nodeType == 3) return element;
 
-  if (!element._extended && element.tagName && element != window) {
-    //var methods = Object.clone(Element.Methods), cache = Element.extend.cache;
-
-    //if (element.tagName == 'FORM')
-    //  Object.extend(methods, Form.Methods);
-    //if (['INPUT', 'TEXTAREA', 'SELECT'].include(element.tagName))
-    //  Object.extend(methods, Form.Element.Methods);
-	
-	for(var thing in $MVC.Element){
-		
-	}
-	
-    Object.extend(methods, Element.Methods.Simulated);
-
-    for (var property in methods) {
-      var value = methods[property];
-      if (typeof value == 'function' && !(property in element))
-        element[property] = cache.findOrStore(value);
-    }
-  }
-
-  element._extended = true;
-  return element;
-};*/
 
 
 $MVC.Object.extend($MVC.Element, {
@@ -86,12 +59,10 @@ $MVC.Object.extend($MVC.Element, {
 		return next;
 	},
 	toggle : function(element){
-		if(element.style.display == 'none')
-			element.style.display = '';
-		else
-			element.style.display = 'none';
+		element.style.display == 'none' ? element.style.display = '' : element.style.display = 'none';
 	}
 });
+
 if(!$MVC._no_conflict){
 	$E = Element = $MVC.Element;
 }
