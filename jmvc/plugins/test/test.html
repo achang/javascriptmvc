@@ -41,9 +41,11 @@
 			h2 span {
 				font-size: 10px; 
 			}
-			
-			#console_button {
+			#functional_button {
 				border-right: solid 1px #8FBA3C;
+			}
+			#console_button {
+				
 			}
 			#console_log {
 				overflow: auto;
@@ -109,7 +111,7 @@
 	<body scroll='no'>
 		<h1>JavaScriptMVC Testing</h1>
 		<div id='types'>
-			<h2 id='unit_button' onclick='show("unit");'>Unit</h2><h2 id='functional_button' onclick='show("functional");'>Functional</h2><h2 class='selected' id='console_button' onclick='show("console");'>Console</h2>
+			<h2 class='selected' id='console_button' onclick='show("console");'>Console</h2><h2 id='unit_button' onclick='show("unit");'>Unit</h2><h2 id='functional_button' onclick='show("functional");'>Functional</h2>
 		</div>
 		<div id='unit' class='test_type'  style='display:none'>
 			 <p id='unit_play' style='display:none;'><img src='playgray.png' onclick='opener.$MVC.Test.Unit.run()'/> Unit tests <span id='unit_result'></span></p>
