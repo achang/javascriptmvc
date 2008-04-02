@@ -50,5 +50,11 @@ new $MVC.Test.Unit('testing',{
 	   },
 	   next_function_two: function(){
 	   		x.y.z();
+	   },
+	   test_console : function(){
+	   		for(var i = 0; i < 50 ; i++){
+				$MVC.Console.log(i)
+			}
+			
 	   }
 });
