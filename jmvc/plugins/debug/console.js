@@ -5,15 +5,16 @@ if(include.get_env() != 'test' && typeof console != 'undefined'){
 }else{
 	
 	$MVC.Console = {};
-	$MVC.Console.window = window.open($MVC.root+'/plugins/debug/console.html', null, "width=600,height=400,resizable=yes,scrollbars=yes");
+	$MVC.Console.window = window.open($MVC.root+'/plugins/debug/console.html', null, "width=600,height=400,resizable=yes,scrollbars=yes,menubar=yes");
 	$MVC.Console.log = function(message, html){
 		var el = $MVC.Console.window.document.createElement(html ? 'p' : 'pre' );
 		if(! $MVC.Browser.IE || html){
 			el.innerHTML = html ? message : message.toString().replace(/</g,'&lt;');
 		}else{
-			var lines = message.toString().split(/\n/g)
+			var lines = message.toString().split('\n')
+			alert(lines.length)
 			for(var l = 0 ; l < lines.length; l++){
-				var txt = $MVC.Console.window.document.createTextNode(lines[l])
+				var txt = $MVC.Console.window.document.createTextNode(lines[l] ? lines[l] : ' ')
 				el.appendChild(txt);
 				if(l != lines.length - 1) el.appendChild( $MVC.Console.window.document.createElement('br')  )
 			}

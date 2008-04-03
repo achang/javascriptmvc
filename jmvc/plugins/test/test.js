@@ -16,6 +16,7 @@
 	}
 	
 	if(include.checkExists($MVC.apps_root+'/'+$MVC.app_name+'_test.js')){
+		alert('exists')
 		var path = include.get_path();
 		include.set_path($MVC.apps_root)
 		include($MVC.app_name+'_test')
