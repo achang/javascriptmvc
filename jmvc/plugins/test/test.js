@@ -1,6 +1,3 @@
-//$MVC.Console.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes,scrollbars=yes");
-//if(!$MVC.Console.window)
-//	alert('Testing needs to open up a pop-up window.  Please enable popups and REFRESH this page.');
 
 
 //adds check exist

@@ -11,10 +11,10 @@
 				right = match[2].replace(/\#|&/g,'-').replace(/\//g, '~');
 			}
 			if($MVC.Console)
-				$MVC.Console.log('Loading '+$MVC.application_root+'/test/fixtures/'+left+right+'.fix' )
+				$MVC.Console.log('Loading '+$MVC.root.join('test/fixtures/'+left+right+'.fix'))
 		}
 		if(include.get_env() == 'test' && (options.use_fixture == null || options.use_fixture == true)){
-			url = $MVC.application_root+'/test/fixtures/'+left+encodeURIComponent( right)+'.fix';
+			url = $MVC.root.join('test/fixtures/'+left+encodeURIComponent( right)+'.fix')
 			options.method = 'get';
 		}
 		return new request(url,options)

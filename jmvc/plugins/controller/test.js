@@ -3,8 +3,7 @@
 	
 	$MVC.Controller = function(model, actions){
 		c(model, actions);
-		//alert($MVC.application_root)
-		var path = ($MVC.application_root ? $MVC.application_root+'/' : '')+'test/functional/'+model+'_controller_test.js';
+		var path = $MVC.root.join('test/functional/'+model+'_controller_test.js');
 		var exists = include.checkExists(path);
 		if(exists)
 			$MVC.Console.log('Loading: "test/functional/'+model+'_controller_test.js"');
@@ -13,7 +12,7 @@
 			return;
 		}
 		var p = include.get_path();
-		include.set_path($MVC.application_root);
+		include.set_path($MVC.root.path);
 		include('test/functional/'+ model+'_controller_test.js');
 		include.set_path(p);
 	};

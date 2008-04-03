@@ -18,7 +18,7 @@ $MVC = {
 	File: function(path){ this.path = path; },
 	Initializer: function(f) {
 		$MVC.user_initialize_function = f;
-		include.set_path($MVC.root);
+		include.set_path($MVC.mvc_root);
 		include('framework');
 	},
 	Ajax: {},
@@ -29,9 +29,9 @@ $MVC = {
 	    Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1,
 	    MobileSafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/)
 	},
-	root: null,
+	mvc_root: null,
 	include_path: null,
-	application_root: null,
+	root: null,
 	Object:  { extend: function(d, s) { for (var p in s) d[p] = s[p]; return d;} },
 	$E: function(id){ return typeof id == 'string' ? document.getElementById(id): id },
 	app_name: 'app'
@@ -51,6 +51,9 @@ $MVC.File.prototype = {
 		var http = this.path.match(/^(?:https?:\/\/)([^\/]*)/);
 		return http ? http[1] : null;
 	},
+	join: function(url){
+		return new File(url).join_from(this.path);
+	},
 	join_from: function( url, expand){
 		if(this.is_domain_absolute()){
 			var u = new File(url);
@@ -63,7 +66,7 @@ $MVC.File.prototype = {
 		}else if(url == $MVC.page_dir && !expand){
 			return this.path;
 		}else{
-			if(this.path == '') return url.substr(0,url.length-1);
+			if(this.path == '') return url.replace(/\/$/,'');
 			var urls = url.split('/'), paths = this.path.split('/'), path = paths[0];
 			if(url.match(/\/$/) ) urls.pop();
 			while(path == '..' && paths.length > 0){
@@ -102,8 +105,8 @@ for(var i=0; i<scripts.length; i++) {
 	var src = scripts[i].src;
 	if(src.match(/include\.js/)){
 		$MVC.include_path = src;
-		$MVC.root = new File( new File(src).join_from( $MVC.page_dir ) ).dir();
-		$MVC.application_root = $MVC.root.replace(/\/jmvc$/,'');
+		$MVC.mvc_root = new File( new File(src).join_from( $MVC.page_dir ) ).dir();
+		$MVC.root = new File($MVC.mvc_root.replace(/\/jmvc$/,''));
 		if(src.indexOf('?') != -1) $MVC.script_options = src.split('?')[1].split(',');
 	}
 }
@@ -158,7 +161,7 @@ $MVC.Object.extend(include,{
 
 		options.production = options.production+(options.production.indexOf('.js') == -1 ? '.js' : '' );
 
-		if(options.env == 'compress') include.compress_window = window.open($MVC.root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
+		if(options.env == 'compress') include.compress_window = window.open($MVC.mvc_root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 		if(options.env == 'test') include.plugins('test');
 		if(options.env == 'production' && ! $MVC.Browser.Opera)
 			return document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
@@ -238,7 +241,7 @@ $MVC.Object.extend(include,{
 	srcs: [],
 	plugin: function(plugin_name) {
 		var current_path = include.get_path();
-		include.set_path($MVC.root);
+		include.set_path($MVC.mvc_root);
 		include('plugins/'+ plugin_name+'/setup');
 		include.set_path(current_path);
 	},
@@ -305,8 +308,7 @@ include.models = include.app(function(i){return '../models/'+i});
 include.resources = include.app(function(i){return '../resources/'+i});
 
 if($MVC.script_options){
-	$MVC.application_root = $MVC.root.replace(/\/?jmvc$/,'');
-	$MVC.apps_root =  ($MVC.application_root ? $MVC.application_root+'/' : '') + 'apps';
+	$MVC.apps_root =  $MVC.root.join('apps')
 	$MVC.app_name = $MVC.script_options[0];
 	if($MVC.script_options.length > 1)	include.setup({env: $MVC.script_options[1], production: $MVC.apps_root+'/'+$MVC.script_options[0]+'_production'});
 	include($MVC.apps_root+'/'+$MVC.script_options[0]);

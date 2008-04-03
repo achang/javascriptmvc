@@ -283,7 +283,7 @@ window.$MVC.History = {
 	/*Private: Constant for our own internal history event called when the page is loaded*/
 	PAGELOADEDSTRING: "DhtmlHistory_pageLoaded",
 	
-	blank_html_path: $MVC.root+'plugins/history/',
+	blank_html_path: $MVC.mvc_root+'plugins/history/',
 	
 	/*Private: Our history change listener.*/
 	listener: null,

@@ -46,7 +46,7 @@ $MVC.View = function( options ){
 	}
 	
 	if(options.url){
-		options.url = $MVC.application_root+'/views/'+options.url+ (options.url.match(/\.ejs/) ? '' : '.ejs' ) ;
+		options.url = $MVC.root.join('views/'+options.url+ (options.url.match(/\.ejs/) ? '' : '.ejs' )) ;
 		var template = $MVC.View.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == $MVC.View.INVALID_PATH) return null;
@@ -437,8 +437,8 @@ include.view = function(path){
 		new $MVC.View({url: path});
 	}else if(include.get_env() == 'compress'){
 		var oldp = include.get_path();
-		include.set_path($MVC.application_root);
-		include({path: $MVC.application_root+'/'+path, process: $MVC.View.process_include, ignore: true});
+		include.set_path($MVC.root.path);
+		include({path: path, process: $MVC.View.process_include, ignore: true});
 		include.set_path(oldp);
 		new $MVC.View({url: path});
 	}else{
