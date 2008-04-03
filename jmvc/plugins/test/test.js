@@ -26,7 +26,7 @@
 		include($MVC.app_name+'_test')
 		include.set_path(path)
 	}else{
-		$MVC.Console.log("There is no application test file at:\n    \"apps/"+$MVC.app_name+"_test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests( ... )\n    include.functional_tests( ... )")
+		$MVC.Console.log("There is no application test file at:\n    \"apps/"+$MVC.app_name+"_test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests('product')\n    include.functional_tests('widget')")
 	}
 })();
 
@@ -437,5 +437,13 @@ $MVC.Test.inspect =  function(object) {
 $MVC.Test.loaded_files = {};
 
 
-include.unit_tests = include.app(function(i){ return '../test/unit/'+i+'_test'});
-include.functional_tests = include.app(function(i){ return '../test/functional/'+i+'_test'});
+include.unit_tests = function(){
+	for(var i=0; i< arguments.length; i++)
+		$MVC.Console.log('Trying to load: test/unit/'+arguments[i]+'_test.js');
+	include.app(function(i){ return '../test/unit/'+i+'_test'}).apply(null, arguments);
+}
+include.functional_tests = function(){
+	for(var i=0; i< arguments.length; i++)
+		$MVC.Console.log('Trying to load: test/functional/'+arguments[i]+'_test.js');
+	include.app(function(i){ return '../test/functional/'+i+'_test'}).apply(null, arguments);
+}
