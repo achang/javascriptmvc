@@ -3,7 +3,8 @@
 	
 	$MVC.Controller = function(model, actions){
 		c(model, actions);
-		var path = ($MVC.application_root ? '/'+$MVC.application_root : '')+'test/functional/'+model+'_controller_test.js';
+		//alert($MVC.application_root)
+		var path = ($MVC.application_root ? '/'+$MVC.application_root+'/' : '')+'test/functional/'+model+'_controller_test.js';
 		var exists = include.checkExists(path);
 		if(exists)
 			$MVC.Console.log('Loading: "test/functional/'+model+'_controller_test.js"');
