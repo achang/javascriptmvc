@@ -21,7 +21,7 @@
 		include($MVC.app_name+'_test')
 		include.set_path(path)
 	}else{
-		$MVC.Console.log("There is no application test file at:\n    apps/"+$MVC.app_name+"_test\nUse it to include your test files.\nTest includes:\n    include.unit_tests( ... )\n    include.functional_tests( ... )")
+		$MVC.Console.log("There is no application test file at:\n    \"apps/"+$MVC.app_name+"_test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests( ... )\n    include.functional_tests( ... )")
 	}
 })();
 

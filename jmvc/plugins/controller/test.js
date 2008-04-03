@@ -6,9 +6,9 @@
 		var path = $MVC.application_root+'/test/functional/'+model+'_controller_test.js';
 		var exists = include.checkExists(path);
 		if(exists)
-			$MVC.Console.log('Loading: '+path);
+			$MVC.Console.log('Loading: "test/functional/'+model+'_controller_test.js"');
 		else {
-			$MVC.Console.log('Controller test not found at '+path+'.');
+			$MVC.Console.log('Test Controller not found at "test/functional/'+model+'_controller_test.js"');
 			return;
 		}
 		var p = include.get_path();
