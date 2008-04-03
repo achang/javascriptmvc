@@ -394,16 +394,17 @@ $MVC.Test.loaded_files = {};
 	var cont = include.controllers;
 	include.controllers = function(){
 		cont.apply(null,arguments);
-		include.app(function(i){
-			var path = $MVC.application_root+'test/functional/'+i+'_controller_test.js';
-			var exists = include.checkExists(path);  
+		for(var i=0; i< arguments.length; i++)  {
+			var path = $MVC.application_root+'test/functional/'+arguments[i]+'_controller_test.js';
+			var exists = include.checkExists(path);
 			if(exists) {
-				$MVC.Test.loaded_files[i] = true;
 				$MVC.Console.log('Loading: '+path);
+				include.app(function(i){
+					return '../test/functional/'+i+'_controller_test.js';
+				}).apply(null, arguments);
 			} else
 				$MVC.Console.log('Controller test not found at '+path+'.');
-			return path;
-		}).apply(null, arguments);
+		}
 	};
 })();
 
