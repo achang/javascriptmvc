@@ -1,3 +1,8 @@
+//$MVC.Console.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes,scrollbars=yes");
+//if(!$MVC.Console.window)
+//	alert('Testing needs to open up a pop-up window.  Please enable popups and REFRESH this page.');
+
+
 //adds check exist
 (function() {
 	include.checkExists = function(path){		
@@ -15,6 +20,8 @@
 		include.set_path($MVC.apps_root)
 		include($MVC.script_options[0]+'_test')
 		include.set_path(path)
+	}else{
+		$MVC.Console.log("There is no application test file.\nThey are useful for including your test files.")
 	}
 })();
 
@@ -66,7 +73,7 @@ $MVC.Test = $MVC.Class.extend({
 			this.working_test++;
 			this.run_test(this.test_names[this.working_test-1]);
 		}else if(this.working_test != null){
-			$MVC.Test.window.update_test(this)
+			$MVC.Console.window.update_test(this)
 			this.working_test = null;
 			if(this.callback){
 				this.callback();
@@ -78,8 +85,8 @@ $MVC.Test = $MVC.Class.extend({
 		this.assertions = new this.Assertions(this, test_id);
 	},
 	prepare_page : function(type) {
-		$MVC.Test.window.document.getElementById(type+'_explanation').style.display = 'none';
-		$MVC.Test.window.document.getElementById(type+'_play').style.display = 'block';
+		$MVC.Console.window.document.getElementById(type+'_explanation').style.display = 'none';
+		$MVC.Console.window.document.getElementById(type+'_play').style.display = 'block';
 	},
 	updateElements : function(test){
 		
@@ -87,7 +94,7 @@ $MVC.Test = $MVC.Class.extend({
 			this.prepare_page('unit');
 		else
 			this.prepare_page('functional');
-		var insert_into = $MVC.Test.window.document.getElementById(test.type+'_tests');
+		var insert_into = $MVC.Console.window.document.getElementById(test.type+'_tests');
 		var txt = "<h3><img alt='run' src='playwhite.png' onclick='find_and_run(\""+test.name+"\")'/>"+test.name+" <span id='"+test.name+"_results'></span></h3>";
 		txt += "<div class='table_container'><table cellspacing='0px'><thead><tr><th>tests</th><th>result</th></tr></thead><tbody>";
 		for(var t in test.tests ){
@@ -109,7 +116,7 @@ $MVC.Test = $MVC.Class.extend({
 			txt+= helpers.join(', ')+"</div>";
 		}
 		//var t = document.getElementById('functional_tests');
-		var t = $MVC.Test.window.document.createElement('div');
+		var t = $MVC.Console.window.document.createElement('div');
 		t.className = 'test'
 		t.innerHTML  = txt;
 		insert_into.appendChild(t);
@@ -137,7 +144,7 @@ $MVC.Test.Runner = function(object, iterator_name,params){
 				object._callback = null;
 			}else{
 				//if($MVC.Browser.Gecko) window.blur();
-				//else $MVC.Test.window.focus();
+				//else $MVC.Console.window.focus();
 			}
 		}
 	}
@@ -157,7 +164,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		this._delays = 0;
 		this._test_name = test_name;
 		this._last_called = test_name;
-		$MVC.Test.window.running(this._test, this._test_name);
+		$MVC.Console.window.running(this._test, this._test_name);
 		if(this.setup) 
 			this._setup();
 		else{
@@ -285,13 +292,13 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 			if(this.teardown) this.teardown()
 			if(this._do_blur_back)
 				this._blur_back();
-			$MVC.Test.window.update(this._test, this._test_name, this);
+			$MVC.Console.window.update(this._test, this._test_name, this);
 			this.failures == 0 && this.errors == 0?  this._test.pass(): this._test.fail();
 			this._test.run_next();
 		}
 	},
 	_blur_back: function(){
-		$MVC.Browser.Gecko ? window.blur() : $MVC.Test.window.focus();
+		$MVC.Browser.Gecko ? window.blur() : $MVC.Console.window.focus();
 	}
 });
 
@@ -319,7 +326,7 @@ $MVC.Test.Runner($MVC.Test.Unit, "tests", {
 		if(this.tests[number].failures == 0 ) this.passes++;
 	},
 	done: function(){
-		$MVC.Test.window.document.getElementById('unit_result').innerHTML = 
+		$MVC.Console.window.document.getElementById('unit_result').innerHTML = 
 			'('+this.passes+'/'+this.tests.length+')' + (this.passes == this.tests.length ? ' Wow!' : '')
 	}
 })
@@ -345,7 +352,7 @@ $MVC.Test.Functional = $MVC.Test.extend({
 			var element = typeof selector == 'string' ? $MVC.CSSQuery(selector)[number] : selector; //if not a selector assume element
 			
 			if(event_type == 'focus'){
-				$MVC.Browser.Gecko ? $MVC.Test.window.blur() : window.focus();
+				$MVC.Browser.Gecko ? $MVC.Console.window.blur() : window.focus();
 				this._do_blur_back =true;
 			}
 			
@@ -372,7 +379,7 @@ $MVC.Test.Runner($MVC.Test.Functional, "tests", {
 		if(this.tests[number].failures == 0 ) this.passes++;
 	},
 	done: function(){
-		$MVC.Test.window.document.getElementById('functional_result').innerHTML = 
+		$MVC.Console.window.document.getElementById('functional_result').innerHTML = 
 			'('+this.passes+'/'+this.tests.length+')' + (this.passes == this.tests.length ? ' Wow!' : '')
 	}
 })
@@ -404,11 +411,9 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 });
 
 
-$MVC.Test.window = window.open($MVC.root+'/plugins/test/test.html', null, "width=600,height=400,resizable=yes,scrollbars=yes");
-if(!$MVC.Test.window)
-	alert('Testing needs to open up a pop-up window.  Please enable popups and REFRESH this page.')
 
-$MVC.Test.window.get_tests = function(){return $MVC.Tests; } 
+
+$MVC.Console.window.get_tests = function(){return $MVC.Tests; } 
 
 //This function returns what something looks like
 $MVC.Test.inspect =  function(object) {
@@ -426,23 +431,6 @@ $MVC.Test.inspect =  function(object) {
 };
 $MVC.Test.loaded_files = {};
 
-(function(){
-	var cont = include.controllers;
-	include.controllers = function(){
-		cont.apply(null,arguments);
-		for(var i=0; i< arguments.length; i++)  {
-			var path = $MVC.application_root+'test/functional/'+arguments[i]+'_controller_test.js';
-			var exists = include.checkExists(path);
-			if(exists) {
-				$MVC.Console.log('Loading: '+path);
-				include.app(function(i){
-					return '../test/functional/'+i+'_controller_test.js';
-				}).apply(null, arguments);
-			} else
-				$MVC.Console.log('Controller test not found at '+path+'.');
-		}
-	};
-})();
 
 include.unit_tests = include.app(function(i){ return '../test/unit/'+i+'_test'});
 include.functional_tests = include.app(function(i){ return '../test/functional/'+i+'_test'});

@@ -16,8 +16,8 @@ clean_messages = function(messages){
 	}
 	return messages
 }
-document.getElementById('your_app_name_unit').innerHTML = opener.$MVC.app_name;
-document.getElementById('your_app_name_functional').innerHTML = opener.$MVC.app_name;
+//document.getElementById('your_app_name_unit').innerHTML = opener.$MVC.app_name;
+//document.getElementById('your_app_name_functional').innerHTML = opener.$MVC.app_name;
 
 
 update = function(controller, test_name, assertions){
@@ -82,12 +82,24 @@ if(window.innerHeight){
 
 window.onresize = window_resise =function(){
 	var cl = document.getElementById('console_log');
-	cl.style.height = ''+(getDimensions().height - 56)+'px';
+	cl.style.height = ''+(getDimensions().height - 57)+'px';
+	cl.style.width = ''+(getDimensions().width -1)+'px';
 	var u = document.getElementById('unit')
-	u.style.height = ''+(getDimensions().height - 56)+'px';
+	u.style.height = ''+(getDimensions().height - 57)+'px';
 	
 	var f = document.getElementById('functional')
-	f.style.height = ''+(getDimensions().height - 56)+'px';
+	f.style.height = ''+(getDimensions().height - 57)+'px';
+	if(opener.$MVC.Browser.IE){
+		var up = document.getElementById('unit_play').offsetWidth;
+		var fp = document.getElementById('functional_play').offsetWidth;
+		if(up){
+			document.getElementById('unit_container').style.width = ''+(up+20)+'px'
+		}else if(fp){
+			document.getElementById('functional_container').style.width = ''+(fp+20)+'px'
+		}
+		
+	}
+	
 }
 
 console_scroll = function(){

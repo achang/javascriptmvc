@@ -12,6 +12,7 @@
 			.test_type { background-color: white;
 				border-top: solid 1px #8FBA3C;
 				overflow: auto;
+				padding: 5px 0px 0px 0px;
 			}
 			h1{
 				font-size: 12pt;background:#D5E7B3;
@@ -50,7 +51,7 @@
 			#console_log {
 				overflow: auto;
 			}
-			#console {padding: 0px;}
+			#console {}
 			
 			h2.selected { 
 				color: black;
@@ -121,6 +122,8 @@
 			Here's how to get started.</p>
 			
 			<ol>
+				<li>Create a <span class='highlight'>'test/unit'</span> directory on the same level as 
+				your <span class='highlight'>'jmvc'</span> directory.</li>
 				<li>Create a file like <span class='highlight'>'animal_unit_test.js'</span> and add the following code:
 			
 <code><span class='key'>new</span> $MVC.Test.Unit('animal',{
@@ -149,6 +152,8 @@
 			Here's how to get started.</p>
 			
 			<ol>
+				<li>Create a <span class='highlight'>'test/functional'</span> directory on the same level as 
+				your <span class='highlight'>'jmvc'</span> directory.</li>
 				<li>Create a file like <span class='highlight'>'widget_functional_test.js'</span> and add the following code:
 			
 <code><span class='key'>new</span> $MVC.Test.Functional('widget',{
@@ -158,8 +163,7 @@
 });</code></li>
 
 				<li>Create a file called <span class='highlight'>'<span id='your_app_name_functional'>YOURAPPNAME</span>_test.js'</span> 
-				in your <span class='highlight'>'app'</span> directory.</li>
-				<li>Add the following code: <span class='highlight'>include('../test/functional/widget_functional_test.js')</span></li>
+				in your <span class='highlight'>'app'</span> directory and add the following code: <span class='highlight'>include('../test/functional/widget_functional_test.js')</span></li>
 				<li>Reload your page.</li>
 			</ol>
 			

@@ -1,15 +1,15 @@
-	
+//no longer used	
 $MVC.Console.log = function(message, html){
-	var el = $MVC.Test.window.document.createElement(html ? 'p' : 'pre' );
+	var el = $MVC.TestWindow.document.createElement(html ? 'p' : 'pre' );
 	
 	el.innerHTML = html ? message : message.toString().replace(/</g,'&lt;');
 	
-	var place = $MVC.Test.window.document.getElementById('console_log')
+	var place = $MVC.TestWindow.document.getElementById('console_log')
 	
 	place.appendChild(el);
-	if($MVC.Test.window.window_resise){
-		$MVC.Test.window.window_resise();
-		$MVC.Test.window.console_scroll();
+	if($MVC.TestWindow.window_resise){
+		$MVC.TestWindow.window_resise();
+		$MVC.TestWindow.console_scroll();
 	}
 	
 	if(typeof console != 'undefined'){
