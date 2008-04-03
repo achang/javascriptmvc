@@ -101,12 +101,15 @@ $MVC.page_dir = new File(window.location.href).dir();
 
 //find include and get its absolute path
 var scripts = document.getElementsByTagName("script");
+var scripts = document.getElementsByTagName("script");
 for(var i=0; i<scripts.length; i++) {
 	var src = scripts[i].src;
 	if(src.match(/include\.js/)){
 		$MVC.include_path = src;
 		$MVC.mvc_root = new File( new File(src).join_from( $MVC.page_dir ) ).dir();
-		$MVC.root = new File($MVC.mvc_root.replace(/\/?jmvc$/,''));
+		var tmp = $MVC.mvc_root.replace(/jmvc$/,'');
+		if(tmp.match(/.+\/$/)) tmp = tmp.replace(/\/$/, '');
+		$MVC.root = new File(tmp);
 		if(src.indexOf('?') != -1) $MVC.script_options = src.split('?')[1].split(',');
 	}
 }
