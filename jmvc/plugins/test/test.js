@@ -86,7 +86,7 @@ $MVC.Test = $MVC.Class.extend({
 	},
 	prepare_page : function(type) {
 		$MVC.Console.window.document.getElementById(type+'_explanation').style.display = 'none';
-		$MVC.Console.window.document.getElementById(type+'_play').style.display = 'block';
+		$MVC.Console.window.document.getElementById(type+'_test_runner').style.display = 'block';
 	},
 	updateElements : function(test){
 		

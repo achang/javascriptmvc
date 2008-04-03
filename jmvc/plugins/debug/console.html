@@ -116,15 +116,21 @@
 			<h2 class='selected' id='console_button' onclick='show("console");'>Console</h2><h2 id='unit_button' onclick='show("unit");'>Unit</h2><h2 id='functional_button' onclick='show("functional");'>Functional</h2>
 		</div>
 		<div id='unit' class='test_type'  style='display:none'>
-			 <p id='unit_play' style='display:none;'><img src='playgray.png' onclick='opener.$MVC.Test.Unit.run()'/> Unit tests <span id='unit_result'></span></p>
+			<div style='display:none;' id='unit_test_runner'>
+				 <p id='unit_play'>
+				 	<img src='playgray.png' onclick='opener.$MVC.Test.Unit.run()'/> Unit tests 
+					<span id='unit_result'></span>
+				</p>
+				<div id='unit_container'>
+					<div id='unit_tests'></div>
+				</div>
+			</div>
  			<div id='unit_explanation' class='explanation'>
 			
 			<p>Unit tests are used to verify your classes and methods are behaving as you expect.  
 			Here's how to get started.</p>
 			
 			<ol>
-				<li>Create a <span class='highlight'>'test/unit'</span> directory on the same level as 
-				your <span class='highlight'>'jmvc'</span> directory.</li>
 				<li>Create a file like <span class='highlight'>'animal_unit_test.js'</span> and add the following code:
 			
 <code><span class='key'>new</span> $MVC.Test.Unit('animal',{
@@ -141,43 +147,40 @@
 			<p>For more information, check out the <a href='http://javascriptmvc.com/learningcenter/test/api.html'>documentation</a>.</p>
 			
 			</div>
-			<div id='unit_container'>
-			<div class='tests' id='unit_tests'></div>
-			</div>
 		</div>
 		
 		
 		<div id='functional' class='test_type' style='display:none'>
-			<p id='functional_play'>
-				<img src='playgray.png' onclick='opener.$MVC.Test.Functional.run()'/> Functional tests 
-				<span id='functional_result'></span>
-			</p>
+			<div style='display:none;' id='functional_test_runner'>
+				<p id='functional_play'>
+					<img src='playgray.png' onclick='opener.$MVC.Test.Functional.run()'/> Functional tests 
+					<span id='functional_result'></span>
+				</p>
+				<div id='functional_container'>
+					<div id='functional_tests'></div>
+				</div>
+			</div>
 			<div id='functional_explanation' class='explanation'>
 			
-			<p>Functional tests are used to simulate user interactions with your page.  
-			Here's how to get started.</p>
+				<p>Functional tests are used to simulate user interactions with your page.  
+				Here's how to get started.</p>
+				
+				<ol>
+					<li>Create a file like <span class='highlight'>'widget_functional_test.js'</span> and add the following code:
+				
+	<code><span class='key'>new</span> $MVC.Test.Functional('widget',{
+	   <span class='attribute'>test_truth</span>: function() {
+	      <span class='key'>this</span>.assert(<span class='key'>true</span>);
+	   }
+	});</code></li>
+	
+					<li>Create a file called <span class='highlight'>'<span id='your_app_name_functional'>YOURAPPNAME</span>_test.js'</span> 
+					in your <span class='highlight'>'app'</span> directory and add the following code: <span class='highlight'>include('../test/functional/widget_functional_test.js')</span></li>
+					<li>Reload your page.</li>
+				</ol>
+				
+				<p>For more information, check out the <a href='http://javascriptmvc.com/learningcenter/test/api.html'>documentation</a>.</p>
 			
-			<ol>
-				<li>Create a <span class='highlight'>'test/functional'</span> directory on the same level as 
-				your <span class='highlight'>'jmvc'</span> directory.</li>
-				<li>Create a file like <span class='highlight'>'widget_functional_test.js'</span> and add the following code:
-			
-<code><span class='key'>new</span> $MVC.Test.Functional('widget',{
-   <span class='attribute'>test_truth</span>: function() {
-      <span class='key'>this</span>.assert(<span class='key'>true</span>);
-   }
-});</code></li>
-
-				<li>Create a file called <span class='highlight'>'<span id='your_app_name_functional'>YOURAPPNAME</span>_test.js'</span> 
-				in your <span class='highlight'>'app'</span> directory and add the following code: <span class='highlight'>include('../test/functional/widget_functional_test.js')</span></li>
-				<li>Reload your page.</li>
-			</ol>
-			
-			<p>For more information, check out the <a href='http://javascriptmvc.com/learningcenter/test/api.html'>documentation</a>.</p>
-			
-			</div>
-			<div id='functional_container'>
-				<div id='functional_tests'></div>
 			</div>
 			
 			

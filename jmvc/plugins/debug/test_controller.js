@@ -16,9 +16,8 @@ clean_messages = function(messages){
 	}
 	return messages
 }
-//document.getElementById('your_app_name_unit').innerHTML = opener.$MVC.app_name;
-//document.getElementById('your_app_name_functional').innerHTML = opener.$MVC.app_name;
-
+document.getElementById('your_app_name_unit').innerHTML = opener.$MVC.app_name;
+document.getElementById('your_app_name_functional').innerHTML = opener.$MVC.app_name;
 
 update = function(controller, test_name, assertions){
 	var step = document.getElementById('step_'+controller.name+'_'+test_name);
