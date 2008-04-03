@@ -10,17 +10,17 @@
 		
 	</head>
 	<body>
-		<p><a href='javascript: void(0)' onclick='normal()' id='normal'>normal</a>
-		   <a href='javascript: void(0)' onclick='noconflict()' id='no_conflict'>no conflict</a></p>
+		<p><a href='javascript: void(0)' onclick='normal()' id='normal_el'>normal</a>
+		   <a href='javascript: void(0)' onclick='noconflict()' id='no_conflict_el'>no conflict</a></p>
 		
 		
-		<p><a href='javascript: void(0)' onclick='proto()' id='proto'>Prototype</a>
-			<a href='javascript: void(0)' onclick='noproto()' id='noproto'>no prototype</a>
+		<p><a href='javascript: void(0)' onclick='proto()' id='proto_el'>Prototype</a>
+			<a href='javascript: void(0)' onclick='noproto()' id='noproto_el'>no prototype</a>
 			
 		</p>
 		
-		<p><a href='javascript: void(0)' onclick='jq()' id='jq'>jQuery</a>
-			<a href='javascript: void(0)' onclick='nojq()' id='nojq'>no jQuery</a>
+		<p><a href='javascript: void(0)' onclick='jq()' id='jq_el'>jQuery</a>
+			<a href='javascript: void(0)' onclick='nojq()' id='nojq_el'>no jQuery</a>
 			
 		</p>
 		
@@ -92,21 +92,21 @@
 			
 			if(location.href.indexOf('no_conflict') != -1){
 				$MVC.no_conflict();
-				document.getElementById('no_conflict').style.backgroundColor = '#ddffdd';
+				document.getElementById('no_conflict_el').style.backgroundColor = '#ddffdd';
 			}else{
-				document.getElementById('normal').style.backgroundColor = '#ddffdd';
+				document.getElementById('normal_el').style.backgroundColor = '#ddffdd';
 			}
 			if(location.href.indexOf('jquery') != -1){
 				include('../../resources/jquery-1.2.3');
-				document.getElementById('jq').style.backgroundColor = '#ddffdd';
+				document.getElementById('jq_el').style.backgroundColor = '#ddffdd';
 			}else{
-				document.getElementById('nojq').style.backgroundColor = '#ddffdd';
+				document.getElementById('nojq_el').style.backgroundColor = '#ddffdd';
 			}
 			if(location.href.indexOf('prototype') != -1){
 				include('../../resources/prototype');
-				document.getElementById('proto').style.backgroundColor = '#ddffdd';
+				document.getElementById('proto_el').style.backgroundColor = '#ddffdd';
 			}else{
-				document.getElementById('noproto').style.backgroundColor = '#ddffdd';
+				document.getElementById('noproto_el').style.backgroundColor = '#ddffdd';
 			}
 				
 			
