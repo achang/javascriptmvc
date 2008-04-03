@@ -12,7 +12,6 @@ if(include.get_env() != 'test' && typeof console != 'undefined'){
 			el.innerHTML = html ? message : message.toString().replace(/</g,'&lt;');
 		}else{
 			var lines = message.toString().split('\n')
-			alert(lines.length)
 			for(var l = 0 ; l < lines.length; l++){
 				var txt = $MVC.Console.window.document.createTextNode(lines[l] ? lines[l] : ' ')
 				el.appendChild(txt);
