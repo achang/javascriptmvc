@@ -33,7 +33,8 @@ $MVC = {
 	include_path: null,
 	application_root: null,
 	Object:  { extend: function(d, s) { for (var p in s) d[p] = s[p]; return d;} },
-	$E: function(id){ return typeof id == 'string' ? document.getElementById(id): id }
+	$E: function(id){ return typeof id == 'string' ? document.getElementById(id): id },
+	app_name: 'app'
 };
 	
 var File = $MVC.File;

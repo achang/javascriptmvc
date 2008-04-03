@@ -34,7 +34,7 @@ if(include.get_env() != 'test' && typeof console != 'undefined'){
 
 setTimeout(function(){
 	$MVC.Console.log('You are running '+
-		($MVC.script_options&&$MVC.script_options[0] ? '"'+$MVC.script_options[0]+'" ' : '') +'in the '+include.get_env()+' environment.')
+		'"'+$MVC.app_name+'" ' +'in the '+include.get_env()+' environment.')
 },1)
 
 

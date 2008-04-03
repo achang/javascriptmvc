@@ -15,13 +15,13 @@
 	    return true;
 	}
 	
-	if($MVC.script_options && include.checkExists($MVC.apps_root+'/'+$MVC.script_options[0]+'_test.js')){
+	if(include.checkExists($MVC.apps_root+'/'+$MVC.app_name+'_test.js')){
 		var path = include.get_path();
 		include.set_path($MVC.apps_root)
-		include($MVC.script_options[0]+'_test')
+		include($MVC.app_name+'_test')
 		include.set_path(path)
 	}else{
-		$MVC.Console.log("There is no application test file.\nThey are useful for including your test files.")
+		$MVC.Console.log("There is no application test file at:\n    apps/"+$MVC.app_name+"_test\nUse it to include your test files.\nTest includes:\n    include.unit_tests( ... )\n    include.functional_tests( ... )")
 	}
 })();
 
