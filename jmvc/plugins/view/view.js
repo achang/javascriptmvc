@@ -437,7 +437,7 @@ include.view = function(path){
 		new $MVC.View({url: path});
 	}else if(include.get_env() == 'compress'){
 		var oldp = include.get_path();
-		include.set_path($MVC.root.path);
+		include.set_path($MVC.root.join('views'));
 		include({path: path, process: $MVC.View.process_include, ignore: true});
 		include.set_path(oldp);
 		new $MVC.View({url: path});
@@ -448,7 +448,7 @@ include.view = function(path){
 
 include.views = function(){
 	for(var i=0; i< arguments.length; i++){
-		include.view('views/'+arguments[i]+'.ejs');
+		include.view(arguments[i]+'.ejs');
 	}
 };
 
