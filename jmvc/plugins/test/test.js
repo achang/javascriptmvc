@@ -20,7 +20,6 @@
 
 
 $MVC.Tests = {};
-
 $MVC.Test = $MVC.Class.extend({
 	init: function( name, tests, type  ){
 		this.type = type || 'unit';
@@ -38,7 +37,7 @@ $MVC.Test = $MVC.Class.extend({
 		this.failures = 0;
 		
 		$MVC.Tests[this.name] = this;
-		$MVC.Test.window.updateElements(this);
+		this.updateElements(this);
 	},
 	fail : function(){
 		this.failures++;
@@ -77,6 +76,43 @@ $MVC.Test = $MVC.Class.extend({
 	},
 	run_test: function(test_id){
 		this.assertions = new this.Assertions(this, test_id);
+	},
+	prepare_page : function(type) {
+		$MVC.Test.window.document.getElementById(type+'_explanation').style.display = 'none';
+		$MVC.Test.window.document.getElementById(type+'_play').style.display = 'block';
+	},
+	updateElements : function(test){
+		
+		if(test.type == 'unit')
+			this.prepare_page('unit');
+		else
+			this.prepare_page('functional');
+		var insert_into = $MVC.Test.window.document.getElementById(test.type+'_tests');
+		var txt = "<h3><img alt='run' src='playwhite.png' onclick='find_and_run(\""+test.name+"\")'/>"+test.name+" <span id='"+test.name+"_results'></span></h3>";
+		txt += "<div class='table_container'><table cellspacing='0px'><thead><tr><th>tests</th><th>result</th></tr></thead><tbody>";
+		for(var t in test.tests ){
+			if(! test.tests.hasOwnProperty(t) ) continue;
+			if(t.indexOf('test') != 0 ) continue;
+			var name = t.substring(5)
+			txt+= '<tr class="step" id="step_'+test.name+'_'+t+'">'+
+			"<td class='name'>"+
+			"<a href='javascript: void(0);' onclick='find_and_run(\""+test.name+"\",\""+t+"\")'>"+name+'</a></td>'+
+			'<td class="result">&nbsp;</td></tr>'
+		}
+		txt+= "</tbody></table></div>";
+		if(this.added_helpers){
+			txt+= "<div class='helpers'>Helpers: "
+			var helpers = [];
+			for(var h in test.added_helpers)
+				if( test.added_helpers.hasOwnProperty(h) ) 
+					helpers.push( "<a href='javascript: void(0)' onclick='run_helper(\""+test.name+"\",\""+h+"\")'>"+h+"</a>")
+			txt+= helpers.join(', ')+"</div>";
+		}
+		//var t = document.getElementById('functional_tests');
+		var t = $MVC.Test.window.document.createElement('div');
+		t.className = 'test'
+		t.innerHTML  = txt;
+		insert_into.appendChild(t);
 	}
 });
 
