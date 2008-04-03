@@ -8,5 +8,5 @@ if(typeof jQuery != 'undefined'){
 	include('ajax')
 }
 
-if(include.get_env() == 'test')
-	include('testing')
+if($MVC.Console)
+	include('debug')

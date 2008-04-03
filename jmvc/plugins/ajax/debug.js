@@ -10,14 +10,19 @@
 				left += '/';
 				right = match[2].replace(/\#|&/g,'-').replace(/\//g, '~');
 			}
-			if($MVC.Console)
-				$MVC.Console.log('Loading '+$MVC.root.join('test/fixtures/'+left+right+'.fix'))
+			$MVC.Console.log('Requesting "'+url+'".  As a fixture it would be:\n    "test/fixtures/'+left+right+'.fix"')
 		}
+		
 		if(include.get_env() == 'test' && (options.use_fixture == null || options.use_fixture == true)){
+			$MVC.Console.log('Loading "test/fixtures/'+left+right+'.fix" for\n    "'+url+'"' )
 			url = $MVC.root.join('test/fixtures/'+left+encodeURIComponent( right)+'.fix')
 			options.method = 'get';
 		}
-		return new request(url,options)
+		var req =  new request(url,options);
+		
+		
+		
+		return req;
 	};
 	$MVC.Object.extend($MVC.Ajax.Request, request)
 	
