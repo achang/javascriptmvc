@@ -19,6 +19,13 @@ clean_messages = function(messages){
 document.getElementById('your_app_name_unit').innerHTML = opener.$MVC.app_name;
 document.getElementById('your_app_name_functional').innerHTML = opener.$MVC.app_name;
 
+
+opener.$MVC.Console.log('You are running '+
+		'"'+opener.$MVC.app_name+'" ' +'in the '+opener.include.get_env()+' environment.')
+
+
+
+
 update = function(controller, test_name, assertions){
 	var step = document.getElementById('step_'+controller.name+'_'+test_name);
 	var result = step.childNodes[1];
