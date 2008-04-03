@@ -10,11 +10,12 @@
 				left += '/';
 				right = match[2].replace(/\#|&/g,'-').replace(/\//g, '~');
 			}
+			if(include.get_env() != 'test')
 			$MVC.Console.log('Requesting "'+url+'".  As a fixture it would be:\n    "test/fixtures/'+left+right+'.fix"')
 		}
 		
 		if(include.get_env() == 'test' && (options.use_fixture == null || options.use_fixture == true)){
-			$MVC.Console.log('Loading "test/fixtures/'+left+right+'.fix" for\n    "'+url+'"' )
+			$MVC.Console.log('Loading "test/fixtures/'+left+right+'.fix" for\n        "'+url+'"' )
 			url = $MVC.root.join('test/fixtures/'+left+encodeURIComponent( right)+'.fix')
 			options.method = 'get';
 		}
