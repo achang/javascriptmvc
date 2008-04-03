@@ -66,7 +66,7 @@ $MVC.File.prototype = {
 		}else if(url == $MVC.page_dir && !expand){
 			return this.path;
 		}else{
-			if(this.path == '') return url.replace(/\/$/,'');
+			if(url == '') return this.path.replace(/\/$/,'');
 			var urls = url.split('/'), paths = this.path.split('/'), path = paths[0];
 			if(url.match(/\/$/) ) urls.pop();
 			while(path == '..' && paths.length > 0){
@@ -106,7 +106,7 @@ for(var i=0; i<scripts.length; i++) {
 	if(src.match(/include\.js/)){
 		$MVC.include_path = src;
 		$MVC.mvc_root = new File( new File(src).join_from( $MVC.page_dir ) ).dir();
-		$MVC.root = new File($MVC.mvc_root.replace(/\/jmvc$/,''));
+		$MVC.root = new File($MVC.mvc_root.replace(/\/?jmvc$/,''));
 		if(src.indexOf('?') != -1) $MVC.script_options = src.split('?')[1].split(',');
 	}
 }
