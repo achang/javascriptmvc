@@ -1,5 +1,3 @@
-$MVC.Ajax = {};
-
 $MVC.Ajax.Request = function(url,options){
 	//map options
 	options.url = url;

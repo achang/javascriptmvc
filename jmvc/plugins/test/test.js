@@ -13,7 +13,7 @@
 				xhr.status == 2 || xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) 
 			return false;
 		}
-		//alert(path+', '+xhr.status+', '+xhr.responseText);
+
 		if ( xhr.status > 505 || xhr.status == 404 || xhr.status == 2 || 
 			xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) 
 				return false;
