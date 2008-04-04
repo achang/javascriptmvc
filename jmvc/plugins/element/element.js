@@ -69,19 +69,25 @@ $MVC.Object.extend($MVC.$E, {
 
 $MVC.$E.extend = function(el){
 	for(var f in $MVC.$E){
+		if(!$MVC.$E.hasOwnProperty(f)) continue;
 		var func = $MVC.$E[f];
 		if(typeof func == 'function'){
 			var names = $MVC.Function.params(func);
 			if( names.length == 0) continue;
 			var first_arg = names[0];
-			if( first_arg.match('element') ) el[f] = function(){ return func.apply(el, arguments); };
-			
+			if( first_arg.match('element') ) $MVC.$E._extend(func, f, el);
 		}
 	}
 	el._mvcextend = true;
 	return el;
 }
-
+$MVC.$E._extend = function(f,name,el){
+	el[name] = function(){
+		var arg = $MVC.Array.from(arguments);
+		arg.unshift(el);
+		return f.apply(el, arg); 
+	}
+}
 
 if(!$MVC._no_conflict){
 	$E = $MVC.$E;
