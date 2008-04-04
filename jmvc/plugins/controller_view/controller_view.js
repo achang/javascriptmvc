@@ -10,18 +10,17 @@ $MVC.Controller.functions.prototype.render = function(options) {
             result = options.text;   
         }
         else {
-            if(options.action) {
-				var url_part =  $MVC.String.include(options.action,'/') ? 
-									options.action.split('/').join('/_') : 
-									controller_name+'/'+options.action;
-				var url = url_part+'.ejs';
+            var convert = function(url){
+				var url =  $MVC.String.include(url,'/') ? url.split('/').join('/_') : controller_name+'/'+url;
+				var url =+ '.ejs';
+				return url;
+			}
+			
+			if(options.action) {
+				var url = convert(options.action);
             }
 			else if(options.partial) {
-                
-				var url_part = $MVC.String.include(options.action,'/') ? 
-									options.partial.split('/').join('/_') : 
-									controller_name+'/_'+options.partial;		
-				var url = url_part+'.ejs';
+                var url = convert(options.partial);
 			}
             else {
                 var url = controller_name+'/'+action_name.replace(/\.|#/g, '').replace(/ /g,'_')+'.ejs';
@@ -38,32 +37,21 @@ $MVC.Controller.functions.prototype.render = function(options) {
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];
 		var element = null;
 		for(var l =0; l < locations.length; l++){
-			if( typeof  options[locations[l]] == 'string' ) options[locations[l]] = $MVC.$E(options[locations[l]]);
+			if(typeof  options[locations[l]] == 'string') options[locations[l]] = $MVC.$E(options[locations[l]]);
 			
-			if(options[locations[l]]) element = options[locations[l]];
-		}
-		
-		/*if(this.klass_name == 'MainController'){
-			options.to.innerHTML = result;
-			for(var c = 0; c  < Controller.klasses.length ; c++){
-				(new Controller.klasses[c]()).attach_event_handlers(options.to);
-				//this.attach_event_handlers
-			}
-			return;
-		}*/
-		//if there is somewhere to render, render it there
-		if(options.to){
-			options.to.innerHTML = result;
+			if(options[locations[l]]){
+				element = options[locations[l]];
+				if(locations[l] == 'to'){
+					options.to.innerHTML = result;
+				}else{
+					if(!$MVC.$E.insert ) throw {message: "Include can't insert "+locations[l]+" without the element plugin.", name: 'Missing Plugin'}
+					var opt = {};
+					opt[locations[l]] = result;
+					$MVC.$E.insert(element, opt );
+				}
+			} 
 		}
 		return result;
-		/*
-		if(!element){
-			element = ( this.params.element == window ? $($MVC.RENDER_TO) : this.params.element)
-		}
-		//if(options.to){
-			element.innerHTML = result
-		return element	
-		//}
-		*/
+
 };
 

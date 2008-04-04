@@ -23,7 +23,10 @@
 			<a href='javascript: void(0)' onclick='nojq()' id='nojq_el'>no jQuery</a>
 			
 		</p>
-		
+		<p><a href='javascript: void(0)' onclick='element()' id='element_el'>element</a>
+			<a href='javascript: void(0)' onclick='noelement()' id='noelement_el'>no element</a>
+			
+		</p>
 		
 		<form id='tests'>
 			<select class='test' id='sel'><option value='one'>one</option><option>two</option></select>
@@ -112,6 +115,17 @@
 			
 			include.setup({env: 'test'})
 			include('../../apps/helpers_test')
+			
+			
+			if(location.href.indexOf('element') != -1){
+				include.plugin('element');
+				document.getElementById('element_el').style.backgroundColor = '#ddffdd';
+			}else{
+				document.getElementById('noelement_el').style.backgroundColor = '#ddffdd';
+			}
+			
+			
+			
 			include.opera();
 			
 			var match = location.href.match(/#(.*)/)
@@ -150,6 +164,19 @@
 					location.href=base+current.replace(/jquery/, '')
 				}
 			}
+			element = function(){
+				if(location.href.indexOf('element') == -1){
+					location.href=base+current+'element'
+				}
+			}
+			noelement = function(){
+				if(location.href.indexOf('element') != -1){
+					location.href=base+current.replace(/element/, '')
+				}
+			}
+			
+			
+			
 			
 			success = function(id){
 				document.getElementById(id).className = 'success';
