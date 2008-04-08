@@ -1,4 +1,4 @@
-include.plugins('debug')
+include.plugins('debug');
 
 if(typeof Prototype == 'undefined') {
 	include({path: '../helpers/standard_helpers.js', shrink_variables: false},

@@ -1,28 +1,27 @@
-$MVC.$E = function(element){
+$MVC.Element = function(element){
 	if(typeof element == 'string')
 		element = document.getElementById(element);
-	return element._mvcextend ? element : $MVC.$E.extend(element);
+	return element;//Element.extend(element);
 };
 
 
 
-$MVC.Object.extend($MVC.$E, {
+$MVC.Object.extend($MVC.Element, {
 	insert: function(element, insertions) {
-		element = $MVC.$E(element);
+		element = $MVC.Element(element);
 		if(typeof insertions == 'string'){insertions = {bottom: insertions};};
-
 		var content, insert, tagName, childNodes;
 		for (position in insertions) {
 		  if(! insertions.hasOwnProperty(position)) continue;
 		  content  = insertions[position];
 		  position = position.toLowerCase();
-		  insert = $MVC.$E._insertionTranslations[position];
+		  insert = $MVC.Element._insertionTranslations[position];
 		  if (content && content.nodeType == 1) {
 		    insert(element, content);
 		    continue;
 		  }
 		  tagName = ((position == 'before' || position == 'after') ? element.parentNode : element).tagName.toUpperCase();
-		  childNodes = $MVC.$E._getContentFromAnonymousElement(tagName, content);
+		  childNodes = $MVC.Element._getContentFromAnonymousElement(tagName, content);
 		  if (position == 'top' || position == 'after') childNodes.reverse();
 		  for(var c = 0; c < childNodes.length; c++){
 		  	insert(element, childNodes[c]);
@@ -44,7 +43,7 @@ $MVC.Object.extend($MVC.$E, {
 	  }
 	},
 	_getContentFromAnonymousElement: function(tagName, html) {
-	  var div = document.createElement('div'), t = $MVC.$E._insertionTranslations.tags[tagName];
+	  var div = document.createElement('div'), t = $MVC.Element._insertionTranslations.tags[tagName];
 	  if (t) {
 	    div.innerHTML = t[0] + html + t[1];
 		for(var i=0; i < t[2]; i++){
@@ -64,31 +63,13 @@ $MVC.Object.extend($MVC.$E, {
 	}
 });
 
+$MVC.Element.extend = function(el){
+	for(var f in $MVC.Element){
 
-
-
-$MVC.$E.extend = function(el){
-	for(var f in $MVC.$E){
-		if(!$MVC.$E.hasOwnProperty(f)) continue;
-		var func = $MVC.$E[f];
-		if(typeof func == 'function'){
-			var names = $MVC.Function.params(func);
-			if( names.length == 0) continue;
-			var first_arg = names[0];
-			if( first_arg.match('element') ) $MVC.$E._extend(func, f, el);
-		}
 	}
-	el._mvcextend = true;
-	return el;
-}
-$MVC.$E._extend = function(f,name,el){
-	el[name] = function(){
-		var arg = $MVC.Array.from(arguments);
-		arg.unshift(el);
-		return f.apply(el, arg); 
-	}
-}
+};
+
 
 if(!$MVC._no_conflict){
-	$E = $MVC.$E;
+	$E = Element = $MVC.Element;
 }
