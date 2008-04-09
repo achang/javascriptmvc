@@ -103,20 +103,12 @@ $MVC.Model.ClassFunctions = {
   
   // If not given an ID, destroys itself, if it has an ID.  If given an ID, destroys that record.
   // You can call destroy(), destroy(1), destroy(callback()), or destroy(1, callback()), and it works as you expect.
-  destroy : function(given_id, callback) {
-    if (typeof(given_id) == "function") {
-      callback = given_id;
-      given_id = null;
-    }
-    var id = given_id || this.id;
+  destroy : function(id, callback) {
     if (!id) return false;
     
     var destroyWork = $MVC.Function.bind( function(transport) {
-      if (transport.status == 200) {
-        if (!given_id || this.id == given_id)
-          this.id = null;
-        return this;
-      }
+      if (transport.status == 200)
+        return true;
       else
         return false;
     }, this);

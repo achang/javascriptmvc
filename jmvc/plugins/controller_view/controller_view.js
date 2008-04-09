@@ -37,14 +37,19 @@ $MVC.Controller.functions.prototype.render = function(options) {
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];
 		var element = null;
 		for(var l =0; l < locations.length; l++){
-			if(typeof  options[locations[l]] == 'string') options[locations[l]] = $MVC.$E(options[locations[l]]);
+			if(typeof  options[locations[l]] == 'string'){
+				var id = options[locations[l]];
+				options[locations[l]] = $MVC.$E(id);
+				if(!options[locations[l]]) 
+					throw {message: "Can't find element with id: "+id, name: 'ControllerView: Missing Element'};
+			}
 			
 			if(options[locations[l]]){
 				element = options[locations[l]];
 				if(locations[l] == 'to'){
 					options.to.innerHTML = result;
 				}else{
-					if(!$MVC.$E.insert ) throw {message: "Include can't insert "+locations[l]+" without the element plugin.", name: 'Missing Plugin'}
+					if(!$MVC.$E.insert ) throw {message: "Include can't insert "+locations[l]+" without the element plugin.", name: 'ControllerView: Missing Plugin'}
 					var opt = {};
 					opt[locations[l]] = result;
 					$MVC.$E.insert(element, opt );
