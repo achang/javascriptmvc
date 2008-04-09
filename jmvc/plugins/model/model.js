@@ -11,22 +11,14 @@ $MVC.Model = function(cname, options, class_f, inst_f){
 	
 	fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 	for (var name in class_f) {
-      // Check if we're overwriting an existing function
       cname[name] = typeof class_f[name] == "function" &&
         typeof $MVC.Model.ClassFunctions[name] == "function" && fnTest.test(class_f[name]) ?
         (function(name, fn){
           return function() {
             var tmp = this._super;
-           
-            // Add a new ._super() method that is the same method
-            // but on the super-class
             this._super = _super[name];
-           
-            // The method only need to be bound temporarily, so we
-            // remove it when we're done executing
             var ret = fn.apply(this, arguments);       
             this._super = tmp;
-           
             return ret;
           };
         })(name, class_f[name]) :
@@ -46,7 +38,7 @@ $MVC.Model.ClassFunctions = {
 
 	    options              = $MVC.Object.extend({
 	      format:   "xml",
-	      singular: model.underscore(),
+	      singular: $MVC.String.underscore(model),
 	      name:     model
 	    }, options);
 	    options.format       = options.format.toLowerCase();
@@ -86,84 +78,52 @@ $MVC.Model.ClassFunctions = {
       
     
     if (options.checkNew)
-		this.buildAttributes(options.asynchronous, options.checkNewCallback)
-      //$MVC.Model.buildAttributes(new_model, options.asynchronous, options.checkNewCallback);
-
-
+		this.build_attributes(options.asynchronous, options.checkNewCallback)
 	},
-    buildAttributes: function( async, callback){
-    if(async == null) async = true;
     
-    var buildWork = $MVC.Function.bind(function(doc) {
-	  if(model._format == 'json') {
-	  	this.columns_hash = doc;
-	  } else {
-	    this.columns_hash = this._attributesFromTree(doc[this._singular_xml]);
-	  }
-	  this._attributes = {};
-	  for(var col_name in this.columns_hash) {
-	  	if(this.columns_hash.hasOwnProperty(col_name))  var column = this.columns_hash[col_name]
-	  	this._attributes[col_name] = column.default_value;
-	  }
-    }, model);
-    this.requestAndParse(this._format, buildWork, this._new_instance_url(), {asynchronous: async, remote: this._remote}, callback);
+  
+ 
+  
+  
+  create : function(attributes, callback) {
+    var base = new this(attributes);
+    
+    createWork = $MVC.Function.bind(function(saved) {
+      return callback(base);
+    },this);
+    
+    if (callback) {
+      return base.save(createWork);
+    }
+    else {
+      base.save();
+      return base;
+    }
   },
   
-
-
-  requestAndParse : function(format, callback, url, options, user_callback) {
-
+  // If not given an ID, destroys itself, if it has an ID.  If given an ID, destroys that record.
+  // You can call destroy(), destroy(1), destroy(callback()), or destroy(1, callback()), and it works as you expect.
+  destroy : function(given_id, callback) {
+    if (typeof(given_id) == "function") {
+      callback = given_id;
+      given_id = null;
+    }
+    var id = given_id || this.id;
+    if (!id) return false;
     
-    parse_and_callback = null;
-    if (format.toLowerCase() == "json") {
-      parse_and_callback = function(transport) {
-        if (transport.status == 500) return callback(null);
-        eval("var attributes = " + transport.responseText); // hashes need this kind of eval
-        return callback(attributes);
+    var destroyWork = $MVC.Function.bind( function(transport) {
+      if (transport.status == 200) {
+        if (!given_id || this.id == given_id)
+          this.id = null;
+        return this;
       }
-    } else {
-      parse_and_callback = function(transport) {
-        if (transport.status == 500) return callback(null);
-        return callback($MVC.Tree.parseXML(transport.responseText));
-      }
-    }
-
-    // most parse requests are going to be a GET
-    if (!(options.postBody || options.parameters || options.postbody || options.method == "post")) {
-      options.method = "get";
-    }
-
-    return this.request(parse_and_callback, url, options, user_callback);
-  },
-
-  // Helper to aid in handling either async or synchronous requests
-  request : function(callback, url, options, user_callback) {
-    if (user_callback) {
-      options.asynchronous = true;
-      // if an options hash was given instead of a callback
-      if (typeof(user_callback) == "object") {
-        for (var x in user_callback)
-			if(user_callback.hasOwnProperty(x)) 
-        		options[x] = user_callback[x];
-        user_callback = options.onComplete;
-      }
-    }
-    else
-      user_callback = function(arg){return arg;};
+      else
+        return false;
+    }, this);
     
-    if (options.asynchronous) {
-      options.onComplete = function(transport, json) {
-	  	user_callback(callback(transport), json);
-	  };
-      return new $MVC.Ajax.Request(url, options).transport;
-    }
-    else
-    {
-      options.asynchronous = false; // Make sure it's set, to avoid being overridden.
-      return callback(new $MVC.Ajax.Request(url, options).transport);
-    }
+    return this._request(destroyWork, this._destroy_url(id), {method: "delete"}, callback);
   },
-
+  
   find : function(id, params, callback) {
     // allow a params hash to be omitted and a callback function given directly
     if (!callback && typeof(params) == "function") {
@@ -201,7 +161,7 @@ $MVC.Model.ClassFunctions = {
 
     if (id == "first" || id == "all") {
       var url = this._list_url(params);
-      return this.requestAndParse(this._format, findAllWork, url, {remote: this._remote}, callback);
+      return this._requestAndParse(this._format, findAllWork, url, {remote: this._remote}, callback);
     }
     else {
       if (isNaN(parseInt(id))) return null;
@@ -209,29 +169,15 @@ $MVC.Model.ClassFunctions = {
       params.id = id;
       
       var url = this._show_url(params);
-      return this.requestAndParse(this._format, findOneWork, url, {remote: this._remote}, callback);
+      return this._requestAndParse(this._format, findOneWork, url, {remote: this._remote}, callback);
     }
   },
   
-  build : function(attributes) {
-    return new this(attributes);
-  },
   
-  create : function(attributes, callback) {
-    var base = new this(attributes);
-    
-    createWork = $MVC.Function.bind(function(saved) {
-      return callback(base);
-    },this);
-    
-    if (callback) {
-      return base.save(createWork);
-    }
-    else {
-      base.save();
-      return base;
-    }
-  },
+  
+
+
+
   update : function(attributes, callback){
   	var base = new this(attributes);
 
@@ -247,27 +193,54 @@ $MVC.Model.ClassFunctions = {
       return base;
     }
   },
-  // If not given an ID, destroys itself, if it has an ID.  If given an ID, destroys that record.
-  // You can call destroy(), destroy(1), destroy(callback()), or destroy(1, callback()), and it works as you expect.
-  destroy : function(given_id, callback) {
-    if (typeof(given_id) == "function") {
-      callback = given_id;
-      given_id = null;
-    }
-    var id = given_id || this.id;
-    if (!id) return false;
+  
+   _build : function(attributes) {
+    return new this(attributes);
+  },
+  
+  // used in init
+  _build_attributes: function( async, callback){
+    if(async == null) async = true;
     
-    var destroyWork = $MVC.Function.bind( function(transport) {
-      if (transport.status == 200) {
-        if (!given_id || this.id == given_id)
-          this.id = null;
-        return this;
-      }
-      else
-        return false;
+    var buildWork = $MVC.Function.bind(function(doc) {
+	  this.columns_hash = this._format == 'json' ? doc : this._attributesFromTree(doc[this._singular_xml]);
+
+	  this._attributes = {};
+	  for(var col_name in this.columns_hash) {
+	  	if(this.columns_hash.hasOwnProperty(col_name))  var column = this.columns_hash[col_name]
+	  	this._attributes[col_name] = column.default_value;
+	  }
     }, this);
+	
+    this._requestAndParse(this._format, buildWork, this._new_instance_url(), {asynchronous: async, remote: this._remote}, callback);
+  },
+  
+  // Helper to aid in handling either async or synchronous requests
+  _request : function(callback, url, options, user_callback) {
+    if (user_callback) {
+      options.asynchronous = true;
+      // if an options hash was given instead of a callback
+      if (typeof(user_callback) == "object") {
+        for (var x in user_callback)
+			if(user_callback.hasOwnProperty(x)) 
+        		options[x] = user_callback[x];
+        user_callback = options.onComplete;
+      }
+    }
+    else
+      user_callback = function(arg){return arg;};
     
-    return this.request(destroyWork, this._destroy_url(id), {method: "delete"}, callback);
+    if (options.asynchronous) {
+      options.onComplete = function(transport, json) {
+	  	user_callback(callback(transport), json);
+	  };
+      return new $MVC.Ajax.Request(url, options).transport;
+    }
+    else
+    {
+      options.asynchronous = false; // Make sure it's set, to avoid being overridden.
+      return callback(new $MVC.Ajax.Request(url, options).transport);
+    }
   },
   
   _interpolate: function(string, params) {
@@ -329,6 +302,21 @@ $MVC.Model.ClassFunctions = {
     
     return urls;
   },
+  
+  
+  _requestAndParse : function(format, callback, url, options, user_callback) { 
+    var parse_and_callback = format.toLowerCase() == "json" ? 
+    	function(transport) {
+	        if (transport.status == 500) return callback(null);
+	        eval("var attributes = " + transport.responseText); // hashes need this kind of eval
+	        return callback(attributes);
+	    }:
+		function(transport) {
+        	return transport.status == 500 ? callback(null) : callback($MVC.Tree.parseXML(transport.responseText));
+      	};
+    return this._request(parse_and_callback, url, options, user_callback);
+  },
+  
   
   // Converts a JSON hash returns from ActiveRecord::Base#to_json into a hash of attribute values
   // Does not handle associations, as AR's #to_json doesn't either
@@ -421,7 +409,7 @@ $MVC.Model.ClassFunctions = {
             if (eval("typeof(" + name + ")") == "undefined") {
               $MVC.Resource.model(name, {prefix: this._prefix, singular: singular, plural: plural, format: this._format});
             }
-            var base = eval(name + ".build(this._attributesFromTree(single))");
+            var base = eval(name + "._build(this._attributesFromTree(single))");
             value.push(base);
           },this));
         }
@@ -435,7 +423,7 @@ $MVC.Model.ClassFunctions = {
           if (eval("typeof(" + name + ")") == "undefined") {
             $MVC.Resource.model(name, {prefix: this._prefix, singular: singular, format: this._format});
           }
-          value = eval(name + ".build(this._attributesFromTree(value))");
+          value = eval(name + "._build(this._attributesFromTree(value))");
         }
       }
       
@@ -454,7 +442,7 @@ $MVC.Model.ClassFunctions = {
     else
       attributes = this._attributesFromTree(doc[this._singular_xml]);
     
-    return this.build(attributes);
+    return this._build(attributes);
   },
   
   _loadCollection : function(doc) {
@@ -463,7 +451,7 @@ $MVC.Model.ClassFunctions = {
 	  if(!doc.map)
 	  	doc = $H(doc);
       collection = doc.map( $MVC.Function.bind( function(item) {
-        return this.build(this._attributesFromJSON(item));
+        return this._build(this._attributesFromJSON(item));
       }, this));
     }
     else {
@@ -477,7 +465,7 @@ $MVC.Model.ClassFunctions = {
       collection = [];
 	  var attrs = doc[this._plural_xml][this._singular_xml];
 	  for(var i = 0; i < attrs.length; i++){
-	  	collection.push(this.build(this._attributesFromTree(attrs[i])))
+	  	collection.push(this._build(this._attributesFromTree(attrs[i])))
 	  }
     }
     return collection;
@@ -492,65 +480,65 @@ $MVC.Model.ClassFunctions = {
 
 
 $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
-	init : function(attributes) {
+  init : function(attributes) {
     // Initialize no attributes, no associations
     this._properties = [];
     this._associations = [];
     
-    this.setAttributes(this.Class._attributes || {});
-    this.setAttributes(attributes);
+    this.set_attributes(this.Class._attributes || {});
+    this.set_attributes(attributes);
 
     // Initialize with no errors
     this.errors = [];
     
     // Establish custom URL helpers
     for (var url in this.Class._urls){
-		if(this.Class._urls.hasOwnProperty(url)){
-			eval('this._' + url + '_url = function(params) {return this._url_for("' + url + '", params);}');
-		}
+		if(this.Class._urls.hasOwnProperty(url)) eval('this._' + url + '_url = function(params) {return this._url_for("' + url + '", params);}');
 	}
      
   },
+  
+  // mimics ActiveRecord's behavior of omitting associations, but keeping foreign keys
+  attributes : function(include_associations) {
+    var attributes = {};
+    for (var i=0; i<this._properties.length; i++) attributes[this._properties[i]] = this[this._properties[i]];
+    if (include_associations) {
+      for (var i=0; i<this._associations.length; i++) attributes[this._associations[i]] = this[this._associations[i]];
+    }
+    return attributes;
+  },
+  
+  
+  // If not given an ID, destroys itself, if it has an ID.  If given an ID, destroys that record.
+  // You can call destroy(), destroy(1), destroy(callback()), or destroy(1, callback()), and it works as you expect.
+  destroy : function(callback) {
+    var id = this.id;
+    if (!id) return false;
+    
+    var destroyWork = $MVC.Function.bind(function(transport) {
+      if (transport.status == 200) {
+          this.id = null;
+          return this;
+      }
+      else
+          return false;
+    }, this);
+    
+    return this.Class._request(destroyWork, this._destroy_url(), {method: "delete"}, callback);
+  },
+
   new_record : function() {return !(this.id);},
-  valid : function() {return ! this.errors.any();},
   
   reload : function(callback) {
     var reloadWork = $MVC.Function.bind(function(copy) {
       this._resetAttributes(copy.attributes(true));
-  
-      if (callback)
-        return callback(this);
-      else
-        return this;
+  	  return callback ? callback(this) : this;
     }, this);
     
     if (this.id) 
         return callback ? this.Class.find(this.id, {}, reloadWork) : reloadWork(this.Class.find(this.id));
     else
       return this;
-  },
-  
-  // If not given an ID, destroys itself, if it has an ID.  If given an ID, destroys that record.
-  // You can call destroy(), destroy(1), destroy(callback()), or destroy(1, callback()), and it works as you expect.
-  destroy : function(given_id, callback) {
-    if (typeof(given_id) == "function") {
-      callback = given_id;
-      given_id = null;
-    }
-    var id = given_id || this.id;
-    if (!id) return false;
-    
-    var destroyWork = $MVC.Function.bind(function(transport) {
-      if (transport.status == 200) {
-        if (!given_id || this.id == given_id)
-          this.id = null;
-        return this;
-      }
-      else
-        return false;
-    }, this);
-    
-    return this.Class.request(destroyWork, this._destroy_url(), {method: "delete"}, callback);
   },
   
   save : function(callback) {
@@ -610,10 +598,7 @@ $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
 		var value = this._properties[i];
 	    params[this.Class._singular + "[" + value + "]"] = this[value];
 	}
-	
-    /*(this._properties).each( bind(this, function(value, i) {
-      params[this.Class._singular + "[" + value + "]"] = this[value];
-    }));*/
+
 	
     if (this.Class._remote && this.Class._format == "json" && callback)
 		var remote = true;
@@ -635,32 +620,25 @@ $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
     
 
     // send the request
-    return this.Class.request(saveWork, url, {parameters: params, method: method}, callback);
+    return this.Class._request(saveWork, url, {parameters: params, method: method}, callback);
   },
   
-  setAttributes : function(attributes)
+  
+  set_attributes : function(attributes)
   {
     for(key in attributes){ if(attributes.hasOwnProperty(key)) this._setAttribute(key, attributes[key]);}
     return attributes;
   },
   
-  updateAttributes : function(attributes, callback)
+  update_attributes : function(attributes, callback)
   {
-    this.setAttributes(attributes);
+    this.set_attributes(attributes);
     return this.save(callback);
   },
   
-  // mimics ActiveRecord's behavior of omitting associations, but keeping foreign keys
-  attributes : function(include_associations) {
-    var attributes = {};
-    for (var i=0; i<this._properties.length; i++)
-      attributes[this._properties[i]] = this[this._properties[i]];
-    if (include_associations) {
-      for (var i=0; i<this._associations.length; i++)
-        attributes[this._associations[i]] = this[this._associations[i]];
-    }
-    return attributes;
-  },
+  
+  valid : function() {return  this.errors.length == 0;},
+  
     
   /*
     Internal methods.
@@ -801,8 +779,8 @@ $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
 });
 
 
-String.prototype.underscore = function() {
-    return this.replace(/::/g, '/').replace(/([A-Z]+)([A-Z][a-z])/g,'#{1}_#{2}').replace(/([a-z\d])([A-Z])/g,'#{1}_#{2}').replace(/-/g,'_').toLowerCase();
+$MVC.String.underscore = function(string) {
+    return string.replace(/::/g, '/').replace(/([A-Z]+)([A-Z][a-z])/g,'#{1}_#{2}').replace(/([a-z\d])([A-Z])/g,'#{1}_#{2}').replace(/-/g,'_').toLowerCase();
 };
 
 
