@@ -306,6 +306,9 @@ $MVC.Model.ClassFunctions = {
 		function(transport) {
         	return transport.status == 500 ? callback(null) : callback($MVC.Tree.parseXML(transport.responseText));
       	};
+	if (!(options.postBody || options.parameters || options.postbody || options.method == "post")) {
+      options.method = "get";
+    }
     return this._request(parse_and_callback, url, options, user_callback);
   },
   
