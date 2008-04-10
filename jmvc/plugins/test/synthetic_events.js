@@ -1,15 +1,15 @@
 
 
 
-$MVC.SyntheticEvent = function(type, options){
+MVC.SyntheticEvent = function(type, options){
 	this.type = type;
 	this.options = options || {};
 }
-$MVC.SyntheticEvent.prototype = {
+MVC.SyntheticEvent.prototype = {
 	send : function(element){
 		this.firefox_autocomplete_off(element);
 		
-		if($MVC.Browser.Opera && $MVC.Array.include(['focus','blur'],this.type)) return this.createEvents(element);
+		if(MVC.Browser.Opera && MVC.Array.include(['focus','blur'],this.type)) return this.createEvents(element);
 		
 		if(this.type == 'focus') return element.focus();
 		if(this.type == 'blur') return element.blur();
@@ -19,7 +19,7 @@ $MVC.SyntheticEvent.prototype = {
 		return this.create_event(element)
 	},
 	firefox_autocomplete_off : function(element) {
-		if($MVC.Browser.Gecko && element.nodeName.toLowerCase() == 'input' && element.getAttribute('autocomplete') != 'off')
+		if(MVC.Browser.Gecko && element.nodeName.toLowerCase() == 'input' && element.getAttribute('autocomplete') != 'off')
 			element.setAttribute('autocomplete','off');
 	},
 	create_event: function(element){
@@ -33,19 +33,19 @@ $MVC.SyntheticEvent.prototype = {
 		return this.event;
 	},
 	createEvent : function(element) {
-		if($MVC.Array.include(['keypress','keyup','keydown'], this.type))
+		if(MVC.Array.include(['keypress','keyup','keydown'], this.type))
 			this.createKeypress(element, this.options.character);
 		else if(this.type == 'submit')
 			this.createEvents(element);
-		else if($MVC.Array.include(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'],this.type))
+		else if(MVC.Array.include(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'],this.type))
 			this.createMouse(element);
 	},
 	createEventObject : function(element) {
-		if($MVC.Array.include(['keypress','keyup','keydown'],this.type))
+		if(MVC.Array.include(['keypress','keyup','keydown'],this.type))
 			this.createKeypressObject(element, this.options.character);
 		else if(this.type == 'submit')
 			this.createSubmitObject(element);
-		else if($MVC.Array.include(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'],this.type))
+		else if(MVC.Array.include(['click','dblclick','mouseover','mouseout','mousemove','mousedown','mouseup','contextmenu'],this.type))
 			this.createMouseObject(element);
 	},
 	simulateEvent : function(element) {
@@ -63,13 +63,13 @@ $MVC.SyntheticEvent.prototype = {
 	},
 	createSubmitObject : function(element) {
 		// if using controller
-		if($MVC.Controller) {
+		if(MVC.Controller) {
 			// look for submit input
 			for(var i=0; i<element.elements.length; i++) {
 				var el = element.elements[i];
 				// if found, click it
 				if(el.nodeName.toLowerCase()=='input' && el.type.toLowerCase() == 'submit')
-					return (new $MVC.SyntheticEvent('click').send(el));
+					return (new MVC.SyntheticEvent('click').send(el));
 			}
 			// if not, find a text input and click enter
 			// look for submit input
@@ -77,7 +77,7 @@ $MVC.SyntheticEvent.prototype = {
 				var el = element.elements[i];
 				// if found, click it
 				if((el.nodeName.toLowerCase()=='input' && el.type.toLowerCase() == 'text') || el.nodeName.toLowerCase() == 'textarea')
-					return (new $MVC.SyntheticEvent('keypress', {keyCode: 13}).send(el));
+					return (new MVC.SyntheticEvent('keypress', {keyCode: 13}).send(el));
 			}
 		} else {
 			// if not using controller, fire event normally 
@@ -91,7 +91,7 @@ $MVC.SyntheticEvent.prototype = {
 			this.options.keyCode = 13;
 			character = 0;
 		}
-		var options = $MVC.Object.extend({
+		var options = MVC.Object.extend({
 			ctrlKey: false,
 			altKey: false,
 			shiftKey: false,
@@ -111,11 +111,11 @@ $MVC.SyntheticEvent.prototype = {
 				this.event = document.createEvent("UIEvents");
 			} finally {
 				this.event.initEvent(this.type, true, true);
-				$MVC.Object.extend(this.event, options);
+				MVC.Object.extend(this.event, options);
 			}
 		}
 		var fire_event = this.simulateEvent(element);
-		if(fire_event && this.type == 'keypress' && !$MVC.Browser.Gecko && character && 
+		if(fire_event && this.type == 'keypress' && !MVC.Browser.Gecko && character && 
 			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createKeypressObject : function(element, character) {
@@ -128,13 +128,13 @@ $MVC.SyntheticEvent.prototype = {
   		this.event.charCode = (character? character.charCodeAt(0) : 0);
   		this.event.keyCode = this.options.keyCode || (character? character.charCodeAt(0) : 0);
 		var fire_event = this.simulateEvent(element);
-		if(fire_event && this.type == 'keypress' && !$MVC.Browser.Gecko && character && 
+		if(fire_event && this.type == 'keypress' && !MVC.Browser.Gecko && character && 
 			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
 	},
 	createMouse : function(element){
 		this.event = document.createEvent('MouseEvents');
-		var center = $MVC.Test.center(element);
-		var defaults = $MVC.Object.extend({
+		var center = MVC.Test.center(element);
+		var defaults = MVC.Object.extend({
 			bubbles : true,cancelable : true,
 			view : window,
 			detail : 1,
@@ -155,8 +155,8 @@ $MVC.SyntheticEvent.prototype = {
 	},
 	createMouseObject : function(element){
 		this.event = document.createEventObject();
-		var center = $MVC.Test.center(element);
-		var defaults =$MVC.Object.extend({
+		var center = MVC.Test.center(element);
+		var defaults =MVC.Object.extend({
 			bubbles : true,
 			cancelable : true,
 			view : window,
@@ -168,8 +168,8 @@ $MVC.SyntheticEvent.prototype = {
 			relatedTarget : null
 		}, this.options);
 		
-		$MVC.Object.extend(this.event, defaults);
-		if(!$MVC.Browser.Gecko && 
+		MVC.Object.extend(this.event, defaults);
+		if(!MVC.Browser.Gecko && 
 			(element.nodeName.toLowerCase() == 'input' || 
 			(element.type && element.type.toLowerCase() == 'checkbox'))) 
 			element.checked = (element.checked ? false : true);
@@ -181,7 +181,7 @@ $MVC.SyntheticEvent.prototype = {
 		var addxy = function(part, options){
 			if(!options[part].x || !options[part].y ){
 				if(typeof options[part] == 'string') options[part] = document.getElementById(options[part])
-				var center = $MVC.Test.center(options[part]);
+				var center = MVC.Test.center(options[part]);
 				options[part].x = center.left;
 				options[part].y = center.top;
 			}
@@ -189,7 +189,7 @@ $MVC.SyntheticEvent.prototype = {
 		addxy('from', this.options);
 		addxy('to', this.options);
 		if(this.options.duration){
-			return new $MVC.Test.Drag(target, this.options)
+			return new MVC.Test.Drag(target, this.options)
 		}
 		var x = this.options.from.x;
 		var y = this.options.from.y;
@@ -211,11 +211,11 @@ $MVC.SyntheticEvent.prototype = {
 	// syntax 2: this.Write(input_params.element, {text: 'Brian', callback: this.next_callback()});
 	write : function(element) {
 		element.focus();
-		return new $MVC.Test.Write(element, this.options)
+		return new MVC.Test.Write(element, this.options)
 	}
 };
 
-$MVC.Test.Write = function(element, options){
+MVC.Test.Write = function(element, options){
 	this.delay = 100;
 	if(typeof options == 'string') {
 		this.text = options;
@@ -236,7 +236,7 @@ $MVC.Test.Write = function(element, options){
 		setTimeout(this.next_callback(), this.delay);
 	}
 };
-$MVC.Test.Write.prototype = {
+MVC.Test.Write.prototype = {
 	next: function(){
 		if( this.text_index >= this.text.length){
 			if(this.callback) 	
@@ -250,7 +250,7 @@ $MVC.Test.Write.prototype = {
 		}
 	},
 	write_character : function(character) {
-		new $MVC.SyntheticEvent('keypress', {character: character}).send(this.element);
+		new MVC.SyntheticEvent('keypress', {character: character}).send(this.element);
 	},
 	next_callback : function(){
 		var t = this;
@@ -259,7 +259,7 @@ $MVC.Test.Write.prototype = {
 		};
 	}
 };
-$MVC.Test.Drag = function(target , options){
+MVC.Test.Drag = function(target , options){
 	this.callback = options.callback;
 	this.start_x = options.from.x;
 	this.end_x = options.to.x;
@@ -270,7 +270,7 @@ $MVC.Test.Drag = function(target , options){
 	this.target = target;
 	this.duration = options.duration ? options.duration*1000 : 1000;
 	this.start = new Date();
-	new $MVC.SyntheticEvent('mousedown', {clientX: this.start_x, clientY: this.start_y}).send(target);
+	new MVC.SyntheticEvent('mousedown', {clientX: this.start_x, clientY: this.start_y}).send(target);
 	
 	this.pointer = document.createElement('div')
 	this.pointer.style.width = '10px'
@@ -283,13 +283,13 @@ $MVC.Test.Drag = function(target , options){
 	document.body.appendChild(this.pointer)
 	setTimeout(this.next_callback(), 20);
 };
-$MVC.Test.Drag.prototype = {
+MVC.Test.Drag.prototype = {
 	next: function(){
 		var now = new Date();
 		var difference = now - this.start;
 		if( difference > this.duration ){
-			new $MVC.SyntheticEvent('mousemove', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
-			var event = new $MVC.SyntheticEvent('mouseup', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
+			new MVC.SyntheticEvent('mousemove', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
+			var event = new MVC.SyntheticEvent('mouseup', {clientX: this.end_x, clientY: this.end_y}).send(this.target);
 			this.pointer.parentNode.removeChild(this.pointer);
 			if(this.callback) this.callback({event: event, element: this.target});
 		}else{
@@ -299,7 +299,7 @@ $MVC.Test.Drag.prototype = {
 			
 			this.pointer.style.left = ''+x+'px';
 			this.pointer.style.top = ''+y+'px';
-			new $MVC.SyntheticEvent('mousemove', {clientX: x, clientY: y}).send(this.target);
+			new MVC.SyntheticEvent('mousemove', {clientX: x, clientY: y}).send(this.target);
 			setTimeout(this.next_callback(), 20);
 		}
 	},
@@ -323,7 +323,7 @@ $MVC.Test.Drag.prototype = {
 
 
 
-$MVC.Test.get_dimensions = function(element){
+MVC.Test.get_dimensions = function(element){
 
     var display = element.style.display;
     if (display != 'none' && display != null) // Safari bug
@@ -346,8 +346,8 @@ $MVC.Test.get_dimensions = function(element){
     return {width: originalWidth, height: originalHeight};
 }
 
-$MVC.Test.center= function(element) {
-    var d = $MVC.Test.get_dimensions(element)
+MVC.Test.center= function(element) {
+    var d = MVC.Test.get_dimensions(element)
 	var valueT = d.height / 2, valueL =d.width / 2;
 	do {
       valueT += element.offsetTop  || 0;

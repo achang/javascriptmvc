@@ -4,7 +4,7 @@
 */
 
 // the following functions allow querying of the DOM using CSS selectors
-$MVC.CSSQuery = function() {
+MVC.CSSQuery = function() {
 var version = "2.0.3";
 
 // set this flag if you want to assume that HTML id's are unique
@@ -382,6 +382,6 @@ return cssQuery;
 }(); // cssQuery
 
 
-$MVC.CSSQuery.descendant = function(element,selector){
-	return $MVC.CSSQuery(selector, element);
+MVC.CSSQuery.descendant = function(element,selector){
+	return MVC.CSSQuery(selector, element);
 };

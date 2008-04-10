@@ -19,7 +19,7 @@
  *	})</pre>
  */
 
-//requires $MVC.View!
+//requires MVC.View!
 
 JMVC.Routes = function(){};
 
@@ -135,7 +135,7 @@ JMVC.Routes.url_for = function(options){
 			return route.draw(options)
 	}
 	
-	return '&'+$MVC.Object.to_query_string(options);
+	return '&'+MVC.Object.to_query_string(options);
 }
 
 
@@ -230,7 +230,7 @@ JMVC.Route.prototype = {
 				folders[i] = params[folders[i].substring(1)]
 			}
 		}
-		var leftovers = $MVC.Object.to_query_string(leftover_params)
+		var leftovers = MVC.Object.to_query_string(leftover_params)
 		if(leftovers != '')
 			leftovers= '&'+ leftovers
 			

@@ -1,17 +1,17 @@
-$MVC.Controller.functions.prototype.render = function(options) {
-		var result, render_to_id = $MVC.RENDER_TO;
+MVC.Controller.functions.prototype.render = function(options) {
+		var result, render_to_id = MVC.RENDER_TO;
 		var controller_name = this.className;
 		var action_name = this.action.name;
         if(!options) options = {};
 		if(typeof options == 'string'){
-			result = new $MVC.View({url:  options  }).render(this);
+			result = new MVC.View({url:  options  }).render(this);
 		}
 		else if(options.text) {
             result = options.text;   
         }
         else {
             var convert = function(url){
-				var url =  $MVC.String.include(url,'/') ? url.split('/').join('/_') : controller_name+'/'+url;
+				var url =  MVC.String.include(url,'/') ? url.split('/').join('/_') : controller_name+'/'+url;
 				var url =+ '.ejs';
 				return url;
 			}
@@ -31,7 +31,7 @@ $MVC.Controller.functions.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			result = new $MVC.View({url:  url  }).render(data_to_render);
+			result = new MVC.View({url:  url  }).render(data_to_render);
 		}
 		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];
@@ -39,7 +39,7 @@ $MVC.Controller.functions.prototype.render = function(options) {
 		for(var l =0; l < locations.length; l++){
 			if(typeof  options[locations[l]] == 'string'){
 				var id = options[locations[l]];
-				options[locations[l]] = $MVC.$E(id);
+				options[locations[l]] = MVC.$E(id);
 				if(!options[locations[l]]) 
 					throw {message: "Can't find element with id: "+id, name: 'ControllerView: Missing Element'};
 			}
@@ -49,10 +49,10 @@ $MVC.Controller.functions.prototype.render = function(options) {
 				if(locations[l] == 'to'){
 					options.to.innerHTML = result;
 				}else{
-					if(!$MVC.$E.insert ) throw {message: "Include can't insert "+locations[l]+" without the element plugin.", name: 'ControllerView: Missing Plugin'}
+					if(!MVC.$E.insert ) throw {message: "Include can't insert "+locations[l]+" without the element plugin.", name: 'ControllerView: Missing Plugin'}
 					var opt = {};
 					opt[locations[l]] = result;
-					$MVC.$E.insert(element, opt );
+					MVC.$E.insert(element, opt );
 				}
 			} 
 		}

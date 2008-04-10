@@ -10,15 +10,15 @@ if(typeof include != 'undefined' && typeof include.end != 'undefined')
 else if(typeof include != 'undefined' && typeof include.end == 'undefined')
 	throw("Include is defined as function or an element's id!");
 
-$MVC = {
+MVC = {
 	OPTIONS: {},
 	Test: {},
 	_no_conflict: false,
-	no_conflict: function(){ $MVC._no_conflict = true  },
+	no_conflict: function(){ MVC._no_conflict = true  },
 	File: function(path){ this.path = path; },
 	Initializer: function(f) {
-		$MVC.user_initialize_function = f;
-		include.set_path($MVC.mvc_root);
+		MVC.user_initialize_function = f;
+		include.set_path(MVC.mvc_root);
 		include('framework');
 	},
 	Ajax: {},
@@ -37,8 +37,8 @@ $MVC = {
 	app_name: 'app'
 };
 	
-var File = $MVC.File;
-$MVC.File.prototype = {
+var File = MVC.File;
+MVC.File.prototype = {
 	clean: function(){
 		return this.path.match(/([^\?#]*)/)[1];
 	},
@@ -63,7 +63,7 @@ $MVC.File.prototype = {
 				return this.to_reference_from_same_domain(url);
 			}else
 				return this.path;
-		}else if(url == $MVC.page_dir && !expand){
+		}else if(url == MVC.page_dir && !expand){
 			return this.path;
 		}else{
 			if(url == '') return this.path.replace(/\/$/,'');
@@ -97,7 +97,7 @@ $MVC.File.prototype = {
 
 
 
-$MVC.page_dir = new File(window.location.href).dir();						  
+MVC.page_dir = new File(window.location.href).dir();						  
 
 //find include and get its absolute path
 var scripts = document.getElementsByTagName("script");
@@ -105,12 +105,12 @@ var scripts = document.getElementsByTagName("script");
 for(var i=0; i<scripts.length; i++) {
 	var src = scripts[i].src;
 	if(src.match(/include\.js/)){
-		$MVC.include_path = src;
-		$MVC.mvc_root = new File( new File(src).join_from( $MVC.page_dir ) ).dir();
-		var tmp = $MVC.mvc_root.replace(/jmvc$/,'');
+		MVC.include_path = src;
+		MVC.mvc_root = new File( new File(src).join_from( MVC.page_dir ) ).dir();
+		var tmp = MVC.mvc_root.replace(/jmvc$/,'');
 		if(tmp.match(/.+\/$/)) tmp = tmp.replace(/\/$/, '');
-		$MVC.root = new File(tmp);
-		if(src.indexOf('?') != -1) $MVC.script_options = src.split('?')[1].split(',');
+		MVC.root = new File(tmp);
+		if(src.indexOf('?') != -1) MVC.script_options = src.split('?')[1].split(',');
 	}
 }
 
@@ -141,7 +141,7 @@ var is_included = function(path){
 
 var add_with_defaults = function(inc){
 	if(typeof inc == 'string') inc = {path: inc.indexOf('.js') == -1  ? inc+'.js' : inc};
-	$MVC.Object.extend( $MVC.Object.extend({},options), inc);
+	MVC.Object.extend( MVC.Object.extend({},options), inc);
 	include.add(inc);
 };
 
@@ -153,20 +153,20 @@ include = function(){
 		for(var i=0; i < arguments.length; i++) add_with_defaults(arguments[i]);
 		return;
 	}
-	if(first && !$MVC.Browser.Opera){
+	if(first && !MVC.Browser.Opera){
 		first = false;insert();
 	}
 };
 	
-$MVC.Object.extend(include,{
+MVC.Object.extend(include,{
 	setup: function(o){
-		$MVC.Object.extend(options, o || {});
+		MVC.Object.extend(options, o || {});
 
 		options.production = options.production+(options.production.indexOf('.js') == -1 ? '.js' : '' );
 
-		if(options.env == 'compress') include.compress_window = window.open($MVC.mvc_root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
+		if(options.env == 'compress') include.compress_window = window.open(MVC.mvc_root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 		if(options.env == 'test') include.plugins('test');
-		if(options.env == 'production' && ! $MVC.Browser.Opera)
+		if(options.env == 'production' && ! MVC.Browser.Opera)
 			return document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
 	},
 	get_env: function() { return options.env;},
@@ -177,7 +177,7 @@ $MVC.Object.extend(include,{
 	},
 	get_absolute_path: function(){
 		var fwd = new File(cwd);
-		return fwd.relative() ? fwd.join_from($MVC.page_dir+'/', true) : cwd;
+		return fwd.relative() ? fwd.join_from(MVC.page_dir+'/', true) : cwd;
 	},
 	add: function(newInclude){
 		var path = newInclude.path;
@@ -236,7 +236,7 @@ $MVC.Object.extend(include,{
 	},
 	opera: function(){
 		include.opera_called = true;
-		if($MVC.Browser.Opera){
+		if(MVC.Browser.Opera){
 			options.env == 'production' ? document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>') : include.end();
 		}
 	},
@@ -244,7 +244,7 @@ $MVC.Object.extend(include,{
 	srcs: [],
 	plugin: function(plugin_name) {
 		var current_path = include.get_path();
-		include.set_path($MVC.mvc_root);
+		include.set_path(MVC.mvc_root);
 		include('plugins/'+ plugin_name+'/setup');
 		include.set_path(current_path);
 	},
@@ -279,26 +279,26 @@ var script_tag = function(){
 	return start;
 };
 var insert = function(src){
-	if($MVC.Browser.Opera||$MVC.Browser.Webkit ){
+	if(MVC.Browser.Opera||MVC.Browser.Webkit ){
 		if(src) {
 			var script = script_tag();
-			script.src=src+$MVC.random;
+			script.src=src+MVC.random;
 			document.body.appendChild(script);
 		}
 		var start = script_tag();
-		start.src = $MVC.include_path+$MVC.random;
+		start.src = MVC.include_path+MVC.random;
 		document.body.appendChild(start);
 	}else{
 		document.write(
-			(src? '<script type="text/javascript" src="'+src+(true ? '': $MVC.random )+'"></script>':'')+
-			'<script type="text/javascript" src="'+$MVC.include_path+($MVC.Browser.Gecko ? '': $MVC.random )+'"></script>'
+			(src? '<script type="text/javascript" src="'+src+(true ? '': MVC.random )+'"></script>':'')+
+			'<script type="text/javascript" src="'+MVC.include_path+(MVC.Browser.Gecko ? '': MVC.random )+'"></script>'
 		);
 	}
 };
-$MVC.random = '?'+Math.random();
-$MVC.Ajax.factory = function(){ return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();};
+MVC.random = '?'+Math.random();
+MVC.Ajax.factory = function(){ return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();};
 var syncrequest = function(path){
-   var request = $MVC.Ajax.factory();
+   var request = MVC.Ajax.factory();
    request.open("GET", path, false);
    try{request.send(null);}
    catch(e){return null;}
@@ -310,13 +310,13 @@ include.controllers = include.app(function(i){return '../controllers/'+i+'_contr
 include.models = include.app(function(i){return '../models/'+i});
 include.resources = include.app(function(i){return '../resources/'+i});
 
-if($MVC.script_options){
-	$MVC.apps_root =  $MVC.root.join('apps')
-	$MVC.app_name = $MVC.script_options[0];
-	if($MVC.script_options.length > 1)	include.setup({env: $MVC.script_options[1], production: $MVC.apps_root+'/'+$MVC.script_options[0]+'_production'});
-	include($MVC.apps_root+'/'+$MVC.script_options[0]);
+if(MVC.script_options){
+	MVC.apps_root =  MVC.root.join('apps')
+	MVC.app_name = MVC.script_options[0];
+	if(MVC.script_options.length > 1)	include.setup({env: MVC.script_options[1], production: MVC.apps_root+'/'+MVC.script_options[0]+'_production'});
+	include(MVC.apps_root+'/'+MVC.script_options[0]);
 	include.opera();
 }
-if($MVC.Browser.Opera) setTimeout(function(){ if(!include.opera_called){ alert("You forgot include.opera().")}}, 10000);
+if(MVC.Browser.Opera) setTimeout(function(){ if(!include.opera_called){ alert("You forgot include.opera().")}}, 10000);
 
 })();

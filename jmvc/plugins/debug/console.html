@@ -118,7 +118,7 @@
 		<div id='unit' class='test_type'  style='display:none'>
 			<div style='display:none;' id='unit_test_runner'>
 				 <p id='unit_play'>
-				 	<img src='playgray.png' onclick='opener.$MVC.Test.Unit.run()'/> Unit tests 
+				 	<img src='playgray.png' onclick='opener.MVC.Test.Unit.run()'/> Unit tests 
 					<span id='unit_result'></span>
 				</p>
 				<div id='unit_container'>
@@ -134,7 +134,7 @@
 				<li>Create a file like <span class='highlight'>'animals_test.js'</span> in the 
 				<span class='highlight'>'test/unit'</span> directory and add the following code:
 			
-<code><span class='key'>new</span> $MVC.Test.Unit('animals',{
+<code><span class='key'>new</span> MVC.Test.Unit('animals',{
    <span class='attribute'>test_truth</span>: function() {
       <span class='key'>this</span>.assert(<span class='key'>true</span>);
    }
@@ -154,7 +154,7 @@
 		<div id='functional' class='test_type' style='display:none'>
 			<div style='display:none;' id='functional_test_runner'>
 				<p id='functional_play'>
-					<img src='playgray.png' onclick='opener.$MVC.Test.Functional.run()'/> Functional tests 
+					<img src='playgray.png' onclick='opener.MVC.Test.Functional.run()'/> Functional tests 
 					<span id='functional_result'></span>
 				</p>
 				<div id='functional_container'>
@@ -170,7 +170,7 @@
 					<li>Create a file like <span class='highlight'>'widget_test.js'</span> in the 
 				<span class='highlight'>'test/functional'</span> directory and add the following code:
 				
-<code><span class='key'>new</span> $MVC.Test.Functional('widget',{
+<code><span class='key'>new</span> MVC.Test.Functional('widget',{
    <span class='attribute'>test_truth</span>: function() {
       <span class='key'>this</span>.assert(<span class='key'>true</span>);
    }

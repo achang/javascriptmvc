@@ -94,26 +94,26 @@ Paginator.Window.prototype = {
 	}
 }
 
-JMVC.$MVC.View.DEFAULT_PAGINATION_OPTIONS = {
+JMVC.MVC.View.DEFAULT_PAGINATION_OPTIONS = {
 	link_to_current_page : false,
 	always_show_anchors : true,
 	window_size : 3,
 	name : 'page'
 }
-JMVC.$MVC.View.pagination_links = function(paginator, options, html_options) {
-	options = $(JMVC.$MVC.View.DEFAULT_PAGINATION_OPTIONS).merge(options)
+JMVC.MVC.View.pagination_links = function(paginator, options, html_options) {
+	options = $(JMVC.MVC.View.DEFAULT_PAGINATION_OPTIONS).merge(options)
 	var params = Object.extend({},paginator.controller.params) // shallow copy
 	
 	
-	return JMVC.$MVC.View.pagination_links_each(paginator, options, function(n){
+	return JMVC.MVC.View.pagination_links_each(paginator, options, function(n){
 		params[options.name] = n;
-		JMVC.$MVC.View.link_to(n, params, html_options)
+		JMVC.MVC.View.link_to(n, params, html_options)
 	})
 }
 
 
-JMVC.$MVC.View.pagination_links_each = function(paginator, options, block) {
-	options = $(JMVC.$MVC.View.DEFAULT_PAGINATION_OPTIONS).merge(options)
+JMVC.MVC.View.pagination_links_each = function(paginator, options, block) {
+	options = $(JMVC.MVC.View.DEFAULT_PAGINATION_OPTIONS).merge(options)
 	link_to_current_page = options.link_to_current_page
     always_show_anchors = options.always_show_anchors
 	

@@ -1,4 +1,4 @@
-$MVC.Inflector = {
+MVC.Inflector = {
   Inflections: {
     plural: [
     [/(quiz)$/i,               "$1zes"  ],
@@ -65,44 +65,44 @@ $MVC.Inflector = {
     ]
   },
   pluralize: function(word) {
-    for (var i = 0; i < $MVC.Inflector.Inflections.uncountable.length; i++) {
-      var uncountable = $MVC.Inflector.Inflections.uncountable[i];
+    for (var i = 0; i < MVC.Inflector.Inflections.uncountable.length; i++) {
+      var uncountable = MVC.Inflector.Inflections.uncountable[i];
       if (word.toLowerCase() == uncountable) {
         return uncountable;
       }
     }
-    for (var i = 0; i < $MVC.Inflector.Inflections.irregular.length; i++) {
-      var singular = $MVC.Inflector.Inflections.irregular[i][0];
-      var plural   = $MVC.Inflector.Inflections.irregular[i][1];
+    for (var i = 0; i < MVC.Inflector.Inflections.irregular.length; i++) {
+      var singular = MVC.Inflector.Inflections.irregular[i][0];
+      var plural   = MVC.Inflector.Inflections.irregular[i][1];
       if ((word.toLowerCase() == singular) || (word == plural)) {
         return word.substring(0,1)+plural.substring(1);
       }
     }
-    for (var i = 0; i < $MVC.Inflector.Inflections.plural.length; i++) {
-      var regex          = $MVC.Inflector.Inflections.plural[i][0];
-      var replace_string = $MVC.Inflector.Inflections.plural[i][1];
+    for (var i = 0; i < MVC.Inflector.Inflections.plural.length; i++) {
+      var regex          = MVC.Inflector.Inflections.plural[i][0];
+      var replace_string = MVC.Inflector.Inflections.plural[i][1];
       if (regex.test(word)) {
         return word.replace(regex, replace_string);
       }
     }
   },
   singularize: function(word) {
-    for (var i = 0; i < $MVC.Inflector.Inflections.uncountable.length; i++) {
-      var uncountable = $MVC.Inflector.Inflections.uncountable[i];
+    for (var i = 0; i < MVC.Inflector.Inflections.uncountable.length; i++) {
+      var uncountable = MVC.Inflector.Inflections.uncountable[i];
       if (word.toLowerCase() == uncountable) {
         return uncountable;
       }
     }
-    for (var i = 0; i < $MVC.Inflector.Inflections.irregular.length; i++) {
-      var singular = $MVC.Inflector.Inflections.irregular[i][0];
-      var plural   = $MVC.Inflector.Inflections.irregular[i][1];
+    for (var i = 0; i < MVC.Inflector.Inflections.irregular.length; i++) {
+      var singular = MVC.Inflector.Inflections.irregular[i][0];
+      var plural   = MVC.Inflector.Inflections.irregular[i][1];
       if ((word.toLowerCase() == singular) || (word.toLowerCase() == plural)) {
         return word.substring(0,1)+singular.substring(1);
       }
     }
-    for (var i = 0; i < $MVC.Inflector.Inflections.singular.length; i++) {
-      var regex          = $MVC.Inflector.Inflections.singular[i][0];
-      var replace_string = $MVC.Inflector.Inflections.singular[i][1];
+    for (var i = 0; i < MVC.Inflector.Inflections.singular.length; i++) {
+      var regex          = MVC.Inflector.Inflections.singular[i][0];
+      var replace_string = MVC.Inflector.Inflections.singular[i][1];
       if (regex.test(word)) {
         return word.replace(regex, replace_string);
       }
@@ -111,23 +111,23 @@ $MVC.Inflector = {
 };
 
 
-$MVC.Native.extend('String', {
+MVC.Native.extend('String', {
   pluralize: function(string, count, plural) {
     if (typeof count == 'undefined') {
-      return $MVC.Inflector.pluralize(string);
+      return MVC.Inflector.pluralize(string);
     } else {
-      return count + ' ' + (1 == parseInt(count) ? string : plural || $MVC.Inflector.pluralize(string));
+      return count + ' ' + (1 == parseInt(count) ? string : plural || MVC.Inflector.pluralize(string));
     }
   },
   singularize: function(string, count) {
     if (typeof count == 'undefined') {
-      return $MVC.Inflector.singularize(string);
+      return MVC.Inflector.singularize(string);
     } else {
-      return count + " " + $MVC.Inflector.singularize(string);
+      return count + " " + MVC.Inflector.singularize(string);
     }
   },
   is_singular: function(string){
-    if($MVC.String.singularize(string) == null && string)
+    if(MVC.String.singularize(string) == null && string)
         return true;
     return false;
   }

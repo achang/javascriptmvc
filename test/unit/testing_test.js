@@ -1,4 +1,4 @@
-new $MVC.Test.Unit('testing',{
+new MVC.Test.Unit('testing',{
        test_asserts : function(){
            this.assert(true);
 		   this.assert({});
@@ -53,7 +53,7 @@ new $MVC.Test.Unit('testing',{
 	   },
 	   test_console : function(){
 	   		for(var i = 0; i < 50 ; i++){
-				$MVC.Console.log(i)
+				MVC.Console.log(i)
 			}
 			
 	   }

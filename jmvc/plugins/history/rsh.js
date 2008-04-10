@@ -17,13 +17,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /*
-	$MVC.History: An object that provides history, history data, and bookmarking for DHTML and Ajax applications.
+	MVC.History: An object that provides history, history data, and bookmarking for DHTML and Ajax applications.
 	
 	dependencies:
 		* the historyStorage object included in this file.
 
 */
-window.$MVC.History = {
+window.MVC.History = {
 	
 	/*Public: User-agent booleans*/
 	isIE: false,
@@ -204,7 +204,7 @@ window.$MVC.History = {
 				/*IE has a strange bug; if the newLocation is the same as _any_ preexisting id in the
 				document, then the history action gets recorded twice; throw a programmer exception if
 				there is an element with this ID*/
-				if ($MVC.$E(newLocation) && that.debugMode) {
+				if (MVC.$E(newLocation) && that.debugMode) {
 					var e = "Exception: History locations can not have the same value as _any_ IDs that might be in the document,"
 					+ " due to a bug in IE; please ask the developer to choose a history location that does not match any HTML"
 					+ " IDs in this document. The following ID is already taken and cannot be a location: " + newLocation;
@@ -283,7 +283,7 @@ window.$MVC.History = {
 	/*Private: Constant for our own internal history event called when the page is loaded*/
 	PAGELOADEDSTRING: "DhtmlHistory_pageLoaded",
 	
-	blank_html_path: $MVC.mvc_root+'plugins/history/',
+	blank_html_path: MVC.mvc_root+'plugins/history/',
 	
 	/*Private: Our history change listener.*/
 	listener: null,
@@ -342,13 +342,13 @@ window.$MVC.History = {
 		var iframeID = "rshHistoryFrame";
 		var iframeHTML = '<iframe frameborder=0" id="' + iframeID + '" style="' + styles + '" src="'+this.blank_html_path+'blank.html?' + initialHash + '"></iframe>';
 		document.write(iframeHTML);
-		this.iframe = $MVC.$E(iframeID);
+		this.iframe = MVC.$E(iframeID);
 	},
 	
 	/*Private: Create Opera-specific DOM nodes and overrides*/
 	createOpera: function() {
 		this.waitTime = 400;/*Opera needs longer between history updates*/
-		var imgHTML = '<img src="javascript:location.href=\'javascript:$MVC.History.checkLocation();\';" style="' + historyStorage.hideStyles + '" />';
+		var imgHTML = '<img src="javascript:location.href=\'javascript:MVC.History.checkLocation();\';" style="' + historyStorage.hideStyles + '" />';
 		document.write(imgHTML);
 	},
 	
@@ -368,8 +368,8 @@ window.$MVC.History = {
 		form.innerHTML = '<input type="text" style="' + inputStyles + '" id="' + stackID + '" value="[]"/>'
 			+ '<input type="text" style="' + inputStyles + '" id="' + lengthID + '" value=""/>';
 		document.body.appendChild(form);
-		this.safariStack = $MVC.$E(stackID);
-		this.safariLength = $MVC.$E(lengthID);
+		this.safariStack = MVC.$E(stackID);
+		this.safariLength = MVC.$E(lengthID);
 		if (!historyStorage.hasKey(this.PAGELOADEDSTRING)) {
 			this.safariHistoryStartPoint = history.length;
 			this.safariLength.value = this.safariHistoryStartPoint;
@@ -513,7 +513,7 @@ window.$MVC.History = {
 /*
 	historyStorage: An object that uses a hidden form to store history state across page loads. The mechanism for doing so relies on
 	the fact that browsers save the text in form data for the life of the browser session, which means the text is still there when
-	the user navigates back to the page. This object can be used independently of the $MVC.History object for caching of Ajax
+	the user navigates back to the page. This object can be used independently of the MVC.History object for caching of Ajax
 	session information.
 	
 	dependencies: 
@@ -521,11 +521,11 @@ window.$MVC.History = {
 */
 window.historyStorage = {
 	
-	/*Public: Set up our historyStorage object for use by $MVC.History or other objects*/
+	/*Public: Set up our historyStorage object for use by MVC.History or other objects*/
 	setup: function(options) {
 		
 		/*
-			options - object to store initialization parameters - passed in from $MVC.History or directly into historyStorage
+			options - object to store initialization parameters - passed in from MVC.History or directly into historyStorage
 			options.debugMode - boolean that causes hidden form fields to be shown for development purposes.
 			options.toJSON - function to override default JSON stringifier
 			options.fromJSON - function to override default JSON parser
@@ -552,7 +552,7 @@ window.historyStorage = {
 			? 'width: 800px;height:80px;border:1px solid black;'
 			: historyStorage.hideStyles
 		);
-		if($MVC.History.isSafari){
+		if(MVC.History.isSafari){
 			var form = document.createElement('form');
 			form.id = formID;
 			form.setAttribute('style',formStyles);
@@ -564,7 +564,7 @@ window.historyStorage = {
 			+ '</form>';
 			document.write(textareaHTML);
 		}
-		this.storageField = $MVC.$E(textareaID);
+		this.storageField = MVC.$E(textareaID);
 		if (typeof window.opera !== "undefined") {
 			this.storageField.focus();/*Opera needs to focus this element before persisting values in it*/
 		}
@@ -677,9 +677,9 @@ window.historyStorage = {
 };
 
 if(typeof Prototype == 'undefined'){
-	window.$MVC.History.create();
+	window.MVC.History.create();
 }else{
-	window.$MVC.History.create({
+	window.MVC.History.create({
 	    toJSON: function(o) {
 	            return Object.toJSON(o);
 	    }
@@ -689,16 +689,16 @@ if(typeof Prototype == 'undefined'){
 	});
 }
 
-$MVC.Event.observe(window, 'load', function(){
-	$MVC.History.initialize();
-	$MVC.History.addListener($MVC.History.historyChange);
-	$MVC.History.historyChange();
+MVC.Event.observe(window, 'load', function(){
+	MVC.History.initialize();
+	MVC.History.addListener(MVC.History.historyChange);
+	MVC.History.historyChange();
 	
 });
 
-$MVC.Controller.test_dispatch = function(controller, action){
+MVC.Controller.test_dispatch = function(controller, action){
 	if(!controller) return false;
-	var controller_name = $MVC.String.classize(controller)+'Controller';
+	var controller_name = MVC.String.classize(controller)+'Controller';
 	if(!action) action = 'index';
 	if(window[controller_name]){
 		if(action in window[controller_name].prototype){
@@ -711,40 +711,40 @@ $MVC.Controller.test_dispatch = function(controller, action){
 };
 
 
-$MVC.History.historyChange = function(newLocation, historyData) {
+MVC.History.historyChange = function(newLocation, historyData) {
 
-	var path = new $MVC.Path(location.href);
-	var data = $MVC.Path.get_data(path);
+	var path = new MVC.Path(location.href);
+	var data = MVC.Path.get_data(path);
 	var folders = path.folder();
 	var action_part = null, controller_part;
 	if(folders == null){folders = ''};
 	
 	var first_s = folders.indexOf('/');
 	
-	var params = new $MVC.Controller.Params(data);
+	var params = new MVC.Controller.Params(data);
 	
 	if(first_s != -1){
 		controller_part = folders.substring(0,first_s);
 		action_part = folders.substring(first_s+1);
-	}else if( $MVC.Controller.test_dispatch(folders) ){
+	}else if( MVC.Controller.test_dispatch(folders) ){
 		controller_part = folders;
-	}else if( $MVC.Controller.test_dispatch('main',folders) ){
+	}else if( MVC.Controller.test_dispatch('main',folders) ){
 		controller_part = 'main';
 		action_part = folders;
 	}else{
 		throw "Can't dispatch location "+folders;
 	}
-	var result = $MVC.Controller.dispatch(controller_part, action_part,params);
+	var result = MVC.Controller.dispatch(controller_part, action_part,params);
 	return result;
 };
 
 
 
 
-$MVC.Path = function(path) {
+MVC.Path = function(path) {
 	this.path = path;
 };
-$MVC.Path.prototype = {
+MVC.Path.prototype = {
 	domain : function() {
 		var lhs = this.path.split('#')[0];
 		return '/'+lhs.split('/').slice(3).join('/');
@@ -778,7 +778,7 @@ $MVC.Path.prototype = {
 
 
 
-$MVC.Path.get_data = function(path) {
+MVC.Path.get_data = function(path) {
 	var search = path.params();
 	if(! search || ! search.match(/([^?#]*)(#.*)?$/) ) return {};
 	var data = {};
@@ -814,7 +814,7 @@ $MVC.Path.get_data = function(path) {
 };
 
 //this should convert options to params
-$MVC.Controller.functions.prototype.redirect_to = function(options){
+MVC.Controller.functions.prototype.redirect_to = function(options){
 	var controller_name = options.controller || this.className;
 	var action_name = options.action || 'index';
 	var lhs = window.location.href.split('#')[0];

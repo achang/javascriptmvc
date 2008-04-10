@@ -1,13 +1,13 @@
 
 find_and_run = function(t,s){
 	//opener.focus();	
-	var t = opener.$MVC.Tests[t]
+	var t = opener.MVC.Tests[t]
 	if(s) t.run_test(s);
 	else t.run();
 };
 run_helper = function(t, h){
 	opener.focus();	
-	var t = opener.$MVC.Tests[t]
+	var t = opener.MVC.Tests[t]
 	t.run_helper(h);
 }
 clean_messages = function(messages){
@@ -16,12 +16,12 @@ clean_messages = function(messages){
 	}
 	return messages
 }
-document.getElementById('your_app_name_unit').innerHTML = opener.$MVC.app_name;
-document.getElementById('your_app_name_functional').innerHTML = opener.$MVC.app_name;
+document.getElementById('your_app_name_unit').innerHTML = opener.MVC.app_name;
+document.getElementById('your_app_name_functional').innerHTML = opener.MVC.app_name;
 
 
-opener.$MVC.Console.log('You are running '+
-		'"'+opener.$MVC.app_name+'" ' +'in the '+opener.include.get_env()+' environment.')
+opener.MVC.Console.log('You are running '+
+		'"'+opener.MVC.app_name+'" ' +'in the '+opener.include.get_env()+' environment.')
 
 
 
@@ -95,7 +95,7 @@ window.onresize = window_resise =function(){
 	
 	var f = document.getElementById('functional')
 	f.style.height = ''+(getDimensions().height - 57)+'px';
-	if(opener.$MVC.Browser.IE){
+	if(opener.MVC.Browser.IE){
 		var up = document.getElementById('unit_play').offsetWidth;
 		var fp = document.getElementById('functional_play').offsetWidth;
 		if(up){
@@ -110,7 +110,7 @@ window.onresize = window_resise =function(){
 
 console_scroll = function(){
 	if(console_scrolled <= -10){
-		if(opener.$MVC.Browser.WebKit ){
+		if(opener.MVC.Browser.WebKit ){
 			setTimeout(function(){
 				var cl = document.getElementById('console_log');
 				var newHeight = cl.clientHeight;

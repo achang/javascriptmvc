@@ -102,7 +102,7 @@ SortParam.prototype = {
 	}
 }
 
-JMVC.$MVC.View.sorter_link = function(sorter, name, title){
+JMVC.MVC.View.sorter_link = function(sorter, name, title){
 	title = title || name;
 	if( title.include('.') ) {
 		var parts = name.split('.')
@@ -113,11 +113,11 @@ JMVC.$MVC.View.sorter_link = function(sorter, name, title){
 	
 	
 	if(! direction )
-		return JMVC.$MVC.View.link_to(title, sorter.params_with(name, "ASC")  )
+		return JMVC.MVC.View.link_to(title, sorter.params_with(name, "ASC")  )
 	else if( direction ==  'DESC'  )
-		return (sorter.is_first(name)? '&#x25B3;' : '&#x25B4;')+JMVC.$MVC.View.link_to(title, sorter.params_with(name, "ASC")  )
+		return (sorter.is_first(name)? '&#x25B3;' : '&#x25B4;')+JMVC.MVC.View.link_to(title, sorter.params_with(name, "ASC")  )
 	else
-		return (sorter.is_first(name)? '&#x25BC;' : '&#x25BF;')+JMVC.$MVC.View.link_to(title, sorter.params_with(name, "DESC")  )
+		return (sorter.is_first(name)? '&#x25BC;' : '&#x25BF;')+JMVC.MVC.View.link_to(title, sorter.params_with(name, "DESC")  )
 }
 
 

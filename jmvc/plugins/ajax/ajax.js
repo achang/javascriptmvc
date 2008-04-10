@@ -1,5 +1,5 @@
 //Modified version of Ajax.Request from prototype.
-$MVC.Ajax.Request = function(url,options){
+MVC.Ajax.Request = function(url,options){
 	this.options = {
       method:       'post',
       asynchronous: true,
@@ -8,13 +8,13 @@ $MVC.Ajax.Request = function(url,options){
       parameters:   ''
     };
 	this.url = url;
-    $MVC.Object.extend(this.options, options || { });
+    MVC.Object.extend(this.options, options || { });
     
 	//var params = Object.clone(this.options.parameters);
 	
 	this.options.method = this.options.method.toLowerCase();
 	
-	if (!$MVC.Array.include(['get', 'post'],this.options.method)) {
+	if (!MVC.Array.include(['get', 'post'],this.options.method)) {
       // simulate other verbs over post
       if(this.options.parameters == ''){
 	  	this.options.parameters = {_method : this.options.method};
@@ -25,23 +25,23 @@ $MVC.Ajax.Request = function(url,options){
 	
 
 	if (this.options.method == 'get' && this.options.parameters != '' )
-	   this.url += ($MVC.String.include(this.url,'?') ? '&' : '?') + $MVC.Object.to_query_string(this.options.parameters);
+	   this.url += (MVC.String.include(this.url,'?') ? '&' : '?') + MVC.Object.to_query_string(this.options.parameters);
 	//else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
 	//   params += '&_=';
     
 	
-	this.transport = $MVC.Ajax.factory();
+	this.transport = MVC.Ajax.factory();
 	
 	
 	if(this.options.asynchronous == false){
 	   this.transport.open(this.options.method, this.url, this.options.asynchronous);
 	   this.setRequestHeaders();
-	   try{this.transport.send(this.options.parameters ? $MVC.Object.to_query_string(this.options.parameters) : null);}
+	   try{this.transport.send(this.options.parameters ? MVC.Object.to_query_string(this.options.parameters) : null);}
 	   catch(e){return null;}
 	   return;
 	}else{
-	   this.transport.onreadystatechange = $MVC.Function.bind(function(){
-			var state = $MVC.Ajax.Request.Events[this.transport.readyState];
+	   this.transport.onreadystatechange = MVC.Function.bind(function(){
+			var state = MVC.Ajax.Request.Events[this.transport.readyState];
 			
 			if(state == 'Complete'){
 				if(this.success() && this.options.onSuccess) this.options.onSuccess(this.transport);
@@ -54,12 +54,12 @@ $MVC.Ajax.Request = function(url,options){
 		
 		this.transport.open(this.options.method, this.url, true);
 		this.setRequestHeaders();
-		this.transport.send($MVC.Object.to_query_string(this.options.parameters));
+		this.transport.send(MVC.Object.to_query_string(this.options.parameters));
 	}
 };
-$MVC.Ajax.Request.Events = ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
+MVC.Ajax.Request.Events = ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
 
-$MVC.Ajax.Request.prototype = {
+MVC.Ajax.Request.prototype = {
   success: function() {
     var status = this.getStatus();
     return !status || (status >= 200 && status < 300);
@@ -90,4 +90,4 @@ $MVC.Ajax.Request.prototype = {
 }
 };
 
-if(!$MVC._no_conflict) Ajax = $MVC.Ajax;
+if(!MVC._no_conflict) Ajax = MVC.Ajax;

@@ -1,5 +1,5 @@
 if(document.addEventListener) {
-	$MVC.Event = {
+	MVC.Event = {
 		observe: function(el, eventType, handler, capture) {
 			if(capture == null) capture = false; 
 			el.addEventListener(eventType, handler, capture);
@@ -10,9 +10,9 @@ if(document.addEventListener) {
 	    }
 	};
 }else if(document.attachEvent) {
-  $MVC.Event={
+  MVC.Event={
 	observe: function(element, eventType, handler) {
-        if ($MVC.Event._find(element, eventType, handler) != -1) return;
+        if (MVC.Event._find(element, eventType, handler) != -1) return;
         var wrappedHandler = function(e) {
             if (!e) e = window.event;
             var event = {
@@ -44,18 +44,18 @@ if(document.addEventListener) {
             handler: handler,
             wrappedHandler: wrappedHandler
         };
-        var d = element.document || element, w = d.parentWindow, id = $MVC.Event._uid(); 
+        var d = element.document || element, w = d.parentWindow, id = MVC.Event._uid(); 
         if (!w._allHandlers) w._allHandlers = {}; 
         w._allHandlers[id] = h;
         if (!element._handlers) element._handlers = [];
         element._handlers.push(id);
         if (!w._onunloadHandlerRegistered) {
             w._onunloadHandlerRegistered = true;
-            w.attachEvent("onunload", $MVC.Event._removeAllHandlers);
+            w.attachEvent("onunload", MVC.Event._removeAllHandlers);
         }
     },
 	stopObserving: function(element, eventType, handler) {
-        var i = $MVC.Event._find(element, eventType, handler);
+        var i = MVC.Event._find(element, eventType, handler);
         if (i == -1) return; 
         var d = element.document || element, w = d.parentWindow, handlerId = element._handlers[i], h = w._allHandlers[handlerId];
         element.detachEvent("on" + eventType, h.wrappedHandler);
@@ -82,10 +82,10 @@ if(document.addEventListener) {
         }
     },
 	_counter : 0,
-	_uid : function() { return "h" + $MVC.Event._counter++; }
+	_uid : function() { return "h" + MVC.Event._counter++; }
   };
 };
 
-if(!$MVC._no_conflict){
-	Controller = $MVC.Event;
+if(!MVC._no_conflict){
+	Controller = MVC.Event;
 }

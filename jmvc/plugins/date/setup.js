@@ -1,8 +1,8 @@
 (function(){
 	var parse = Date.parse;
-	$MVC.Native.extend('Date', {
+	MVC.Native.extend('Date', {
 		month_name: function(date) {
-			return $MVC.Date.month_names[date.getMonth()-1];
+			return MVC.Date.month_names[date.getMonth()-1];
 		},
 		number_of_days_in_month : function(date) {
 		    var year = date.getFullYear(),month = date.getMonth(),m = [31,28,31,30,31,30,31,31,30,31,30,31];

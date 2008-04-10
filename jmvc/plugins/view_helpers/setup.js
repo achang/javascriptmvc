@@ -1,11 +1,11 @@
-$MVC.Object.extend($MVC.View.Helpers.prototype, {
+MVC.Object.extend(MVC.View.Helpers.prototype, {
 	date_tag: function(name, value , html_options) {
 	    if(! (value instanceof Date)) value = new Date();
 		
 		var years = [], months = [], days =[];
 		var year = value.getFullYear(), month = value.getMonth(), day = value.getDate();
 		for(var y = year - 15; y < year+15 ; y++) years.push({value: y, text: y});
-		for(var m = 0; m < 12; m++) months.push({value: (m), text: $MVC.Date.month_names[m]});
+		for(var m = 0; m < 12; m++) months.push({value: (m), text: MVC.Date.month_names[m]});
 		for(var d = 0; d < 31; d++) days.push({value: (d+1), text: (d+1)});
 		
 		var year_select = this.select_tag(name+'[year]', year, years, {id: name+'[year]'} );
@@ -142,28 +142,28 @@ $MVC.Object.extend($MVC.View.Helpers.prototype, {
 	
 });
 
-$MVC.View.Helpers.prototype.text_tag = $MVC.View.Helpers.prototype.text_area_tag;
+MVC.View.Helpers.prototype.text_tag = MVC.View.Helpers.prototype.text_area_tag;
 
 
 (function(){
 	var data = {};
 	var name = 0;
-	$MVC.View.Helpers.link_data = function(store){
+	MVC.View.Helpers.link_data = function(store){
 		var functionName = name++;
 		data[functionName] = store;	
 		return "_data='"+functionName+"'";
 	};
-	$MVC.View.Helpers.get_data = function(el){
+	MVC.View.Helpers.get_data = function(el){
 		if(!el) return null;
 		var dataAt = el.getAttribute('_data');
 		if(!dataAt) return null;
 		return data[parseInt(dataAt)];
 	};
-	$MVC.View.Helpers.prototype.link_data = function(store){
-		return $MVC.View.Helpers.link_data(store)
+	MVC.View.Helpers.prototype.link_data = function(store){
+		return MVC.View.Helpers.link_data(store)
 	};
-	$MVC.View.Helpers.prototype.get_data = function(el){
-		return $MVC.View.Helpers.get_data(el)
+	MVC.View.Helpers.prototype.get_data = function(el){
+		return MVC.View.Helpers.get_data(el)
 	};
 })();
 

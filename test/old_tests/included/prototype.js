@@ -2,7 +2,7 @@
  *  (c) 2005-2007 Sam Stephenson
  *
  *  Prototype is freely distributable under the terms of an MIT-style license.
- *  For details, see the Prototype web site: http://www.prototyp$MVC.View.org/
+ *  For details, see the Prototype web site: http://www.prototypMVC.View.org/
  *
  *--------------------------------------------------------------------------*/
 
@@ -1590,7 +1590,7 @@ Element.Methods = {
     style = style == 'float' ? 'cssFloat' : style.camelize();
     var value = element.style[style];
     if (!value) {
-      var css = document.default$MVC.View.getComputedStyle(element, null);
+      var css = document.defaultMVC.View.getComputedStyle(element, null);
       value = css ? css[style] : null;
     }
     if (style == 'opacity') return value ? parseFloat(value) : 1.0;

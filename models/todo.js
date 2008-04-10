@@ -1,1 +1,1 @@
-$MVC.Model('todo',{},{})
+MVC.Model('todo',{},{})

@@ -1,12 +1,12 @@
-$MVC.RemoteModel = function(model, url, functions){
+MVC.RemoteModel = function(model, url, functions){
 	var className= model, newmodel = null;
-	model = $MVC.String.classize(model);
+	model = MVC.String.classize(model);
 
 	newmodel = eval(model + " = function() { this.klass = "+model+"; "+
 				"this.initialize.apply(this, arguments);"+
 				"};");
 
-	var remote_model_functions = new $MVC.RemoteModel.functions();
+	var remote_model_functions = new MVC.RemoteModel.functions();
 	newmodel.prototype = remote_model_functions;
 	newmodel.prototype.klass_name = 	model;
 	newmodel.prototype.className = className;
@@ -20,19 +20,19 @@ $MVC.RemoteModel = function(model, url, functions){
 		newmodel.url = url.url;
 		newmodel.controller_name = url.name;
 	}
-	newmodel.plural_controller_name = $MVC.String.pluralize(newmodel.controller_name);
+	newmodel.plural_controller_name = MVC.String.pluralize(newmodel.controller_name);
 	
 	newmodel.className =className;
-	$MVC.Object.extend(newmodel.prototype, functions );
-	$MVC.Object.extend(newmodel, $MVC.RemoteModel.class_functions);
+	MVC.Object.extend(newmodel.prototype, functions );
+	MVC.Object.extend(newmodel, MVC.RemoteModel.class_functions);
 	return newmodel;
 };
 
-$MVC.RemoteModel.functions = function(){};
+MVC.RemoteModel.functions = function(){};
 
-$MVC.RemoteModel.class_functions = {
+MVC.RemoteModel.class_functions = {
 	find : function(params, callback){
-		params.callback = $MVC.String.classize(this.className)+'.listCallback';
+		params.callback = MVC.String.classize(this.className)+'.listCallback';
 		var klass = this;
 		//make callback function create new and call the callback with them
 		if(!callback) callback = (function(){});
@@ -46,7 +46,7 @@ $MVC.RemoteModel.class_functions = {
 			callback(newObjects);
 		};
 		params['_method'] = 'GET';
-		include(this.url+'/'+this.plural_controller_name+'.json?'+$MVC.Object.to_query_string(params)+'&'+Math.random());
+		include(this.url+'/'+this.plural_controller_name+'.json?'+MVC.Object.to_query_string(params)+'&'+Math.random());
 	},
 	create : function(params, callback) {
 		this.add_standard_params(params, 'create');
@@ -55,8 +55,8 @@ $MVC.RemoteModel.class_functions = {
 		
 		if(!callback) callback = (function(){});
 		
-		var tll = $MVC.RemoteModel.top_level_length(params, this.url+'/'+this.plural_controller_name+'.json?');
-		var result = $MVC.RemoteModel.seperate(params[this.controller_name], tll,this.controller_name );
+		var tll = MVC.RemoteModel.top_level_length(params, this.url+'/'+this.plural_controller_name+'.json?');
+		var result = MVC.RemoteModel.seperate(params[this.controller_name], tll,this.controller_name );
 		
 		var postpone_params = result.postpone;
 		var send_params = result.send;
@@ -72,7 +72,7 @@ $MVC.RemoteModel.class_functions = {
 			};
 			params[this.controller_name] = send_params;
 			params['_mutlirequest'] = 'true';
-			include(url+$MVC.Object.to_query_string(params)+'&'+Math.random());
+			include(url+MVC.Object.to_query_string(params)+'&'+Math.random());
 		}else{
 			klass.createCallback = function(callback_params){
 				if(callback_params[className]){
@@ -84,18 +84,18 @@ $MVC.RemoteModel.class_functions = {
 				}
 			};
 			params['_mutlirequest'] = null;
-			include(url+$MVC.Object.to_query_string(params));
+			include(url+MVC.Object.to_query_string(params));
 		}
 	},
 	add_standard_params : function(params, callback_name){
 		if(APPLICATION_KEY) params.user_crypted_key = APPLICATION_KEY;
 		params.referer = window.location.href;
-		params.callback = $MVC.String.capitalize($MVC.String.camelize(this.className))+'.'+callback_name+'Callback';
+		params.callback = MVC.String.capitalize(MVC.String.camelize(this.className))+'.'+callback_name+'Callback';
 	}
 };
 
 
-$MVC.Object.extend($MVC.RemoteModel.functions.prototype, {
+MVC.Object.extend(MVC.RemoteModel.functions.prototype, {
 	initialize : function(attributes){
 		this.attributes = attributes ? attributes : {};
 
@@ -104,7 +104,7 @@ $MVC.Object.extend($MVC.RemoteModel.functions.prototype, {
 				if(thing != 'created_at'){
 					this[thing] = this.attributes[thing];
 				}else
-					this[thing] = $MVC.Date.parse( this.attributes[thing]);
+					this[thing] = MVC.Date.parse( this.attributes[thing]);
 			}
 		}
 		this.errors = [];
@@ -131,7 +131,7 @@ $MVC.Object.extend($MVC.RemoteModel.functions.prototype, {
 });
 
 
-$MVC.RemoteModel.top_level_length = function(params, url){
+MVC.RemoteModel.top_level_length = function(params, url){
 	var total = url.length;
 	for(var attr in params){
 		if(! params.hasOwnProperty(attr)) continue;
@@ -145,7 +145,7 @@ $MVC.RemoteModel.top_level_length = function(params, url){
 	return total;
 };
 
-$MVC.RemoteModel.seperate = function(object, top_level_length, name){
+MVC.RemoteModel.seperate = function(object, top_level_length, name){
 	var remainder = 2000 - 9 - top_level_length; 
 	var send = {};
 	var postpone = {};

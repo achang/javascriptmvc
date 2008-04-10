@@ -6,7 +6,7 @@ if(typeof Prototype == 'undefined') {
 			"../event/standard",
 			"../ajax/ajax");
 }else{
-	$MVC.Event = Event;
+	MVC.Event = Event;
 	include({path: '../helpers/prototype_helpers.js', shrink_variables: false},
 			"../inflector/inflector",
 			"../ajax/prototype_ajax");

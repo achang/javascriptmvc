@@ -3,7 +3,7 @@
 //adds check exist
 (function() {
 	include.checkExists = function(path){		
-		var xhr=$MVC.Ajax.factory();
+		var xhr=MVC.Ajax.factory();
 		xhr.open("HEAD", path, false);
 		try{ 
 			xhr.send(null); 
@@ -17,19 +17,19 @@
 				return false;
 	    return true;
 	}
-	if(include.checkExists($MVC.apps_root+'/'+$MVC.app_name+'_test.js')){
+	if(include.checkExists(MVC.apps_root+'/'+MVC.app_name+'_test.js')){
 		var path = include.get_path();
-		include.set_path($MVC.apps_root)
-		include($MVC.app_name+'_test')
+		include.set_path(MVC.apps_root)
+		include(MVC.app_name+'_test')
 		include.set_path(path)
 	}else{
-		$MVC.Console.log("There is no application test file at:\n    \"apps/"+$MVC.app_name+"_test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests('product')\n    include.functional_tests('widget')")
+		MVC.Console.log("There is no application test file at:\n    \"apps/"+MVC.app_name+"_test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests('product')\n    include.functional_tests('widget')")
 	}
 })();
 
 
-$MVC.Tests = {};
-$MVC.Test = $MVC.Class.extend({
+MVC.Tests = {};
+MVC.Test = MVC.Class.extend({
 	init: function( name, tests, type  ){
 		this.type = type || 'unit';
 		this.tests = tests;
@@ -41,11 +41,11 @@ $MVC.Test = $MVC.Class.extend({
 			this.test_array.push(t);
 		}
 		this.name = name;
-		this.Assertions = $MVC.Test.Assertions.extend(this.helpers()); //overwrite helpers
+		this.Assertions = MVC.Test.Assertions.extend(this.helpers()); //overwrite helpers
 		this.passes = 0;
 		this.failures = 0;
 		
-		$MVC.Tests[this.name] = this;
+		MVC.Tests[this.name] = this;
 		this.updateElements(this);
 	},
 	fail : function(){
@@ -75,7 +75,7 @@ $MVC.Test = $MVC.Class.extend({
 			this.working_test++;
 			this.run_test(this.test_names[this.working_test-1]);
 		}else if(this.working_test != null){
-			$MVC.Console.window.update_test(this)
+			MVC.Console.window.update_test(this)
 			this.working_test = null;
 			if(this.callback){
 				this.callback();
@@ -87,8 +87,8 @@ $MVC.Test = $MVC.Class.extend({
 		this.assertions = new this.Assertions(this, test_id);
 	},
 	prepare_page : function(type) {
-		$MVC.Console.window.document.getElementById(type+'_explanation').style.display = 'none';
-		$MVC.Console.window.document.getElementById(type+'_test_runner').style.display = 'block';
+		MVC.Console.window.document.getElementById(type+'_explanation').style.display = 'none';
+		MVC.Console.window.document.getElementById(type+'_test_runner').style.display = 'block';
 	},
 	updateElements : function(test){
 		
@@ -96,7 +96,7 @@ $MVC.Test = $MVC.Class.extend({
 			this.prepare_page('unit');
 		else
 			this.prepare_page('functional');
-		var insert_into = $MVC.Console.window.document.getElementById(test.type+'_tests');
+		var insert_into = MVC.Console.window.document.getElementById(test.type+'_tests');
 		var txt = "<h3><img alt='run' src='playwhite.png' onclick='find_and_run(\""+test.name+"\")'/>"+test.name+" <span id='"+test.name+"_results'></span></h3>";
 		txt += "<div class='table_container'><table cellspacing='0px'><thead><tr><th>tests</th><th>result</th></tr></thead><tbody>";
 		for(var t in test.tests ){
@@ -118,14 +118,14 @@ $MVC.Test = $MVC.Class.extend({
 			txt+= helpers.join(', ')+"</div>";
 		}
 		//var t = document.getElementById('functional_tests');
-		var t = $MVC.Console.window.document.createElement('div');
+		var t = MVC.Console.window.document.createElement('div');
 		t.className = 'test'
 		t.innerHTML  = txt;
 		insert_into.appendChild(t);
 	}
 });
 
-$MVC.Test.Runner = function(object, iterator_name,params){
+MVC.Test.Runner = function(object, iterator_name,params){
 	var iterator_num;
 	object.run = function(callback){
 		object._callback = callback;
@@ -145,8 +145,8 @@ $MVC.Test.Runner = function(object, iterator_name,params){
 				object._callback();
 				object._callback = null;
 			}else{
-				//if($MVC.Browser.Gecko) window.blur();
-				//else $MVC.Console.window.focus();
+				//if(MVC.Browser.Gecko) window.blur();
+				//else MVC.Console.window.focus();
 			}
 		}
 	}
@@ -154,7 +154,7 @@ $MVC.Test.Runner = function(object, iterator_name,params){
 
 
 //almsot everything in here should be private
-$MVC.Test.Assertions =  $MVC.Class.extend({
+MVC.Test.Assertions =  MVC.Class.extend({
 	init: function( test, test_name){
 		this.assertions = 0;
 		this.failures = 0;
@@ -166,7 +166,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		this._delays = 0;
 		this._test_name = test_name;
 		this._last_called = test_name;
-		$MVC.Console.window.running(this._test, this._test_name);
+		MVC.Console.window.running(this._test, this._test_name);
 		if(this.setup) 
 			this._setup();
 		else{
@@ -194,7 +194,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		}
 	},
 	assert: function(expression) {
-		var message = arguments[1] || 'assert: got "' + $MVC.Test.inspect(expression) + '"';
+		var message = arguments[1] || 'assert: got "' + MVC.Test.inspect(expression) + '"';
 		try { expression ? this.pass() : 
 			this.fail(message); }
 		catch(e) { this.error(e); }
@@ -202,18 +202,18 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
   	assert_equal: function(expected, actual) {
 		var message = arguments[2] || "assertEqual";
 		try { (expected == actual) ? this.pass() :
-			this.fail(message + ': expected "' + $MVC.Test.inspect(expected) + 
-			'", actual "' + $MVC.Test.inspect(actual) + '"'); }
+			this.fail(message + ': expected "' + MVC.Test.inspect(expected) + 
+			'", actual "' + MVC.Test.inspect(actual) + '"'); }
 		catch(e) { this.error(e); }
   	},
 	assert_null: function(obj) {
 	    var message = arguments[1] || 'assertNull'
 	    try { (obj==null) ? this.pass() : 
-	      this.fail(message + ': got "' + $MVC.Test.inspect(obj) + '"'); }
+	      this.fail(message + ': got "' + MVC.Test.inspect(obj) + '"'); }
 	    catch(e) { this.error(e); }
 	},
 	assert_not: function(expression) {
-	   var message = arguments[1] || 'assert: got "' + $MVC.Test.inspect(expression) + '"';
+	   var message = arguments[1] || 'assert: got "' + MVC.Test.inspect(expression) + '"';
 		try {! expression ? this.pass() : 
 			this.fail(message); }
 		catch(e) { this.error(e); }
@@ -225,15 +225,15 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	assert_each: function(expected, actual) {
 	    var message = arguments[2] || "assert_each";
 	    try { 
-			var e = $MVC.Array.from(expected);
-			var a = $MVC.Array.from(actual);
+			var e = MVC.Array.from(expected);
+			var a = MVC.Array.from(actual);
 			if(e.length != a.length){
-				return this.fail(message + ': expected ' + $MVC.Test.inspect(expected)+', actual ' + $MVC.Test.inspect(actual));
+				return this.fail(message + ': expected ' + MVC.Test.inspect(expected)+', actual ' + MVC.Test.inspect(actual));
 				
 			}else{
 				for(var i =0; i< e.length; i++){
 					if(e[i] != a[i]){
-						return this.fail(message + ': expected '+$MVC.Test.inspect(expected)+', actual ' + $MVC.Test.inspect(actual));
+						return this.fail(message + ': expected '+MVC.Test.inspect(expected)+', actual ' + MVC.Test.inspect(actual));
 					}
 				}
 			}
@@ -249,7 +249,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 	},
 	error: function(error) {
 	    this.errors++;
-	    this.messages.push(error.name + ": "+ error.message + "(" + $MVC.Test.inspect(error) +")");
+	    this.messages.push(error.name + ": "+ error.message + "(" + MVC.Test.inspect(error) +")");
 	 },
 	_get_next_name :function(){
 		for(var i = 0; i < this._test.test_array.length; i++){
@@ -267,7 +267,7 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 		var  func = this._test.tests[fname];
 		return function(){
 			assert._last_called = fname;
-			var args = $MVC.Array.from(arguments);
+			var args = MVC.Array.from(arguments);
 			if(params) args.unshift(params)
 			try{
 				func.apply(assert, args);
@@ -294,13 +294,13 @@ $MVC.Test.Assertions =  $MVC.Class.extend({
 			if(this.teardown) this.teardown()
 			if(this._do_blur_back)
 				this._blur_back();
-			$MVC.Console.window.update(this._test, this._test_name, this);
+			MVC.Console.window.update(this._test, this._test_name, this);
 			this.failures == 0 && this.errors == 0?  this._test.pass(): this._test.fail();
 			this._test.run_next();
 		}
 	},
 	_blur_back: function(){
-		$MVC.Browser.Gecko ? window.blur() : $MVC.Console.window.focus();
+		MVC.Browser.Gecko ? window.blur() : MVC.Console.window.focus();
 	}
 });
 
@@ -311,16 +311,16 @@ Function.prototype.curry = function() {
 	    Array.prototype.slice.call(arguments)));
 	};
 };
-$MVC.Test.Unit = $MVC.Test.extend({
+MVC.Test.Unit = MVC.Test.extend({
 	init: function(name , tests ){
 		this._super(  name, tests, 'unit');
-		$MVC.Test.Unit.tests.push(this)
+		MVC.Test.Unit.tests.push(this)
 	}
 });
-$MVC.Test.Unit.tests = [];
+MVC.Test.Unit.tests = [];
 
 
-$MVC.Test.Runner($MVC.Test.Unit, "tests", {
+MVC.Test.Runner(MVC.Test.Unit, "tests", {
 	start : function(){
 		this.passes = 0;
 	},
@@ -328,7 +328,7 @@ $MVC.Test.Runner($MVC.Test.Unit, "tests", {
 		if(this.tests[number].failures == 0 ) this.passes++;
 	},
 	done: function(){
-		$MVC.Console.window.document.getElementById('unit_result').innerHTML = 
+		MVC.Console.window.document.getElementById('unit_result').innerHTML = 
 			'('+this.passes+'/'+this.tests.length+')' + (this.passes == this.tests.length ? ' Wow!' : '')
 	}
 })
@@ -336,10 +336,10 @@ $MVC.Test.Runner($MVC.Test.Unit, "tests", {
 
 
 
-$MVC.Test.Functional = $MVC.Test.extend({
+MVC.Test.Functional = MVC.Test.extend({
 	init: function(name , tests ){
 		this._super(  name, tests, 'functional');
-		$MVC.Test.Functional.tests.push(this)
+		MVC.Test.Functional.tests.push(this)
 	},
 	helpers : function(){
 		var helpers = this._super();
@@ -351,29 +351,29 @@ $MVC.Test.Functional = $MVC.Test.extend({
 			if(typeof options == 'number') 		 number = options || 0;
 			else if (typeof options == 'object') number = options.number || 0;
 			
-			var element = typeof selector == 'string' ? $MVC.CSSQuery(selector)[number] : selector; //if not a selector assume element
+			var element = typeof selector == 'string' ? MVC.CSSQuery(selector)[number] : selector; //if not a selector assume element
 			
 			if(event_type == 'focus'){
-				$MVC.Browser.Gecko ? $MVC.Console.window.blur() : window.focus();
+				MVC.Browser.Gecko ? MVC.Console.window.blur() : window.focus();
 				this._do_blur_back =true;
 			}
 			
 
-			var event = new $MVC.SyntheticEvent(event_type, options).send(element);
+			var event = new MVC.SyntheticEvent(event_type, options).send(element);
 			return {event: event, element: element, options: options};
 		}
-		for(var e = 0; e < $MVC.Test.Functional.events.length; e++){
-			var event_name = $MVC.Test.Functional.events[e];
-			helpers[$MVC.String.capitalize(event_name)] = helpers.Action.curry(event_name)
+		for(var e = 0; e < MVC.Test.Functional.events.length; e++){
+			var event_name = MVC.Test.Functional.events[e];
+			helpers[MVC.String.capitalize(event_name)] = helpers.Action.curry(event_name)
 		}
 		return helpers;
 	}
 });
-$MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keyup','keydown','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag','write'];
-$MVC.Test.Functional.tests = [];
+MVC.Test.Functional.events = ['change','click','contextmenu','dblclick','keyup','keydown','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload','drag','write'];
+MVC.Test.Functional.tests = [];
 
 
-$MVC.Test.Runner($MVC.Test.Functional, "tests", {
+MVC.Test.Runner(MVC.Test.Functional, "tests", {
 	start : function(){
 		this.passes = 0;
 	},
@@ -381,15 +381,15 @@ $MVC.Test.Runner($MVC.Test.Functional, "tests", {
 		if(this.tests[number].failures == 0 ) this.passes++;
 	},
 	done: function(){
-		$MVC.Console.window.document.getElementById('functional_result').innerHTML = 
+		MVC.Console.window.document.getElementById('functional_result').innerHTML = 
 			'('+this.passes+'/'+this.tests.length+')' + (this.passes == this.tests.length ? ' Wow!' : '')
 	}
 })
 
 
-$MVC.Test.Controller = $MVC.Test.Functional.extend({
+MVC.Test.Controller = MVC.Test.Functional.extend({
 	init: function(name , tests ){
-		var part = $MVC.String.classize(name);
+		var part = MVC.String.classize(name);
 		var controller_name = part+'Controller';
 		this.controller = window[controller_name];
 		if(!this.controller) alert('There is no controller named '+controller_name);
@@ -398,14 +398,14 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 	},
 	helpers : function(){
 		var helpers = this._super();
-		var actions = $MVC.Object.extend({}, this.controller.actions()) ;
+		var actions = MVC.Object.extend({}, this.controller.actions()) ;
 		this.added_helpers = {};
 		for(var action_name in actions){
 			if(actions.hasOwnProperty(action_name) &&  !actions[action_name].event_type) continue;
 			var event_type = actions[action_name].event_type;
 			var cleaned_name = actions[action_name].selector.replace(/\.|#/g, '')+' '+event_type;
-			var helper_name = cleaned_name.replace(/(\w*)/g, function(m,part){ return $MVC.String.capitalize(part)}).replace(/ /g, '');
-			helpers[helper_name] = helpers[$MVC.String.capitalize(event_type)].curry(actions[action_name].selector);
+			var helper_name = cleaned_name.replace(/(\w*)/g, function(m,part){ return MVC.String.capitalize(part)}).replace(/ /g, '');
+			helpers[helper_name] = helpers[MVC.String.capitalize(event_type)].curry(actions[action_name].selector);
 			this.added_helpers[helper_name] = helpers[helper_name];
 		}
 		return helpers;
@@ -415,10 +415,10 @@ $MVC.Test.Controller = $MVC.Test.Functional.extend({
 
 
 
-$MVC.Console.window.get_tests = function(){return $MVC.Tests; } 
+MVC.Console.window.get_tests = function(){return MVC.Tests; } 
 
 //This function returns what something looks like
-$MVC.Test.inspect =  function(object) {
+MVC.Test.inspect =  function(object) {
 	try {
 		if (object === undefined) return 'undefined';
 		if (object === null) return 'null';
@@ -431,16 +431,16 @@ $MVC.Test.inspect =  function(object) {
 		throw e;
 	}
 };
-$MVC.Test.loaded_files = {};
+MVC.Test.loaded_files = {};
 
 
 include.unit_tests = function(){
 	for(var i=0; i< arguments.length; i++)
-		$MVC.Console.log('Trying to load: test/unit/'+arguments[i]+'_test.js');
+		MVC.Console.log('Trying to load: test/unit/'+arguments[i]+'_test.js');
 	include.app(function(i){ return '../test/unit/'+i+'_test'}).apply(null, arguments);
 }
 include.functional_tests = function(){
 	for(var i=0; i< arguments.length; i++)
-		$MVC.Console.log('Trying to load: test/functional/'+arguments[i]+'_test.js');
+		MVC.Console.log('Trying to load: test/functional/'+arguments[i]+'_test.js');
 	include.app(function(i){ return '../test/functional/'+i+'_test'}).apply(null, arguments);
 }

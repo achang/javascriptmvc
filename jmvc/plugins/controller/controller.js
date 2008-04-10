@@ -1,4 +1,4 @@
-$MVC.Object.is_number = function(value){
+MVC.Object.is_number = function(value){
 	if(typeof value == 'number') return true;
 	if(typeof value != 'string') return false;
 	return value.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/);
@@ -8,43 +8,43 @@ $MVC.Object.is_number = function(value){
  * @param {String} model - The name of the controller type.  Example: todo.
  * @param {Object} actions - a hash of functions that get added to the controller's prototype
  */
-$MVC.Controller = function(model, actions){
-	var className= model, newmodel = null, singular = $MVC.String.is_singular(model);
-	model = $MVC.String.classize(model)+'Controller';
+MVC.Controller = function(model, actions){
+	var className= model, newmodel = null, singular = MVC.String.is_singular(model);
+	model = MVC.String.classize(model)+'Controller';
 	newmodel = eval(model + " = function() { this.klass = "+model+";this.initialize.apply(this, arguments);};");
-	newmodel.prototype = new $MVC.Controller.functions();
+	newmodel.prototype = new MVC.Controller.functions();
 	newmodel.prototype.klass_name = model;
 	newmodel.className = newmodel.prototype.className =	className;
-	$MVC.Object.extend(newmodel.prototype, actions );
+	MVC.Object.extend(newmodel.prototype, actions );
 	var registered_actions = {}, controller_actions = {};
 	newmodel.add_register_action = function(action,observe_on, event_type, capture){
 		if(!registered_actions[event_type]){
 			registered_actions[event_type] = [];
-			$MVC.Event.observe(observe_on, event_type, $MVC.Controller.dispatch_event, capture);
+			MVC.Event.observe(observe_on, event_type, MVC.Controller.dispatch_event, capture);
 		}
 		registered_actions[event_type].push(action);
 	};
 	for(var action_name in actions ){
 		var val = actions[action_name];
 		if( actions.hasOwnProperty(action_name) && typeof val == 'function')
-			controller_actions[action_name] = new $MVC.Controller.Action(action_name, val,newmodel);
+			controller_actions[action_name] = new MVC.Controller.Action(action_name, val,newmodel);
 	}
 	newmodel.actions = function(){ return controller_actions;};
 	newmodel.registered_actions = function(){ return registered_actions; };
-	$MVC.Controller.klasses.push(newmodel);
+	MVC.Controller.klasses.push(newmodel);
 	return newmodel;
 };
 
 /**
- * $MVC.Controller prototype functions
+ * MVC.Controller prototype functions
  */
-$MVC.Controller.functions = function(){};
-$MVC.Object.extend($MVC.Controller.functions.prototype, {
+MVC.Controller.functions = function(){};
+MVC.Object.extend(MVC.Controller.functions.prototype, {
 	initialize : function(){},
 	continue_to :function(action){
 		if(!action) action = this.action.name+'ing';
 		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. ';}
-		return $MVC.Function.bind(function(){
+		return MVC.Function.bind(function(){
 			this.action = this.klass.actions()[action];
 			this[action].apply(this, arguments);
 		}, this);
@@ -52,9 +52,9 @@ $MVC.Object.extend($MVC.Controller.functions.prototype, {
 });
 
 /**
- * $MVC.Controller class functions
+ * MVC.Controller class functions
  */
-$MVC.Object.extend($MVC.Controller , {
+MVC.Object.extend(MVC.Controller , {
 	klasses: [],
 	add_kill_event: function(event){
 		if(!event.kill){
@@ -73,8 +73,8 @@ $MVC.Object.extend($MVC.Controller , {
 	},
 	dispatch: function(controller, action_name, params){
 		var c_name = controller;
-		if(typeof controller == 'string'){controller = window[ $MVC.String.classize(controller)+'Controller'];}
-		if(!controller) throw 'No controller named '+c_name+' was found for $MVC.Controller.dispatch.';
+		if(typeof controller == 'string'){controller = window[ MVC.String.classize(controller)+'Controller'];}
+		if(!controller) throw 'No controller named '+c_name+' was found for MVC.Controller.dispatch.';
 		if(!action_name) action_name = 'index';
 		
 		if(typeof action_name == 'string'){
@@ -85,7 +85,7 @@ $MVC.Object.extend($MVC.Controller , {
 		var action = controller.actions()[action_name], instance = new controller();
 		instance.params = params;
 		instance.action = action;
-		return $MVC.Controller._dispatch_action(instance,action_name, params );
+		return MVC.Controller._dispatch_action(instance,action_name, params );
 	},
 	_dispatch_action: function(instance, action_name, params){
 		return instance[action_name](params);
@@ -101,48 +101,48 @@ $MVC.Object.extend($MVC.Controller , {
 		return parents;
 	},
 	dispatch_event: function(event){
-		var target = event.target,classes = $MVC.Controller.klasses, matched = false, ret_value = true,matches = [];
-		var parents_path = $MVC.Controller.node_path(target);
+		var target = event.target,classes = MVC.Controller.klasses, matched = false, ret_value = true,matches = [];
+		var parents_path = MVC.Controller.node_path(target);
 
 		for(var c = 0 ; c < classes.length; c++){
-			var actions = $MVC.Controller.klasses[c].registered_actions()[event.type];
+			var actions = MVC.Controller.klasses[c].registered_actions()[event.type];
 			if(!actions) continue;
 			for(var i =0; i < actions.length;  i++){
 				var action = actions[i];
 				var match_result = action.match(target, event, parents_path);
 				
 				if(match_result){
-					match_result.controller = $MVC.Controller.klasses[c];
+					match_result.controller = MVC.Controller.klasses[c];
 					matches.push(match_result);
 				}
 			}
 		}
 		if(matches.length == 0) return true;
-		$MVC.Controller.add_kill_event(event);
-		matches.sort($MVC.Controller.dispatch_event.sort_by_order);
+		MVC.Controller.add_kill_event(event);
+		matches.sort(MVC.Controller.dispatch_event.sort_by_order);
 		for(var m = 0; m < matches.length; m++){
 			var match = matches[m];
 			var action_name = match.action.name;
-			var params = new $MVC.Controller.Params({event: event, element: match.node, action: action_name, controller: match.controller  });
-			ret_value = $MVC.Controller.dispatch(match.controller, action_name, params) && ret_value;
+			var params = new MVC.Controller.Params({event: event, element: match.node, action: action_name, controller: match.controller  });
+			ret_value = MVC.Controller.dispatch(match.controller, action_name, params) && ret_value;
 			if(event.is_killed()) return false;
 		}
 	},
 	event_closure: function(controller_name, f_name, element){
 		return function(event){
-			$MVC.Controller.add_kill_event(event);
-			var params = new $MVC.Controller.Params({event: event, element: element, action: f_name, controller: controller_name   });
-			return $MVC.Controller.dispatch(controller_name, f_name, params);
+			MVC.Controller.add_kill_event(event);
+			var params = new MVC.Controller.Params({event: event, element: element, action: f_name, controller: controller_name   });
+			return MVC.Controller.dispatch(controller_name, f_name, params);
 		}
 	},
 	callback: function(controller_name, action_name){
 		return function(){
-			return $MVC.Controller.dispatch(controller_name, action_name);
+			return MVC.Controller.dispatch(controller_name, action_name);
 		}
 	}
 });
 
-$MVC.Controller.dispatch_event.sort_by_order = function(a,b){
+MVC.Controller.dispatch_event.sort_by_order = function(a,b){
 	if(a.order < b.order) return 1;
 	if(b.order < a.order) return -1;
 	var ae = a.action.event_type, be = b.action.event_type;
@@ -151,14 +151,14 @@ $MVC.Controller.dispatch_event.sort_by_order = function(a,b){
 	return 0;
 };
 
-$MVC.Controller.Params = function(params){
+MVC.Controller.Params = function(params){
 	for(var thing in params){
 		if( params.hasOwnProperty(thing) ) this[thing] = params[thing];
 	}
 };
 
 
-$MVC.Controller.Params.prototype = {
+MVC.Controller.Params.prototype = {
 	form_params : function(){
 		var data = {};
 		if(this.element.nodeName.toLowerCase() != 'form') return data;
@@ -167,7 +167,7 @@ $MVC.Controller.Params.prototype = {
 			var el = els[i];
 			if(el.type.toLowerCase()=='submit') continue;
 			var key = el.name, value = el.value, key_components = key.rsplit(/\[[^\]]*\]/);
-			if($MVC.Object.is_number(value) ) value = parseFloat(value);
+			if(MVC.Object.is_number(value) ) value = parseFloat(value);
 			if( key_components.length > 1 ) {
 				var last = key_components.length - 1;
 				var nested_key = key_components[0].toString();
@@ -191,7 +191,7 @@ $MVC.Controller.Params.prototype = {
 	},
 	class_element : function(){
 		var start = this.element, controller = this.controller;
-		var className = $MVC.String.is_singular(controller.className) ? controller.className : $MVC.String.singularize(controller.className);
+		var className = MVC.String.is_singular(controller.className) ? controller.className : MVC.String.singularize(controller.className);
 		while(start && start.className.indexOf(className) == -1 ){
 			start = start.parentNode;
 			if(start == document) return null;
@@ -199,38 +199,38 @@ $MVC.Controller.Params.prototype = {
 		return start;
 	},
 	is_event_on_element : function(){ return this.event.target == this.element; },
-	object_data : function(){ return $MVC.View.Helpers.get_data(this.class_element()); }
+	object_data : function(){ return MVC.View.Helpers.get_data(this.class_element()); }
 };
 
 
 
-$MVC.Controller.Action = function(action_name, func ,controller){
+MVC.Controller.Action = function(action_name, func ,controller){
 	this.name = action_name;
 	this.func = func;
 	this.controller = controller;
 	this.parse_name();
-	if(! $MVC.Array.include($MVC.Controller.Action.actions, this.event_type)){
+	if(! MVC.Array.include(MVC.Controller.Action.actions, this.event_type)){
 		this.event_type = null;
 		return;
 	}
 	
 	if(this.className() == 'main') return this.main_controller();
-	this.singular = $MVC.String.is_singular(this.className());
+	this.singular = MVC.String.is_singular(this.className());
 	if(this.singular)
 		this.selector = this.last_space == -1 ? '#'+this.className() : '#'+this.className()+' '+this.before_space;
 	else
 		this.set_plural_selector();
-	if(this.event_type == 'submit' && $MVC.Browser.IE) return this.submit_for_ie();
-	if(this.event_type == 'change' && $MVC.Browser.IE) return this.change_for_ie();
-	if(this.event_type == 'change' && $MVC.Browser.WebKit) return this.change_for_webkit();
+	if(this.event_type == 'submit' && MVC.Browser.IE) return this.submit_for_ie();
+	if(this.event_type == 'change' && MVC.Browser.IE) return this.change_for_ie();
+	if(this.event_type == 'change' && MVC.Browser.WebKit) return this.change_for_webkit();
 	this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
 };
 
-$MVC.Controller.Action.actions = ['change','click','contextmenu','dblclick','keydown','keyup','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload'];
+MVC.Controller.Action.actions = ['change','click','contextmenu','dblclick','keydown','keyup','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload'];
 
-$MVC.Controller.Action.prototype = {
+MVC.Controller.Action.prototype = {
 	registered_event : function(){
-		if($MVC.Browser.IE){
+		if(MVC.Browser.IE){
 			if(this.event_type == 'focus')
 				return 'activate';
 			else if(this.event_type == 'blur')
@@ -244,7 +244,7 @@ $MVC.Controller.Action.prototype = {
 			newlast_space = newer_action_name.lastIndexOf(' ');
 			this.selector = newlast_space == -1 ? '#'+this.className() : '#'+this.className()+' '+newer_action_name.substring(0,newlast_space);
 		}else{
-			var singular = $MVC.String.singularize(this.className());
+			var singular = MVC.String.singularize(this.className());
 			this.selector = this.last_space == -1 ? '.'+singular : '.'+singular+' '+this.before_space;
 		}
 			
@@ -255,14 +255,14 @@ $MVC.Controller.Action.prototype = {
 		this.event_type = this.last_space == -1 ? this.name :this.name.substring(this.last_space+1);
 	},
 	main_controller : function(){
-		if($MVC.Array.include(['load','unload','resize','scroll'],this.event_type))
-			return $MVC.Event.observe(window, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
+		if(MVC.Array.include(['load','unload','resize','scroll'],this.event_type))
+			return MVC.Event.observe(window, this.event_type, MVC.Controller.event_closure(this.className(), this.event_type, window) );
 		
 		//if(this.name == 'click')
-		//	return $MVC.Event.observe(document.documentElement, this.event_type, $MVC.Controller.event_closure(this.className(), this.event_type, window) );
+		//	return MVC.Event.observe(document.documentElement, this.event_type, MVC.Controller.event_closure(this.className(), this.event_type, window) );
 		
 		this.selector = this.before_space;
-		if(this.event_type == 'submit' && $MVC.Browser.IE)
+		if(this.event_type == 'submit' && MVC.Browser.IE)
 			return this.submit_for_ie();
 			
 		this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
@@ -313,7 +313,7 @@ $MVC.Controller.Action.prototype = {
 		return this.controller.className;
 	},
 	capture : function(){
-		return $MVC.Array.include(['focus','blur'],this.event_type);
+		return MVC.Array.include(['focus','blur'],this.event_type);
 	},
 	selector_order : function(){
 		if(this.order) return this.order;
@@ -350,7 +350,7 @@ $MVC.Controller.Action.prototype = {
 			for(var attr in match){
 				if(!match.hasOwnProperty(attr) || attr == 'element') continue;
 				if(match[attr] && attr == 'className'){
-					if(! $MVC.Array.include(node.className.split(' '),match[attr])) matched = false;
+					if(! MVC.Array.include(node.className.split(' '),match[attr])) matched = false;
 				}else if(match[attr] && node[attr] != match[attr]){
 					matched = false;
 				}
@@ -363,4 +363,4 @@ $MVC.Controller.Action.prototype = {
 		return null;
 	}
 };
-if(!$MVC._no_conflict) Controller = $MVC.Controller;
+if(!MVC._no_conflict) Controller = MVC.Controller;

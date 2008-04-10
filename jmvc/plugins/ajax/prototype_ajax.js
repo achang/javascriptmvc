@@ -1,1 +1,1 @@
-$MVC.Ajax.Request = Ajax.Request;
+MVC.Ajax.Request = Ajax.Request;

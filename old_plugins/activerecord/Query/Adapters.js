@@ -20,13 +20,13 @@ JMVC.ScaffoldAdapter.setup = function(schema) {
 JMVC.ScaffoldAdapter.execute = function(sql) {
     var postBody = this._create_postbody(sql);
 	var theURL = this._create_url(sql);
-    var req = new $MVC.Ajax.Request(theURL, {asynchronous: false, method: "post", postBody: postBody});
+    var req = new MVC.Ajax.Request(theURL, {asynchronous: false, method: "post", postBody: postBody});
     return eval(req.transport.responseText);
 }
 JMVC.ScaffoldAdapter.execute_asynchronous = function(sql, callback) {
     var postBody = this._create_postbody(sql);
 	var theURL = this._create_url(sql);
-	new $MVC.Ajax.Request(theURL, {asynchronous: true, method: "post", postBody: postBody, onComplete: function(request) {
+	new MVC.Ajax.Request(theURL, {asynchronous: true, method: "post", postBody: postBody, onComplete: function(request) {
             return callback(eval(request.responseText));
         }.bind(this)
 	});

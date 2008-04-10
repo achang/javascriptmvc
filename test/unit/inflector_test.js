@@ -1,11 +1,11 @@
-new $MVC.Test.Unit('inflector',{
+new MVC.Test.Unit('inflector',{
 	test_singularize : function(){
-		this.assert_equal('person', $MVC.String.singularize('people'));
-		this.assert_equal('dog', $MVC.String.singularize('dogs'));
+		this.assert_equal('person', MVC.String.singularize('people'));
+		this.assert_equal('dog', MVC.String.singularize('dogs'));
 	},
 	test_pluralize : function(){
-		this.assert_equal('people', $MVC.String.pluralize('person'));
-		this.assert_equal('dogs', $MVC.String.pluralize('dog'));
+		this.assert_equal('people', MVC.String.pluralize('person'));
+		this.assert_equal('dogs', MVC.String.pluralize('dog'));
 	},
 	test_conflict_singular : function(){
 		this.assert_equal('person', 'people'.singularize());

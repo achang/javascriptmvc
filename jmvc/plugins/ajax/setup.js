@@ -8,5 +8,5 @@ if(typeof jQuery != 'undefined'){
 	include('ajax')
 }
 
-if($MVC.Console)
+if(MVC.Console)
 	include('debug')

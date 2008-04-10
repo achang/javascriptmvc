@@ -1,12 +1,12 @@
-$MVC.$E = function(element){
+MVC.$E = function(element){
 	if(typeof element == 'string')
 		element = document.getElementById(element);
-	return element._mvcextend ? element : $MVC.$E.extend(element);
+	return element._mvcextend ? element : MVC.$E.extend(element);
 };
 
 
 
-$MVC.Object.extend($MVC.$E, {
+MVC.Object.extend(MVC.$E, {
 	insert: function(element, insertions) {
 		element = typeof element == 'string'? jQuery('#'+element) : jQuery(element) ;
 		
@@ -23,28 +23,28 @@ $MVC.Object.extend($MVC.$E, {
 
 
 
-$MVC.$E.extend = function(el){
-	for(var f in $MVC.$E){
-		if(!$MVC.$E.hasOwnProperty(f)) continue;
-		var func = $MVC.$E[f];
+MVC.$E.extend = function(el){
+	for(var f in MVC.$E){
+		if(!MVC.$E.hasOwnProperty(f)) continue;
+		var func = MVC.$E[f];
 		if(typeof func == 'function'){
-			var names = $MVC.Function.params(func);
+			var names = MVC.Function.params(func);
 			if( names.length == 0) continue;
 			var first_arg = names[0];
-			if( first_arg.match('element') ) $MVC.$E._extend(func, f, el);
+			if( first_arg.match('element') ) MVC.$E._extend(func, f, el);
 		}
 	}
 	el._mvcextend = true;
 	return el;
 }
-$MVC.$E._extend = function(f,name,el){
+MVC.$E._extend = function(f,name,el){
 	el[name] = function(){
-		var arg = $MVC.Array.from(arguments);
+		var arg = MVC.Array.from(arguments);
 		arg.unshift(el);
 		return f.apply(el, arg); 
 	}
 }
 
-if(!$MVC._no_conflict){
-	$E = $MVC.$E;
+if(!MVC._no_conflict){
+	$E = MVC.$E;
 }

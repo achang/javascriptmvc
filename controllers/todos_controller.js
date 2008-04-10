@@ -1,4 +1,4 @@
-$MVC.Controller('todos',{
+MVC.Controller('todos',{
 	mouseover : function(params){
 		params.element.style.backgroundColor = '#8FBA3C';
 	},
@@ -10,7 +10,7 @@ $MVC.Controller('todos',{
 		params.element.innerHTML = 
 			'<input type="text" class="text" value="'+params.element.innerHTML+'"/>';
 		// weird Firefox bug
-		if($MVC.Browser.Gecko) params.element.firstChild.setAttribute('autocomplete','off');
+		if(MVC.Browser.Gecko) params.element.firstChild.setAttribute('autocomplete','off');
 		params.element.firstChild.focus();
 		params.element.className='working';
 	},
@@ -44,7 +44,7 @@ $MVC.Controller('todos',{
 	},
 	'# .new input blur' : function(params){
 		if(params.element.value != '' && params.element.value != 'type new todo here'){
-			$MVC.Element.insert('todo_form',
+			MVC.Element.insert('todo_form',
 				{after: "<div class='todo'><img src='../../images/close.png' alt='close'/><input type='checkbox' class='check'/><label>"+params.element.value+
 				"</label><p class='clear'> </p></div>"}
 			);
@@ -54,7 +54,7 @@ $MVC.Controller('todos',{
 	},
 	'# form submit' : function(params){
 		params.event.kill();
-		params.element = $MVC.Element('new_todo');
+		params.element = MVC.Element('new_todo');
 		this['# .new input blur'](params);
 		params.element.style.color = '';
 		params.element.value = '';

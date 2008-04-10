@@ -1,4 +1,4 @@
-$MVC.Controller('main',{
+MVC.Controller('main',{
 	load : function(){
 		success('load');
 	},
@@ -16,7 +16,7 @@ $MVC.Controller('main',{
 		success('mainclick')
 	}
 });
-$MVC.Controller('tests',{
+MVC.Controller('tests',{
 	change: function(){
 		success('change')
 	},

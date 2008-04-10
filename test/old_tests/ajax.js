@@ -9,11 +9,11 @@ JMVCTest = {
 		teardown: function() {
 		},
 	    test_get_synch_no_params : function() { with(this) {
-			var request = new $MVC.Ajax.Request('files/ajax.html', {asynchronous: false, method: 'get'});
+			var request = new MVC.Ajax.Request('files/ajax.html', {asynchronous: false, method: 'get'});
 			assert("<p>Content</p>",request.transport.responseText)
 	    }},
 		test_get_synch_params : function() { with(this) {
-			var request = new $MVC.Ajax.Request('files/ajax.html', {asynchronous: false, method: 'get', parameters: {hello: 'world'}} );
+			var request = new MVC.Ajax.Request('files/ajax.html', {asynchronous: false, method: 'get', parameters: {hello: 'world'}} );
 			assert("<p>Content</p>",request.transport.responseText)
 			assert('files/ajax.html?hello=world', request.url)
 	    }}

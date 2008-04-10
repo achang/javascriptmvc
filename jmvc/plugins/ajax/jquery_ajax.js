@@ -1,4 +1,4 @@
-$MVC.Ajax.Request = function(url,options){
+MVC.Ajax.Request = function(url,options){
 	//map options
 	options.url = url;
 	this.transport = {};
@@ -34,4 +34,4 @@ $MVC.Ajax.Request = function(url,options){
 	
 };
 
-if(!$MVC._no_conflict) Ajax = $MVC.Ajax;
+if(!MVC._no_conflict) Ajax = MVC.Ajax;

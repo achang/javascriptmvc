@@ -97,7 +97,7 @@ FilterParam.prototype = {
 
 
 // filter_dropdown(filter, 'scans.hardware_id', {options: [{value: 5, text: 'red'}, {value: 1, text: 'green'}, {value: 3, text: 'blue'}] })
-JMVC.$MVC.View.filter_dropdown = function(filter, name, options){
+JMVC.MVC.View.filter_dropdown = function(filter, name, options){
 	var fp = new FilterParam(name);
 	if(options && options.representative_column) // need to load the default options
 		var options = fp.load_default_options(options.representative_column);
