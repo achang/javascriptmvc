@@ -11,7 +11,7 @@ $MVC.Model = function(cname, options, class_f, inst_f){
 	
 	fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 	for (var name in class_f) {
-      cname[name] = typeof class_f[name] == "function" &&
+      clss[name] = typeof class_f[name] == "function" &&
         typeof $MVC.Model.ClassFunctions[name] == "function" && fnTest.test(class_f[name]) ?
         (function(name, fn){
           return function() {
@@ -48,7 +48,7 @@ $MVC.Model.ClassFunctions = {
 	    options.remote       = false;
     
     // Establish prefix
-    var default_prefix = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "");
+    var default_prefix = window.location.protocol == 'file:' ? '' : (window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : ""));
     if (options.prefix && options.prefix.match(/^https?:/))
       options.remote = true;
       
@@ -77,14 +77,8 @@ $MVC.Model.ClassFunctions = {
 	}
       
     
-    if (options.checkNew)
-		this.build_attributes(options.asynchronous, options.checkNewCallback)
-	},
-    
-  
- 
-  
-  
+    if (options.checkNew) this.build_attributes(options.asynchronous, options.checkNewCallback)
+  },
   create : function(attributes, callback) {
     var base = new this(attributes);
     
@@ -165,11 +159,6 @@ $MVC.Model.ClassFunctions = {
     }
   },
   
-  
-  
-
-
-
   update : function(attributes, callback){
   	var base = new this(attributes);
 
@@ -209,7 +198,8 @@ $MVC.Model.ClassFunctions = {
   
   // Helper to aid in handling either async or synchronous requests
   _request : function(callback, url, options, user_callback) {
-    if (user_callback) {
+    if(this.use_fixture != null) options.use_fixture = this.use_fixture;
+	if (user_callback) {
       options.asynchronous = true;
       // if an options hash was given instead of a callback
       if (typeof(user_callback) == "object") {
@@ -513,7 +503,7 @@ $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
     var destroyWork = $MVC.Function.bind(function(transport) {
       if (transport.status == 200) {
           this.id = null;
-          return this;
+          return true;
       }
       else
           return false;
@@ -580,7 +570,7 @@ $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
     }, this);
   
     // reset errors
-    this._setErrors({});
+    this._setErrors([]);
   
     var url = null;
     var method = null;
@@ -601,14 +591,14 @@ $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
     // distinguish between create and update
     if (this.new_record()) {
       url = this._create_url();
-	  if(remote)
-	      url = this._create_url(params);
+	  //if(remote)
+	  //    url = this._create_url(params);
       method = "post";
     }
     else {
       url = this._update_url();
-	  if(remote)
-	      url = this._update_url(params);
+	  //if(remote)
+	  //   url = this._update_url(params);
       method = "put";
     }
     
@@ -632,7 +622,9 @@ $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
   },
   
   
-  valid : function() {return  this.errors.length == 0;},
+  valid : function() {
+  	return  this.errors.length == 0;
+  },
   
     
   /*
@@ -667,11 +659,10 @@ $MVC.Model.InstanceFunctions =  $MVC.Class.extend({
     
     if (!(json && json.constructor == Array && json[0] && json[0].constructor == Array)) return false;
     
-	var errors = $H({});
-    json.each(function(pair) {
-      if(!errors[pair[0]]) errors[pair[0]] = [];
-	  errors[pair[0]].push(pair[1]);
-    });
+	var errors = [];
+	for(var j = 0 ; j < json.length; j++){
+		errors.push(json[j])
+	}
 	return errors;
   },
   

@@ -36,7 +36,7 @@ $MVC.Ajax.Request = function(url,options){
 	if(this.options.asynchronous == false){
 	   this.transport.open(this.options.method, this.url, this.options.asynchronous);
 	   this.setRequestHeaders();
-	   try{this.transport.send(null);}
+	   try{this.transport.send(this.options.parameters ? $MVC.Object.to_query_string(this.options.parameters) : null);}
 	   catch(e){return null;}
 	   return;
 	}else{
