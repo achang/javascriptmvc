@@ -1,8 +1,0 @@
-<% Category.content_columns().each(function(column){ %>
-<p>
-  <b><%= column.human_name() %>:</b> <%=to_text(category[column.name], '') %>
-</p>
-<% }) %>
-
-<%= link_to('Edit', {action: 'edit', id: category.id}) %> |
-<%= link_to('Back', {action: 'list'}) %>
