@@ -37,7 +37,7 @@
 		
 		if(this.options.asynchronous == false){
 		   this.transport.open(this.options.method, this.url, this.options.asynchronous);
-		   this.setRequestHeaders();
+		   this.set_request_headers();
 		   try{this.transport.send(this.options.parameters ? MVC.Object.to_query_string(this.options.parameters) : null);}
 		   catch(e){return null;}
 		   return;
@@ -55,7 +55,7 @@
 			},this);
 			
 			this.transport.open(this.options.method, this.url, true);
-			this.setRequestHeaders();
+			this.set_request_headers();
 			this.transport.send(MVC.Object.to_query_string(this.options.parameters));
 		}
 	};
@@ -76,7 +76,7 @@ MVC.Ajax.prototype = {
       return this.transport.status || 0;
     } catch (e) { return 0 }
   },
-  setRequestHeaders: function() {
+  set_request_headers: function() {
     var headers = {'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'};
 
     if (this.options.method == 'post') {
