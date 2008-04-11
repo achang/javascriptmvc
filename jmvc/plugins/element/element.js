@@ -89,6 +89,8 @@ MVC.$E._extend = function(f,name,el){
 	}
 }
 
+MVC.Element = MVC.$E;
+
 if(!MVC._no_conflict){
 	$E = MVC.$E;
 }
