@@ -551,8 +551,7 @@ MVC.Model.InstanceFunctions =  MVC.Class.extend({
       // Get ID from the location header if it's there
       if (this.new_record() && transport.status == 201) {
 	  	loc = transport.responseText;
-	  	if(typeof transport.getResponseHeader != 'unknown' && transport.getResponseHeader)
-        	loc = transport.getResponseHeader("location");
+	  	try{loc = transport.getResponseHeader("location");}catch(e){};
         if (loc) {
           //todo check this with prototype
 		  var mtcs = loc.match(/\/[^\/]*?(\w+)?$/);
