@@ -140,7 +140,7 @@ MVC.Model.ClassFunctions = {
       if (!base || base._properties.length == 0) return null;
 
       // even if the ID didn't come back, we obviously knew the ID to search with, so set it
-      if (!MVC.String.include(base._properties,"id")) base._setAttribute("id", parseInt(id));
+      if (!MVC.Array.include(base._properties,"id")) base._setAttribute("id", parseInt(id));
 
       return base;
     },this);
