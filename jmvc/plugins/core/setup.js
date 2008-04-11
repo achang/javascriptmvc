@@ -15,8 +15,7 @@ include('../ajax/debug');
 
 	
 
-include('../view/view',
-		'../view/helpers', 
+include('../view/view', 
 		'../controller/controller',
 		'../controller_view/controller_view');
 		
