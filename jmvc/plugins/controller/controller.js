@@ -11,7 +11,7 @@ MVC.Object.is_number = function(value){
 MVC.Controller = function(model, actions){
 	var className= model, newmodel = null, singular = MVC.String.is_singular(model);
 	model = MVC.String.classize(model)+'Controller';
-	newmodel = eval(model + " = function() { this.klass = "+model+";this.initialize.apply(this, arguments);};");
+	newmodel = eval(model + " = function() { this.Class = "+model+";this.initialize.apply(this, arguments);};");
 	newmodel.prototype = new MVC.Controller.functions();
 	newmodel.prototype.klass_name = model;
 	newmodel.className = newmodel.prototype.className =	className;
@@ -45,7 +45,7 @@ MVC.Object.extend(MVC.Controller.functions.prototype, {
 		if(!action) action = this.action.name+'ing';
 		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. ';}
 		return MVC.Function.bind(function(){
-			this.action = this.klass.actions()[action];
+			this.action = this.Class.actions()[action];
 			this[action].apply(this, arguments);
 		}, this);
 	}
