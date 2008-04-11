@@ -1,7 +1,7 @@
 (function(){
-	var request = MVC.Ajax.Request;
+	var request = MVC.Ajax;
 
-	MVC.Ajax.Request = function(url,options){
+	MVC.Ajax = function(url,options){
 		if( options.use_fixture == null || options.use_fixture == true  ){
 			var match = url.match(/^(?:https?:\/\/[^\/]*)?\/?([^\?]*)\??(.*)?/);
 			var left = match[1];
@@ -25,9 +25,9 @@
 
 		return req;
 	};
-	MVC.Object.extend(MVC.Ajax.Request, request);
+	MVC.Object.extend(MVC.Ajax, request);
 	
-	if(!MVC._no_conflict) Ajax.Request = MVC.Ajax.Request;
+	if(!MVC._no_conflict) Ajax = MVC.Ajax;
 	
 	MVC.Ajax.urls = {};
 	

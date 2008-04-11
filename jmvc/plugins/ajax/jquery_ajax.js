@@ -1,4 +1,4 @@
-MVC.Ajax.Request = function(url,options){
+MVC.Ajax = function(url,options){
 	//map options
 	options.url = url;
 	this.transport = {};

@@ -50,7 +50,7 @@ MVC.View = function( options ){
 		var template = MVC.View.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == MVC.View.INVALID_PATH) return null;
-		this.text = new MVC.Ajax.Request(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get', use_fixture: false}).transport.responseText;
+		this.text = new MVC.Ajax(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get', use_fixture: false}).transport.responseText;
 		
 		if(this.text == null){
 			//MVC.View.update(options.url, this.INVALID_PATH);
@@ -116,7 +116,7 @@ MVC.View.prototype = {
 				var object = eval( request.responseText );
 				MVC.View.prototype.update.call(_template, element, object);
 			};
-			new MVC.Ajax.Request(params.url, params)
+			new MVC.Ajax(params.url, params)
 		}else
 		{
 			element.innerHTML = this.render(options);

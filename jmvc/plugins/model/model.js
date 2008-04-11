@@ -216,12 +216,12 @@ MVC.Model.ClassFunctions = {
       options.onComplete = function(transport, json) {
 	  	user_callback(callback(transport), json);
 	  };
-      return new MVC.Ajax.Request(url, options).transport;
+      return new MVC.Ajax(url, options).transport;
     }
     else
     {
       options.asynchronous = false; // Make sure it's set, to avoid being overridden.
-      return callback(new MVC.Ajax.Request(url, options).transport);
+      return callback(new MVC.Ajax(url, options).transport);
     }
   },
   
