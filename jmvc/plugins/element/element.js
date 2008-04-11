@@ -4,9 +4,7 @@ MVC.$E = function(element){
     if (!element) return element;
 	return element._mvcextend ? element : MVC.$E.extend(element);
 };
-
-
-
+//From Prototype
 MVC.Object.extend(MVC.$E, {
 	insert: function(element, insertions) {
 		element = MVC.$E(element);
@@ -89,7 +87,7 @@ MVC.$E._extend = function(f,name,el){
 		return f.apply(el, arg); 
 	}
 }
-
+MVC.Element = MVC.$E;
 if(!MVC._no_conflict){
 	$E = MVC.$E;
 }
