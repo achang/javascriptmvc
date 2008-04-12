@@ -1,6 +1,6 @@
 //Modified version of Ajax.Request from prototype.
 (function(){
-	var factory = MVC.Ajax.factory
+	var factory = MVC.Ajax.factory;
 	MVC.Ajax = function(url,options){
 		this.options = {
 	      method:       'post',
@@ -37,7 +37,7 @@
 		
 		if(this.options.asynchronous == false){
 		   this.transport.open(this.options.method, this.url, this.options.asynchronous);
-		   this.set_request_headers();
+		   this.setRequestHeaders();
 		   try{this.transport.send(this.options.parameters ? MVC.Object.to_query_string(this.options.parameters) : null);}
 		   catch(e){return null;}
 		   return;
@@ -55,7 +55,7 @@
 			},this);
 			
 			this.transport.open(this.options.method, this.url, true);
-			this.set_request_headers();
+			this.setRequestHeaders();
 			this.transport.send(MVC.Object.to_query_string(this.options.parameters));
 		}
 	};
@@ -76,7 +76,7 @@ MVC.Ajax.prototype = {
       return this.transport.status || 0;
     } catch (e) { return 0 }
   },
-  set_request_headers: function() {
+  setRequestHeaders: function() {
     var headers = {'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'};
 
     if (this.options.method == 'post') {

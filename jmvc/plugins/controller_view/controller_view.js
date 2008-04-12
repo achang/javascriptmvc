@@ -7,14 +7,14 @@ MVC.Controller.functions.prototype.render = function(options) {
 			result = new MVC.View({url:  options  }).render(this);
 		}
 		else if(options.text) {
-            result = options.text;   
+            result = options.text;
         }
         else {
             var convert = function(url){
 				var url =  MVC.String.include(url,'/') ? url.split('/').join('/_') : controller_name+'/'+url;
-				var url =+ '.ejs';
+				var url = url + '.ejs';
 				return url;
-			}
+			};
 			
 			if(options.action) {
 				var url = convert(options.action);
@@ -49,7 +49,7 @@ MVC.Controller.functions.prototype.render = function(options) {
 				if(locations[l] == 'to'){
 					options.to.innerHTML = result;
 				}else{
-					if(!MVC.$E.insert ) throw {message: "Include can't insert "+locations[l]+" without the element plugin.", name: 'ControllerView: Missing Plugin'}
+					if(!MVC.$E.insert ) throw {message: "Include can't insert "+locations[l]+" without the element plugin.", name: 'ControllerView: Missing Plugin'};
 					var opt = {};
 					opt[locations[l]] = result;
 					MVC.$E.insert(element, opt );

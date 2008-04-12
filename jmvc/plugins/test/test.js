@@ -353,7 +353,7 @@ MVC.Test.Functional = MVC.Test.extend({
 			
 			var element = typeof selector == 'string' ? MVC.CSSQuery(selector)[number] : selector; //if not a selector assume element
 			
-			if(event_type == 'focus'){
+			if((event_type == 'focus' || event_type == 'write' || event_type == 'click') && !this._do_blur_back){
 				MVC.Browser.Gecko ? MVC.Console.window.blur() : window.focus();
 				this._do_blur_back =true;
 			}

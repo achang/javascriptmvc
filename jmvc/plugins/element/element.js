@@ -79,7 +79,7 @@ MVC.$E.extend = function(el){
 	}
 	el._mvcextend = true;
 	return el;
-}
+};
 MVC.$E._extend = function(f,name,el){
 	el[name] = function(){
 		var arg = MVC.Array.from(arguments);

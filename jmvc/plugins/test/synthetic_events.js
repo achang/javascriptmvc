@@ -91,6 +91,10 @@ MVC.SyntheticEvent.prototype = {
 			this.options.keyCode = 13;
 			character = 0;
 		}
+		if(character && character.match(/[\b]/)) {
+			this.options.keyCode = 8;
+			character = 0;
+		}
 		var options = MVC.Object.extend({
 			ctrlKey: false,
 			altKey: false,
@@ -115,12 +119,19 @@ MVC.SyntheticEvent.prototype = {
 			}
 		}
 		var fire_event = this.simulateEvent(element);
-		if(fire_event && this.type == 'keypress' && !MVC.Browser.Gecko && character && 
-			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
+		if(fire_event && this.type == 'keypress' && !MVC.Browser.Gecko && 
+            (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) {
+                if(character) element.value += character;
+                else if(this.options.keyCode && this.options.keyCode == 8) element.value = element.value.substring(0,element.value.length-1);
+        }
 	},
 	createKeypressObject : function(element, character) {
 		if(character && character.match(/\n/)) {
 			this.options.keyCode = 13;
+			character = 0;
+		}
+		if(character && character.match(/[\b]/)) {
+            this.options.keyCode = 8;
 			character = 0;
 		}
 		this.event = document.createEventObject();
@@ -128,8 +139,11 @@ MVC.SyntheticEvent.prototype = {
   		this.event.charCode = (character? character.charCodeAt(0) : 0);
   		this.event.keyCode = this.options.keyCode || (character? character.charCodeAt(0) : 0);
 		var fire_event = this.simulateEvent(element);
-		if(fire_event && this.type == 'keypress' && !MVC.Browser.Gecko && character && 
-			(element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) element.value += character;
+		if(fire_event && this.type == 'keypress' && !MVC.Browser.Gecko && 
+            (element.nodeName.toLowerCase() == 'input' || element.nodeName.toLowerCase() == 'textarea')) {
+                if(character) element.value += character;
+                else if(this.options.keyCode && this.options.keyCode == 8) element.value = element.value.substring(0,element.value.length-1);
+        }
 	},
 	createMouse : function(element){
 		this.event = document.createEvent('MouseEvents');
