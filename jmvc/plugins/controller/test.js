@@ -18,4 +18,5 @@
 	};
 	MVC.Object.extend(MVC.Controller, c);
 	
+	if(!MVC._no_conflict) Controller = MVC.Controller;
 })();
