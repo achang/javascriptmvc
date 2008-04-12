@@ -444,3 +444,5 @@ include.functional_tests = function(){
 		MVC.Console.log('Trying to load: test/functional/'+arguments[i]+'_test.js');
 	include.app(function(i){ return '../test/functional/'+i+'_test'}).apply(null, arguments);
 }
+
+if(!MVC._no_conflict) Test = MVC.Test;
