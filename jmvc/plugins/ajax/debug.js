@@ -17,7 +17,7 @@
 		}
 		
 		if(include.get_env() == 'test' && (options.use_fixture == null || options.use_fixture == true)){
-			MVC.Console.log('Loading "test/fixtures/'+left+right+'.fix" for\n        "'+url+'"' );
+			MVC.Console.log('Loading "test/fixtures/'+left+right+'" for\n        "'+url+'"' );
 			url = MVC.root.join('test/fixtures/'+left+encodeURIComponent( right));
 			options.method = 'get';
 		}
@@ -27,7 +27,7 @@
 	};
 	MVC.Object.extend(MVC.Ajax, request);
 	
-	if(!MVC._no_conflict) Ajax = MVC.Ajax;
+	if(!MVC._no_conflict && typeof Prototype == 'undefined') Ajax = MVC.Ajax;
 	
 	MVC.Ajax.urls = {};
 	
