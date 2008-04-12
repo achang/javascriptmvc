@@ -368,7 +368,10 @@ MVC.Test.center= function(element) {
       valueL += element.offsetLeft || 0;
       element = element.offsetParent;
     } while (element);
+	valueT = valueT - document.documentElement.scrollTop;
+	valueL = valueL - document.documentElement.scrollLeft;
 	var result = [valueL, valueT];
+	
 	result.left = valueL;
 	result.top = valueT;
     return result;
