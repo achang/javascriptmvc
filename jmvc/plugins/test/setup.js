@@ -1,2 +1,2 @@
-include.plugins('helpers','query','debug')
-include('class','test','synthetic_events')
+include.plugins('helpers','query','debug','class')
+include('test','synthetic_events')
