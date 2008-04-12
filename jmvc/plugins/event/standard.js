@@ -4,7 +4,7 @@ if(document.addEventListener) {
 			if(capture == null) capture = false; 
 			el.addEventListener(eventType, handler, capture);
     	},
-		stopObserving : function(el, eventType, handler) {
+		stop_observing : function(el, eventType, handler) {
 	        if(capture == null) capture = false;
 	        el.removeEventListener(eventType, handler, false);
 	    }
@@ -54,7 +54,7 @@ if(document.addEventListener) {
             w.attachEvent("onunload", MVC.Event._removeAllHandlers);
         }
     },
-	stopObserving: function(element, eventType, handler) {
+	stop_observing: function(element, eventType, handler) {
         var i = MVC.Event._find(element, eventType, handler);
         if (i == -1) return; 
         var d = element.document || element, w = d.parentWindow, handlerId = element._handlers[i], h = w._allHandlers[handlerId];
@@ -87,5 +87,5 @@ if(document.addEventListener) {
 };
 
 if(!MVC._no_conflict){
-	Controller = MVC.Event;
+	Event = MVC.Event;
 }
