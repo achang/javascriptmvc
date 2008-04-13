@@ -177,9 +177,17 @@ MVC.View.Scanner = function(source, left, right) {
 MVC.View.Helpers = function(data){
 	this.data = data;
 };
-MVC.View.Helpers.prototype.partial = function(options, data){
-	if(!data) data = this.data;
-	return new MVC.View(options).render(data);
+MVC.View.Helpers.prototype = {
+	partial: function(options, data){
+		if(!data) data = this.data;
+		return new MVC.View(options).render(data);
+	},
+	to_text: function(input, null_text) {
+	    if(input == null || input === undefined) return null_text || '';
+	    if(input instanceof Date) return input.toDateString();
+		if(input.toString) return input.toString().replace(/\n/g, '<br />').replace(/''/g, "'");
+		return '';
+	}
 };
 
 
