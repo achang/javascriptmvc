@@ -66,7 +66,7 @@ MVC.Event.observe = function(element, eventName, handler, capture) {
   if (!wrapper) return element;
 
   if (element.addEventListener) {
-    element.addEventListener(name, wrapper, false);
+    element.addEventListener(name, wrapper, capture);
   } else {
     element.attachEvent("on" + name, wrapper);
   }
