@@ -286,15 +286,16 @@ MVC.Test.Drag = function(target , options){
 	this.start = new Date();
 	new MVC.SyntheticEvent('mousedown', {clientX: this.start_x, clientY: this.start_y}).send(target);
 	
-	this.pointer = document.createElement('div')
-	this.pointer.style.width = '10px'
-	this.pointer.style.height = '10px'
-	this.pointer.style.backgroundColor = 'RED'
-	this.pointer.style.position = 'absolute'
-	this.pointer.style.left = ''+this.start_x+'px'
-	this.pointer.style.top = ''+this.start_y+'px'
-	this.pointer.style.lineHeight = '1px'
-	document.body.appendChild(this.pointer)
+	this.pointer = document.createElement('div');
+	this.pointer.style.width = '10px';
+	this.pointer.style.height = '10px';
+	this.pointer.style.backgroundColor = 'RED';
+	this.pointer.style.position = 'absolute';
+	this.pointer.style.left = ''+this.start_x+'px';
+    var pointerY = this.start_y+window.scrollY;
+	this.pointer.style.top = ''+pointerY+'px';
+	this.pointer.style.lineHeight = '1px';
+	document.body.appendChild(this.pointer);
 	setTimeout(this.next_callback(), 20);
 };
 MVC.Test.Drag.prototype = {
@@ -312,7 +313,8 @@ MVC.Test.Drag.prototype = {
 			var y = this.start_y + percent * this.delta_y;
 			
 			this.pointer.style.left = ''+x+'px';
-			this.pointer.style.top = ''+y+'px';
+            var pointerY = y+window.scrollY;
+			this.pointer.style.top = ''+pointerY+'px';
 			new MVC.SyntheticEvent('mousemove', {clientX: x, clientY: y}).send(this.target);
 			setTimeout(this.next_callback(), 20);
 		}
