@@ -1,7 +1,7 @@
 include.plugins('helpers');
 if(typeof jQuery != 'undefined'){
 	include('jquery_ajax')	
-}else if( typeof Prototype == 'undefined' ){
+}else if( typeof Prototype != 'undefined' ){
 	include('prototype_ajax')	
 	
 }else{
