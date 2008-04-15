@@ -292,7 +292,8 @@ MVC.Test.Drag = function(target , options){
 	this.pointer.style.backgroundColor = 'RED';
 	this.pointer.style.position = 'absolute';
 	this.pointer.style.left = ''+this.start_x+'px';
-    var pointerY = this.start_y+window.scrollY;
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var pointerY = this.start_y+scrollTop;
 	this.pointer.style.top = ''+pointerY+'px';
 	this.pointer.style.lineHeight = '1px';
 	document.body.appendChild(this.pointer);
@@ -313,7 +314,8 @@ MVC.Test.Drag.prototype = {
 			var y = this.start_y + percent * this.delta_y;
 			
 			this.pointer.style.left = ''+x+'px';
-            var pointerY = y+window.scrollY;
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+            var pointerY = y+scrollTop;
 			this.pointer.style.top = ''+pointerY+'px';
 			new MVC.SyntheticEvent('mousemove', {clientX: x, clientY: y}).send(this.target);
 			setTimeout(this.next_callback(), 20);
@@ -370,8 +372,10 @@ MVC.Test.center= function(element) {
       valueL += element.offsetLeft || 0;
       element = element.offsetParent;
     } while (element);
-	valueT = valueT - document.documentElement.scrollTop;
-	valueL = valueL - document.documentElement.scrollLeft;
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || 0;
+	valueT = valueT - scrollTop;
+	valueL = valueL - scrollLeft;
 	var result = [valueL, valueT];
 	
 	result.left = valueL;
