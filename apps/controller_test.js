@@ -1,5 +1,5 @@
 include.plugins('controller', 'query');
 
 
-include.controllers('controllertest')
+include.controllers('controllertest','matchings')
 

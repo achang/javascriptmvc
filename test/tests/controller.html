@@ -67,18 +67,49 @@
 		<div id='mainclick' class='failure'>
 			Test mainclick
 		</div>
+
+         <br />
 		<div id='output'>
 			
 		</div>
-		<div>
-			<div>
-				<div>
-					<div>
-						<p><a href='#' id='node_path' onclick='node_path_test()'>Test</a></p>
-					</div>
-				</div>
-			</div>
+
+         <br />
+        <b>Matching tests</b>
+        <div id='matchings'>
+            Mouseover Me (#)
+        </div>
+        <div id='matchings'>
+            <span id='an_id'>Mouseover Me (#an_id)</span>
+        </div>
+        <div class='matching'>
+                Mouseover Me ()
+        </div>
+        <div class='matching'>
+                <label class='a_class'>Mouseover Me (label.a_class)</label><br/>
+                <label> Mouseover Me (label) - should not trigger label.a_class</label>
+        </div>
+        
+        
+        
+         
+        <br />
+        <div id='matchings_mouseover' class='failure'>
+			Test matchings
 		</div>
+        <div id='matchings_an_id' class='failure'>
+			Test matchings an_id
+		</div>
+        <div id='matching_mouseover' class='failure'>
+			Test matching
+		</div>
+        <div id='a_class_mouseover' class='failure'>
+			Test a_class_mouseover
+		</div>
+        <div id='label_mouseover' class='failure'>
+			Test label_mouseover
+		</div>
+        
+        
 		<script type='text/javascript' src='../../jmvc/include.js?controller_test,test'></script>
 		<script type='text/javascript'>
 			success = function(id){
