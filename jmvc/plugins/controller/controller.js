@@ -331,7 +331,7 @@ MVC.Controller.Action.prototype = {
 							v[attr] = r[1].toUpperCase();
 						else
 							v[attr] = r[1];
-						p.replace(r[0],'')
+						p = p.replace(r[0],'');
 					}
 				}
 			}
