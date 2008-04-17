@@ -85,8 +85,8 @@ MVC.$E._extend = function(f,name,el){
 		var arg = MVC.Array.from(arguments);
 		arg.unshift(el);
 		return f.apply(el, arg); 
-	}
-}
+	};
+};
 MVC.Element = MVC.$E;
 if(!MVC._no_conflict){
 	$E = MVC.$E;
