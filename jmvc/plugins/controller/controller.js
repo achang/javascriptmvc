@@ -1,7 +1,7 @@
 MVC.Object.is_number = function(value){
 	if(typeof value == 'number') return true;
 	if(typeof value != 'string') return false;
-	return value.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/);
+	return value.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/);
 };
 /**
  * Creates a new controller object with actions
@@ -166,7 +166,19 @@ MVC.Controller.Params.prototype = {
 		for(var i=0; i < els.length; i++){
 			var el = els[i];
 			if(el.type.toLowerCase()=='submit') continue;
-			var key = el.name, value = el.value, key_components = key.rsplit(/\[[^\]]*\]/);
+			var key = el.name, key_components = key.rsplit(/\[[^\]]*\]/), value;
+         
+			/* Check for checkbox and radio buttons */
+			switch(el.type.toLowerCase()) {
+				case 'checkbox':
+				case 'radio':
+					value = !!el.checked;
+					break;
+						
+				default:
+					value = el.value;
+					break;
+			}
 			if(MVC.Object.is_number(value) ) value = parseFloat(value);
 			if( key_components.length > 1 ) {
 				var last = key_components.length - 1;
