@@ -59,7 +59,7 @@ MVC.Object.extend(MVC.View.Helpers.prototype, {
 		html_options.type = 'submit';
 	    html_options.value = name;
 		this.set_confirm(html_options);
-		html_options.onclick=html_options.onclick+';window.location="'+options+'";';
+		html_options.onclick=html_options.onclick+';window.location="'+options+'"; return false;';
 		return this.single_tag_for('input', html_options);
 	},
 	link_to_if: function(condition, name, options, html_options, block) {
