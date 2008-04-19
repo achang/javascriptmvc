@@ -317,7 +317,7 @@ MVC.View.Compiler.prototype = {
 	{
 	    content = content.replace(/\\/g, '\\\\');
         content = content.replace(/\n/g, '\\n');
-        content = content.replace(/"/g,  '\\"');
+        content = content.replace(/"/g,  '\\"'); //' Fixes Emacs syntax highlighting
         return content;
 	};
 	this.scanner.scan(function(token, scanner) {
