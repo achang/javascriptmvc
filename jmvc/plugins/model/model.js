@@ -188,7 +188,7 @@ MVC.Model.ClassFunctions = {
 
 	  this._attributes = {};
 	  for(var col_name in this.columns_hash) {
-	  	if(this.columns_hash.hasOwnProperty(col_name))  var column = this.columns_hash[col_name]
+	  	if(this.columns_hash.hasOwnProperty(col_name))  var column = this.columns_hash[col_name];
 	  	this._attributes[col_name] = column.default_value;
 	  }
     }, this);

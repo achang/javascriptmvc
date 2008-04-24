@@ -1,2 +1,2 @@
-include.plugins("helpers",'class','inflector','ajax')
-include('model')
+include.plugins("helpers",'class','inflector','ajax');
+include('model');
