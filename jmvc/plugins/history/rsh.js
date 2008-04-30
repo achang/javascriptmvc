@@ -786,7 +786,7 @@ MVC.Path.get_data = function(path) {
 	for(var i=0; i < parts.length; i++){
 		var pair = parts[i].split('=');
 		if(pair.length != 2) continue;
-		var key = pair[0], value = pair[1];
+		var key = decodeURIComponent(pair[0]), value = decodeURIComponent(pair[1]);
 		var key_components = key.rsplit(/\[[^\]]*\]/);
 		
 		if( key_components.length > 1 ) {
@@ -818,5 +818,16 @@ MVC.Controller.functions.prototype.redirect_to = function(options){
 	var controller_name = options.controller || this.className;
 	var action_name = options.action || 'index';
 	var lhs = window.location.href.split('#')[0];
-	window.location = lhs+'#'+controller_name+'/'+action_name;
+   
+	/* Convert the options to parameters (removing controller and action if needed) */
+	if(options.controller)
+		delete options.controller;
+	if(options.action)
+		delete options.action;
+	
+	var paramString = (options) ? MVC.Object.to_query_string(options) : '';
+	if(paramString.length)
+		paramString = '&' + paramString;
+
+	window.location = lhs+'#'+controller_name+'/'+action_name + paramString;
 };
