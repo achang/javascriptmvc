@@ -166,7 +166,7 @@ MVC.Controller.Params.prototype = {
 		for(var i=0; i < els.length; i++){
 			var el = els[i];
 			if(el.type.toLowerCase()=='submit') continue;
-			var key = el.name, key_components = key.rsplit(/\[[^\]]*\]/), value;
+			var key = el.name, key_components = key.split(/\[[^\]]*\]/), value;
          
 			/* Check for checkbox and radio buttons */
 			switch(el.type.toLowerCase()) {
