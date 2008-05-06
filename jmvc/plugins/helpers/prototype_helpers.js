@@ -18,7 +18,8 @@ MVC.Native.extend = function(class_name, source){
 	}
 };
 MVC.Native.set_prototype = function(class_name, property_name, func){
-	window[class_name].prototype[property_name] = function(){
+	if(!func) func = MVC[class_name][property_name];
+    window[class_name].prototype[property_name] = function(){
 		var args = [this];
 		for (var i = 0, length = arguments.length; i < length; i++) args.push(arguments[i]);
 		return func.apply(this,args  );
