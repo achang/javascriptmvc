@@ -4,8 +4,18 @@ MVC.CookieModel = MVC.Model.extend(
     init : function(){
           this._working = null;  
     },
-    find_one : function(id){
-        return this.find_class_data().instances[id];
+    find_one : function(params){
+        var insts = this.find_class_data().instances;
+        if(params.id){
+            return insts[id];
+        }
+        for(var id in insts){
+            var inst = insts[id];
+            for(var attr in params){
+                if(params[attr] == inst[attr]) return inst;
+            }
+        }
+        return null;
     },
     find_all : function(){
         var insts =  this.find_class_data().instances;

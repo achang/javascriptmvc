@@ -1,20 +1,24 @@
 MVC.Model = MVC.Class.extend(
 {
+    //determines which find to pick, calls find_all or find_one which should be overwritten
     find : function(id, params, callback){
+        if(!params)  params = {};
         if(id == 'all'){
             return this.create_many_as_existing( this.find_all(params, callback)  );
         }else{
-            if(!params[this.id])
+            if(!params[this.id] && id != 'first')
                 params[this.id] = id
             return this.create_as_existing( this.find_one(params, callback) );
         }
     },
+    // Called after creating something
     create_as_existing : function(attributes){
         if(!attributes) return null;
         var inst = new this(attributes);
         inst.is_new_record = this.new_record_func();
         return inst;
     },
+    // Called after creating many
     create_many_as_existing : function(instances){
         if(!instances) return null;
         var res = [];
@@ -23,8 +27,8 @@ MVC.Model = MVC.Class.extend(
         return res;
     },
     id : 'id', //if null, maybe treat as an array?
-    new_record_func : function(){return false;}
-
+    new_record_func : function(){return false;},
+    validations: []
 },
 {
     init : function(attributes){
