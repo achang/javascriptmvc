@@ -28,13 +28,7 @@
  *  For the license: see license.txt
  *
  *--------------------------------------------------------------------------*/
-if(typeof Object.extend == 'undefined'){
-	Object.extend = function(destination, source) {
-	  for (var property in source) 
-	    destination[property] = source[property];
-	  return destination;
-	};
-}
+
 
 MVC.View = function( options ){
 	this.set_options(options);
@@ -113,7 +107,7 @@ MVC.View.prototype = {
 			params.url = options;
 			_template = this;
 			params.onComplete = function(request){
-				var object = eval( request.responseText );
+				var object = eval( "("+ request.responseText+")" );
 				MVC.View.prototype.update.call(_template, element, object);
 			};
 			new MVC.Ajax(params.url, params)
@@ -273,7 +267,7 @@ MVC.View.Buffer.prototype = {
 
 /* Adaptation from the Compiler of erb.rb  */
 MVC.View.Compiler = function(source, left) {
-	this.pre_cmd = ['___ViewO = "";'];
+	this.pre_cmd = ['var ___ViewO = "";'];
 	this.post_cmd = new Array();
 	this.source = ' ';	
 	if (source != null)
