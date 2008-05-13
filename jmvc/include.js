@@ -141,7 +141,7 @@ var is_included = function(path){
 
 var add_with_defaults = function(inc){
 	if(typeof inc == 'string') inc = {path: inc.indexOf('.js') == -1  ? inc+'.js' : inc};
-	MVC.Object.extend( MVC.Object.extend({},options), inc);
+	inc = MVC.Object.extend( MVC.Object.extend({},options), inc);
 	include.add(inc);
 };
 

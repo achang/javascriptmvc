@@ -1,2 +1,2 @@
 order(0);
-include('../test/tests/include/two');
+include({path: '../test/tests/include/two.js', compress: false});

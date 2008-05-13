@@ -15,7 +15,15 @@
 			include.setup({env: 'compress'});
 			include('../../apps/include_test','include/one' );
 			include.opera()
-			
+			setTimeout(function(){
+                var expected = "include.set_path('../../apps');\norder(0);include({path:'../test/tests/include/two.js',compress:false});;\ninclude.set_path('../../test/tests/include');\norder(1);\ninclude('another/three');\n//something here\nanother = function(somevariablename){\n    return somevariablename *2;\n};;\ninclude.set_path('../../test/tests/include/another');\norder(2);include('../four');\ninclude.set_path('../../test/tests/include');\norder(3);;\ninclude.set_path('include');\norder(4);include('another/three','another/five');something=function(a){return a*2};;\ninclude.set_path('include/another');\norder(5);;\ninclude.end_of_production();"
+                var actual = include.compress_window.document.getElementById('compressed').value
+                
+                var p  = document.createElement('p');
+				p.style.backgroundColor = expected==actual ? '#ddffdd' : '#ffdddd'
+				p.innerHTML = 'compression';
+				document.body.appendChild(p)
+            },4000)
 		</script>
 	</body>
 </html>

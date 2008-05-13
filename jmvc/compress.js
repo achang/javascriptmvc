@@ -1743,15 +1743,11 @@ pack = function(){
 	if(compress.working_script > 3)
 		document.getElementById('files').scrollTop += 18;
 	var newest_script = compress.scripts[compress.working_script];
-	
-	var value =   new Packer().pack(newest_script.text,newest_script.base32,newest_script.shrink_variables);
+	var value = newest_script.compress == false ? newest_script.text : new Packer().pack(newest_script.text,newest_script.base32,newest_script.shrink_variables); 
 	compress.collection.push( "include.set_path('"+newest_script.start+"')" );
 	compress.collection.push(value);
 	document.getElementById('file_'+compress.working_script).style.backgroundColor = '';
-	
-	
-	
-	
+
 	compress.working_script++;
 	if(compress.working_script >= compress.scripts.length) setTimeout(finished,1);
 	else {
