@@ -65,6 +65,8 @@ new MVC.Test.Unit('helpers',{
 
 
 
+// should all fail in no_conflict
+// camelize will fail with Prototype
 new MVC.Test.Unit('conflict_helpers',{
 	test_string_capitalize : function(){
 		this.assert_equal('Yes', 'yes'.capitalize());

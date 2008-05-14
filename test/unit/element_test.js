@@ -1,3 +1,4 @@
+// fails with no_element
 new MVC.Test.Unit('element_test',{
 	test_insert_bottom: function(){
 		var b = MVC.$E('insertion_test')

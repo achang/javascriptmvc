@@ -16,6 +16,7 @@ new MVC.Test.Unit('testing',{
 		   this.assert_equal('s', 's');
 		   this.assert_each([1,2,3],[1,2,3]  )
        },
+	   // expected: 10 failures
 	   test_assert_fails : function(){
 	   		this.assert('', "OK");
 			this.assert(false, "OK");
@@ -28,6 +29,7 @@ new MVC.Test.Unit('testing',{
 			this.assert_each([1,2,3],[1,2,3,4], "OK"  );
 			this.assert_each([1,2,3],[1,2,4], "OK"  );
 	   },
+	   // expected: 3 assertions pass, 2 failures
 	   test_next : function(){
 	   		this.assert(true);
 			this.next();
@@ -41,9 +43,11 @@ new MVC.Test.Unit('testing',{
 	   		this.assert('hello', param)
 			this.assert(false, "OK")
 	   },
+	   // expected: 1 error
 	   test_errors : function(){
 	   		x.y.z();
 	   },
+	   // expected: 1 assertion, 1 error
 	   test_error_in_next : function(){
 	   		this.assert(true);
 			this.next();

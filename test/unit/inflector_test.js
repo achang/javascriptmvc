@@ -1,3 +1,4 @@
+// conflict tests should fail in conflict mode
 new MVC.Test.Unit('inflector',{
 	test_singularize : function(){
 		this.assert_equal('person', MVC.String.singularize('people'));

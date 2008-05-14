@@ -7,6 +7,7 @@ new MVC.Test.Unit('controller_view',{
 		MVC.Controller.dispatch('tests', 'to_element',{} );
 		this.assert_equal("<h1>HelloWorld</h1>", document.getElementById('render_here').innerHTML  );
 	},
+	// fails with no_element
 	test_render_after: function(){
 		MVC.Controller.dispatch('tests', 'after',{} );
 		this.assert_equal("HelloWorld", document.getElementById('after').innerHTML  );

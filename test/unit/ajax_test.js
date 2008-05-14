@@ -26,6 +26,7 @@ new MVC.Test.Unit('ajax',{
 	}
 });
 
+// should fail in no_conflict, or with Prototype/jQuery
 new MVC.Test.Unit('conflict_ajax',{
 	test_normal_request : function(){
 		new Ajax('ajax/request.xml', {onComplete: this.next_callback(), use_fixture: false } )
