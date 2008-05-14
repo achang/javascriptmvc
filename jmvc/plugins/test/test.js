@@ -401,7 +401,7 @@ MVC.Test.Controller = MVC.Test.Functional.extend({
 		var actions = MVC.Object.extend({}, this.controller.actions()) ;
 		this.added_helpers = {};
 		for(var action_name in actions){
-			if(actions.hasOwnProperty(action_name) || 
+			if(!actions.hasOwnProperty(action_name) || 
 				!actions[action_name].event_type || 
 				!actions[action_name].selector) 
 					continue;
