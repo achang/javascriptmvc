@@ -101,7 +101,6 @@ MVC.page_dir = new File(window.location.href).dir();
 
 //find include and get its absolute path
 var scripts = document.getElementsByTagName("script");
-var scripts = document.getElementsByTagName("script");
 for(var i=0; i<scripts.length; i++) {
 	var src = scripts[i].src;
 	if(src.match(/include\.js/)){
