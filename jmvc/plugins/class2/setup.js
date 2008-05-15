@@ -86,3 +86,7 @@
     return Class;
   };
 })();
+
+if(!MVC._no_conflict && typeof Class == 'undefined'){
+	Class = MVC.Class;
+}
