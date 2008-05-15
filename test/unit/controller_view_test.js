@@ -1,11 +1,15 @@
 new MVC.Test.Unit('controller_view',{
 	test_render_to : function(){
 		MVC.Controller.dispatch('tests', 'to',{} );
-		this.assert_equal("<h1>HelloWorld</h1>", document.getElementById('render_here').innerHTML  );
+		var el = document.getElementById('render_here');
+		this.assert_equal("H1", el.firstChild.nodeName);
+		this.assert_equal("HelloWorld", el.firstChild.innerHTML);
 	},
 	test_render_to_with_element : function(){
 		MVC.Controller.dispatch('tests', 'to_element',{} );
-		this.assert_equal("<h1>HelloWorld</h1>", document.getElementById('render_here').innerHTML  );
+		var el = document.getElementById('render_here');
+		this.assert_equal("H1", el.firstChild.nodeName);
+		this.assert_equal("HelloWorld", el.firstChild.innerHTML);
 	},
 	// fails with no_element
 	test_render_after: function(){
