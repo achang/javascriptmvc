@@ -32,7 +32,8 @@ update = function(controller, test_name, assertions){
 	
 	if(assertions.failures == 0 && assertions.errors == 0){
 		step.className = 'passed'
-		result.innerHTML = 'Passed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)
+		result.innerHTML = 'Passed: '+assertions.assertions+' assertion'+add_s(assertions.assertions)+' <br/>'+
+			clean_messages(assertions.messages).join("<br/>")
 		
 	}else{
 		step.className = 'failure'
