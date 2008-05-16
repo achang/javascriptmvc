@@ -13,8 +13,12 @@ new MVC.Test.Unit('controller_view',{
 	},
 	// fails with no_element
 	test_render_after: function(){
-		MVC.Controller.dispatch('tests', 'after',{} );
-		this.assert_equal("HelloWorld", document.getElementById('after').innerHTML  );
+		if(!MVC.Element) {
+			this.messages.push("Skipping because Element plugin isn't included.");
+			return;
+		}
+		MVC.Controller.dispatch('tests', 'after', {});
+		this.assert_equal("HelloWorld", document.getElementById('after').innerHTML );
 		var part = document.getElementById('render_here');
 		this.assert_equal("after",  part.nextSibling.id);
 	}

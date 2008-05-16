@@ -1,8 +1,9 @@
-// fails with no_element
-// work in Firefox with Prototype/no-element, but fails in IE because IE doesn't allow you to attach 
-// methods to the HTMLElement prototype
 new MVC.Test.Unit('element_test',{
 	test_insert_bottom: function(){
+		if(!MVC.Element) {
+			this.messages.push("Skipping because Element plugin isn't included.");
+			return;
+		}
 		var b = MVC.$E('insertion_test');
 		b.insert({bottom: '<p id="append_bottom">Bottom</p>'})
 		this.assert_equal(b.firstChild.nodeName, 'P')
@@ -10,6 +11,10 @@ new MVC.Test.Unit('element_test',{
 		this.assert_equal(b.firstChild.innerHTML, 'Bottom')
 	},
 	test_insert_after: function(){
+		if(!MVC.Element) {
+			this.messages.push("Skipping because Element plugin isn't included.");
+			return;
+		}
 		var b = MVC.$E('append_bottom');
 		b.insert({after: '<p id="insert_after">After</p>'});
 		this.assert_equal(b.nextSibling.nodeName, 'P')
@@ -17,6 +22,10 @@ new MVC.Test.Unit('element_test',{
 		this.assert_equal(b.nextSibling.innerHTML, 'After')
 	},
 	test_insert_before: function(){
+		if(!MVC.Element) {
+			this.messages.push("Skipping because Element plugin isn't included.");
+			return;
+		}
 		var b = MVC.$E('append_bottom');
 		b.insert({before: '<p id="insert_before">Before</p>'});
 		this.assert_equal(b.previousSibling.nodeName, 'P')
@@ -24,6 +33,10 @@ new MVC.Test.Unit('element_test',{
 		this.assert_equal(b.previousSibling.innerHTML, 'Before')
 	},
 	test_insert_top: function(){
+		if(!MVC.Element) {
+			this.messages.push("Skipping because Element plugin isn't included.");
+			return;
+		}
 		var b = MVC.$E('insertion_test');
 		b.insert({top: '<p id="insert_top">Top</p>'});
 		this.assert_equal(b.childNodes[0].id, 'insert_top')
