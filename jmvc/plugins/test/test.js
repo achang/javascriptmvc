@@ -85,6 +85,8 @@ MVC.Test = MVC.Class.extend({
 	},
 	run_test: function(test_id){
 		var saved_this = this;
+		// setTimeout with delay of 0 is necessary for Opera and Safari to trick them into thinking
+		// the calling window was the application and not the console
 		setTimeout(function(){ this.assertions = new saved_this.Assertions(saved_this, test_id); },0);
 	},
 	prepare_page : function(type) {
