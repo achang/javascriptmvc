@@ -84,7 +84,8 @@ MVC.Test = MVC.Class.extend({
 		}
 	},
 	run_test: function(test_id){
-		this.assertions = new this.Assertions(this, test_id);
+		var saved_this = this;
+		setTimeout(function(){ this.assertions = new saved_this.Assertions(saved_this, test_id); },0);
 	},
 	prepare_page : function(type) {
 		MVC.Console.window.document.getElementById(type+'_explanation').style.display = 'none';
