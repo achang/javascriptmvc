@@ -1,3 +1,7 @@
+// The code from the event plugin comes from 
+// JavaScript: the Definitive Guide by David Flanagan
+// Copyright 2006 O'Reilly Media
+
 if(document.addEventListener) {
 	MVC.Event = {
 		observe: function(el, eventType, handler, capture) {

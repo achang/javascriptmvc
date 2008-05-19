@@ -1,3 +1,6 @@
+// based on the Inflector class found on a DZone snippet contributed by Todd Sayre
+// http://snippets.dzone.com/posts/show/3205
+
 MVC.Inflector = {
   Inflections: {
     plural: [
