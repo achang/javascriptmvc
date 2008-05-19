@@ -1,3 +1,12 @@
+// Based on code found in TrimPath
+// Junction web-MVC framework and server, 1.1.22
+//  - built on 2008/05/07 19:44
+
+// License:
+// - copyright (C) 2005, 2006, 2007 Steve Yen, TrimPath
+// - released under dual GPL and APL licenses
+// - embedded components and libraries have their own respective licenses
+
 MVC.Object.extend(MVC.View.Helpers.prototype, {
 	date_tag: function(name, value , html_options) {
 	    if(! (value instanceof Date)) value = new Date();

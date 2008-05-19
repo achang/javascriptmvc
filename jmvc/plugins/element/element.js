@@ -1,3 +1,7 @@
+// Much of the code in this plugin is adapated from Prototype
+//  Prototype JavaScript framework, version 1.6.0.1
+//  (c) 2005-2007 Sam Stephenson
+
 MVC.$E = function(element){
 	if(typeof element == 'string')
 		element = document.getElementById(element);

@@ -1,3 +1,12 @@
+// based on the Jester library
+
+// Jester version 1.5
+// Released October 25th, 2007
+// Homepage: http://www.jesterjs.org
+
+// Copyright 2007, thoughtbot, inc.
+// Released under the MIT License.
+
 MVC.Model = function(cname, options, class_f, inst_f){
 	
 	

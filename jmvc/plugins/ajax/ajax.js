@@ -1,4 +1,6 @@
-//Modified version of Ajax.Request from prototype.
+// Modified version of Ajax.Request from prototype
+//  Prototype JavaScript framework, version 1.6.0.1
+//  (c) 2005-2007 Sam Stephenson
 (function(){
 	var factory = MVC.Ajax.factory;
 	MVC.Ajax = function(url,options){

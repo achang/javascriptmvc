@@ -1,7 +1,6 @@
+// code contributed by Juriy Zaytsev
 MVC.Object.is_number = function(value){
-	if(typeof value == 'number') return true;
-	if(typeof value != 'string') return false;
-	return value.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/);
+	return !isNaN(value)
 };
 /**
  * Creates a new controller object with actions
