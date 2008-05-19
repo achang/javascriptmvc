@@ -329,17 +329,9 @@ MVC.Test.Drag.prototype = {
 	}
 };
 
-
-
-
-
-
-
-
-
-
-
-
+// get_dimensions and center are adapted from Prototype
+//  Prototype JavaScript framework, version 1.6.0.1
+//  (c) 2005-2007 Sam Stephenson
 
 MVC.Test.get_dimensions = function(element){
 
