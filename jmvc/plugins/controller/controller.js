@@ -44,7 +44,7 @@ MVC.Object.extend(MVC.Controller.functions.prototype, {
 		if(!action) action = this.action.name+'ing';
 		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. ';}
 		return MVC.Function.bind(function(){
-			this.action = window[this.Class].actions()[action];
+			this.action = this.Class.actions()[action];
 			this[action].apply(this, arguments);
 		}, this);
 	}
