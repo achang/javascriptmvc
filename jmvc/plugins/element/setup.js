@@ -1,3 +1,5 @@
+include('vector','position');
+
 if(typeof Prototype != 'undefined'){
 	MVC.$E = $;
 	MVC.$E.insert = Element.insert;

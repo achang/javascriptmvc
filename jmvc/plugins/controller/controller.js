@@ -16,13 +16,15 @@ MVC.Controller = function(model, actions){
 	newmodel.className = newmodel.prototype.className =	className;
 	MVC.Object.extend(newmodel.prototype, actions );
 	var registered_actions = {}, controller_actions = {};
-	newmodel.add_register_action = function(action,observe_on, event_type, capture){
+	//add register action to model, used by actions to add themselves
+    newmodel.add_register_action = function(action,observe_on, event_type, capture){
 		if(!registered_actions[event_type]){
 			registered_actions[event_type] = [];
 			MVC.Event.observe(observe_on, event_type, MVC.Controller.dispatch_event, capture);
 		}
 		registered_actions[event_type].push(action);
 	};
+    newmodel.controller_actions = controller_actions;
 	for(var action_name in actions ){
 		var val = actions[action_name];
 		if( actions.hasOwnProperty(action_name) && typeof val == 'function')
@@ -144,7 +146,7 @@ MVC.Object.extend(MVC.Controller , {
 MVC.Controller.dispatch_event.sort_by_order = function(a,b){
 	if(a.order < b.order) return 1;
 	if(b.order < a.order) return -1;
-	var ae = a.action.event_type, be = b.action.event_type;
+	var ae = a._event, be = b._event;
 	if(ae == 'click' &&  be == 'change') return 1;
 	if(be == 'click' &&  ae == 'change') return -1;
 	return 0;
@@ -220,7 +222,13 @@ MVC.Controller.Action = function(action_name, func ,controller){
 	this.func = func;
 	this.controller = controller;
 	this.parse_name();
-	if(! MVC.Array.include(MVC.Controller.Action.actions, this.event_type)){
+
+    if( MVC.Controller.is_special(this, controller)   ){
+        return;
+    }
+    
+    
+    if(! MVC.Array.include(MVC.Controller.Action.actions, this.event_type)){
 		this.event_type = null;
 		return;
 	}
@@ -238,6 +246,19 @@ MVC.Controller.Action = function(action_name, func ,controller){
 };
 
 MVC.Controller.Action.actions = ['change','click','contextmenu','dblclick','keydown','keyup','keypress','mousedown','mousemove','mouseout','mouseover','mouseup','reset','resize','scroll','select','submit','dblclick','focus','blur','load','unload'];
+MVC.Controller.Action.special_actions = [];
+
+MVC.Controller.is_special = function(action, controller){
+    for(var a=0; a <MVC.Controller.Action.special_actions.length; a++ ){
+        var special_action = MVC.Controller.Action.special_actions[a];
+        if( special_action.matches(action) ){
+            special_action.add(action, controller);
+            return true;
+        }
+    }
+    return false;
+}
+
 
 MVC.Controller.Action.prototype = {
 	registered_event : function(){
@@ -375,3 +396,17 @@ MVC.Controller.Action.prototype = {
 	}
 };
 if(!MVC._no_conflict) Controller = MVC.Controller;
+
+
+
+
+
+
+//Everything calls dispatch action
+//dispatch action calls the action
+//we need to make it call the function
+//the function should create a new instance and set everythign up
+
+
+
+

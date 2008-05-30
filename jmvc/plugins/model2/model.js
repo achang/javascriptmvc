@@ -46,13 +46,13 @@ MVC.Model = MVC.Class.extend(
     _associations: [],
     from_html: function(element_or_id){
         var el =MVC.$E(element_or_id);
-        var el_class = window[ el.getAttribute('type')];
+        var el_class = window[ MVC.String.classize(el.getAttribute('type')) ];
         
         if(! el_class) return null;
         //get data here
         var attributes = {};
         attributes[el_class.id] = this.element_id_to_id(el.id);
-        return this.create_as_existing(attributes);
+        return el_class.create_as_existing(attributes);
     },
     element_id_to_id: function(element_id){
         var re = new RegExp(this.className+'_', "");
@@ -96,7 +96,7 @@ MVC.Model = MVC.Class.extend(
             
             var associated_class = window[MVC.String.capitalize(association)];
             if(!associated_class) return values;
-            alert(values.length)
+            //alert(values.length)
             return associated_class.create_many_as_existing(values);
         }
         

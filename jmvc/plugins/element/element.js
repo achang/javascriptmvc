@@ -64,8 +64,60 @@ MVC.Object.extend(MVC.$E, {
 	},
 	toggle : function(element){
 		element.style.display == 'none' ? element.style.display = '' : element.style.display = 'none';
-	}
+	},
+    makePositioned: function(element) {
+        element = MVC.$E(element);
+        var pos = MVC.Element.getStyle(element, 'position');
+        //log(pos)
+        if (pos == 'static' || !pos) {
+          element._madePositioned = true;
+          element.style.position = 'relative';
+          // Opera returns the offset relative to the positioning context, when an
+          // element is position relative but top and left have not been defined
+          if (window.opera) {
+            element.style.top = 0;
+            element.style.left = 0;
+          }
+        }
+        return element;
+    },
+    getStyle:  function(element, style) {
+        element = MVC.$E(element);
+        style = style == 'float' ? 'cssFloat' : MVC.String.camelize(style);
+        var value = element.style[style];
+        if (!value) {
+          var css = document.defaultView.getComputedStyle(element, null);
+          value = css ? css[style] : null;
+        }
+        if (style == 'opacity') return value ? parseFloat(value) : 1.0;
+        return value == 'auto' ? null : value;
+    },
+    cumulativeOffset: function(element) {
+        var valueT = 0, valueL = 0;
+        do {
+          valueT += element.offsetTop  || 0;
+          valueL += element.offsetLeft || 0;
+          element = element.offsetParent;
+        } while (element);
+        return new MVC.Vector( valueL, valueT );
+    },
+    cumulativeScrollOffset: function(element) {
+        var valueT = 0, valueL = 0;
+        do {
+          valueT += element.scrollTop  || 0;
+          valueL += element.scrollLeft || 0;
+          element = element.parentNode;
+        } while (element);
+        return new MVC.Vector( valueL, valueT );
+    },
+    isParent: function(child, element) {
+      if (!child.parentNode || child == element) return false;
+      if (child.parentNode == element) return true;
+      return MVC.Element.isParent(child.parentNode, element);
+    }
 });
+
+
 
 
 

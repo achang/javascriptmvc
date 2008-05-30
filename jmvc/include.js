@@ -1,13 +1,15 @@
+
 /*
  * JavaScriptMVC - include
  * (c) 2008 Jupiter ITS
  */
+
 (function(){
 	
 
-if(typeof include != 'undefined' && typeof include.end != 'undefined')
-	return include.end();
-else if(typeof include != 'undefined' && typeof include.end == 'undefined')
+if(typeof include != 'undefined' && typeof include.end != 'undefined'){
+    return include.end();
+}else if(typeof include != 'undefined' && typeof include.end == 'undefined')
 	throw("Include is defined as function or an element's id!");
 
 MVC = {
@@ -163,7 +165,7 @@ MVC.Object.extend(include,{
 
 		options.production = options.production+(options.production.indexOf('.js') == -1 ? '.js' : '' );
 
-		if(options.env == 'compress') include.compress_window = window.open(MVC.mvc_root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
+		if(options.env == 'compress' && !window._rhino) include.compress_window = window.open(MVC.mvc_root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 		if(options.env == 'test') include.plugins('test');
 		if(options.env == 'production' && ! MVC.Browser.Opera)
 			return document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
@@ -180,7 +182,7 @@ MVC.Object.extend(include,{
 	},
 	add: function(newInclude){
 		var path = newInclude.path;
-		if(first_wave_done) return insert_head(path);
+        if(first_wave_done) return insert_head(path);
 		var pf = new File(newInclude.path);
 		newInclude.path = include.normalize(  path  );
 		
@@ -213,7 +215,7 @@ MVC.Object.extend(include,{
 		return path;
 	},
 	end: function(){
-		includes = includes.concat(current_includes);
+        includes = includes.concat(current_includes);
 		var latest = includes.pop();
 		if(!latest) {
 			first_wave_done = true;
@@ -224,14 +226,38 @@ MVC.Object.extend(include,{
 		current_includes = [];
 		include.set_path(latest.start);
 		include.current = latest.path;
-		if(include.get_env()=='compress') latest.text = syncrequest(latest.path);
+		if(include.get_env()=='compress'){
+            latest.text = syncrequest(latest.path);
+        }
 		latest.ignore ? insert() : insert(latest.path);
 	},
 	end_of_production: function(){ first_wave_done = true; },
 	compress: function(){
-		include.compress_window ? 
+		if(!window._rhino){
+            include.compress_window  ? 
 			include.compress_window.compress(total, include.srcs, include.get_production_name()) :
 			alert("Your popup blocker is keeping the compressor from running.\nPlease allow popups and refresh this page.");
+        }else{
+
+            var collection = ''; //total.join(";\n")
+    		for(var s=0; s < total.length; s++){
+    			if(total[s].process) {
+    				total[s].text = total[s].process(total[s]);
+    			}
+    			collection += "include.set_path('"+total[s].start+"')"+";\n"+total[s].text + ";\n";
+    		}
+    		collection += "include.end_of_production();";
+            var ploc = include.get_production_name();
+            var result = Packages.org.mozilla.javascript.tools.shell.Main.compress(collection, ploc );      
+            print("Saving compressed to 'apps/"+MVC.script_options[0]+"_production.js'.")
+            var out = new java.io.FileWriter( 
+								new java.io.File( 'apps/'+MVC.script_options[0]+'_production.js' )),
+							text = new java.lang.String( result || "" );
+			out.write( text, 0, text.length() );
+			out.flush();
+			out.close();
+           
+        }
 	},
 	opera: function(){
 		include.opera_called = true;
@@ -278,7 +304,13 @@ var script_tag = function(){
 	return start;
 };
 var insert = function(src){
-	if(MVC.Browser.Opera||MVC.Browser.Webkit ){
+
+    if(! document.write){
+        if(src){
+            load(new MVC.File( src ).clean());
+        }
+        load( new MVC.File( MVC.include_path ).clean()  )
+    }else if(MVC.Browser.Opera||MVC.Browser.Webkit){
 		if(src) {
 			var script = script_tag();
 			script.src=src+MVC.random;
@@ -288,12 +320,13 @@ var insert = function(src){
 		start.src = MVC.include_path+MVC.random;
 		document.body.appendChild(start);
 	}else{
-		document.write(
+        document.write(
 			(src? '<script type="text/javascript" src="'+src+(true ? '': MVC.random )+'"></script>':'')+
 			'<script type="text/javascript" src="'+MVC.include_path+(MVC.Browser.Gecko ? '': MVC.random )+'"></script>'
 		);
 	}
 };
+
 MVC.random = '?'+Math.random();
 MVC.Ajax.factory = function(){ return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();};
 var syncrequest = function(path){
@@ -312,6 +345,8 @@ include.resources = include.app(function(i){return '../resources/'+i});
 if(MVC.script_options){
 	MVC.apps_root =  MVC.root.join('apps')
 	MVC.app_name = MVC.script_options[0];
+    if(window._rhino)
+        MVC.script_options[1] = 'compress'
 	if(MVC.script_options.length > 1)	include.setup({env: MVC.script_options[1], production: MVC.apps_root+'/'+MVC.script_options[0]+'_production'});
 	include(MVC.apps_root+'/'+MVC.script_options[0]);
 	include.opera();
