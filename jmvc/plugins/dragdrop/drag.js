@@ -16,7 +16,7 @@
 //    dragging -> called everytime someone moves the drag
 
 MVC.Controller.DragAction = MVC.Controller.DelegateAction.extend({
-    match: new RegExp("(.*?)\s?(dragstart|dragend|dragging)$")
+    match: new RegExp("(.*?)\\s?(dragstart|dragend|dragging)$")
 },
 //Prototype functions
 {    

@@ -10,7 +10,7 @@
 //  be good if mouseover and mouseout can only be called when appropriate
 
 MVC.Controller.DropAction = MVC.Controller.DelegateAction.extend({
-    match: new RegExp("(.*?)\s?(dragover|dropped|dragout)$")
+    match: new RegExp("(.*?)\\s?(dragover|dropped|dragout)$")
 },
 //Prototype functions
 {    
