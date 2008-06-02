@@ -1,3 +1,11 @@
+/*
+ * TODOS:
+ * - Need to remove droppables after something has been dropped, or just keep adding new ones
+ * - Need a method for removing droppables
+ * 
+ */
+
+
 //add mouseover and mouseout when something is being dragged.
 //  be good if mouseover and mouseout can only be called when appropriate
 
@@ -12,12 +20,11 @@ MVC.Controller.DropAction = MVC.Controller.DelegateAction.extend({
         this.controller = controller;
         this.css_and_event();
         var selector = this.selector();
-        // baseically add selector to list of selectors:
+        // basically add selector to list of selectors:
         if(MVC.Droppables.selectors[selector]) {
             MVC.Droppables.selectors[selector][this.event_type] = MVC.Controller.dispatch_closure(controller.className, action);
             return;
         }
-        
         MVC.Droppables.selectors[selector] = {};
         MVC.Droppables.selectors[selector][this.event_type] = 
             MVC.Controller.dispatch_closure(controller.className, action); 
@@ -34,11 +41,7 @@ MVC.Droppables = {
 
   add: function(element) {
     element = MVC.$E(element);
-    var options = MVC.Object.extend({
-      greedy:     true,
-      hoverclass: null,
-      tree:       false
-    }, arguments[1] || { });
+    var options = MVC.Object.extend({}, arguments[1] || { });
 
     // cache containers
     /*if(options.containment) {
@@ -70,7 +73,7 @@ MVC.Droppables = {
   },
 
   isContained: function(element, drop) {
-    var containmentNode = drop.tree ? element.treeNode : element.parentNode;
+    var containmentNode = element.parentNode;
     for(var c = 0; i < drop._containers.length; i++ ){
         if(containmentNode == drop._containers[c]) return drop._containers[c]
     }
@@ -79,30 +82,16 @@ MVC.Droppables = {
   isAffected: function(point, element, drop) {
     return (
       (drop.element!=element) &&
-      
       ( (!drop._containers) || this.isContained(element, drop) ) && 
-      
-      ( (!drop.accept) ||
-        (Element.classNames(element).detect( function(v) { return drop.accept.include(v) } ) )
-      ) &&
-      
       MVC.Position.withinIncludingScrolloffsets(drop.element, point[0], point[1]) );
-      
-	  //Position.within(drop.element, point[0], point[1]) );
   },
 
   deactivate: function(drop, element, event) {
-    if(drop.hoverclass)
-      Element.removeClassName(drop.element, drop.hoverclass);
-    
-    
     this.last_active = null;
     if(drop.dragout) drop.dragout( {element: drop.element, drag_element: element, event: event });
   }, //this is where we should call out
 
   activate: function(drop, element, event) { //this is where we should call over
-    if(drop.hoverclass)
-      Element.addClassName(drop.element, drop.hoverclass);
     this.last_active = drop;
     if(drop.dragover) drop.dragover( {element: drop.element, drag_element: element, event: event });
       
@@ -115,9 +104,7 @@ MVC.Droppables = {
     for(var d =0 ; d < this.drops.length; d++ ){
         if(MVC.Droppables.isAffected(point, element, this.drops[d])) affected.push(this.drops[d]);
     }
-    
 
-        
     if(affected.length>0)
       drop = MVC.Droppables.findDeepestChild(affected);
 
