@@ -16,7 +16,7 @@ MVC.Controller = MVC.Class.extend({
             }
 	    }
     },
-    add_kill_event: function(event){
+    add_kill_event: function(event){ //this should really be in event
 		if(!event.kill){
 			var killed = false;
 			event.kill = function(){
@@ -73,10 +73,10 @@ MVC.Controller = MVC.Class.extend({
     
 });
 
-MVC.Controller.Action = MVC.Class.extend({
+MVC.Controller.Action = MVC.Class.extend(
+{
     init: function(){
-        if(this.matches)
-            MVC.Controller.actions.push(this)
+        if(this.matches) MVC.Controller.actions.push(this)
     }
 },{
     init: function(action, f, controller){
@@ -93,34 +93,43 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
 {    
     init: function(action, f, controller){
         this._super(action, f, controller);
-        this.parts = action.match(this.Class.matches);
+        this.css_and_event();
+        
+        var selector = this.selector();
+        if(selector){
+            new MVC.DelegationEvent(selector, this.event_type, 
+                this.controller.dispatch_closure(controller.className, action ) );
+        }
+    },
+    css_and_event: function(){
+        this.parts = this.action.match(this.Class.matches);
         this.css = this.parts[1];
         this.event_type = this.parts[2];
-        if(controller.className == 'main') return this.main_controller();
-        
-        this.singular = MVC.String.is_singular(controller.className);
-        if(this.singular)
-    		this.selector = '#'+controller.className+(this.css? ' '+this.css : '' );
-    	else
-    		this.set_plural_selector();
-        
-        new MVC.DelegationEvent(this.selector, this.event_type, 
-            this.controller.dispatch_closure(controller.className, action ) );
     },
     main_controller: function(){
-        if(MVC.Array.include(['load','unload','resize','scroll'],this.event_type))
-			return MVC.Event.observe(window, this.event_type, MVC.Controller.event_closure(this.controller.className, this.event_type, window) );
-	    new MVC.DelegationEvent(this.css, this.event_type, 
-            this.controller.dispatch_closure(this.controller.className, this.action ) );
+        if(MVC.Array.include(['load','unload','resize','scroll'],this.event_type)){
+            MVC.Event.observe(window, this.event_type, MVC.Controller.event_closure(this.controller.className, this.event_type, window) );
+            return;
+        }
+	    return this.css;
     },
-    set_plural_selector : function(){
+    plural_selector : function(){
 		if(this.css.substring(0,2) == "# "){
 			var newer_action_name = this.css.substring(2,this.css.length);
-            this.selector = '#'+this.controller.className + (newer_action_name ? newer_action_name : ' '+newer_action_name ) 
+            return '#'+this.controller.className + (newer_action_name ? newer_action_name : ' '+newer_action_name ) 
 		}else{
-			this.selector = '.'+MVC.String.singularize(this.controller.className)+(this.css? ' '+this.css : '' )
+			return '.'+MVC.String.singularize(this.controller.className)+(this.css? ' '+this.css : '' )
 		}
-	}
+	},
+    singular_selector : function(){
+        return '#'+this.controller.className+(this.css? ' '+this.css : '' );
+    },
+    selector : function(){
+        if(this.controller.className == 'main') return this.main_controller();
+        return MVC.String.is_singular(this.controller.className) ? 
+            this.singular_selector() :
+            this.plural_selector();
+    }
 });
 
 MVC.Controller.Params = function(params){

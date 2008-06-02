@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<title>Controller Test</title>
+		<style type='text/css'>
+			.success  {background-color: #80FF80}
+			.failure  {background-color: #FF8080}
+			.test {}
+            body {background-image: url(../../images/background.PNG)}
+		</style>
+	</head>
+	<body>
+	    <p>text</p><p>text</p><p>text</p><p>text</p>
+<p><b>Instructions:</b>  
+		</p>
+		<form>
+            <div id='script_drag'>Script Drag Me</div>
+        </form>
+        <form id='drags'>
+			<div class='drag'>drag me</div>
+		</form>
+        
+        <div id='drops'>
+            <div class='drop' id='drop_here'>
+                Drop Here
+            </div>
+        </div>
+        
+        
+        
+        <div id='mousechords'>
+            <b>Mouse Chords: </b><span id='mouse'></span>
+        </div>
+        <div>
+            <b>Relative Chords: </b><span id='relative'></span>
+        </div>
+        <div id='output'></div>
+        
+        
+        
+		<script type='text/javascript' src='../../jmvc/include.js?dragdrop'></script>
+		<script type='text/javascript'>
+			success = function(id){
+				document.getElementById(id).className = 'success';
+				log(id)
+			};
+			log = function(text){
+				document.getElementById('output').innerHTML += '<p>'+text+'</p>'
+			};
+		</script>
+		
+		
+	</body>
+</html>

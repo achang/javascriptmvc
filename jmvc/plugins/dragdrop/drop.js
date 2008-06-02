@@ -1,12 +1,39 @@
+//add mouseover and mouseout when something is being dragged.
+//  be good if mouseover and mouseout can only be called when appropriate
+
+MVC.Controller.DropAction = MVC.Controller.DelegateAction.extend({
+    matches: new RegExp("(.*?)\s?(dragover|dropped|dragout)$")
+},
+//Prototype functions
+{    
+    init: function(action, f, controller){
+        this.action = action;
+        this.func = f;
+        this.controller = controller;
+        this.css_and_event();
+        var selector = this.selector();
+        // baseically add selector to list of selectors:
+        if(MVC.Droppables.selectors[selector]) {
+            MVC.Droppables.selectors[selector][this.event_type] = MVC.Controller.dispatch_closure(controller.className, action);
+            return;
+        }
+        
+        MVC.Droppables.selectors[selector] = {};
+        MVC.Droppables.selectors[selector][this.event_type] = 
+            MVC.Controller.dispatch_closure(controller.className, action); 
+    }
+});
+
+
 MVC.Droppables = {
   drops: [],
-
+  selectors: {},
   remove: function(element) {
     this.drops = this.drops.reject(function(d) { return d.element==$(element) });
   },
 
   add: function(element) {
-    element = $(element);
+    element = MVC.$E(element);
     var options = MVC.Object.extend({
       greedy:     true,
       hoverclass: null,
@@ -26,7 +53,7 @@ MVC.Droppables = {
     
     if(options.accept) options.accept = [options.accept].flatten();*/
 
-    Element.makePositioned(element); // fix IE
+    MVC.Element.makePositioned(element); // fix IE
     options.element = element;
 
     this.drops.push(options);
@@ -55,8 +82,7 @@ MVC.Droppables = {
       
       ( (!drop._containers) || this.isContained(element, drop) ) && 
       
-      (
-        (!drop.accept) ||
+      ( (!drop.accept) ||
         (Element.classNames(element).detect( function(v) { return drop.accept.include(v) } ) )
       ) &&
       
@@ -65,19 +91,25 @@ MVC.Droppables = {
 	  //Position.within(drop.element, point[0], point[1]) );
   },
 
-  deactivate: function(drop) {
+  deactivate: function(drop, element, event) {
     if(drop.hoverclass)
       Element.removeClassName(drop.element, drop.hoverclass);
+    
+    
     this.last_active = null;
-  },
+    if(drop.dragout) drop.dragout( {element: drop.element, drag_element: element, event: event });
+    log('deactivate')
+  }, //this is where we should call out
 
-  activate: function(drop) {
+  activate: function(drop, element, event) { //this is where we should call over
     if(drop.hoverclass)
       Element.addClassName(drop.element, drop.hoverclass);
     this.last_active = drop;
+    if(drop.dragover) drop.dragover( {element: drop.element, drag_element: element, event: event });
+      
   },
 
-  show: function(point, element) {
+  show: function(point, element, event) {
     if(!this.drops.length) return;
     var drop, affected = [];
     
@@ -90,23 +122,21 @@ MVC.Droppables = {
     if(affected.length>0)
       drop = MVC.Droppables.findDeepestChild(affected);
 
-    if(this.last_active && this.last_active != drop) this.deactivate(this.last_active);
+    if(this.last_active && this.last_active != drop) this.deactivate(this.last_active, element, event);
     if (drop) {
-      MVC.Position.within(drop.element, point[0], point[1]);
-      if(drop.onHover)
-        drop.onHover(element, drop.element, Position.overlap(drop.overlap, drop.element));
-      
-      if (drop != this.last_active) Droppables.activate(drop);
+      MVC.Position.within(drop.element, point[0], point[1]);  
+      if (drop != this.last_active) MVC.Droppables.activate(drop, element, event);
     }
   },
 
   fire: function(event, element) {
     if(!this.last_active) return;
-    Position.prepare();
+    MVC.Position.prepare();
 
-    if (this.isAffected([Event.pointerX(event), Event.pointerY(event)], element, this.last_active))
-      if (this.last_active.onDrop) {
-        this.last_active.onDrop(element, this.last_active.element, event); 
+    if (this.isAffected(MVC.Event.pointer(event), element, this.last_active))
+      
+      if (this.last_active.dropped) {
+        this.last_active.dropped({dropped_element: element, event: event, element: this.last_active.element}); 
         return true; 
       }
   },
@@ -114,5 +144,15 @@ MVC.Droppables = {
   reset: function() {
     if(this.last_active)
       this.deactivate(this.last_active);
+  },
+  compile : function(){
+      var elements = [];
+      for(var selector in MVC.Droppables.selectors){
+          var sels = elements.concat( MVC.Query(selector) )
+          for(var e= 0; e < sels.length; e++){
+              MVC.Droppables.add(sels[e], MVC.Droppables.selectors[selector])
+          }
+      }
+   
   }
 };

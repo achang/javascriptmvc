@@ -1,2 +1,2 @@
-include.plugins('controller2','element')
+include.plugins('controller2','element','query')
 include('drag','drop')

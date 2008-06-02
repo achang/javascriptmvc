@@ -16,7 +16,7 @@ MVC.Position = {
       return this.withinIncludingScrolloffsets(element, x, y);
     this.xcomp = x;
     this.ycomp = y;
-    this.offset = Element.cumulativeOffset(element);
+    this.offset = MVC.Element.cumulativeOffset(element);
 
     return (y >= this.offset[1] &&
             y <  this.offset[1] + element.offsetHeight &&
