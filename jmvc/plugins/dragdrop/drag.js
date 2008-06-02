@@ -84,9 +84,6 @@ MVC.Draggable.prototype = {
         s.left =  p.left()+"px";
         
         MVC.Droppables.show(pointer, this.element, event);
-        
-        
-        MVC.$E('relative').innerHTML = p.toString();
     }
 }
 MVC.Draggable.selectors = {};
@@ -96,9 +93,8 @@ MVC.Draggable.selectors = {};
 MVC.Draggable.current = null;
 
 MVC.Event.observe(document, 'mousemove', function(event){
-        var mousePos = MVC.Event.pointer(event);
-        MVC.$E('mouse').innerHTML = mousePos.toString();
         if(!MVC.Draggable.current ) return;
+        var mousePos = MVC.Event.pointer(event);
         if(!MVC.Draggable.current.moved) MVC.Draggable.current.start(event);
         MVC.Draggable.current.draw(mousePos, event);
         //we should call dragging
