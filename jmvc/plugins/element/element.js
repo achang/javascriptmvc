@@ -68,7 +68,6 @@ MVC.Object.extend(MVC.$E, {
     makePositioned: function(element) {
         element = MVC.$E(element);
         var pos = MVC.Element.getStyle(element, 'position');
-        //log(pos)
         if (pos == 'static' || !pos) {
           element._madePositioned = true;
           element.style.position = 'relative';
@@ -84,10 +83,12 @@ MVC.Object.extend(MVC.$E, {
     getStyle:  function(element, style) {
         element = MVC.$E(element);
         style = style == 'float' ? 'cssFloat' : MVC.String.camelize(style);
-        var value = element.style[style];
-        if (!value) {
-          var css = document.defaultView.getComputedStyle(element, null);
-          value = css ? css[style] : null;
+        var value;
+        if(element.currentStyle){
+            var value = element.currentStyle[style];
+        }else{
+             var css = document.defaultView.getComputedStyle(element, null);
+             value = css ? css[style] : null;
         }
         if (style == 'opacity') return value ? parseFloat(value) : 1.0;
         return value == 'auto' ? null : value;

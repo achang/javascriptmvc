@@ -1,5 +1,6 @@
 MVC.Controller = MVC.Class.extend({
     init: function(){
+        
         if(!this.className) return;
         MVC.Controller.controllers.push(this);
         var val;
@@ -87,7 +88,10 @@ MVC.Controller.Action = MVC.Class.extend(
 });
 
 MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
-    matches: new RegExp("(.*?)\s?(change|click|contextmenu|dblclick|keydown|keyup|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload)$")
+    match: new RegExp("(.*?)\s?(change|click|contextmenu|dblclick|keydown|keyup|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload)$"),
+    matches: function(action_name){
+        return this.match.exec(action_name)
+    }
 },
 //Prototype functions
 {    
@@ -102,7 +106,7 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
         }
     },
     css_and_event: function(){
-        this.parts = this.action.match(this.Class.matches);
+        this.parts = this.action.match(this.Class.match);
         this.css = this.parts[1];
         this.event_type = this.parts[2];
     },

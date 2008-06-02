@@ -4,7 +4,7 @@
 //basically, if uses one of those, I need to add a mousedown action, that will call this shit back.
 
 MVC.Controller.DragAction = MVC.Controller.DelegateAction.extend({
-    matches: new RegExp("(.*?)\s?(dragstart|dragend|dragging)$")
+    match: new RegExp("(.*?)\s?(dragstart|dragend|dragging)$")
 },
 //Prototype functions
 {    
@@ -40,8 +40,8 @@ MVC.Draggable = function(params){
     this.width = this.element.clientWidth;
     this.height = this.element.clientHeight;
     this.moved = false;
-    this.originalz = MVC.Element.getStyle(this.element,'z-Index');
-    this.originallyAbsolute = MVC.Element.getStyle(this.element,'position')  == 'absolute';
+    //this.originalz = MVC.Element.getStyle(this.element,'z-Index');
+    //this.originallyAbsolute = MVC.Element.getStyle(this.element,'position')  == 'absolute';
     this.mouse_offset();
     this.dragstart = params.dragstart || function(){};
     this.dragend = params.dragend || function(){};
@@ -52,14 +52,11 @@ MVC.Draggable = function(params){
 MVC.Draggable.prototype = {
     start: function(event){
         MVC.Element.makePositioned(this.element);
-        this.element.style.width = (this.element.clientWidth);
+        //this.element.style.width = this.element.clientWidth.toString()+'px';
         this.element.style.zIndex = 1000;
         this.moved = true;
         this.dragstart({element: this.element, event: event});
-        
-        //compile list of all droppables
         MVC.Droppables.compile();
-        //we should call drag start
     },
     mouse_offset: function(){
         this.element_start = MVC.Element.cumulativeOffset(this.element);

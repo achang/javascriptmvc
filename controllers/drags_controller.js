@@ -38,9 +38,10 @@ new MVC.DelegationEvent('p','click', function(){
 
 MainController = MVC.Controller.extend('main',{
     load: function(){
-        
+        alert('load')
     }
 })
+
 
 DragsController = MVC.Controller.extend('drags',{
     dragstart: function(params){
@@ -54,6 +55,12 @@ DragsController = MVC.Controller.extend('drags',{
     dragend: function(params){
         document.documentElement.style.backgroundColor = 
             'rgb('+parseInt(Math.random()*255)+','+parseInt(Math.random()*255)+','+parseInt(Math.random()*255)+  ')'
+    },
+    mouseover : function(params){
+        params.element.style.backgroundColor = '#ddddff'
+    },
+    mouseout : function(params){
+        params.element.style.backgroundColor = ''
     }
 })
 

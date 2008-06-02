@@ -2,7 +2,7 @@
 //  be good if mouseover and mouseout can only be called when appropriate
 
 MVC.Controller.DropAction = MVC.Controller.DelegateAction.extend({
-    matches: new RegExp("(.*?)\s?(dragover|dropped|dragout)$")
+    match: new RegExp("(.*?)\s?(dragover|dropped|dragout)$")
 },
 //Prototype functions
 {    
@@ -98,7 +98,6 @@ MVC.Droppables = {
     
     this.last_active = null;
     if(drop.dragout) drop.dragout( {element: drop.element, drag_element: element, event: event });
-    log('deactivate')
   }, //this is where we should call out
 
   activate: function(drop, element, event) { //this is where we should call over
