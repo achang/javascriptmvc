@@ -71,7 +71,14 @@ MVC.Controller = MVC.Class.extend({
     controllers : [],
     actions: []
 },{
-    
+    continue_to :function(action){
+		if(!action) action = this.action.name+'ing';
+		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. ';}
+		return MVC.Function.bind(function(){
+			//this.action = this.Class.actions()[action];
+			this[action].apply(this, arguments);
+		}, this);
+	}
 });
 
 MVC.Controller.Action = MVC.Class.extend(
@@ -88,7 +95,7 @@ MVC.Controller.Action = MVC.Class.extend(
 });
 
 MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
-    match: new RegExp("(.*?)\s?(change|click|contextmenu|dblclick|keydown|keyup|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload)$"),
+    match: new RegExp("(.*?)\\s?(change|click|contextmenu|dblclick|keydown|keyup|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload)$"),
     matches: function(action_name){
         return this.match.exec(action_name)
     }
