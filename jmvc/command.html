@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>JavaScriptMVC Command</title>
+        <link rel="stylesheet" type='text/css' href='command/stylesheets/style.css' />
+    </head>
+    <body onload='loading()'>
+        <h1>JavaScriptMVC Command</h1>
+        <div id='projects'>Loading ...</div>
+        
+        
+        <form id='controller_generator'>Create new controller 
+            <input name='controller_name'/>
+            <input type='submit' value='create'/>
+        </form>
+        
+        
+        <form id='application_generator'>Create new application 
+            <input name='application_name'/>
+            <input type='submit' value='create'/>
+        </form>
+        
+        <script type='text/javascript' src='include.js'></script>
+        <script type='text/javascript'>
+            include('command/setup.js');
+            include.plugins('controller2','view');
+            include('command/controllers/controller_generator')
+        </script>
+    </body>
+</html>

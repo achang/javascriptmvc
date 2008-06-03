@@ -46,7 +46,7 @@ MVC.File.prototype = {
 	},
 	dir: function(){
 		var last = this.clean().lastIndexOf('/');
-		return last != -1 ? this.clean().substring(0,last) : this.clean();
+		return last != -1 ? this.clean().substring(0,last) : ''; //this.clean();
 	},
 	domain: function(){ 
 		if(this.path.indexOf('file:') == 0 ) return null;

@@ -1,4 +1,4 @@
-MVC.Controller.functions.prototype.render = function(options) {
+MVC.Controller.prototype.render = function(options) {
 		var result, render_to_id = MVC.RENDER_TO;
 		var controller_name = this.className;
 		var action_name = this.action.name;
