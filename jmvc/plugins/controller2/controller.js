@@ -75,7 +75,7 @@ MVC.Controller = MVC.Class.extend({
 		if(!action) action = this.action.name+'ing';
 		if(typeof this[action] != 'function'){ throw 'There is no action named '+action+'. ';}
 		return MVC.Function.bind(function(){
-			//this.action = this.Class.actions()[action];
+			this.action_name = action;
 			this[action].apply(this, arguments);
 		}, this);
 	}

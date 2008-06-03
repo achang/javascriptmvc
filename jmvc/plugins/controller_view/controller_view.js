@@ -1,7 +1,7 @@
 MVC.Controller.prototype.render = function(options) {
 		var result, render_to_id = MVC.RENDER_TO;
-		var controller_name = this.className;
-		var action_name = this.action.name;
+		var controller_name = this.Class.className;
+		var action_name = this.action_name;
         if(!options) options = {};
 		if(typeof options == 'string'){
 			result = new MVC.View({url:  options  }).render(this);
