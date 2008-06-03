@@ -1,6 +1,7 @@
 MVC.Model = MVC.Class.extend(
 {
     //determines which find to pick, calls find_all or find_one which should be overwritten
+    
     find : function(id, params, callback){
         if(!params)  params = {};
         if(typeof params == 'function') {
@@ -18,6 +19,7 @@ MVC.Model = MVC.Class.extend(
     // Called after creating something
     create_as_existing : function(attributes){
         if(!attributes) return null;
+        if(attributes.attributes) attributes = attributes.attributes;
         var inst = new this(attributes);
         inst.is_new_record = this.new_record_func();
         return inst;
@@ -86,9 +88,9 @@ MVC.Model = MVC.Class.extend(
           this._setProperty(attribute, value);
     },
     _setProperty : function(property, value) {  
-        this[property] = value;
-        if (!(MVC.Array.include(this._properties,property)))
-          this._properties.push(property);  
+        this[property] = MVC.Array.include(['created_at','updated_at'], property) ? MVC.Date.parse(value) :  value;
+
+        if (!(MVC.Array.include(this._properties,property))) this._properties.push(property);  
     },
     _setAssociation : function(association, values) {
         this[association] = function(){
@@ -107,12 +109,12 @@ MVC.Model = MVC.Class.extend(
         return attributes;
     },
     is_new_record : function(){ return true;},
-    save: function(){
+    save: function(callback){
         var result;
         if(this.is_new_record())
-            result = this.Class.create(this.attributes());
+            result = this.Class.create(this.attributes(), callback);
         else
-            result = this.Class.update(this[this.Class.id], this.attributes());
+            result = this.Class.update(this[this.Class.id], this.attributes(), callback);
         this.is_new_record = this.Class.new_record_func;
         return true;
     },
