@@ -24,6 +24,10 @@ MVC = {
 		include.set_path(MVC.mvc_root);
 		include('framework');
 	},
+	Runner: function(f){
+		if(!window.in_command_window)
+			f();
+	},
 	Ajax: {},
 	Browser: {
 	    IE:     !!(window.attachEvent && !window.opera),

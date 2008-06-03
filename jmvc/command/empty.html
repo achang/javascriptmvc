@@ -2,8 +2,12 @@
 	<head></head>
 	<body>
 		<script language="javascript" type="text/javascript">
+			window.addEventListener = function(){};
+			document.addEventListener = function(){};
+			var in_command_window = true;
 			var app_name = location.href.split('?')[1];
-			document.write('<script language="javascript" type="text/javascript" src="../include.js?'+app_name+'"><\/script>');
+			document.write('<script language="javascript" type="text/javascript" src="../include.js?'
+				+app_name+'"><\/script>');
 		</script>
 	</body>
 </html>
