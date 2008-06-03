@@ -11,7 +11,11 @@ ControllerGeneratorController = MVC.Controller.extend('controller_generator',{
     }
 });
 
-
+ProjectsController = MVC.Controller.extend('projects',{
+    click: function(params){
+		load_frame(params.element.innerHTML);
+    }
+});
 
 
 ApplicationGeneratorController = MVC.Controller.extend('application_generator',{

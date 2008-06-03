@@ -434,7 +434,9 @@ MVC.View.PreCompiledFunction = function(name, f){
 };
 
 
+MVC.Included.views = [];
 include.view = function(path){
+	MVC.Included.views.push(path);
 	if(include.get_env() == 'development'){
 		new MVC.View({url: path});
 	}else if(include.get_env() == 'compress'){

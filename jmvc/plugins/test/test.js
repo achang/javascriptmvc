@@ -439,16 +439,17 @@ MVC.Test.inspect =  function(object) {
 };
 MVC.Test.loaded_files = {};
 
-
+MVC.Included.unit_tests = [];
+MVC.Included.functional_tests = [];
 include.unit_tests = function(){
 	for(var i=0; i< arguments.length; i++)
 		MVC.Console.log('Trying to load: test/unit/'+arguments[i]+'_test.js');
-	include.app(function(i){ return '../test/unit/'+i+'_test'}).apply(null, arguments);
+	include.app(function(i){ return '../test/unit/'+i+'_test'}, MVC.Included.unit_tests).apply(null, arguments);
 }
 include.functional_tests = function(){
 	for(var i=0; i< arguments.length; i++)
 		MVC.Console.log('Trying to load: test/functional/'+arguments[i]+'_test.js');
-	include.app(function(i){ return '../test/functional/'+i+'_test'}).apply(null, arguments);
+	include.app(function(i){ return '../test/functional/'+i+'_test'}, MVC.Included.functional_tests).apply(null, arguments);
 }
 
 if(!MVC._no_conflict) Test = MVC.Test;

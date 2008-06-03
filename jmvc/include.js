@@ -15,6 +15,7 @@ if(typeof include != 'undefined' && typeof include.end != 'undefined'){
 MVC = {
 	OPTIONS: {},
 	Test: {},
+	Included: {controllers: [], resources: [], models: [], plugins: []},
 	_no_conflict: false,
 	no_conflict: function(){ MVC._no_conflict = true  },
 	File: function(path){ this.path = path; },
@@ -108,7 +109,9 @@ for(var i=0; i<scripts.length; i++) {
 	if(src.match(/include\.js/)){
 		MVC.include_path = src;
 		MVC.mvc_root = new File( new File(src).join_from( MVC.page_dir ) ).dir();
-		var tmp = MVC.mvc_root.replace(/jmvc$/,'');
+		// added this to check for html files that are deeper inside the jmvc directory
+		if(MVC.mvc_root.match(/\.\.$/)) var tmp = MVC.mvc_root+'/..';
+		else var tmp = MVC.mvc_root.replace(/jmvc$/,'');
 		if(tmp.match(/.+\/$/)) tmp = tmp.replace(/\/$/, '');
 		MVC.root = new File(tmp);
 		if(src.indexOf('?') != -1) MVC.script_options = src.split('?')[1].split(',');
@@ -268,6 +271,7 @@ MVC.Object.extend(include,{
 	opera_called : false,
 	srcs: [],
 	plugin: function(plugin_name) {
+		MVC.Included.plugins.push(plugin_name);
 		var current_path = include.get_path();
 		include.set_path(MVC.mvc_root);
 		include('plugins/'+ plugin_name+'/setup');
@@ -276,9 +280,12 @@ MVC.Object.extend(include,{
 	plugins: function(){
 		for(var i=0; i < arguments.length; i++) include.plugin(arguments[i]);
 	},
-	app: function(f){
+	app: function(f, included_array){
 		return function(){
-			for(var i=0; i< arguments.length; i++) arguments[i] = f(arguments[i]);
+			for (var i = 0; i < arguments.length; i++) {
+				arguments[i] = f(arguments[i]);
+				included_array.push(arguments[i].match(/[^\/\\]*$/)[0]);
+			}
 			return include.apply(null, arguments);
 		}
 	}
@@ -338,9 +345,9 @@ var syncrequest = function(path){
    return request.responseText;
 };
 
-include.controllers = include.app(function(i){return '../controllers/'+i+'_controller'});
-include.models = include.app(function(i){return '../models/'+i});
-include.resources = include.app(function(i){return '../resources/'+i});
+include.controllers = include.app(function(i){return '../controllers/'+i+'_controller'}, MVC.Included.controllers);
+include.models = include.app(function(i){return '../models/'+i}, MVC.Included.controllers);
+include.resources = include.app(function(i){return '../resources/'+i}, MVC.Included.controllers);
 
 if(MVC.script_options){
 	MVC.apps_root =  MVC.root.join('apps')

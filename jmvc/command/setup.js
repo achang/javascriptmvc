@@ -1,3 +1,16 @@
+function load_frame(app_name){
+	document.getElementById('app').innerHTML = "<iframe src='command/empty.html?"
+		+app_name+"' id='demo_iframe' name='demo_iframe' border='0' frameBorder='0' "
+		+"style='display:none;' onload='print_results();'></iframe>";
+}
+
+function print_results(){
+	var res = new MVC.View({absolute_url: 'command/views/results.ejs'}).render({
+		Included: frames['demo_iframe'].MVC.Included
+	});
+	document.getElementById('results').innerHTML = res;
+}
+
 loading = function(){
             netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
             var ds =  Components.classes["@mozilla.org/file/directory_service;1"];
@@ -21,10 +34,10 @@ loading = function(){
             var txt = ''
             for(var f = 0; f < files.length; f++){
                 var file = files[f];
-                var name = file.path.match(/[^\/\\]*$/)[0]
+                var name = file.path.match(/[^\/\\]*$/)[0].split('.')[0]
                 if(name.indexOf('.') != 0 && name.indexOf('_production') == -1 && name.indexOf('_test') == -1  )
                 {
-                    txt += '<p>'+name+'</p>'
+                    txt += '<p class="project">'+name+'</p>';
                 }
             }
             document.getElementById('projects').innerHTML = txt
