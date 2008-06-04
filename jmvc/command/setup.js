@@ -12,7 +12,8 @@ function print_results(){
 		resources: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\resources"),
 		views: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\views"),
 		functional_tests: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\functional"),
-		unit_tests: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\unit")
+		unit_tests: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\unit"),
+		plugins: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\jmvc\\plugins")
 	}
 	
 	var res = new MVC.View({absolute_url: 'command/views/results.ejs'}).render({

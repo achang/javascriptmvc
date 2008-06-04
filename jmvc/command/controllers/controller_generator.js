@@ -10,9 +10,7 @@ ControllerGeneratorController = MVC.Controller.extend('controller_generator',{
         mozillaSaveFile(MVC.file_base+"\\controllers\\"+this.class_name+"_controller.js", res  )
 		
 		// write the controller include back to the app file
-        var file = mozillaReadFile(MVC.file_base+"\\apps\\"+this.application_name+".js"  );
-		var str = add_include('controllers', file, this.class_name);
-		mozillaSaveFile(MVC.file_base+"\\apps\\"+this.application_name+".js", str  );
+		add_path('controllers', MVC.file_base+"\\apps\\"+this.application_name+".js", this.class_name);
 		
 		// create the functional test file
         var res = new MVC.View({absolute_url: 'command/generators/controller_test.ejs'}).render(this);
@@ -22,6 +20,12 @@ ControllerGeneratorController = MVC.Controller.extend('controller_generator',{
 		load_frame(this.application_name);
     }
 });
+
+var add_path = function(include_type, file_path, file_to_add) {
+    var file = mozillaReadFile(file_path);
+	var str = add_include(include_type, file, file_to_add);
+	mozillaSaveFile(file_path, str  );
+}
 
 var add_include = function(include_type, file, file_to_add) {
 	var str = "include."+include_type+"(";
@@ -62,6 +66,55 @@ NewAppController = MVC.Controller.extend('new_app',{
 	},
 	mouseout: function(params) {
 		params.element.style.backgroundColor = '';
+	}
+});
+
+ControllersController = MVC.Controller.extend('controllers',{
+    change: function(params){
+		this.application_name = document.getElementById('application').innerHTML;
+		add_path('controllers', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+	}
+});
+
+ModelsController = MVC.Controller.extend('models',{
+    change: function(params){
+		this.application_name = document.getElementById('application').innerHTML;
+		add_path('models', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+	}
+});
+
+ResourcesController = MVC.Controller.extend('resources',{
+    change: function(params){
+		this.application_name = document.getElementById('application').innerHTML;
+		add_path('resources', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+	}
+});
+
+ViewsController = MVC.Controller.extend('views',{
+    change: function(params){
+		this.application_name = document.getElementById('application').innerHTML;
+		add_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+	}
+});
+
+FunctionalTestsController = MVC.Controller.extend('functional_tests',{
+    change: function(params){
+		this.application_name = document.getElementById('application').innerHTML;
+		add_path('functional_tests', MVC.file_base+"\\app\\"+this.application_name+"_test.js", params.element.lastChild.nodeValue);
+	}
+});
+
+UnitTestsController = MVC.Controller.extend('unit_tests',{
+    change: function(params){
+		this.application_name = document.getElementById('application').innerHTML;
+		add_path('unit_tests', MVC.file_base+"\\app\\"+this.application_name+"_test.js", params.element.lastChild.nodeValue);
+	}
+});
+
+PluginsController = MVC.Controller.extend('plugins',{
+    change: function(params){
+		this.application_name = document.getElementById('application').innerHTML;
+		add_path('plugins', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
 	}
 });
 
