@@ -82,3 +82,26 @@ mozillaGetFiles = function(filePath){
     }
     return paths;
 }
+mozillaReadFile = function(filePath){
+    netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+	var file = Components.classes["@mozilla.org/file/local;1"]
+                     .createInstance(Components.interfaces.nsILocalFile);
+	file.initWithPath(filePath);
+	var data = "";
+	var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+	                        .createInstance(Components.interfaces.nsIFileInputStream);
+	var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+	                        .createInstance(Components.interfaces.nsIScriptableInputStream);
+	fstream.init(file, -1, 0, 0);
+	sstream.init(fstream); 
+	
+	var str = sstream.read(4096);
+	while (str.length > 0) {
+	  data += str;
+	  str = sstream.read(4096);
+	}
+	
+	sstream.close();
+	fstream.close();
+	return data;
+}

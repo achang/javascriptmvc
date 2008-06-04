@@ -1,4 +1,8 @@
-<h1><%= app_name %></h1>
+<form id='controller_generator'>Create new controller 
+	<input name='controller_name'/>
+	<input type='submit' value='create'/>
+</form>
+<h1 id='application'><%= app_name %></h1>
 <%	var included_groups = ['controllers','models','resources','views','functional_tests','unit_tests','plugins'];
 	for(var i=0; i<included_groups.length; i++) { %>
 	<h2><%= included_groups[i] %></h2>
