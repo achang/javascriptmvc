@@ -133,5 +133,8 @@ MVC.Model = MVC.Class.extend(
     },
     element_id : function(){
         return this.Class.className+'_'+this[this.Class.id]
+    },
+    add_errors : function(errors){
+        if(errors) this.errors = this.errors.concat(errors);
     }
 });
