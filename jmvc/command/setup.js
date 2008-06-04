@@ -5,8 +5,19 @@ function load_frame(app_name){
 }
 
 function print_results(){
+	// need all the files in each folder
+	var files = {
+		controllers: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\controllers"),
+		models: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\models"),
+		resources: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\resources"),
+		views: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\views"),
+		functional_tests: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\functional"),
+		unit_tests: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\unit")
+	}
+	
 	var res = new MVC.View({absolute_url: 'command/views/results.ejs'}).render({
-		Included: frames['demo_iframe'].MVC.Included,
+		files: files,
+		included: frames['demo_iframe'].MVC.Included,
 		app_name: frames['demo_iframe'].MVC.app_name
 	});
 	document.getElementById('render_to').innerHTML = res;
@@ -17,13 +28,7 @@ loading = function(){
     var ds =  Components.classes["@mozilla.org/file/directory_service;1"];
     var ss = ds.getService(Components.interfaces.nsIDirectoryServiceProvider);
     var cwd = ss.getFile("CurWorkD",{})
-    var convert = cwd.path.indexOf("\\") != -1 
-
-    //while(cwd.directoryEntries.hasMoreElements()){
-    //    var el = cwd.directoryEntries.getNext();
-    //    el.QueryInterface(Components.interfaces.nsIFile);
-    //    var a = 1;
-    //}
+    var convert = cwd.path.indexOf("\\") != -1;
     
     var base = window.location.pathname.match(/\/(.*)\/jmvc\/command.html/)[1];
     
@@ -31,19 +36,15 @@ loading = function(){
         base = base.replace(/\//g,"\\")
     }
     MVC.file_base = base;
-    files = mozillaGetFiles(base.replace(/\//g,"\\")+"\\apps");
-    var txt = ''
+	var files = mozillaGetFileNames(base.replace(/\//g,"\\")+"\\apps");
+    var txt = '';
     for(var f = 0; f < files.length; f++){
-        var file = files[f];
-        var name = file.path.match(/[^\/\\]*$/)[0].split('.')[0];
-        if(name != '' && name.indexOf('.') != 0 && 
-			name.indexOf('_production') == -1 && name.indexOf('_test') == -1  )
-        {
+        var name = files[f];
+        if(name.indexOf('_production') == -1 && name.indexOf('_test') == -1  )
             txt += '<li class="project">'+name+'</li>';
-        }
     }
 	txt += '<li id="new_app">Create New Application + </li>';
-    document.getElementById('projects').innerHTML = txt
+    document.getElementById('projects').innerHTML = txt;
     
 }        
 
@@ -66,6 +67,18 @@ function mozillaSaveFile(filePath,content)
 
 	}
 	return null;
+}
+mozillaGetFileNames = function(filePath){
+    netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+    var files = mozillaGetFiles(filePath);
+    var file_names = [];
+    for(var f = 0; f < files.length; f++){
+        var file = files[f];
+        var name = file.path.match(/[^\/\\]*$/)[0].split('.')[0];
+        if(name != '' && name.indexOf('.') != 0)
+            file_names.push(name);
+    }
+	return file_names;
 }
 mozillaGetFiles = function(filePath){
     var paths = [];
