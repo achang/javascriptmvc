@@ -5,19 +5,9 @@
     </head>
     <body onload='loading()'>
         <h1>JavaScriptMVC Command</h1>
-        <div id='projects'>Loading ...</div>
+        <ul id='projects'>Loading ...</ul>
         
-        
-        <form id='controller_generator'>Create new controller 
-            <input name='controller_name'/>
-            <input type='submit' value='create'/>
-        </form>
-        
-        
-        <form id='application_generator'>Create new application 
-            <input name='application_name'/>
-            <input type='submit' value='create'/>
-        </form>
+        <div id='render_to'></div>
         
         <script type='text/javascript' src='include.js'></script>
         <script type='text/javascript'>
@@ -28,7 +18,5 @@
 		
 		<iframe id='demo_iframe' name='demo_iframe' border='0' frameBorder='0' style='display:none;'></iframe>
 		
-		<div id='results'></div>
-				
-    </body>
+	</body>
 </html>

@@ -1,5 +1,11 @@
-body {margin: 0px; padding: 0px;}
-h1 { background-color: #D5E7B3;
-    margin: 0px; padding: 0px;
-
+body, ul {margin: 0px; padding: 0px;}
+h1 { background-color: #D5E7B3;margin: 0px; padding: 0px;}
+.project, #new_app{
+	margin: 0;
+	padding: 15px;
+	cursor:pointer;
+	list-style-type: none;
+	display: inline;
 }
+#projects {position:relative;top:15px;height:50px;}
+#application_generator { margin:20px 0 0 15px; }

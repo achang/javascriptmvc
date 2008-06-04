@@ -350,8 +350,8 @@ var syncrequest = function(path){
 };
 
 include.controllers = include.app(function(i){return '../controllers/'+i+'_controller'}, MVC.Included.controllers);
-include.models = include.app(function(i){return '../models/'+i}, MVC.Included.controllers);
-include.resources = include.app(function(i){return '../resources/'+i}, MVC.Included.controllers);
+include.models = include.app(function(i){return '../models/'+i}, MVC.Included.models);
+include.resources = include.app(function(i){return '../resources/'+i}, MVC.Included.resources);
 
 if(MVC.script_options){
 	MVC.apps_root =  MVC.root.join('apps')

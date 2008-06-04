@@ -2,11 +2,11 @@
 <%	var included_groups = ['controllers','models','resources','views','functional_tests','unit_tests','plugins'];
 	for(var i=0; i<included_groups.length; i++) { %>
 	<h2><%= included_groups[i] %></h2>
-	<ol>
+	<ul>
 		<% if(Included[included_groups[i]]) { %>
 			<% for(var j=0; j<Included[included_groups[i]].length; j++) { %>
 				<li><%= Included[included_groups[i]][j] %></li>
 			<% } %>
 		<% } %>
-	</ol>
+	</ul>
 <%  }  %>

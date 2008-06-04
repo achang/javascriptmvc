@@ -1,5 +1,5 @@
 function load_frame(app_name){
-	document.getElementById('results').innerHTML = "";
+	document.getElementById('render_to').innerHTML = "";
 	frames['demo_iframe'].document.location.href = "command/empty.html?"+app_name;
 	document.getElementById('demo_iframe').addEventListener('load', print_results, true);
 }
@@ -9,7 +9,7 @@ function print_results(){
 		Included: frames['demo_iframe'].MVC.Included,
 		app_name: frames['demo_iframe'].MVC.app_name
 	});
-	document.getElementById('results').innerHTML = res;
+	document.getElementById('render_to').innerHTML = res;
 }
 
 loading = function(){
@@ -35,12 +35,14 @@ loading = function(){
     var txt = ''
     for(var f = 0; f < files.length; f++){
         var file = files[f];
-        var name = file.path.match(/[^\/\\]*$/)[0].split('.')[0]
-        if(name.indexOf('.') != 0 && name.indexOf('_production') == -1 && name.indexOf('_test') == -1  )
+        var name = file.path.match(/[^\/\\]*$/)[0].split('.')[0];
+        if(name != '' && name.indexOf('.') != 0 && 
+			name.indexOf('_production') == -1 && name.indexOf('_test') == -1  )
         {
-            txt += '<p class="project">'+name+'</p>';
+            txt += '<li class="project">'+name+'</li>';
         }
     }
+	txt += '<li id="new_app">Create New Application + </li>';
     document.getElementById('projects').innerHTML = txt
     
 }        
