@@ -30,18 +30,40 @@ var add_path = function(include_type, file_path, file_to_add) {
 var add_include = function(include_type, file, file_to_add) {
 	var str = "include."+include_type+"(";
 	var name_arr = [];
-	var regexp = new RegExp("include\\."+include_type+"\\((?:\\'(.*)\\')*\\)");
-	var regexp2 = new RegExp("include\\."+include_type+"\\((\\'.*\\')*\\)");
-	var match = file.match(regexp);
-	if(match)
-		for (var i=1; i<match.length; i++) {
-			if(match[i] != file_to_add)
-				name_arr.push("'"+match[i]+"'");
-		}
+	var regexp_include = new RegExp("include\\."+include_type+"\\((.*)\\)");
+	var regexp_items = /\'(\w+)\'/g;
+	var match_arr = [];
+	var match = file.match(regexp_include);
+	while(match_arr = regexp_items.exec(match[1])) {
+		if(match_arr[1] && match_arr[1] != file_to_add)
+				name_arr.push("'"+match_arr[1]+"'");
+	}
 	name_arr.push("'"+file_to_add+"'");
 	str += name_arr.join(',');
 	str += ')';
-	return file.replace(regexp2,str);
+	return file.replace(regexp_include,str);
+}
+
+var remove_path = function(include_type, file_path, file_to_remove) {
+    var file = mozillaReadFile(file_path);
+	var str = remove_include(include_type, file, file_to_remove);
+	mozillaSaveFile(file_path, str);
+}
+
+var remove_include = function(include_type, file, file_to_remove) {
+	var str = "include."+include_type+"(";
+	var name_arr = [];
+	var regexp_include = new RegExp("include\\."+include_type+"\\((.*)\\)");
+	var regexp_items = /\'(\w+)\'/g;
+	var match_arr = [];
+	var match = file.match(regexp_include);
+	while(match_arr = regexp_items.exec(match[1])) {
+		if(match_arr[1] && match_arr[1] != file_to_remove)
+				name_arr.push("'"+match_arr[1]+"'");
+	}
+	str += name_arr.join(',');
+	str += ')';
+	return file.replace(regexp_include,str);
 }
 
 ProjectsController = MVC.Controller.extend('projects',{
@@ -72,49 +94,77 @@ NewAppController = MVC.Controller.extend('new_app',{
 ControllersController = MVC.Controller.extend('controllers',{
     change: function(params){
 		this.application_name = document.getElementById('application').innerHTML;
-		add_path('controllers', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		this.checked = params.element.firstChild.checked;
+		if(this.checked)
+			add_path('controllers', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		else
+			remove_path('controllers', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
 	}
 });
 
 ModelsController = MVC.Controller.extend('models',{
     change: function(params){
 		this.application_name = document.getElementById('application').innerHTML;
-		add_path('models', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		this.checked = params.element.firstChild.checked;
+		if(this.checked)
+			add_path('models', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		else
+			remove_path('models', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
 	}
 });
 
 ResourcesController = MVC.Controller.extend('resources',{
     change: function(params){
 		this.application_name = document.getElementById('application').innerHTML;
-		add_path('resources', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		this.checked = params.element.firstChild.checked;
+		if(this.checked)
+			add_path('resources', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		else
+			remove_path('resources', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
 	}
 });
 
 ViewsController = MVC.Controller.extend('views',{
     change: function(params){
 		this.application_name = document.getElementById('application').innerHTML;
-		add_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		this.checked = params.element.firstChild.checked;
+		if(this.checked)
+			add_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		else
+			remove_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
 	}
 });
 
 FunctionalTestsController = MVC.Controller.extend('functional_tests',{
     change: function(params){
 		this.application_name = document.getElementById('application').innerHTML;
-		add_path('functional_tests', MVC.file_base+"\\app\\"+this.application_name+"_test.js", params.element.lastChild.nodeValue);
+		this.checked = params.element.firstChild.checked;
+		if(this.checked)
+			add_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", params.element.lastChild.nodeValue);
+		else
+			remove_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", params.element.lastChild.nodeValue);
 	}
 });
 
 UnitTestsController = MVC.Controller.extend('unit_tests',{
     change: function(params){
 		this.application_name = document.getElementById('application').innerHTML;
-		add_path('unit_tests', MVC.file_base+"\\app\\"+this.application_name+"_test.js", params.element.lastChild.nodeValue);
+		this.checked = params.element.firstChild.checked;
+		if(this.checked)
+			add_path('unit_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", params.element.lastChild.nodeValue);
+		else
+			remove_path('unit_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", params.element.lastChild.nodeValue);
 	}
 });
 
 PluginsController = MVC.Controller.extend('plugins',{
     change: function(params){
 		this.application_name = document.getElementById('application').innerHTML;
-		add_path('plugins', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		this.checked = params.element.firstChild.checked;
+		if(this.checked)
+			add_path('plugins', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		else
+			remove_path('plugins', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
 	}
 });
 
