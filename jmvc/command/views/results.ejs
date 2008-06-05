@@ -3,18 +3,31 @@
 	<input type='submit' value='create'/>
 </form>
 <h1 id='application'><%= app_name %></h1>
-<%	var included_groups = ['controllers','models','resources','views','functional_tests','unit_tests','plugins'];
+<%	var included_groups = ['controllers','models','resources','functional_tests','unit_tests','plugins'];
 	for(var i=0; i<included_groups.length; i++) { %>
 	<h2><%= included_groups[i] %></h2>
 	<ul id='<%= included_groups[i] %>'>
-		<% if(files[included_groups[i]]) { %>
-			<% for(var j=0; j<files[included_groups[i]].length; j++) { %>
-				<% var checked = false;
-				if(included[included_groups[i]] && 
-				  included[included_groups[i]].indexOf(files[included_groups[i]][j]) != -1)
-						checked = true; %>
-				<li class='<%= included_groups[i].singularize() %>'><input type="checkbox" <%= checked? "checked='true'": "" %> /><%= files[included_groups[i]][j] %></li>
-			<% } %>
+	<% if(files[included_groups[i]]) { %>
+		<% for(var j=0; j<files[included_groups[i]].length; j++) { %>
+			<% var checked = false;
+			if(included[included_groups[i]] && 
+			  included[included_groups[i]].indexOf(files[included_groups[i]][j]) != -1)
+					checked = true; %>
+			<li class='<%= included_groups[i].singularize() %>'><input type="checkbox" <%= checked? "checked='true'": "" %> /><%= files[included_groups[i]][j] %></li>
 		<% } %>
+	<% } %>
 	</ul>
 <%  }  %>
+
+<h2>views</h2>
+<% for(var dir in files.views) { %>
+	<h3><%= dir %></h3>
+	<ul id='views'>
+	<% for(var j=0; j<files.views[dir].length; j++) { %>
+		<% var checked = false;
+		if(included.views && included.views.indexOf(dir+'/'+files.views[dir][j]) != -1)
+			checked = true; %>
+		<li class='view'><input type="checkbox" <%= checked? "checked='true'": "" %> /><%= files.views[dir][j] %></li>
+	<% } %>
+	</ul>
+<% } %>

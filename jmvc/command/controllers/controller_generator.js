@@ -37,7 +37,7 @@ var add_include = function(include_type, file, file_to_add) {
 	var str = "include."+include_type+"(";
 	var name_arr = [];
 	var regexp_include = new RegExp("include\\."+include_type+"\\((.*)\\)");
-	var regexp_items = /\'(\w+)\'/g;
+	var regexp_items = /\'([\w|\/]+)\'/g;
 	var match_arr = [];
 	var match = file.match(regexp_include);
 	while(match_arr = regexp_items.exec(match[1])) {
@@ -60,7 +60,7 @@ var remove_include = function(include_type, file, file_to_remove) {
 	var str = "include."+include_type+"(";
 	var name_arr = [];
 	var regexp_include = new RegExp("include\\."+include_type+"\\((.*)\\)");
-	var regexp_items = /\'(\w+)\'/g;
+	var regexp_items = /\'([\w|\/]+)\'/g;
 	var match_arr = [];
 	var match = file.match(regexp_include);
 	while(match_arr = regexp_items.exec(match[1])) {
@@ -134,10 +134,13 @@ ViewsController = MVC.Controller.extend('views',{
     change: function(params){
 		this.application_name = document.getElementById('application').innerHTML;
 		this.checked = params.element.firstChild.checked;
+		var dir_name = params.element.parentNode.previousSibling.previousSibling.innerHTML;
+		var template_name = params.element.lastChild.nodeValue;
+		var full_path = dir_name+'/'+template_name
 		if(this.checked)
-			add_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+			add_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", full_path);
 		else
-			remove_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+			remove_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", full_path);
 	}
 });
 

@@ -26,13 +26,25 @@ function get_functional_tests(){
 	return tests;
 }
 
+function get_views(){
+	var views = {};
+	netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+    var dirs = mozillaGetFiles(MVC.file_base.replace(/\//g,"\\")+"\\views");
+    for(var i = 0; i < dirs.length; i++){
+		var dir = dirs[i];
+		if(dir.isDirectory() && dir.leafName.indexOf('.') != 0)
+			views[dir.leafName] = mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\views\\"+dir.leafName);
+    }
+	return views;
+}
+
 function print_results(){
 	// need all the files in each folder
 	var files = {
 		controllers: get_controllers(),
 		models: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\models"),
 		resources: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\resources"),
-		views: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\views"),
+		views: get_views(),
 		functional_tests: get_functional_tests(),
 		unit_tests: get_unit_tests(),
 		plugins: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\jmvc\\plugins")
