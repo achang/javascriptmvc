@@ -56,6 +56,19 @@ var remove_path = function(include_type, file_path, file_to_remove) {
 	mozillaSaveFile(file_path, str);
 }
 
+var list_of_items = function(include_type, file) {
+	var name_arr = [];
+	var regexp_include = new RegExp("include\\."+include_type+"\\((.*)\\)");
+	var regexp_items = /\'([\w|\/]+)\'/g;
+	var match_arr = [];
+	var match = file.match(regexp_include);
+	while(match_arr = regexp_items.exec(match[1])) {
+		if(match_arr[1])
+				name_arr.push(match_arr[1]);
+	}
+	return name_arr;
+}
+
 var remove_include = function(include_type, file, file_to_remove) {
 	var str = "include."+include_type+"(";
 	var name_arr = [];
@@ -174,6 +187,8 @@ PluginsController = MVC.Controller.extend('plugins',{
 			add_path('plugins', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
 		else
 			remove_path('plugins', MVC.file_base+"\\apps\\"+this.application_name+".js", params.element.lastChild.nodeValue);
+		// reload the app
+		load_frame(this.application_name);
 	}
 });
 

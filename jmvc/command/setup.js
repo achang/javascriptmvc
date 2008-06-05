@@ -38,6 +38,12 @@ function get_views(){
 	return views;
 }
 
+function plugins_from_app_file(){
+	var file = mozillaReadFile(MVC.file_base.replace(/\//g,"\\")+"\\apps\\"+frames['demo_iframe'].MVC.app_name+".js");
+	var list = list_of_items('plugins', file);
+	return list;
+}
+
 function print_results(){
 	// need all the files in each folder
 	var files = {
@@ -53,7 +59,9 @@ function print_results(){
 	var res = new MVC.View({absolute_url: 'command/views/results.ejs'}).render({
 		files: files,
 		included: frames['demo_iframe'].MVC.Included,
-		app_name: frames['demo_iframe'].MVC.app_name
+		app_name: frames['demo_iframe'].MVC.app_name,
+		// get the list of plugins being included from the app file (the rest are dependencies)
+		plugins_in_app_file: plugins_from_app_file(frames['demo_iframe'].MVC.app_name)
 	});
 	document.getElementById('render_to').innerHTML = res;
 }

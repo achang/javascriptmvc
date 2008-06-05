@@ -3,7 +3,7 @@
 	<input type='submit' value='create'/>
 </form>
 <h1 id='application'><%= app_name %></h1>
-<%	var included_groups = ['controllers','models','resources','functional_tests','unit_tests','plugins'];
+<%	var included_groups = ['controllers','models','resources','functional_tests','unit_tests'];
 	for(var i=0; i<included_groups.length; i++) { %>
 	<h2><%= included_groups[i] %></h2>
 	<ul id='<%= included_groups[i] %>'>
@@ -31,3 +31,19 @@
 	<% } %>
 	</ul>
 <% } %>
+
+
+<h2>plugins</h2>
+<ul id='plugins'>
+<% if(files.plugins) { %>
+	<% for(var j=0; j<files.plugins.length; j++) { %>
+		<% var checked = false;
+		if(included.plugins && included.plugins.indexOf(files.plugins[j]) != -1)
+			checked = true; %>
+		<% var disabled = true;
+		if((checked && plugins_in_app_file.indexOf(files.plugins[j]) != -1) || !checked)
+			disabled = false; %>
+		<li class='plugin'><input type="checkbox" <%= disabled? "disabled='true'": "" %> <%= checked? "checked='true'": "" %> /><%= files.plugins[j] %></li>
+	<% } %>
+<% } %>
+</ul>
