@@ -192,6 +192,30 @@ PluginsController = MVC.Controller.extend('plugins',{
 	}
 });
 
+PageGeneratorController = MVC.Controller.extend('page_generator',{
+    submit: function(params){
+        params.event.kill();
+		this.application_name = document.getElementById('application').innerHTML;
+		
+		// calculate the path to jmvc/include.js from the html file
+		var html_location = mozillaChooseFile();
+		var absolute_path_to_include = MVC.file_base+"\\jmvc\\include.js";
+		this.path_to_jmvc = path_between_files(html_location, MVC.file_base+"\\jmvc\\include.js");
+		
+		// save the html file
+		var res = new MVC.View({absolute_url: 'command/generators/page.ejs'}).render(this);
+        mozillaSaveFile(html_location, res);
+    }
+});
+
+var path_between_files = function(path_from, path_to){
+	var file2 = new MVC.File(path_to.replace(/\\/g, "/"));
+	var file1_path = path_from.replace(/\\/g, "/");
+	var file1_path_arr = file1_path.split("/");
+	var file1 = file1_path_arr.slice(0,file1_path_arr.length-1).join("/");
+	var final_path = file2.to_reference_from_same_domain(file1);
+	return final_path;
+}
 
 ApplicationGeneratorController = MVC.Controller.extend('application_generator',{
     submit: function(params){
@@ -199,18 +223,13 @@ ApplicationGeneratorController = MVC.Controller.extend('application_generator',{
         this.application_name = params.element.application_name.value;
 		
 		// calculate the path to jmvc/include.js from the html file
-		this.html_location = mozillaChooseFile();
+		var html_location = mozillaChooseFile();
 		var absolute_path_to_include = MVC.file_base+"\\jmvc\\include.js";
-		
-		var file2 = new MVC.File(absolute_path_to_include.replace(/\\/g, "/"));
-		var file1_path = this.html_location.replace(/\\/g, "/");
-		var file1_path_arr = file1_path.split("/");
-		var file1 = file1_path_arr.slice(0,file1_path_arr.length-1).join("/");
-		this.path_to_jmvc = file2.to_reference_from_same_domain(file1);
+		this.path_to_jmvc = path_between_files(html_location, MVC.file_base+"\\jmvc\\include.js");
 		
 		// save the html file
 		var res = new MVC.View({absolute_url: 'command/generators/page.ejs'}).render(this);
-        mozillaSaveFile(this.html_location, res);
+        mozillaSaveFile(html_location, res);
 		
 		// save the application file
 		var res = new MVC.View({absolute_url: 'command/generators/application.ejs'}).render(this);
