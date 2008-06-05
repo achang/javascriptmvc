@@ -103,27 +103,35 @@ ViewGeneratorController = MVC.Controller.extend('view_generator',{
     }
 });
 
+var add_include = function(include_type, file, file_to_add) {
+	return modify_includes(include_type, file, file_to_add, true);
+}
+
+var remove_include = function(include_type, file, file_to_remove) {
+	return modify_includes(include_type, file, file_to_remove, false);
+}
+
+var modify_includes = function(include_type, file, file_to_check, add) {
+	var regexp_include = new RegExp("include\\."+include_type+"\\((.*)\\)");
+	var str = "include."+include_type+"(";
+	var items = list_of_items(include_type, file);
+	var name_arr = [];
+	for(var i=0; i<items.length; i++){
+		if(items[i] != file_to_check)
+			name_arr.push("'"+items[i]+"'");
+	}
+	if(add)
+		name_arr.push("'"+file_to_check+"'");
+	
+	str += name_arr.join(',');
+	str += ')';
+	return file.replace(regexp_include,str);
+}
+
 var add_path = function(include_type, file_path, file_to_add) {
     var file = mozillaReadFile(file_path);
 	var str = add_include(include_type, file, file_to_add);
 	mozillaSaveFile(file_path, str  );
-}
-
-var add_include = function(include_type, file, file_to_add) {
-	var str = "include."+include_type+"(";
-	var name_arr = [];
-	var regexp_include = new RegExp("include\\."+include_type+"\\((.*)\\)");
-	var regexp_items = /\'([\w|\/]+)\'/g;
-	var match_arr = [];
-	var match = file.match(regexp_include);
-	while(match_arr = regexp_items.exec(match[1])) {
-		if(match_arr[1] && match_arr[1] != file_to_add)
-				name_arr.push("'"+match_arr[1]+"'");
-	}
-	name_arr.push("'"+file_to_add+"'");
-	str += name_arr.join(',');
-	str += ')';
-	return file.replace(regexp_include,str);
 }
 
 var remove_path = function(include_type, file_path, file_to_remove) {
@@ -143,22 +151,6 @@ var list_of_items = function(include_type, file) {
 				name_arr.push(match_arr[1]);
 	}
 	return name_arr;
-}
-
-var remove_include = function(include_type, file, file_to_remove) {
-	var str = "include."+include_type+"(";
-	var name_arr = [];
-	var regexp_include = new RegExp("include\\."+include_type+"\\((.*)\\)");
-	var regexp_items = /\'([\w|\/]+)\'/g;
-	var match_arr = [];
-	var match = file.match(regexp_include);
-	while(match_arr = regexp_items.exec(match[1])) {
-		if(match_arr[1] && match_arr[1] != file_to_remove)
-				name_arr.push("'"+match_arr[1]+"'");
-	}
-	str += name_arr.join(',');
-	str += ')';
-	return file.replace(regexp_include,str);
 }
 
 ProjectsController = MVC.Controller.extend('projects',{
@@ -225,7 +217,7 @@ ViewsController = MVC.Controller.extend('views',{
 		this.checked = params.element.firstChild.checked;
 		var dir_name = params.element.parentNode.previousSibling.previousSibling.innerHTML;
 		var template_name = params.element.lastChild.nodeValue;
-		var full_path = dir_name+'/'+template_name
+		var full_path = dir_name+'/'+template_name;
 		if(this.checked)
 			add_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", full_path);
 		else
