@@ -62,6 +62,15 @@ MVC.Object.to_query_string.worker = function(obj,name){
 	for(var thing in obj){
 		if(obj.hasOwnProperty(thing)) {
 			var value = obj[thing];
+            if(value && value.constructor === Date){
+                
+                value =  value.getUTCFullYear()+'-'+
+                    MVC.Number.to_padded_string(value.getUTCMonth() + 1,2) + '-' +
+                    MVC.Number.to_padded_string(value.getUTCDate(),2) + ' ' +
+                    MVC.Number.to_padded_string(value.getUTCHours(),2) + ':' +
+                    MVC.Number.to_padded_string(value.getUTCMinutes(),2) + ':' +
+                    MVC.Number.to_padded_string(value.getUTCSeconds(),2);
+            }
 			if(typeof value != 'object'){
 				var nice_val = encodeURIComponent(value.toString());
 				var newer_name = encodeURIComponent(name ? name+'['+thing+']' : thing) ;
@@ -132,6 +141,13 @@ MVC.Native.extend('Function', {
 	params: MVC.Function.params
 });
 
-
+MVC.Native.extend('Number', {
+    to_padded_string: function(number, length, radix) {
+        var string = number.toString(radix || 10);
+        var ret = '';
+        for(var i = 0 ; i < length - string.length; i++) ret =+ '0';
+        return ret + string;
+    }
+})
 
 

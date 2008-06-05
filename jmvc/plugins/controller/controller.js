@@ -1,3 +1,8 @@
+// submitted by kangax
+MVC.Object.is_number = function(o){
+    return o &&(  typeof o == 'number' || ( typeof o == 'string' && !isNaN(o) ) )
+};
+
 MVC.Controller = MVC.Class.extend({
     init: function(){
         
@@ -78,7 +83,15 @@ MVC.Controller = MVC.Class.extend({
 			this.action_name = action;
 			this[action].apply(this, arguments);
 		}, this);
-	}
+	},
+    delay: function(delay, action_name){
+		if(typeof this[action_name] != 'function'){ throw 'There is no action named '+actaction_nameion+'. ';}
+		
+        return setTimeout(MVC.Function.bind(function(){
+			this.action_name = action_name;
+			this[action_name].apply(this, arguments);
+		}, this), delay );
+    }
 });
 
 MVC.Controller.Action = MVC.Class.extend(
@@ -107,7 +120,7 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
         this.css_and_event();
         
         var selector = this.selector();
-        if(selector){
+        if(selector != null){
             new MVC.DelegationEvent(selector, this.event_type, 
                 this.controller.dispatch_closure(controller.className, action ) );
         }
@@ -125,9 +138,9 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
 	    return this.css;
     },
     plural_selector : function(){
-		if(this.css.substring(0,2) == "# "){
+		if(this.css == "#" || this.css.substring(0,2) == "# "){
 			var newer_action_name = this.css.substring(2,this.css.length);
-            return '#'+this.controller.className + (newer_action_name ? newer_action_name : ' '+newer_action_name ) 
+            return '#'+this.controller.className + (newer_action_name ?  ' '+newer_action_name : '') 
 		}else{
 			return '.'+MVC.String.singularize(this.controller.className)+(this.css? ' '+this.css : '' )
 		}
@@ -157,7 +170,7 @@ MVC.Controller.Params.prototype = {
 		for(var i=0; i < els.length; i++){
 			var el = els[i];
 			if(el.type.toLowerCase()=='submit') continue;
-			var key = el.name, key_components = key.split(/\[[^\]]*\]/), value;
+			var key = el.name, key_components = key.match(/(\w+)/g), value;
          
 			/* Check for checkbox and radio buttons */
 			switch(el.type.toLowerCase()) {
@@ -165,23 +178,22 @@ MVC.Controller.Params.prototype = {
 				case 'radio':
 					value = !!el.checked;
 					break;
-						
 				default:
 					value = el.value;
 					break;
 			}
-			if(MVC.Object.is_number(value) ) value = parseFloat(value);
+			if( MVC.Object.is_number(value) ) value = parseFloat(value);
 			if( key_components.length > 1 ) {
 				var last = key_components.length - 1;
 				var nested_key = key_components[0].toString();
 				if(! data[nested_key] ) data[nested_key] = {};
 				var nested_hash = data[nested_key];
 				for(var k = 1; k < last; k++){
-					nested_key = key_components[k].substring(1, key_components[k].length - 1);
+					nested_key = key_components[k];
 					if( ! nested_hash[nested_key] ) nested_hash[nested_key] ={};
 					nested_hash = nested_hash[nested_key];
 				}
-				nested_hash[ key_components[last].substring(1, key_components[last].length - 1) ] = value;
+				nested_hash[ key_components[last] ] = value;
 			} else {
 		        if (key in data) {
 		        	if (typeof data[key] == 'string' ) data[key] = [data[key]];

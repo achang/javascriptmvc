@@ -1,23 +1,4 @@
 MVC.Delegator={
-    dispatch: function(controller, action_name, params){
-		var c_name = controller;
-		if(typeof controller == 'string'){controller = window[ MVC.String.classize(controller)+'Controller'];}
-		if(!controller) throw 'No controller named '+c_name+' was found for MVC.Controller.dispatch.';
-		if(!action_name) action_name = 'index';
-		
-		if(typeof action_name == 'string'){
-			if(!(action_name in controller.actions()) ) throw 'No action named '+action+' was found for '+c_name+'.';
-		}else{ //action passed
-			action_name = action_name.name;
-		}
-		var action = controller.actions()[action_name], instance = new controller();
-		instance.params = params;
-		instance.action = action;
-		return MVC.Controller._dispatch_action(instance,action_name, params );
-	},
-	_dispatch_action: function(instance, action_name, params){
-		return instance[action_name](params);
-	},
 	node_path: function(el){
 		var body = document.documentElement,parents = [],iterator =el;
 		while(iterator != body){
@@ -69,7 +50,7 @@ MVC.DelegationEvent = function(selector, event, f){
     this._func = f;
     
     
-    if(event == 'submit' && MVC.Browser.IE) return this.submit_for_ie();
+    if(event == 'submit' /*&& MVC.Browser.IE*/) return this.submit_for_ie();
 	if(event == 'change' && MVC.Browser.IE) return this.change_for_ie();
 	if(event == 'change' && MVC.Browser.WebKit) return this.change_for_webkit();
 	
@@ -103,9 +84,10 @@ MVC.DelegationEvent.prototype = {
     },
     
     submit_for_ie : function(){
-		this.controller.add_register_action(this,document.documentElement, 'click');
-		this.controller.add_register_action(this,document.documentElement, 'keypress');
-		this.filters= {
+		this.add_to_delegator(null, 'click')
+        this.add_to_delegator(null, 'keypress')
+        
+        this.filters= {
 			click : function(el, event){
 				return el.nodeName.toUpperCase() == 'INPUT' && el.type.toLowerCase() == 'submit';
 			},
@@ -117,8 +99,8 @@ MVC.DelegationEvent.prototype = {
 		};
 	},
 	change_for_ie : function(){
-		this.controller.add_register_action(this,document.documentElement, 'click');
-		this.filters= {
+		this.add_to_delegator(null, 'click')
+        this.filters= {
 			click : function(el, event){
 				if(typeof el.selectedIndex == 'undefined') return false; //sometimes it won't exist yet
 				var old = el.getAttribute('_old_value');

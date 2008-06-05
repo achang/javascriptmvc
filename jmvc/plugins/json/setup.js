@@ -1,13 +1,5 @@
 //Heavily borrowed from prototype
-if(!MVC.Number) MVC.Number = {};
 MVC.Object.extend(MVC.Number, {
-    to_padded_string: function(number, length, radix) {
-        var string = number.toString(radix || 10);
-        var ret = '';
-        for(var i = 0 ; i < length - string.length; i++)
-            ret =+ '0';
-        return ret + string;
-    },
     to_json: function(number) {
         return isFinite(number) ? number.toString() : 'null';
     }

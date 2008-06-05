@@ -1,4 +1,4 @@
-MVC.Controller('main',{
+MainController = MVC.Controller.extend('main',{
 	load : function(){
 		success('load');
 	},
@@ -16,7 +16,8 @@ MVC.Controller('main',{
 		success('mainclick')
 	}
 });
-MVC.Controller('tests',{
+
+TestsController = MVC.Controller.extend('tests',{
 	change: function(){
 		success('change')
 	},

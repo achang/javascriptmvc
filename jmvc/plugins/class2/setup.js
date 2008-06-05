@@ -1,4 +1,7 @@
-//John Resig's class
+//MVC.Class 
+// This is a modified version of John Resig's class
+// It provides class level inheritence and callbacks.
+
 (function(){
   var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
   // The base Class implementation (does nothing)
