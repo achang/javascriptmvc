@@ -4,15 +4,37 @@ function load_frame(app_name){
 	document.getElementById('demo_iframe').addEventListener('load', print_results, true);
 }
 
+function get_controllers(){
+	var controller_names = mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\controllers");
+	for(var i=0; i<controller_names.length; i++) {
+		controller_names[i] = controller_names[i].replace(/_controller/,'');
+	}
+	return controller_names;
+}
+function get_unit_tests(){
+	var tests = mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\unit");
+	for(var i=0; i<tests.length; i++) {
+		tests[i] = tests[i].replace(/_test/,'');
+	}
+	return tests;
+}
+function get_functional_tests(){
+	var tests = mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\functional");
+	for(var i=0; i<tests.length; i++) {
+		tests[i] = tests[i].replace(/_test/,'');
+	}
+	return tests;
+}
+
 function print_results(){
 	// need all the files in each folder
 	var files = {
-		controllers: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\controllers"),
+		controllers: get_controllers(),
 		models: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\models"),
 		resources: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\resources"),
 		views: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\views"),
-		functional_tests: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\functional"),
-		unit_tests: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\test\\unit"),
+		functional_tests: get_functional_tests(),
+		unit_tests: get_unit_tests(),
 		plugins: mozillaGetFileNames(MVC.file_base.replace(/\//g,"\\")+"\\jmvc\\plugins")
 	}
 	

@@ -288,7 +288,7 @@ MVC.Object.extend(include,{
 		return function(){
 			for (var i = 0; i < arguments.length; i++) {
 				arguments[i] = f(arguments[i]);
-				included_array.push(arguments[i].match(/[^\/\\]*$/)[0]);
+				included_array.push(arguments[i].match(/[^\/\\]*$/)[0].replace(/_controller/,''));
 			}
 			return include.apply(null, arguments);
 		}

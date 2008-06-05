@@ -10,6 +10,10 @@
 			var app_name = location.href.split('?')[1];
 			document.write('<script language="javascript" type="text/javascript" src="../include.js?'
 				+app_name+'"><\/script>');
+			document.write('<script language="javascript" type="text/javascript" '
+				+'src="resources/redefine_test_includes.js"><\/script>');
+			document.write('<script language="javascript" type="text/javascript" src="../../apps/'
+				+app_name+'_test.js"><\/script>');
 		</script>
 	</body>
 </html>
