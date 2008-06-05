@@ -1,8 +1,8 @@
 include.resources();
-include.plugins();
+include.plugins('core');
 
-MVC.initializer(function(){
+MVC.Initializer(function(){
   include.models();
-  include.controllers();
+  include.controllers('main');
   include.views();
 });

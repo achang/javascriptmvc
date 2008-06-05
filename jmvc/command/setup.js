@@ -47,8 +47,29 @@ loading = function(){
 	txt += '<li id="new_app">Create New Application + </li>';
     document.getElementById('projects').innerHTML = txt;
     
-}        
+}
 
+mozillaChooseFile = function(filePath){
+    netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+	var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker)
+
+    fp.init(window, "", fp.modeSave);
+    fp.defaultExtension = "html";
+    fp.defaultString = "index.html";
+    fp.appendFilters(fp.filterHTML);
+    fp.appendFilters(fp.filterAll);
+	
+	var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+	file.initWithPath(MVC.file_base);
+	fp.displayDirectory = file;
+	
+	var rv = fp.show();
+	if (rv == fp.returnOK || rv == fp.returnReplace) {
+	  var file = fp.file;
+	  var path = fp.file.path;
+	}
+	return path
+}
 
 function mozillaSaveFile(filePath,content)
 {

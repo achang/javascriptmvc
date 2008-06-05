@@ -173,10 +173,34 @@ ApplicationGeneratorController = MVC.Controller.extend('application_generator',{
     submit: function(params){
 		params.event.kill();
         this.application_name = params.element.application_name.value;
+		
+		// calculate the path to jmvc/include.js from the html file
+		this.html_location = mozillaChooseFile();
+		var absolute_path_to_include = MVC.file_base+"\\jmvc\\include.js";
+		
+		var file2 = new MVC.File(absolute_path_to_include.replace(/\\/g, "/"));
+		var file1_path = this.html_location.replace(/\\/g, "/");
+		var file1_path_arr = file1_path.split("/");
+		var file1 = file1_path_arr.slice(0,file1_path_arr.length-1).join("/");
+		this.path_to_jmvc = file2.to_reference_from_same_domain(file1);
+		
+		// save the html file
+		var res = new MVC.View({absolute_url: 'command/generators/page.ejs'}).render(this);
+        mozillaSaveFile(this.html_location, res);
+		
+		// save the application file
 		var res = new MVC.View({absolute_url: 'command/generators/application.ejs'}).render(this);
         mozillaSaveFile(MVC.file_base+"\\apps\\"+this.application_name+".js", res  );
+		
+		// save the main controller
+		var res = new MVC.View({absolute_url: 'command/generators/main_controller.ejs'}).render(this);
+        mozillaSaveFile(MVC.file_base+"\\controllers\\main_controller.js", res  );
+		
+		// save the test file
 		var res = new MVC.View({absolute_url: 'command/generators/test.ejs'}).render(this);
         mozillaSaveFile(MVC.file_base+"\\apps\\"+this.application_name+"_test.js", res  );
+		
+		// load the app
 		load_frame(this.application_name);
     }
 });
