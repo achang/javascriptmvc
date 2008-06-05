@@ -54,9 +54,13 @@ h4 {color: green; float: left;font-weight: normal;
 .include_type {margin-bottom: 20px;}
 .include_type form {position: relative; top: -2px; }
 .include_type form input {font-size: 10pt; padding: 0px;}
+
+.include_type form input.text {width: 100px;}
+
 .include_type form span {position: relative; top: -1px;}
 
 .include_type table {margin-bottom: 10px;}
 .include_type table input {margin: 0px 10px 1px 0px;}
 
 
+.include_type select option {font-size: 10pt;}
