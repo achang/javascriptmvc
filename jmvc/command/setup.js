@@ -98,7 +98,8 @@ function mozillaSaveFile(filePath,content)
 	if(window.Components) {
 
 			netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-			var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+			var file = Components.classes["@mozilla.org/file/local;1"]
+								.createInstance(Components.interfaces.nsILocalFile);
 			file.initWithPath(filePath);
 			if(!file.exists())
 				file.create(0,0664);
@@ -111,6 +112,15 @@ function mozillaSaveFile(filePath,content)
 
 	}
 	return null;
+}
+mozillaCreateDirectory = function(path) {
+	netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+	var file = Components.classes["@mozilla.org/file/local;1"]
+						.createInstance(Components.interfaces.nsILocalFile);
+	file.initWithPath(path);
+	
+	if( !file.exists() || !file.isDirectory() )
+	   file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0777);
 }
 mozillaGetFileNames = function(filePath){
     netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");

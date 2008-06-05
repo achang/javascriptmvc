@@ -16,6 +16,12 @@ ControllerGeneratorController = MVC.Controller.extend('controller_generator',{
         var res = new MVC.View({absolute_url: 'command/generators/controller_test.ejs'}).render(this);
         mozillaSaveFile(MVC.file_base+"\\test\\functional\\"+this.class_name+"_controller_test.js", res  );
 		
+		// write the controller test include back to the test file
+		add_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name);
+		
+		// create the view folder
+		mozillaCreateDirectory(MVC.file_base+"\\views\\"+this.class_name);
+		
 		// reload the app
 		load_frame(this.application_name);
     }
