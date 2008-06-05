@@ -68,7 +68,7 @@ UnitTestGeneratorController = MVC.Controller.extend('unit_test_generator',{
 FunctionalTestGeneratorController = MVC.Controller.extend('functional_test_generator',{
     submit: function(params){
         params.event.kill();
-        this.class_name = params.element.functional_test_name.value;
+        this.class_name = params.element.view_name.value;
 		this.application_name = document.getElementById('application').innerHTML;
 		
 		// create the test file
@@ -77,6 +77,26 @@ FunctionalTestGeneratorController = MVC.Controller.extend('functional_test_gener
 		
 		// write the test include back to the app file
 		add_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name);
+		
+		// reload the app
+		load_frame(this.application_name);
+    }
+});
+
+ViewGeneratorController = MVC.Controller.extend('view_generator',{
+    submit: function(params){
+        params.event.kill();
+        var view_name = params.element.view_name.value;
+		this.application_name = document.getElementById('application').innerHTML;
+		var folder_name = params.element.view_folder.value;
+		var view_path = folder_name+'/'+view_name;
+		
+		// create the view
+        var res = new MVC.View({absolute_url: 'command/generators/view.ejs'}).render(this);
+        mozillaSaveFile(MVC.file_base+"\\views\\"+folder_name+"\\"+view_name+".ejs", res);
+		
+		// write the view include back to the app file
+		add_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", view_path);
 		
 		// reload the app
 		load_frame(this.application_name);

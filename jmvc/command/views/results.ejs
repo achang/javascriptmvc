@@ -19,6 +19,15 @@
 	<input name='functional_test_name'/>
 	<input type='submit' value='create'/>
 </form>
+<form id='view_generator'>Create new view 
+	<input name='view_name'/>
+	Folder<select name="view_folder">
+	<% for(var dir in files.views) { %>
+		<option value="<%= dir %>"><%= dir %></option>
+	<% } %>
+	</select>
+	<input type='submit' value='create'/>
+</form>
 <form id='page_generator'>Add a page 
 	<input type='submit' value='browse'/>
 </form>
