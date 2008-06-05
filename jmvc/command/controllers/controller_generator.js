@@ -47,6 +47,42 @@ ModelGeneratorController = MVC.Controller.extend('model_generator',{
     }
 });
 
+UnitTestGeneratorController = MVC.Controller.extend('unit_test_generator',{
+    submit: function(params){
+        params.event.kill();
+        this.class_name = params.element.unit_test_name.value;
+		this.application_name = document.getElementById('application').innerHTML;
+		
+		// create the test file
+        var res = new MVC.View({absolute_url: 'command/generators/unit_test.ejs'}).render(this);
+        mozillaSaveFile(MVC.file_base+"\\test\\unit\\"+this.class_name+"_test.js", res)
+		
+		// write the test include back to the app file
+		add_path('unit_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name);
+		
+		// reload the app
+		load_frame(this.application_name);
+    }
+});
+
+FunctionalTestGeneratorController = MVC.Controller.extend('functional_test_generator',{
+    submit: function(params){
+        params.event.kill();
+        this.class_name = params.element.functional_test_name.value;
+		this.application_name = document.getElementById('application').innerHTML;
+		
+		// create the test file
+        var res = new MVC.View({absolute_url: 'command/generators/functional_test.ejs'}).render(this);
+        mozillaSaveFile(MVC.file_base+"\\test\\functional\\"+this.class_name+"_test.js", res)
+		
+		// write the test include back to the app file
+		add_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name);
+		
+		// reload the app
+		load_frame(this.application_name);
+    }
+});
+
 var add_path = function(include_type, file_path, file_to_add) {
     var file = mozillaReadFile(file_path);
 	var str = add_include(include_type, file, file_to_add);
