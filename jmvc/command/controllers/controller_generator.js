@@ -27,6 +27,26 @@ ControllerGeneratorController = MVC.Controller.extend('controller_generator',{
     }
 });
 
+ModelGeneratorController = MVC.Controller.extend('model_generator',{
+    submit: function(params){
+        params.event.kill();
+        this.class_name = params.element.model_name.value;
+        this.name = MVC.String.classize(this.class_name);
+		this.application_name = document.getElementById('application').innerHTML;
+		this.type = params.element.model_type.value;
+		
+		// create the model file
+        var res = new MVC.View({absolute_url: 'command/generators/model.ejs'}).render(this);
+        mozillaSaveFile(MVC.file_base+"\\models\\"+this.class_name+".js", res)
+		
+		// write the model include back to the app file
+		add_path('models', MVC.file_base+"\\apps\\"+this.application_name+".js", this.class_name);
+		
+		// reload the app
+		load_frame(this.application_name);
+    }
+});
+
 var add_path = function(include_type, file_path, file_to_add) {
     var file = mozillaReadFile(file_path);
 	var str = add_include(include_type, file, file_to_add);
