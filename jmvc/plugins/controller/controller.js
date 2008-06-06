@@ -91,6 +91,12 @@ MVC.Controller = MVC.Class.extend({
 			this.action_name = action_name;
 			this[action_name].apply(this, arguments);
 		}, this), delay );
+    },
+    dispatch_delay: function(delay, action_name, params){
+        var controller_name = this.Class.className;
+        return setTimeout(function(){
+            MVC.Controller.dispatch(controller_name,action_name, params )
+        }, delay );
     }
 });
 
