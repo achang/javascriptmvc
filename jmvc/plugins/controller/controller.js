@@ -5,7 +5,6 @@ MVC.Object.is_number = function(o){
 
 MVC.Controller = MVC.Class.extend({
     init: function(){
-        
         if(!this.className) return;
         MVC.Controller.controllers.push(this);
         var val;
@@ -93,7 +92,8 @@ MVC.Controller = MVC.Class.extend({
 		}, this), delay );
     },
     dispatch_delay: function(delay, action_name, params){
-        var controller_name = this.Class.className;
+        var controller_name = action_name.controller ? action_name.controller : this.Class.className;
+        action_name = typeof action_name == 'string' ? action_name : action_name.action
         return setTimeout(function(){
             MVC.Controller.dispatch(controller_name,action_name, params )
         }, delay );

@@ -63,7 +63,6 @@ MVC.RemoteModel = MVC.Model.extend(
 		if(APPLICATION_KEY) params.user_crypted_key = APPLICATION_KEY;
 		params.referer = window.location.href;
 		params.callback = MVC.String.capitalize(MVC.String.camelize(this.className))+'.'+callback_name+'Callback';
-        params.random = this.random;
 	},
     callback_name : 'callback',
     domain: null,

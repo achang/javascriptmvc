@@ -69,7 +69,7 @@ MVC.Object.to_json = function(object, nested){
     var results = [];
     for (var property in object) {
       var value = MVC.Object.to_json(object[property], true);
-      if (!Object.isUndefined(value))
+      if (typeof value != 'undefined')
         results.push(MVC.String.to_json(property) + ': ' + value);
     }
     return '{' + results.join(', ') + '}';

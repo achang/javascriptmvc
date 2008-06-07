@@ -13,7 +13,7 @@ MVC.Model = MVC.Class.extend(
         }else{
             if(!params[this.id] && id != 'first')
                 params[this.id] = id
-            return this.create_as_existing( this.find_one(params, callback) );
+            return this.create_as_existing( this.find_one(id == 'first'? null : params, callback) );
         }
     },
     // Called after creating something
@@ -21,7 +21,7 @@ MVC.Model = MVC.Class.extend(
         if(!attributes) return null;
         if(attributes.attributes) attributes = attributes.attributes;
         var inst = new this(attributes);
-        inst.is_new_record = this.new_record_func();
+        inst.is_new_record = this.new_record_func;
         return inst;
     },
     // Called after creating many

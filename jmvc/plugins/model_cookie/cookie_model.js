@@ -4,8 +4,10 @@ MVC.CookieModel = MVC.Model.extend(
     init : function(){
           this._working = null;  
     },
+    days: null,
     find_one : function(params){
         var insts = this.find_class_data().instances;
+        if(!params){  for(var id in insts){ return insts[id]} return null;  }
         if(params.id){
             return insts[id];
         }
@@ -58,27 +60,31 @@ MVC.CookieModel = MVC.Model.extend(
     	return null;
     },
     destroy_cookie : function(name){
-        createCookie(name,"",-1);
+        this.create_cookie(name,"",-1);
     },
     create : function(attributes){
         var cd = this.find_class_data()
         var instances = cd.instances;
         instances[attributes[this.id]] = attributes;
-        this.create_cookie(this.className, MVC.Object.to_json(cd) )
+        this.create_cookie(this.className, MVC.Object.to_json(cd), this.days )
     },
     update : function(id, attributes){
         var cd = this.find_class_data()
         var instances = cd.instances;
         instances[id] = attributes;
-        this.create_cookie(this.className, MVC.Object.to_json(cd) )
+        this.create_cookie(this.className, MVC.Object.to_json(cd), this.days )
     },
     destroy : function(id){
         var cd = this.find_class_data();
         var instances = cd.instances;
         var attrs = instances[id];
         delete instances[id];
-        this.create_cookie(this.className, MVC.Object.to_json(cd) );
+        this.create_cookie(this.className, MVC.Object.to_json(cd), this.days );
         return attrs;
+    },
+    destroy_all : function(){
+        this.create_cookie(this.className,"",-1);
+        return true;
     }
 },
 // Prototype functions
