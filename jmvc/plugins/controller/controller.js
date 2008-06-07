@@ -20,6 +20,9 @@ MVC.Controller = MVC.Class.extend({
                 }
             }
 	    }
+        this.modelName = MVC.String.classize(
+            MVC.String.is_singular(this.className) ? this.className : MVC.String.singularize(this.className)
+        );
     },
     add_kill_event: function(event){ //this should really be in event
 		if(!event.kill){

@@ -121,19 +121,6 @@ MVC.Model = MVC.Class.extend(
     destroy : function(){
         this.Class.destroy(this[this.Class.id])
     },
-    element : function(){
-        if(this._element) return this._element;
-        this._element = MVC.$E(this.element_id());
-        if(this._element) return this._element;
-        this._element = document.createElement('div');
-        this._element.id = this.element_id();
-        this._element.className = this.Class.className;
-        this._element.setAttribute('type', this.Class.className)
-        return this._element;
-    },
-    element_id : function(){
-        return this.Class.className+'_'+this[this.Class.id]
-    },
     add_errors : function(errors){
         if(errors) this.errors = this.errors.concat(errors);
     }

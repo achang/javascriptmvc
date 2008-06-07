@@ -3,8 +3,17 @@ MVC.Controller.prototype.render = function(options) {
 		var controller_name = this.Class.className;
 		var action_name = this.action_name;
         if(!options) options = {};
+        
+        var helpers = {};
+        if(options.helpers){
+            for(var h =0; h < options.helpers.length; h++){
+                var n = MVC.String.classize( options.helpers[h] );
+                MVC.Object.extend(helpers, window[n] ? window[n].View().helpers : {} );
+            }
+        }
+        
 		if(typeof options == 'string'){
-			result = new MVC.View({url:  options  }).render(this);
+			result = new MVC.View({url:  options  }).render(this, helpers);
 		}
 		else if(options.text) {
             result = options.text;
@@ -31,7 +40,7 @@ MVC.Controller.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			result = new MVC.View({url:  url  }).render(data_to_render);
+			result = new MVC.View({url:  url  }).render(data_to_render, helpers);
 		}
 		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];
