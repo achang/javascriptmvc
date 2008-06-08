@@ -1,105 +1,90 @@
-ControllerGeneratorController = MVC.Controller.extend('controller_generator',{
+// kills the event
+// generates the file
+// includes the generated file
+// reloads the application
+AbstractGeneratorController = MVC.Controller.extend('abstract',{
     submit: function(params){
         params.event.kill();
+		this.application_name = document.getElementById('application').innerHTML;
+		if(!params.including_file) params.including_file = this.class_name;
+		
+		// generates the file
+        var res = new MVC.View({absolute_url: 'command/generators/'+params.generating_file+'.ejs'}).render(this);
+        mozillaSaveFile(MVC.file_base+params.generated_file_path, res)
+		
+		// write the include back to the app file
+		add_path(params.generating_file.pluralize(), MVC.file_base+"\\apps\\"+this.application_name+params.including_file_suffix+".js", 
+			params.including_file);
+		
+		// reload the app
+		load_frame(this.application_name);
+    }
+});
+
+ControllerGeneratorController = AbstractGeneratorController.extend('controller_generator',{
+    submit: function(params){
         this.class_name = params.element.controller_name.value;
         this.name = MVC.String.classize(this.class_name)+'Controller';
 		this.application_name = document.getElementById('application').innerHTML;
-		
-		// create the controller file
-        var res = new MVC.View({absolute_url: 'command/generators/controller.ejs'}).render(this);
-        mozillaSaveFile(MVC.file_base+"\\controllers\\"+this.class_name+"_controller.js", res  )
-		
-		// write the controller include back to the app file
-		add_path('controllers', MVC.file_base+"\\apps\\"+this.application_name+".js", this.class_name);
+		params.generating_file = 'controller';
+		params.generated_file_path = "\\controllers\\"+this.class_name+"_controller.js";
+		params.including_file_suffix = '';
 		
 		// create the functional test file
         var res = new MVC.View({absolute_url: 'command/generators/controller_test.ejs'}).render(this);
         mozillaSaveFile(MVC.file_base+"\\test\\functional\\"+this.class_name+"_controller_test.js", res  );
 		
 		// write the controller test include back to the test file
-		add_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name);
+		add_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name+'_controller');
 		
 		// create the view folder
 		mozillaCreateDirectory(MVC.file_base+"\\views\\"+this.class_name);
 		
-		// reload the app
-		load_frame(this.application_name);
+		this._super(params);
     }
 });
 
-ModelGeneratorController = MVC.Controller.extend('model_generator',{
+UnitTestGeneratorController = AbstractGeneratorController.extend('unit_test_generator',{
     submit: function(params){
-        params.event.kill();
+        this.class_name = params.element.unit_test_name.value;
+		params.generating_file = 'unit_test';
+		params.generated_file_path = "\\test\\unit\\"+this.class_name+"_test.js";
+		params.including_file_suffix = '_test';
+		this._super(params);
+    }
+});
+
+ModelGeneratorController = AbstractGeneratorController.extend('model_generator',{
+    submit: function(params){
         this.class_name = params.element.model_name.value;
         this.name = MVC.String.classize(this.class_name);
-		this.application_name = document.getElementById('application').innerHTML;
 		this.type = params.element.model_type.value;
-		
-		// create the model file
-        var res = new MVC.View({absolute_url: 'command/generators/model.ejs'}).render(this);
-        mozillaSaveFile(MVC.file_base+"\\models\\"+this.class_name+".js", res)
-		
-		// write the model include back to the app file
-		add_path('models', MVC.file_base+"\\apps\\"+this.application_name+".js", this.class_name);
-		
-		// reload the app
-		load_frame(this.application_name);
+		params.generating_file = 'model';
+		params.generated_file_path = "\\models\\"+this.class_name+".js";
+		params.including_file_suffix = '';
+		this._super(params);
     }
 });
 
-UnitTestGeneratorController = MVC.Controller.extend('unit_test_generator',{
+FunctionalTestGeneratorController = AbstractGeneratorController.extend('functional_test_generator',{
     submit: function(params){
-        params.event.kill();
-        this.class_name = params.element.unit_test_name.value;
-		this.application_name = document.getElementById('application').innerHTML;
-		
-		// create the test file
-        var res = new MVC.View({absolute_url: 'command/generators/unit_test.ejs'}).render(this);
-        mozillaSaveFile(MVC.file_base+"\\test\\unit\\"+this.class_name+"_test.js", res)
-		
-		// write the test include back to the app file
-		add_path('unit_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name);
-		
-		// reload the app
-		load_frame(this.application_name);
+        this.class_name = params.element.functional_test_name.value;
+		params.generating_file = 'functional_test';
+		params.generated_file_path = "\\test\\functional\\"+this.class_name+"_test.js";
+		params.including_file_suffix = '_test';
+		this._super(params);
     }
 });
 
-FunctionalTestGeneratorController = MVC.Controller.extend('functional_test_generator',{
+ViewGeneratorController = AbstractGeneratorController.extend('view_generator',{
     submit: function(params){
-        params.event.kill();
         this.class_name = params.element.view_name.value;
-		this.application_name = document.getElementById('application').innerHTML;
-		
-		// create the test file
-        var res = new MVC.View({absolute_url: 'command/generators/functional_test.ejs'}).render(this);
-        mozillaSaveFile(MVC.file_base+"\\test\\functional\\"+this.class_name+"_test.js", res)
-		
-		// write the test include back to the app file
-		add_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name);
-		
-		// reload the app
-		load_frame(this.application_name);
-    }
-});
-
-ViewGeneratorController = MVC.Controller.extend('view_generator',{
-    submit: function(params){
-        params.event.kill();
-        var view_name = params.element.view_name.value;
-		this.application_name = document.getElementById('application').innerHTML;
-		var folder_name = params.element.view_folder.value;
-		var view_path = folder_name+'/'+view_name;
-		
-		// create the view
-        var res = new MVC.View({absolute_url: 'command/generators/view.ejs'}).render(this);
-        mozillaSaveFile(MVC.file_base+"\\views\\"+folder_name+"\\"+view_name+".ejs", res);
-		
-		// write the view include back to the app file
-		add_path('views', MVC.file_base+"\\apps\\"+this.application_name+".js", view_path);
-		
-		// reload the app
-		load_frame(this.application_name);
+        var folder_name = params.element.view_folder.value;
+		params.including_file = folder_name+'/'+this.class_name;
+		params.generating_file = 'view';
+		params.generated_file_path = "\\views\\"+folder_name+"\\"+this.class_name+".ejs";
+		params.including_file_suffix = '';
+		this._super(params);
     }
 });
 
