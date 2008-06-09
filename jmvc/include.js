@@ -124,7 +124,7 @@ for(var i=0; i<scripts.length; i++) {
 
 
 //configurable options
-var options = {	remote: false, 
+var options = {	remote: typeof MVCOptions == 'object' && MVCOptions.remote, 
 				env: 'development', 
 				production: '/javascripts/production.js',
 				base62: false, shrink_variables: true};
@@ -168,13 +168,13 @@ include = function(){
 	
 MVC.Object.extend(include,{
 	setup: function(o){
-		MVC.Object.extend(options, o || {});
+        MVC.Object.extend(options, o || {});
 
 		options.production = options.production+(options.production.indexOf('.js') == -1 ? '.js' : '' );
 
 		if(options.env == 'compress' && !window._rhino) include.compress_window = window.open(MVC.mvc_root+'/compress.html', null, "width=600,height=680,scrollbars=no,resizable=yes");
 		if(options.env == 'test') include.plugins('test');
-		if(options.env == 'production' && ! MVC.Browser.Opera)
+		if(options.env == 'production' && ! MVC.Browser.Opera && ! options.remote)
 			return document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>');
 	},
 	get_env: function() { return options.env;},
@@ -234,36 +234,18 @@ MVC.Object.extend(include,{
 		include.set_path(latest.start);
 		include.current = latest.path;
 		if(include.get_env()=='compress'){
-            latest.text = syncrequest(latest.path);
+            latest.text = include.request(latest.path);
         }
 		latest.ignore ? insert() : insert(latest.path);
 	},
 	end_of_production: function(){ first_wave_done = true; },
 	compress: function(){
-		if(!window._rhino){
+		if(! MVCOptions ||!MVCOptions.compress_callback){
             include.compress_window  ? 
 			include.compress_window.compress(total, include.srcs, include.get_production_name()) :
 			alert("Your popup blocker is keeping the compressor from running.\nPlease allow popups and refresh this page.");
         }else{
-
-            var collection = ''; //total.join(";\n")
-    		for(var s=0; s < total.length; s++){
-    			if(total[s].process) {
-    				total[s].text = total[s].process(total[s]);
-    			}
-    			collection += "include.set_path('"+total[s].start+"')"+";\n"+total[s].text + ";\n";
-    		}
-    		collection += "include.end_of_production();";
-            var ploc = include.get_production_name();
-            var result = Packages.org.mozilla.javascript.tools.shell.Main.compress(collection, ploc );      
-            print("Saving compressed to 'apps/"+MVC.script_options[0]+"_production.js'.")
-            var out = new java.io.FileWriter( 
-								new java.io.File( 'apps/'+MVC.script_options[0]+'_production.js' )),
-							text = new java.lang.String( result || "" );
-			out.write( text, 0, text.length() );
-			out.flush();
-			out.close();
-           
+            MVCOptions.compress_callback(total)
         }
 	},
 	opera: function(){
@@ -340,7 +322,7 @@ var insert = function(src){
 
 MVC.random = '?'+Math.random();
 MVC.Ajax.factory = function(){ return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();};
-var syncrequest = function(path){
+include.request = function(path){
    var request = MVC.Ajax.factory();
    request.open("GET", path, false);
    try{request.send(null);}
@@ -358,7 +340,7 @@ if(MVC.script_options){
 	MVC.app_name = MVC.script_options[0];
     if(window._rhino)
         MVC.script_options[1] = 'compress'
-	if(MVC.script_options.length > 1)	include.setup({env: MVC.script_options[1], production: MVC.apps_root+'/'+MVC.script_options[0]+'_production'});
+	if(MVC.script_options.length > 1)	include.setup({env: MVC.script_options[1], production: MVC.apps_root+'/'+MVC.script_options[0]+'/production'});
 	include(MVC.apps_root+'/'+MVC.script_options[0]);
 	include.opera();
 }

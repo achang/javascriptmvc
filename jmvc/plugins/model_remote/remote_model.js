@@ -61,7 +61,7 @@ MVC.RemoteModel = MVC.Model.extend(
 		}
 	},
 	add_standard_params : function(params, callback_name){
-		if(APPLICATION_KEY) params.user_crypted_key = APPLICATION_KEY;
+		if(typeof APPLICATION_KEY != 'undefined') params.user_crypted_key = APPLICATION_KEY;
 		params.referer = window.location.href;
 		params.callback = MVC.String.capitalize(MVC.String.camelize(this.className))+'.'+callback_name+'Callback';
 	},
