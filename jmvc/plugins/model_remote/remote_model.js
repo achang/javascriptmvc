@@ -67,17 +67,12 @@ MVC.RemoteModel = MVC.Model.extend(
     callback_name : 'callback',
     domain: null,
     top_level_length: function(params, url){
-    	var total = url.length;
-    	for(var attr in params){
-    		if(! params.hasOwnProperty(attr)) continue;
-    		var val = params[attr];
-    		if(typeof val == 'string'){
-    			total += val.length+attr.length+2;
-    		}else if(typeof val == 'number'){
-    			total += val.toString().length+attr.length+2;
-    		}
-    	}
-    	return total;
+    	var p = MVC.Object.extend({}, params);
+        delete p[this.className];
+        
+        
+        return url.length + MVC.Object.to_query_string(p).length;
+
     },
     seperate: function(object, top_level_length, name){
     	var remainder = 2000 - 9 - top_level_length; 

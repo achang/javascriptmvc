@@ -46,13 +46,20 @@ MVC.Object.extend(MVC.View.Helpers.prototype, {
 	    html_options.name = name;
 	    return this.single_tag_for('input', html_options);
 	},
-	link_to: function(name, options, html_options) {
+	link_to: function(name, url, html_options) {
 	    if(!name) var name = 'null';
 	    if(!html_options) var html_options = {};
 		this.set_confirm(html_options);
-		html_options.href=options;
+		html_options.href=url;
 		return this.start_tag_for('a', html_options)+name+ this.tag_end('a');
 	},
+    link_to_if: function(condition, name, url, html_options) {
+		return this.link_to_unless((!condition), name, url, html_options);
+	},
+    link_to_unless: function(condition, name, url, html_options){
+        if(condition) return name;
+        return this.link_to(name, url, html_options);
+    },
 	set_confirm: function(html_options){
 		if(html_options.confirm){
 			html_options.onclick = html_options.onclick || '';
@@ -69,9 +76,6 @@ MVC.Object.extend(MVC.View.Helpers.prototype, {
 		this.set_confirm(html_options);
 		html_options.onclick=html_options.onclick+';window.location="'+options+'"; return false;';
 		return this.single_tag_for('input', html_options);
-	},
-	link_to_if: function(condition, name, options, html_options, block) {
-		return this.link_to_unless((condition == false), name, options, html_options, null, block);
 	},
 	password_field_tag: function(name, value, html_options) { return this.input_field_tag(name, value, 'password', html_options); },
 	select_tag: function(name, value, choices, html_options) {     
