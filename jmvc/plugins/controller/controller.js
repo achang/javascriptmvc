@@ -1,17 +1,16 @@
 // submitted by kangax
 MVC.Object.is_number = function(o){
-    return o &&(  typeof o == 'number' || ( typeof o == 'string' && !isNaN(o) ) )
+    return o &&(  typeof o == 'number' || ( typeof o == 'string' && !isNaN(o) ) );
 };
 
 MVC.Controller = MVC.Class.extend({
     init: function(){
         if(!this.className) return;
         MVC.Controller.controllers.push(this);
-        var val;
+        var val, act;
         for(var action_name in this.prototype){
     		val = this.prototype[action_name];
     		if( this.prototype.hasOwnProperty(action_name) && typeof val == 'function' && action_name != 'Class'){
-                var act;
                 for(var a = 0 ; a < MVC.Controller.actions.length; a++){
                     act = MVC.Controller.actions[a];
                     if(act.matches(action_name)){
@@ -44,7 +43,7 @@ MVC.Controller = MVC.Class.extend({
 			MVC.Controller.add_kill_event(event);
 			var params = new MVC.Controller.Params({event: event, element: element, action: f_name, controller: controller_name   });
 			return MVC.Controller.dispatch(controller_name, f_name, params);
-		}
+		};
 	},
     dispatch_closure: function(controller_name, f_name){
         return function(params){
@@ -54,7 +53,7 @@ MVC.Controller = MVC.Class.extend({
 			return MVC.Controller.dispatch(controller_name, f_name, 
                 new MVC.Controller.Params(params)
             );
-		}
+		};
     },
     dispatch: function(controller, action_name, params){
 		var c_name = controller;
@@ -96,9 +95,9 @@ MVC.Controller = MVC.Class.extend({
     },
     dispatch_delay: function(delay, action_name, params){
         var controller_name = action_name.controller ? action_name.controller : this.Class.className;
-        action_name = typeof action_name == 'string' ? action_name : action_name.action
+        action_name = typeof action_name == 'string' ? action_name : action_name.action;
         return setTimeout(function(){
-            MVC.Controller.dispatch(controller_name,action_name, params )
+            MVC.Controller.dispatch(controller_name,action_name, params );
         }, delay );
     }
 });
@@ -106,7 +105,7 @@ MVC.Controller = MVC.Class.extend({
 MVC.Controller.Action = MVC.Class.extend(
 {
     init: function(){
-        if(this.matches) MVC.Controller.actions.push(this)
+        if(this.matches) MVC.Controller.actions.push(this);
     }
 },{
     init: function(action, f, controller){
@@ -119,7 +118,7 @@ MVC.Controller.Action = MVC.Class.extend(
 MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
     match: new RegExp("(.*?)\\s?(change|click|contextmenu|dblclick|keydown|keyup|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload)$"),
     matches: function(action_name){
-        return this.match.exec(action_name)
+        return this.match.exec(action_name);
     }
 },
 //Prototype functions
@@ -149,9 +148,9 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
     plural_selector : function(){
 		if(this.css == "#" || this.css.substring(0,2) == "# "){
 			var newer_action_name = this.css.substring(2,this.css.length);
-            return '#'+this.controller.className + (newer_action_name ?  ' '+newer_action_name : '') 
+            return '#'+this.controller.className + (newer_action_name ?  ' '+newer_action_name : '') ;
 		}else{
-			return '.'+MVC.String.singularize(this.controller.className)+(this.css? ' '+this.css : '' )
+			return '.'+MVC.String.singularize(this.controller.className)+(this.css? ' '+this.css : '' );
 		}
 	},
     singular_selector : function(){

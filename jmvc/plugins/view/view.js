@@ -78,7 +78,7 @@ MVC.View.prototype = {
 	render : function(object, extra_helpers){
 		object = object || {};
 		var v = new MVC.View.Helpers(object);
-        MVC.Object.extend(v, extra_helpers || {} )
+        MVC.Object.extend(v, extra_helpers || {} );
 		return this.template.process.call(v, object,v);
 	},
 	out : function(){

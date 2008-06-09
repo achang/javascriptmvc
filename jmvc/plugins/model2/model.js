@@ -12,7 +12,7 @@ MVC.Model = MVC.Class.extend(
             return this.create_many_as_existing( this.find_all(params, callback)  );
         }else{
             if(!params[this.id] && id != 'first')
-                params[this.id] = id
+                params[this.id] = id;
             return this.create_as_existing( this.find_one(id == 'first'? null : params, callback) );
         }
     },
@@ -119,7 +119,7 @@ MVC.Model = MVC.Class.extend(
         return true;
     },
     destroy : function(){
-        this.Class.destroy(this[this.Class.id])
+        this.Class.destroy(this[this.Class.id]);
     },
     add_errors : function(errors){
         if(errors) this.errors = this.errors.concat(errors);

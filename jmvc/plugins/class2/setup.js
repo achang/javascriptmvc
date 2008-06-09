@@ -84,7 +84,7 @@
     if(className) Class.className = className;
     
     if(Class.init) Class.init(Class);
-    if(_super_class.extended) _super_class.extended(Class) 
+    if(_super_class.extended) _super_class.extended(Class);
     
     return Class;
   };

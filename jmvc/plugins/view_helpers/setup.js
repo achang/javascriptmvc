@@ -4,8 +4,8 @@
 MVC.Object.extend(MVC.View.Helpers.prototype, {
 	check_box_tag: function(name, value, options, checked){
         options = options || {};
-        if(checked) options.checked = "checked"
-        return this.input_field_tag(name, value, 'checkbox', options)
+        if(checked) options.checked = "checked";
+        return this.input_field_tag(name, value, 'checkbox', options);
     },
     date_tag: function(name, value , html_options) {
 	    if(! (value instanceof Date)) value = new Date();

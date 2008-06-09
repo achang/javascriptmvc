@@ -1,6 +1,6 @@
 MVC.Vector = function(){
     this.update( MVC.Array.from(arguments) );
-}
+};
 MVC.Vector.prototype = {
     plus: function(){
         var args = arguments[0] instanceof MVC.Vector ? 
@@ -26,7 +26,7 @@ MVC.Vector.prototype = {
     top : function(){ return this.array[1] },
     left : function(){ return this.array[0] },
     toString: function(){
-        return "("+this.array[0]+","+this.array[1]+")"
+        return "("+this.array[0]+","+this.array[1]+")";
     },
     update: function(array){
         if(this.array){

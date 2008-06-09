@@ -14,8 +14,6 @@ MVC.Delegator={
 		var delegation_events = MVC.Delegator.events[event.type];
         var parents_path = MVC.Delegator.node_path(target);
         
-        
-
 		for(var i =0; i < delegation_events.length;  i++){
 			var delegation_event = delegation_events[i];
 			var match_result = delegation_event.match(target, event, parents_path);
@@ -29,7 +27,7 @@ MVC.Delegator={
 		matches.sort(MVC.Delegator.sort_by_order);
         var match;
 		for(var m = 0; m < matches.length; m++){
-            match = matches[m]
+            match = matches[m];
             ret_value = match.delegation_event._func( {event: event, element: match.node} ) && ret_value;
 			if(event.is_killed()) return false;
 		}
@@ -48,14 +46,11 @@ MVC.DelegationEvent = function(selector, event, f){
     this._event = event;
     this._selector = selector;
     this._func = f;
-    
-    
+
     if(event == 'submit' /*&& MVC.Browser.IE*/) return this.submit_for_ie();
 	if(event == 'change' && MVC.Browser.IE) return this.change_for_ie();
 	if(event == 'change' && MVC.Browser.WebKit) return this.change_for_webkit();
 	
-    //basically add to delegator
-    //this.controller.add_register_action(this,document.documentElement, this.registered_event(), this.capture());
     this.add_to_delegator();
 };
 MVC.DelegationEvent.prototype = {
@@ -74,7 +69,7 @@ MVC.DelegationEvent.prototype = {
     add_to_delegator: function(selector, event, func){
         var s = selector || this._selector;
         var e = event || this.event();
-        var f = func || this._func
+        var f = func || this._func;
         
         if(!MVC.Delegator.events[e]){
             MVC.Event.observe(document.documentElement, e, MVC.Delegator.dispatch_event, this.capture() );
@@ -84,8 +79,8 @@ MVC.DelegationEvent.prototype = {
     },
     
     submit_for_ie : function(){
-		this.add_to_delegator(null, 'click')
-        this.add_to_delegator(null, 'keypress')
+		this.add_to_delegator(null, 'click');
+        this.add_to_delegator(null, 'keypress');
         
         this.filters= {
 			click : function(el, event){
@@ -99,7 +94,7 @@ MVC.DelegationEvent.prototype = {
 		};
 	},
 	change_for_ie : function(){
-		this.add_to_delegator(null, 'click')
+		this.add_to_delegator(null, 'click');
         this.filters= {
 			click : function(el, event){
 				if(typeof el.selectedIndex == 'undefined') return false; //sometimes it won't exist yet

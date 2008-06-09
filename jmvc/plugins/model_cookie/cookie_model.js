@@ -63,16 +63,16 @@ MVC.CookieModel = MVC.Model.extend(
         this.create_cookie(name,"",-1);
     },
     create : function(attributes){
-        var cd = this.find_class_data()
+        var cd = this.find_class_data();
         var instances = cd.instances;
         instances[attributes[this.id]] = attributes;
-        this.create_cookie(this.className, MVC.Object.to_json(cd), this.days )
+        this.create_cookie(this.className, MVC.Object.to_json(cd), this.days );
     },
     update : function(id, attributes){
-        var cd = this.find_class_data()
+        var cd = this.find_class_data();
         var instances = cd.instances;
         instances[id] = attributes;
-        this.create_cookie(this.className, MVC.Object.to_json(cd), this.days )
+        this.create_cookie(this.className, MVC.Object.to_json(cd), this.days );
     },
     destroy : function(id){
         var cd = this.find_class_data();

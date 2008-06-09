@@ -12,8 +12,7 @@ MVC.ModelViewHelper = MVC.Class.extend(
             this.modelClass.View = function(){ return viewClass};
             this.modelClass.prototype.View = function(){
                 return new viewClass(this);
-            }
-            
+            };
             if(this.modelClass.attributes){
                 this._view = new MVC.View.Helpers({});
                 var type;
@@ -21,8 +20,6 @@ MVC.ModelViewHelper = MVC.Class.extend(
                     var h = this._helper(attr);
                     this.helpers[attr+"_field"] = h ;
                 }
-                
-                
             }
         }
     },
@@ -64,15 +61,15 @@ MVC.ModelViewHelper = MVC.Class.extend(
         this._element = document.createElement('div');
         this._element.id = this.element_id();
         this._element.className = this._className;
-        this._element.setAttribute('type', this._className)
+        this._element.setAttribute('type', this._className);
         return this._element;
     },
     element_id : function(){
-        return this._className+'_'+this._inst[this._inst.Class.id]
+        return this._className+'_'+this._inst[this._inst.Class.id];
     },
     show_errors : function(){
         var err = MVC.$E(this._className+"_error");
-        var err = err || MVC.$E(this._className+"_error")
+        var err = err || MVC.$E(this._className+"_error");
         var errs = [];
         for(var i=0; i< this._inst.errors.length; i++){
 			var error = this._inst.errors[i];
@@ -93,10 +90,10 @@ MVC.ModelViewHelper = MVC.Class.extend(
     },
     clear_errors: function(){
         var p;
-        var cn = this._className
+        var cn = this._className;
         for(var i =0; i < this._inst._properties.length; i++){
             p = this._inst._properties[i];
-            var el = MVC.$E(cn+"_"+p)
+            var el = MVC.$E(cn+"_"+p);
             if(el) el.className = el.className.replace(/(^|\\s+)error(\\s+|$)/, ' '); //from prototype
             var er_el = MVC.$E(cn+"_"+p+"_error" );
 		    if(er_el) er_el.innerHTML = '&nbsp;';
@@ -105,4 +102,4 @@ MVC.ModelViewHelper = MVC.Class.extend(
         if(bigel) bigel.innerHTML = '';
     }
 }
-)
+);

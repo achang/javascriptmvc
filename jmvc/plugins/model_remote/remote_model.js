@@ -2,10 +2,9 @@ MVC.RemoteModel = MVC.Model.extend(
 {
     init: function(){
         if(!this.className) return;
-        if(!this.domain) throw('a domain must be provided for remote model')
+        if(!this.domain) throw('a domain must be provided for remote model');
         this.controller_name = this.className;
         this.plural_controller_name = MVC.String.pluralize(this.controller_name);
-        
     },
     find_all: function(params, callback){
         params.callback = MVC.String.classize(this.className)+'.listCallback';
@@ -38,7 +37,9 @@ MVC.RemoteModel = MVC.Model.extend(
 		
 		if(result.send_in_parts){
 			klass.createCallback = function(callback_params){
-				params[this.controller_name] = postpone_params;
+				if(! callback_params.id) throw 'Your server must callback with the id of the object.  It is used for the next request';
+                
+                params[this.controller_name] = postpone_params;
 				params.id = callback_params.id;
 				klass.create(params, callback);
 			};
@@ -69,8 +70,6 @@ MVC.RemoteModel = MVC.Model.extend(
     top_level_length: function(params, url){
     	var p = MVC.Object.extend({}, params);
         delete p[this.className];
-        
-        
         return url.length + MVC.Object.to_query_string(p).length;
 
     },
