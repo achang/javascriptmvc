@@ -1,0 +1,13 @@
+MVCOptions = {
+    onload: false,
+    compress_callback: function(total){
+        var collection = MVCOptions.collect(total);
+        var compressed = MVCOptions.compress(collection);
+        MVCOptions.save('apps/<%= application_name %>/production.js', compressed);
+        print("Compressed to 'apps/<%= application_name %>/production.js'.");
+    }
+}
+load('jmvc/rhino/htmlparser.js');
+load('jmvc/rhino/env.js');
+load('jmvc/rhino/helpers.js');
+window.location = 'apps/<%= application_name %>/index.html';

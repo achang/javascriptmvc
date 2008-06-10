@@ -121,6 +121,17 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		var res = new MVC.View({absolute_url: 'command/generators/test.ejs'}).render(this);
         Mozilla.saveFile(MVC.file_base+"\\apps\\"+this.application_name+"_test.js", res  );
 		
+		// create the compression folder
+		Mozilla.createDirectory(MVC.file_base+"\\apps\\"+this.application_name);
+		
+		// save the compression script
+		var res = new MVC.View({absolute_url: 'command/generators/compress_script.ejs'}).render(this);
+        Mozilla.saveFile(MVC.file_base+"\\apps\\"+this.application_name+"\\compress.js", res  );
+		
+		// save the compression page
+		var res = new MVC.View({absolute_url: 'command/generators/compress_page.ejs'}).render(this);
+        Mozilla.saveFile(MVC.file_base+"\\apps\\"+this.application_name+"\\page.html", res  );
+		
 		// load the app
 		MVC.Appcreator.Iframe.load_iframe(this.application_name);
     }
