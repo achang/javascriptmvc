@@ -29,6 +29,7 @@ MVC.Object = {};
 //Object helpers
 MVC.Object.extend = Object.extend;
 //these are really only for forms
+//these are really only for forms
 MVC.Object.to_query_string = function(object,name){
 	if(typeof object != 'object') return object;
 	return MVC.Object.to_query_string.worker(object,name).join('&');
@@ -38,6 +39,15 @@ MVC.Object.to_query_string.worker = function(obj,name){
 	for(var thing in obj){
 		if(obj.hasOwnProperty(thing)) {
 			var value = obj[thing];
+            if(value && value.constructor === Date){
+                
+                value =  value.getUTCFullYear()+'-'+
+                    MVC.Number.to_padded_string(value.getUTCMonth() + 1,2) + '-' +
+                    MVC.Number.to_padded_string(value.getUTCDate(),2) + ' ' +
+                    MVC.Number.to_padded_string(value.getUTCHours(),2) + ':' +
+                    MVC.Number.to_padded_string(value.getUTCMinutes(),2) + ':' +
+                    MVC.Number.to_padded_string(value.getUTCSeconds(),2);
+            }
 			if(typeof value != 'object'){
 				var nice_val = encodeURIComponent(value.toString());
 				var newer_name = encodeURIComponent(name ? name+'['+thing+']' : thing) ;
