@@ -9,12 +9,10 @@ MVCOptions.compress = function(src, path){
     return Packages.org.mozilla.javascript.tools.shell.Main.compress(src, path || include.get_production_name() ); 
 };
 MVCOptions.collect = function(total){
-    var collection = '';
+    var collection = '', txt;
 	for(var s=0; s < total.length; s++){
-		if(total[s].process) {
-			total[s].text = total[s].process(total[s]);
-		}
-		collection += "include.set_path('"+total[s].start+"')"+";\n"+total[s].text + ";\n";
+		txt = total[s].process ? total[s].process(total[s]) : total[s].text
+		collection += "include.set_path('"+total[s].start+"')"+";\n"+txt + ";\n";
 	}
 	collection += "include.end_of_production();";
     return collection;
