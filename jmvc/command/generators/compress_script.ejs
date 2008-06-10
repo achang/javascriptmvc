@@ -1,8 +1,7 @@
 MVCOptions = {
     onload: false,
     compress_callback: function(total){
-        var collection = MVCOptions.collect(total);
-        var compressed = MVCOptions.compress(collection);
+        var compressed = MVCOptions.collect_and_compress(total);
         MVCOptions.save('apps/<%= application_name %>/production.js', compressed);
         print("Compressed to 'apps/<%= application_name %>/production.js'.");
     }

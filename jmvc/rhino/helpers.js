@@ -17,3 +17,16 @@ MVCOptions.collect = function(total){
 	collection += "include.end_of_production();";
     return collection;
 };
+
+
+MVCOptions.collect_and_compress = function(total){
+    var collection = '', script, txt, compressed;
+	for(var s=0; s < total.length; s++){
+		script = total[s];
+        txt = script.process ? script.process(total[s]) : script.text;
+		compressed = script.compress == false ? txt : MVCOptions.compress(txt, script.path);
+        collection += "include.set_path('"+script.start+"')"+";\n"+compressed + ";\n";
+	}
+	collection += "include.end_of_production();";
+    return collection;
+}
