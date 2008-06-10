@@ -6,7 +6,12 @@ ControllerIncludesController = MVC.Controller.extend('controller_includes',{
 		params.element.firstChild.style.visibility='hidden';
 	},
 	'# img click': function(params){
-		alert('deleting')
+		var application_name = document.getElementById('application').innerHTML;
+		var file_name = params.element.nextSibling.nodeValue.replace(/\'/g,'');
+		MVC.Path.remove_path('controllers', 
+			MVC.file_base+"\\apps\\"+application_name+".js", 
+			file_name);
+		MVC.Appcreator.Iframe.load_iframe(application_name);
 	}
 });
 
