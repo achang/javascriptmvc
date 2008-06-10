@@ -146,41 +146,39 @@
     </div>
 </div>
 
-<form id='view_generator'>Create new view 
-	<input name='view_name'/>
-	Folder<select name="view_folder">
-	<% for(var dir in files.views) { %>
-		<option value="<%= dir %>"><%= dir %></option>
+<div class='include_type'>
+    <h4>plugins</h4>
+    <div class='left'>(</div>
+    <div class='includes'>
+    <% if(plugins_in_app_file[0]) { %>
+    	<a>'<%= plugins_in_app_file[0] %>'</a>
+	<% }
+	for(var j=1; j<plugins_in_app_file.length; j++) { %>
+    	<a>,&nbsp;'<%= plugins_in_app_file[j] %>'</a>
 	<% } %>
-	</select>
-	<input type='submit' value='create'/>
-</form>
-
-<h2>views</h2>
-<% for(var dir in files.views) { %>
-	<h3><%= dir %></h3>
-	<ul id='views'>
-	<% for(var j=0; j<files.views[dir].length; j++) { %>
-		<% var checked = false;
-		if(included.views && included.views.indexOf(dir+'/'+files.views[dir][j]) != -1)
-			checked = true; %>
-		<li class='view'><input type="checkbox" <%= checked? "checked='true'": "" %> /><%= files.views[dir][j] %></li>
-	<% } %>
-	</ul>
-<% } %>
-
-
-<h2>plugins</h2>
-<ul id='plugins'>
-<% if(files.plugins) { %>
-	<% for(var j=0; j<files.plugins.length; j++) { %>
-		<% var checked = false;
-		if(included.plugins && included.plugins.indexOf(files.plugins[j]) != -1)
-			checked = true; %>
-		<% var disabled = true;
-		if((checked && plugins_in_app_file.indexOf(files.plugins[j]) != -1) || !checked)
-			disabled = false; %>
-		<li class='plugin'><input type="checkbox" <%= disabled? "disabled='true'": "" %> <%= checked? "checked='true'": "" %> /><%= files.plugins[j] %></li>
-	<% } %>
-<% } %>
-</ul>
+    </div>
+    <span>)</span>
+    <div class='clear'></div>
+    <div class='indent'>
+	    <table id='plugins' width='100%' cellspacing='0px' cellpadding='0px'>
+		    <tr>
+			<% var count = 0;
+			for(var j=0; j<files.plugins.length; j++) { %>
+				<% if(plugins_in_app_file.indexOf(files.plugins[j]) == -1) { 
+					if(count%4==0) { 
+						count = 0; %>
+						</tr><tr>
+					<% } %>
+					
+					<% var disabled = true;
+					if(included.plugins.indexOf(files.plugins[j]) == -1)
+						disabled = false; %>
+					
+					<td class='plugin'><input type='checkbox' <%= disabled? "disabled='true'": "" %> <%= disabled? "checked='true'": "" %> /> <%= files.plugins[j] %></td>
+					<% count++; %>
+			<% } } %>
+		    </tr>
+		</table>
+        <p class='gray'>Controllers group events for groups of HTML objects.  <a href='#'>Learn more</a></p>
+    </div>
+</div>
