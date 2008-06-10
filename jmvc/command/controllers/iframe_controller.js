@@ -13,7 +13,7 @@ MVC.Appcreator.Iframe = {
 	        views: MVC.Appcreator.Iframe.get_views(),
 	        functional_tests: MVC.Appcreator.Iframe.get_functional_tests(),
 	        unit_tests: MVC.Appcreator.Iframe.get_unit_tests(),
-	        plugins: Mozilla.getFileNames(MVC.file_base.replace(/\//g, "\\") + "\\jmvc\\plugins")
+	        plugins: Mozilla.getDirectoryAndFileNames(MVC.file_base.replace(/\//g, "\\") + "\\jmvc\\plugins")
 	    }
 	    
 	    var res = new MVC.View({

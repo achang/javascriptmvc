@@ -31,14 +31,14 @@ ViewsController = AddDependencyController.extend('views',{
 
 FunctionalTestsController = AddDependencyController.extend('functional_tests',{
     change: function(params){
-		params.including_file_suffix = '_test.js';
+		params.including_file_suffix = '_test';
 		this._super(params);
 	}
 });
 
 UnitTestsController = AddDependencyController.extend('unit_tests',{
     change: function(params){
-		params.including_file_suffix = '_test.js';
+		params.including_file_suffix = '_test';
 		this._super(params);
 	}
 });
