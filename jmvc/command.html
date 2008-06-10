@@ -3,7 +3,7 @@
         <title>JavaScriptMVC Command</title>
         <link rel="stylesheet" type='text/css' href='command/stylesheets/style.css' />
     </head>
-    <body onload='loading()'>
+    <body>
         <h1>JavaScriptMVC Command</h1>
         <ul id='projects'>Loading ...</ul>
         
@@ -11,9 +11,14 @@
         
         <script type='text/javascript' src='include.js'></script>
         <script type='text/javascript'>
-            include('command/setup.js');
             include.plugins('controller','view');
-            include('command/controllers/generator_controllers');
+            include('command/controllers/generator_controllers',
+					'command/controllers/projects_controllers',
+					'command/controllers/dependency_controllers',
+					'command/controllers/main_controller',
+					'command/controllers/iframe_controller',
+					'command/resources/path.js',
+					'command/resources/mozilla.js');
         </script>
 		
 		<iframe id='demo_iframe' name='demo_iframe' border='0' frameBorder='0' style='display:none;'></iframe>

@@ -10,7 +10,7 @@ MVC.Controller = MVC.Class.extend({
         var val, act;
         for(var action_name in this.prototype){
     		val = this.prototype[action_name];
-    		if( this.prototype.hasOwnProperty(action_name) && typeof val == 'function' && action_name != 'Class'){
+    		if( typeof val == 'function' && action_name != 'Class'){
                 for(var a = 0 ; a < MVC.Controller.actions.length; a++){
                     act = MVC.Controller.actions[a];
                     if(act.matches(action_name)){
