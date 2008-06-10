@@ -59,13 +59,14 @@ h3 {
 }
 
 .includes {float: left;}
+.includes img { cursor:pointer; }
 
 h4 {color: green; float: left;font-weight: normal;
     margin: 0px 0px 10px 0px;
 }
 
 .include_type {margin-bottom: 20px;}
-.include_type form {position: relative; top: -2px; }
+.include_type form {position: relative; top: -2px;display:inline; }
 .include_type form input {font-size: 10pt; padding: 0px;}
 
 .include_type form input.text {width: 100px;}

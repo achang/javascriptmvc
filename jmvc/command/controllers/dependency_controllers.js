@@ -1,3 +1,15 @@
+ControllerIncludesController = MVC.Controller.extend('controller_includes',{
+	mouseover: function(params){
+		params.element.firstChild.style.visibility='visible';
+	},
+	mouseout: function(params){
+		params.element.firstChild.style.visibility='hidden';
+	},
+	'# img click': function(params){
+		alert('deleting')
+	}
+});
+
 AddDependencyController = MVC.Controller.extend('add_dependency',{
     change: function(params){
 		params.including_file_suffix = params.including_file_suffix || '';
