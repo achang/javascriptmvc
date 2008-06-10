@@ -240,7 +240,7 @@ MVC.Object.extend(include,{
 	},
 	end_of_production: function(){ first_wave_done = true; },
 	compress: function(){
-		if(! MVCOptions ||!MVCOptions.compress_callback){
+		if(typeof MVCOptions == 'undefined' || !MVCOptions.compress_callback){
             include.compress_window  ? 
 			include.compress_window.compress(total, include.srcs, include.get_production_name()) :
 			alert("Your popup blocker is keeping the compressor from running.\nPlease allow popups and refresh this page.");
@@ -250,7 +250,7 @@ MVC.Object.extend(include,{
 	},
 	opera: function(){
 		include.opera_called = true;
-		if(MVC.Browser.Opera){
+		if(MVC.Browser.Opera && ! options.remote){
 			options.env == 'production' ? document.write('<script type="text/javascript" src="'+include.get_production_name()+'"></script>') : include.end();
 		}
 	},

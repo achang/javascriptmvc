@@ -112,6 +112,17 @@ MVC.Function = {
 		return func.argumentNames();
 	}
 };
+
+
+MVC.Native.extend('Number', {
+    to_padded_string: function(number, length, radix) {
+        var string = number.toString(radix || 10);
+        var ret = '';
+        for(var i = 0 ; i < length - string.length; i++) ret =+ '0';
+        return ret + string;
+    }
+});
+
 if(!MVC._no_conflict){
 	Function.prototype.params =	Function.prototype.argumentNames
 }
