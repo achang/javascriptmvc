@@ -5,6 +5,11 @@ body {font-family: verdana; margin: 0px; padding: 0px;
 
 td { width: 25%;}
 
+#plugins{
+	list-style-type: none;
+	padding-left:16px;
+}
+
 ul#projects .over {
 	color:Blue;
 	text-decoration:underline;

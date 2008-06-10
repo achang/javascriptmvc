@@ -130,7 +130,7 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		
 		// save the compression page
 		var res = new MVC.View({absolute_url: 'command/generators/compress_page.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+"\\apps\\"+this.application_name+"\\page.html", res  );
+        Mozilla.saveFile(MVC.file_base+"\\apps\\"+this.application_name+"\\index.html", res  );
 		
 		// load the app
 		MVC.Appcreator.Iframe.load_iframe(this.application_name);
