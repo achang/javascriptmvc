@@ -8,9 +8,10 @@ AbstractIncludesController = MVC.Controller.extend('abstract_includes',{
 	'# img click': function(params){
 		var application_name = document.getElementById('application').innerHTML;
 		var file_name = params.element.nextSibling.nodeValue.replace(/\'/g,'');
-		var class_name = params.controller.split('_')[0];
+		var including_file_suffix = (params.controller.match(/test/)? '_test' : '');
+		var class_name = params.controller.replace(/_includes/,'');
 		MVC.Path.remove_path(class_name+'s', 
-			MVC.file_base+"\\apps\\"+application_name+".js", 
+			MVC.file_base+"\\apps\\"+application_name+including_file_suffix+".js", 
 			file_name);
 		MVC.Appcreator.Iframe.load_iframe(application_name);
 	}
