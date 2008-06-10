@@ -1,7 +1,38 @@
-<form id='controller_generator'>Create new controller 
-	<input name='controller_name'/>
-	<input type='submit' value='create'/>
-</form>
+<h3>add page. <input id='page_generator' type='submit' value='Browse'/></h3>
+<p class='indent gray'>Creates a page for your application at the specified location.</p>
+
+<h3>include.</h3>
+<div class='include_type'>
+    <h4>controllers</h4>
+    <div class='left'>(</div>
+    <div class='includes'>
+    <% for(var j=0; j<included.controllers.length; j++) { %>
+        <a>'<%= included.controllers[j] %>'</a>,
+    <% } %>
+    </div>
+    <form id='controller_generator'>&nbsp;<input name='controller_name' class='text'/><input type='submit' value='generate'> 
+        <span>)</span>
+    </form>
+    <div class='clear'></div>
+    <div class='indent'>
+        <table id='controllers' width='100%' cellspacing='0px' cellpadding='0px'>
+            <tr>
+			<% var count = 0;
+			for(var j=0; j<files.controllers.length; j++) { %>
+				<% if(!included.controllers || included.controllers.indexOf(files.controllers[j]) == -1) { 
+					if(count%4==0) { 
+						count = 0; %>
+						</tr><tr>
+					<% } %>
+						<td class='controller'><input type='checkbox' /> <%= files.controllers[j] %></td>
+					<% count++; %>
+			<% } } %>
+            </tr>
+        </table>
+        <p class='gray'>Controllers group events for groups of HTML objects.  <a href='#'>Learn more</a></p>
+    </div>
+</div>
+
 <form id='model_generator'>Create new model 
 	<input name='model_name'/>
 	<select name="model_type">
@@ -27,9 +58,6 @@
 	<% } %>
 	</select>
 	<input type='submit' value='create'/>
-</form>
-<form id='page_generator'>Add a page 
-	<input type='submit' value='browse'/>
 </form>
 <h1 id='application'><%= app_name %></h1>
 <%	var included_groups = ['controllers','models','resources','functional_tests','unit_tests'];

@@ -15,6 +15,7 @@ MVC.Path = {
 	    return this.modify_includes(include_type, file, file_to_remove, false);
 	},
 	modify_includes: function(include_type, file, file_to_check, add){
+		file_to_check = file_to_check.replace(/\s+/g,'');
 	    var regexp_include = new RegExp("include\\." + include_type + "\\((.*)\\)");
 	    var str = "include." + include_type + "(";
 	    var items = this.list_of_items(include_type, file);

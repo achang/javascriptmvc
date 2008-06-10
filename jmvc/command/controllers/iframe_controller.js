@@ -25,7 +25,7 @@ MVC.Appcreator.Iframe = {
 	        // get the list of plugins being included from the app file (the rest are dependencies)
 	        plugins_in_app_file: MVC.Appcreator.Iframe.plugins_from_app_file(frames['demo_iframe'].MVC.app_name)
 	    });
-	    document.getElementById('render_to').innerHTML = res;
+	    document.getElementById('content').innerHTML = res;
 	},
 	get_controllers: function(){
 	    var controller_names = Mozilla.getFileNames(MVC.file_base.replace(/\//g, "\\") + "\\controllers");

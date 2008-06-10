@@ -1,27 +1,34 @@
-<html>
-    <head>
-        <title>JavaScriptMVC Command</title>
-        <link rel="stylesheet" type='text/css' href='command/stylesheets/style.css' />
-    </head>
-    <body>
-        <h1>JavaScriptMVC Command</h1>
-        <ul id='projects'>Loading ...</ul>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <title>JavaScriptMVC Application Generator</title>
+    <link rel="stylesheet" type='text/css' href='command/stylesheets/nice_style.css' />
+</head>
+<body>
+    <h1>JavaScriptMVC Application Generator</h1>
+    <div id='application_navigation'>
+        <label>
+            Apps:
+        </label>  
+        <ul id='projects'></ul>
+	</div>
         
-        <div id='render_to'></div>
+    <div id='content' class='indent'></div>
         
-        <script type='text/javascript' src='include.js'></script>
-        <script type='text/javascript'>
-            include.plugins('controller','view');
-            include('command/controllers/generator_controllers',
-					'command/controllers/projects_controllers',
-					'command/controllers/dependency_controllers',
-					'command/controllers/main_controller',
-					'command/controllers/iframe_controller',
-					'command/resources/path.js',
-					'command/resources/mozilla.js');
-        </script>
-		
-		<iframe id='demo_iframe' name='demo_iframe' border='0' frameBorder='0' style='display:none;'></iframe>
-		
-	</body>
+    <script type='text/javascript' src='include.js'></script>
+    <script type='text/javascript'>
+        include.plugins('controller','view');
+        include('command/controllers/generator_controllers',
+				'command/controllers/projects_controllers',
+				'command/controllers/dependency_controllers',
+				'command/controllers/main_controller',
+				'command/controllers/iframe_controller',
+				'command/resources/path.js',
+				'command/resources/mozilla.js');
+    </script>
+	
+	<iframe id='demo_iframe' name='demo_iframe' border='0' frameBorder='0' style='display:none;'></iframe>
+
+</body>
 </html>

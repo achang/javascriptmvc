@@ -3,6 +3,14 @@ body {font-family: verdana; margin: 0px; padding: 0px;
     background-repeat: repeat-x;
 }
 
+td { width: 25%;}
+
+ul#projects .over {
+	color:Blue;
+	text-decoration:underline;
+	cursor:pointer;
+}
+
 h1 { font-size: 20px; margin: 0px; padding: 7px 0px 8px 20px;}
 
 #application_navigation{
