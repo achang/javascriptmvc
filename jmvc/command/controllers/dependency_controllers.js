@@ -1,19 +1,28 @@
-ControllerIncludesController = MVC.Controller.extend('controller_includes',{
+AbstractIncludesController = MVC.Controller.extend('abstract_includes',{
 	mouseover: function(params){
-		params.element.firstChild.style.visibility='visible';
+		params.element.childNodes[1].style.visibility='visible';
 	},
 	mouseout: function(params){
-		params.element.firstChild.style.visibility='hidden';
+		params.element.childNodes[1].style.visibility='hidden';
 	},
 	'# img click': function(params){
 		var application_name = document.getElementById('application').innerHTML;
 		var file_name = params.element.nextSibling.nodeValue.replace(/\'/g,'');
-		MVC.Path.remove_path('controllers', 
+		var class_name = params.controller.split('_')[0];
+		MVC.Path.remove_path(class_name+'s', 
 			MVC.file_base+"\\apps\\"+application_name+".js", 
 			file_name);
 		MVC.Appcreator.Iframe.load_iframe(application_name);
 	}
 });
+
+ControllerIncludesController = AbstractIncludesController.extend('controller_includes');
+ModelIncludesController = AbstractIncludesController.extend('model_includes');
+ResourceIncludesController = AbstractIncludesController.extend('resource_includes');
+ViewIncludesController = AbstractIncludesController.extend('view_includes');
+FunctionalTestIncludesController = AbstractIncludesController.extend('functional_test_includes');
+UnitTestIncludesController = AbstractIncludesController.extend('unit_test_includes');
+PluginIncludesController = AbstractIncludesController.extend('plugin_includes');
 
 AddDependencyController = MVC.Controller.extend('add_dependency',{
     change: function(params){

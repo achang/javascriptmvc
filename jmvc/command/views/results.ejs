@@ -8,7 +8,10 @@
     <h4>controllers</h4>
     <div class='left'>(</div>
     <div class='includes'>
-    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({iter: included.controllers})); %>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({
+    	iter: included.controllers, 
+    	end_with_comma: true,
+    	type: 'controller'})); %>
     <%= partial %>
     </div>
     <form id='controller_generator'>&nbsp;<input name='controller_name' class='text'/>
@@ -30,7 +33,10 @@
     <h4>models</h4>
     <div class='left'>(</div>
     <div class='includes'>
-    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({iter: included.models})); %>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({
+    	iter: included.models, 
+    	end_with_comma: true,
+    	type: 'model'})); %>
     <%= partial %>
     </div>
     <form id='model_generator'>&nbsp;<input name='model_name' class='text'/>
@@ -57,12 +63,11 @@
     <h4>resources</h4>
     <div class='left'>(</div>
     <div class='includes'>
-    <% if(include.resources[0]) { %>
-    	<a>'<%= include.resources[0] %>'</a>
-	<% }
-	for(var j=1; j<include.resources.length; j++) { %>
-    	<a>,&nbsp;'<%= include.resources[j] %>'</a>
-	<% } %>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({
+    	iter: included.resources, 
+    	end_with_comma: false,
+    	type: 'resource'})); %>
+    <%= partial %>
     </div>
     <span>)</span>
     <div class='clear'></div>
@@ -80,7 +85,10 @@
     <h4>unit_tests</h4>
     <div class='left'>(</div>
     <div class='includes'>
-    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({iter: included.unit_tests})); %>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({
+    	iter: included.unit_tests, 
+    	end_with_comma: true,
+    	type: 'unit_test'})); %>
     <%= partial %>
     </div>
     <form id='unit_test_generator'>&nbsp;<input name='unit_test_name' class='text'/>
@@ -102,7 +110,10 @@
     <h4>functional_tests</h4>
     <div class='left'>(</div>
     <div class='includes'>
-    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({iter: included.functional_tests})); %>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({
+    	iter: included.functional_tests, 
+    	end_with_comma: true,
+    	type: 'functional_test'})); %>
     <%= partial %>
     </div>
     <form id='functional_test_generator'>&nbsp;<input name='functional_test_name' class='text'/>
@@ -124,7 +135,10 @@
     <h4>views</h4>
     <div class='left'>(</div>
     <div class='includes'>
-    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({iter: included.views})); %>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({
+    	iter: included.views, 
+    	end_with_comma: true,
+    	type: 'view'})); %>
     <%= partial %>
     </div>
     <form id='view_generator'>&nbsp;<input name='view_name' class='text'/>
@@ -151,12 +165,11 @@
     <h4>plugins</h4>
     <div class='left'>(</div>
     <div class='includes'>
-    <% if(plugins_in_app_file[0]) { %>
-    	<a>'<%= plugins_in_app_file[0] %>'</a>
-	<% }
-	for(var j=1; j<plugins_in_app_file.length; j++) { %>
-    	<a>,&nbsp;'<%= plugins_in_app_file[j] %>'</a>
-	<% } %>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({
+    	iter: plugins_in_app_file, 
+    	end_with_comma: false,
+    	type: 'plugin'})); %>
+    <%= partial %>
     </div>
     <span>)</span>
     <div class='clear'></div>
