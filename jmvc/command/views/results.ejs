@@ -119,6 +119,33 @@
     </div>
 </div>
 
+<div class='include_type'>
+    <h4>views</h4>
+    <div class='left'>(</div>
+    <div class='includes'>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({iter: included.views})); %>
+    <%= partial %>
+    </div>
+    <form id='view_generator'>&nbsp;<input name='view_name' class='text'/>
+    	<input type='submit' value='generate'> 
+		<select name="view_folder">
+		<% for(var i=0; i<view_dirs.length; i++) { %>
+			<option value="<%= view_dirs[i] %>"><%= view_dirs[i] %></option>
+		<% } %>
+		</select>
+        <span>)</span>
+    </form>
+    <div class='clear'></div>
+    <div class='indent'>
+	    <% var partial = (new MVC.View({absolute_url: 'command/views/_unincluded.ejs'}).render({
+	    	type: 'view',
+	    	included: included.views,
+	    	files: files.views})); %>
+	    <%= partial %>
+        <p class='gray'>Controllers group events for groups of HTML objects.  <a href='#'>Learn more</a></p>
+    </div>
+</div>
+
 <form id='view_generator'>Create new view 
 	<input name='view_name'/>
 	Folder<select name="view_folder">

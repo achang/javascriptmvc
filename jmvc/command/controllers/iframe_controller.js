@@ -15,6 +15,14 @@ MVC.Appcreator.Iframe = {
 	        unit_tests: MVC.Appcreator.Iframe.get_unit_tests(),
 	        plugins: Mozilla.getDirectoryAndFileNames(MVC.file_base.replace(/\//g, "\\") + "\\jmvc\\plugins")
 	    }
+		
+		var view_dirs = [];
+		for(var i=0; i<files.views.length; i++){
+			var dir = files.views[i].split('/')[0];
+			if(view_dirs.indexOf(dir) == -1)
+				view_dirs.push(dir);
+		}
+		
 	    
 	    var res = new MVC.View({
 	        absolute_url: 'command/views/results.ejs'
@@ -22,6 +30,7 @@ MVC.Appcreator.Iframe = {
 	        files: files,
 	        included: frames['demo_iframe'].MVC.Included,
 	        app_name: frames['demo_iframe'].MVC.app_name,
+			view_dirs: view_dirs,
 	        // get the list of plugins being included from the app file (the rest are dependencies)
 	        plugins_in_app_file: MVC.Appcreator.Iframe.plugins_from_app_file(frames['demo_iframe'].MVC.app_name)
 	    });
@@ -48,14 +57,20 @@ MVC.Appcreator.Iframe = {
 	    }
 	    return tests;
 	},
+	// Mozilla.getRecursiveFileNames()
+	// for now, 2nd level folders only
 	get_views: function(){
-	    var views = {};
+	    var views = [];
 	    netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
 	    var dirs = Mozilla.getFiles(MVC.file_base.replace(/\//g, "\\") + "\\views");
 	    for (var i = 0; i < dirs.length; i++) {
 	        var dir = dirs[i];
-	        if (dir.isDirectory() && dir.leafName.indexOf('.') != 0) 
-	            views[dir.leafName] = Mozilla.getDirectoryAndFileNames(MVC.file_base.replace(/\//g, "\\") + "\\views\\" + dir.leafName);
+	        if (dir.isDirectory() && dir.leafName.indexOf('.') != 0) {
+				var files = Mozilla.getDirectoryAndFileNames(MVC.file_base.replace(/\//g, "\\") + "\\views\\" + dir.leafName);
+				for(var j=0;j<files.length; j++){
+					views.push(dir.leafName+'/'+files[j])
+				}
+			}
 	    }
 	    return views;
 	},

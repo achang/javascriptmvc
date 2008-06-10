@@ -22,9 +22,8 @@ PluginsController = AddDependencyController.extend('plugins');
 
 ViewsController = AddDependencyController.extend('views',{
     change: function(params){
-		var dir_name = params.element.parentNode.previousSibling.previousSibling.innerHTML;
-		var template_name = params.element.lastChild.nodeValue;
-		params.including_path = dir_name+'/'+template_name;
+		var view = params.element.lastChild.nodeValue.replace(/\s+/g,'');
+		params.including_path = view;
 		this._super(params);
 	}
 });
