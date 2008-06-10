@@ -139,10 +139,6 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
         this.event_type = this.parts[2];
     },
     main_controller: function(){
-        if(MVC.Array.include(['load','unload','resize','scroll'],this.event_type)){
-            MVC.Event.observe(window, this.event_type, MVC.Controller.event_closure(this.controller.className, this.event_type, window) );
-            return;
-        }
 	    return this.css;
     },
     plural_selector : function(){
@@ -157,6 +153,11 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
         return '#'+this.controller.className+(this.css? ' '+this.css : '' );
     },
     selector : function(){
+        if(MVC.Array.include(['load','unload','resize','scroll'],this.event_type)){
+            MVC.Event.observe(window, this.event_type, MVC.Controller.event_closure(this.controller, this.event_type, window) );
+            return;
+        }
+
         if(this.controller.className == 'main') return this.main_controller();
         return MVC.String.is_singular(this.controller.className) ? 
             this.singular_selector() :
