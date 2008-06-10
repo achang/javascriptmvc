@@ -17,6 +17,7 @@ MVC.ModelViewHelper = MVC.Class.extend(
                 this._view = new MVC.View.Helpers({});
                 var type;
                 for(var attr in this.modelClass.attributes){
+                    if(! this.modelClass.attributes.hasOwnProperty(attr) || typeof this.modelClass.attributes[attr] != 'string') continue;
                     var h = this._helper(attr);
                     this.helpers[attr+"_field"] = h ;
                 }

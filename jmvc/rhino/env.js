@@ -59,7 +59,7 @@ var self = window;
             });
             HTMLtoDOM(xhr.responseText, window.document);
 
-            if(! MVCOptions || MVCOptions.onload != false){
+            if(typeof MVCOptions != 'undefined' && MVCOptions.onload != false){
                 var event = document.createEvent();
     			event.initEvent("load");
     			window.dispatchEvent( event );
@@ -292,15 +292,17 @@ var self = window;
 		},
 		
 		createEvent: function(){
-			return {
-				type: "",
-				initEvent: function(type){
-					this.type = type;
-				}
-			};
+			return new Event();
 		}
 	};
-	
+	var Event = function(){
+        this.type = "";
+    }
+    Event.prototype = {
+        initEvent: function(type){
+			this.type = type;
+		}
+    }
 	function getDocument(node){
 		return obj_nodes.get(node);
 	}

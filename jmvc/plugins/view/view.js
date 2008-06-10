@@ -31,29 +31,28 @@
 
 
 MVC.View = function( options ){
-	this.set_options(options);
+    this.set_options(options);
 	if(options.precompiled){
 		this.template = {};
 		this.template.process = options.precompiled;
 		MVC.View.update(this.name, this);
 		return;
 	}
-	
 	if(options.url || options.absolute_url){
-		options.url = options.absolute_url || MVC.root.join('views/'+options.url+ (options.url.match(/\.ejs/) ? '' : '.ejs' )) ;
+        var url = options.absolute_url || MVC.root.join('views/'+options.url+ (options.url.match(/\.ejs/) ? '' : '.ejs' )) ;
+        options.url = options.absolute_url || options.url;
 		var template = MVC.View.get(options.url, this.cache);
 		if (template) return template;
 	    if (template == MVC.View.INVALID_PATH) return null;
-		this.text = new MVC.Ajax(options.url+(this.cache ? '' : '?'+Math.random() ), {asynchronous: false, method: 'get', use_fixture: false}).transport.responseText;
+        this.text = include.request(url+(this.cache || window._rhino ? '' : '?'+Math.random() ));
 		
 		if(this.text == null){
-			//MVC.View.update(options.url, this.INVALID_PATH);
-			throw 'There is no template at '+options.url;
+			throw 'There is no template at '+url;
 		}
 		this.name = options.url;
-	}else if(options.element)
+	}else if(options.hasOwnProperty('element'))
 	{
-		if(typeof options.element == 'string'){
+        if(typeof options.element == 'string'){
 			var name = options.element;
 			options.element = MVC.$E(  options.element );
 			if(options.element == null) throw name+'does not exist!';
@@ -268,7 +267,7 @@ MVC.View.Buffer.prototype = {
 
 /* Adaptation from the Compiler of erb.rb  */
 MVC.View.Compiler = function(source, left) {
-	this.pre_cmd = ['var ___ViewO = "";'];
+    this.pre_cmd = ['var ___ViewO = "";'];
 	this.post_cmd = new Array();
 	this.source = ' ';	
 	if (source != null)
@@ -442,8 +441,8 @@ include.view = function(path){
 		new MVC.View({url: path});
 	}else if(include.get_env() == 'compress'){
 		var oldp = include.get_path();
-		include.set_path(MVC.root.join('views'));
-		include({path: path, process: MVC.View.process_include, ignore: true});
+        include.set_path(MVC.root.join('views'));
+        include({path: path, process: MVC.View.process_include, ignore: true});
 		include.set_path(oldp);
 		new MVC.View({url: path});
 	}else{
@@ -458,8 +457,8 @@ include.views = function(){
 };
 
 MVC.View.process_include = function(script){
-	var view = new MVC.View({text: script.text});
-	return 'MVC.View.PreCompiledFunction("'+script.path+
+    var view = new MVC.View({text: script.text});
+	return 'MVC.View.PreCompiledFunction("'+script.original_path+
 				'", function(_CONTEXT,_VIEW) { try { with(_VIEW) { with (_CONTEXT) {'+view.out()+" return ___ViewO;}}}catch(e){e.lineNumber=null;throw e;}})";
 };
 
