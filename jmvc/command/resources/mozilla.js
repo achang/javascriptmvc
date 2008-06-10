@@ -46,7 +46,7 @@ Mozilla = {
         if (!file.exists() || !file.isDirectory()) 
             file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0777);
     },
-    getFileNames: function(filePath){
+    getDirectoryAndFileNames: function(filePath){
         netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
         var files = Mozilla.getFiles(filePath);
         var file_names = [];
@@ -55,6 +55,18 @@ Mozilla = {
             var name = file.path.match(/[^\/\\]*$/)[0].split('.')[0];
             if (name != '' && name.indexOf('.') != 0) 
                 file_names.push(name);
+        }
+        return file_names;
+    },
+    getFileNames: function(filePath){
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        var files = Mozilla.getFiles(filePath);
+        var file_names = [];
+        for (var f = 0; f < files.length; f++) {
+            var file = files[f];
+            var name = file.path.match(/[^\/\\]*$/)[0];
+            if (name != '' && name.indexOf('.') != 0 && name.indexOf('.js') != -1) 
+                file_names.push(name.split('.')[0]);
         }
         return file_names;
     },

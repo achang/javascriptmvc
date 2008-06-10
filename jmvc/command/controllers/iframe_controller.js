@@ -55,7 +55,7 @@ MVC.Appcreator.Iframe = {
 	    for (var i = 0; i < dirs.length; i++) {
 	        var dir = dirs[i];
 	        if (dir.isDirectory() && dir.leafName.indexOf('.') != 0) 
-	            views[dir.leafName] = Mozilla.getFileNames(MVC.file_base.replace(/\//g, "\\") + "\\views\\" + dir.leafName);
+	            views[dir.leafName] = Mozilla.getDirectoryAndFileNames(MVC.file_base.replace(/\//g, "\\") + "\\views\\" + dir.leafName);
 	    }
 	    return views;
 	},

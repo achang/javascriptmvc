@@ -6,42 +6,51 @@
     <h4>controllers</h4>
     <div class='left'>(</div>
     <div class='includes'>
-    <% for(var j=0; j<included.controllers.length; j++) { %>
-        <a>'<%= included.controllers[j] %>'</a>,
-    <% } %>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({iter: included.controllers})); %>
+    <%= partial %>
     </div>
-    <form id='controller_generator'>&nbsp;<input name='controller_name' class='text'/><input type='submit' value='generate'> 
+    <form id='controller_generator'>&nbsp;<input name='controller_name' class='text'/>
+    	<input type='submit' value='generate'> 
         <span>)</span>
     </form>
     <div class='clear'></div>
     <div class='indent'>
-        <table id='controllers' width='100%' cellspacing='0px' cellpadding='0px'>
-            <tr>
-			<% var count = 0;
-			for(var j=0; j<files.controllers.length; j++) { %>
-				<% if(!included.controllers || included.controllers.indexOf(files.controllers[j]) == -1) { 
-					if(count%4==0) { 
-						count = 0; %>
-						</tr><tr>
-					<% } %>
-						<td class='controller'><input type='checkbox' /> <%= files.controllers[j] %></td>
-					<% count++; %>
-			<% } } %>
-            </tr>
-        </table>
+	    <% var partial = (new MVC.View({absolute_url: 'command/views/_unincluded.ejs'}).render({
+	    	type: 'controller',
+	    	included: included.controllers,
+	    	files: files.controllers})); %>
+	    <%= partial %>
         <p class='gray'>Controllers group events for groups of HTML objects.  <a href='#'>Learn more</a></p>
     </div>
 </div>
 
-<form id='model_generator'>Create new model 
-	<input name='model_name'/>
-	<select name="model_type">
-		<option value="Ajax">Ajax</option>
-		<option value="Remote">Remote</option>
-		<option value="Cookie">Cookie</option>
-	</select>
-	<input type='submit' value='create'/>
-</form>
+<div class='include_type'>
+    <h4>models</h4>
+    <div class='left'>(</div>
+    <div class='includes'>
+    <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({iter: included.models})); %>
+    <%= partial %>
+    </div>
+    <form id='model_generator'>&nbsp;<input name='model_name' class='text'/>
+		<select name="model_type">
+			<option value="Ajax">Ajax</option>
+			<option value="Remote">Remote</option>
+			<option value="Cookie">Cookie</option>
+		</select>
+    	<input type='submit' value='generate'> 
+        <span>)</span>
+    </form>
+    <div class='clear'></div>
+    <div class='indent'>
+	    <% var partial = (new MVC.View({absolute_url: 'command/views/_unincluded.ejs'}).render({
+	    	type: 'model',
+	    	included: included.models,
+	    	files: files.models})); %>
+	    <%= partial %>
+        <p class='gray'>Controllers group events for groups of HTML objects.  <a href='#'>Learn more</a></p>
+    </div>
+</div>
+
 <form id='unit_test_generator'>Create new unit test 
 	<input name='unit_test_name'/>
 	<input type='submit' value='create'/>
