@@ -95,12 +95,18 @@ PageGeneratorController = MVC.Controller.extend('page_generator',{
 		
 		// calculate the path to jmvc/include.js from the html file
 		var html_location = Mozilla.chooseFile();
-		var absolute_path_to_include = MVC.file_base+Mozilla.slash+"jmvc"+Mozilla.slash+"include.js";
-		this.path_to_jmvc = new MVC.File(html_location).path_to_file(MVC.file_base+Mozilla.slash+"jmvc"+Mozilla.slash+"include.js");
 		
-		// save the html file
-		var res = new MVC.View({absolute_url: 'command/generators/page.ejs'}).render(this);
-        Mozilla.saveFile(html_location, res);
+		// if no file is chosen, skip creating the html file
+		if (html_location) {
+			var absolute_path_to_include = MVC.file_base + Mozilla.slash + "jmvc" + Mozilla.slash + "include.js";
+			this.path_to_jmvc = new MVC.File(html_location).path_to_file(MVC.file_base + Mozilla.slash + "jmvc" + Mozilla.slash + "include.js");
+			
+			// save the html file
+			var res = new MVC.View({
+				absolute_url: 'command/generators/page.ejs'
+			}).render(this);
+			Mozilla.saveFile(html_location, res);
+		}
     }
 });
 
@@ -131,6 +137,16 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		// save the compression page
 		var res = new MVC.View({absolute_url: 'command/generators/compress_page.ejs'}).render(this);
         Mozilla.saveFile(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+Mozilla.slash+"index.html", res  );
+		
+		// reload the project tabs
+		MVC.Controller.dispatch('main','load',{});
+		
+		// select the new project
+		var uls = document.getElementsByTagName('li');
+		for(var i=0; i<uls.length; i++){
+			if(uls[i].innerHTML == this.application_name)
+				uls[i].className = 'selected';
+		}
 		
 		// load the app
 		MVC.Appcreator.Iframe.load_iframe(this.application_name);
