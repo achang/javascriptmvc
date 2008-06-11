@@ -6,7 +6,7 @@ AbstractIncludesController = MVC.Controller.extend('abstract_includes',{
 		params.element.childNodes[1].style.visibility='hidden';
 	},
 	'# img click': function(params){
-		var application_name = document.getElementById('application').innerHTML;
+		var application_name = MVC.current_application;
 		var file_name = params.element.nextSibling.nodeValue.replace(/\'/g,'');
 		var including_file_suffix = (params.controller.match(/test/)? '_test' : '');
 		var class_name = params.controller.replace(/_includes/,'');
@@ -29,7 +29,7 @@ AddDependencyController = MVC.Controller.extend('add_dependency',{
     change: function(params){
 		params.including_file_suffix = params.including_file_suffix || '';
 		params.including_path = params.including_path || params.element.lastChild.nodeValue;
-		this.application_name = document.getElementById('application').innerHTML;
+		this.application_name = MVC.current_application;
 		this.checked = params.element.firstChild.checked;
 		if(this.checked)
 			MVC.Path.add_path(this.Class.className, MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+params.including_file_suffix+".js", 

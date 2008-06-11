@@ -1,4 +1,19 @@
-MVC.Appcreator = {};
+MVC.Appcreator = {
+	select: function(app_name) {
+		// select a project
+		var uls = document.getElementsByTagName('li');
+		for(var i=0; i<uls.length; i++){
+			if (uls[i].innerHTML == app_name) {
+				uls[i].className += ' selected';
+				continue;
+			}
+			if(uls[i].className.match(/project/) || uls[i].id == 'new_app')
+				uls[i].className = uls[i].className.replace(/selected/, '');
+		}
+		MVC.current_application = app_name;
+		MVC.Appcreator.Iframe.load_iframe(this.application_name);
+	}
+};
 MVC.Appcreator.Iframe = {
 	load_iframe : function(app_name){
         frames['demo_iframe'].document.location.href = "command/empty.html?"+app_name;

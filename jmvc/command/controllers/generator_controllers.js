@@ -5,7 +5,7 @@
 AbstractGeneratorController = MVC.Controller.extend('abstract',{
     submit: function(params){
         params.event.kill();
-		this.application_name = document.getElementById('application').innerHTML;
+		this.application_name = MVC.current_application;
 		if(!params.including_file) params.including_file = this.class_name;
 		
 		// generates the file
@@ -25,7 +25,7 @@ ControllerGeneratorController = AbstractGeneratorController.extend('controller_g
     submit: function(params){
         this.class_name = params.element.controller_name.value;
         this.name = MVC.String.classize(this.class_name)+'Controller';
-		this.application_name = document.getElementById('application').innerHTML;
+		this.application_name = MVC.current_application;
 		params.generating_file = 'controller';
 		params.generated_file_path = Mozilla.slash+"controllers"+Mozilla.slash+this.class_name+"_controller.js";
 		params.including_file_suffix = '';
@@ -91,7 +91,7 @@ ViewGeneratorController = AbstractGeneratorController.extend('view_generator',{
 PageGeneratorController = MVC.Controller.extend('page_generator',{
     submit: function(params){
         params.event.kill();
-		this.application_name = this.application_name || document.getElementById('application').innerHTML;
+		this.application_name = this.application_name || MVC.current_application;
 		
 		// calculate the path to jmvc/include.js from the html file
 		var html_location = Mozilla.chooseFile();
@@ -121,7 +121,7 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		
 		// save the main controller
 		var res = new MVC.View({absolute_url: 'command/generators/main_controller.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+"\\controllers\\main_controller.js", res  );
+        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"controllers"+Mozilla.slash+"main_controller.js", res  );
 		
 		// save the test file
 		var res = new MVC.View({absolute_url: 'command/generators/test.ejs'}).render(this);
@@ -141,12 +141,15 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		// reload the project tabs
 		MVC.Controller.dispatch('main','load',{});
 		
+		MVC.Appcreator.select(this.application_name);
+		
 		// select the new project
 		var uls = document.getElementsByTagName('li');
 		for(var i=0; i<uls.length; i++){
 			if(uls[i].innerHTML == this.application_name)
 				uls[i].className = 'selected';
 		}
+		MVC.current_application = 
 		
 		// load the app
 		MVC.Appcreator.Iframe.load_iframe(this.application_name);

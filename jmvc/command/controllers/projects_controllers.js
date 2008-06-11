@@ -1,12 +1,6 @@
 AbstractProjectsController = MVC.Controller.extend('abstract_projects',{
     click: function(params){
-		var uls = document.getElementsByTagName('li');
-		for(var i=0; i<uls.length; i++){
-			if(uls[i].className.match(/project/) || uls[i].id == 'new_app'){
-				uls[i].className = uls[i].className.replace(/selected/, '')
-			}
-		}
-		params.element.className += ' selected';
+		MVC.Appcreator.select(params.element.innerHTML);
     },
 	mouseover: function(params){
 		params.element.className += ' over';
