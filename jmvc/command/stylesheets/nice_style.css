@@ -61,6 +61,10 @@ h3 {
 .includes {float: left;}
 .includes img { cursor:pointer; }
 
+#model_generator select {
+	width:100px;
+}
+
 h4 {color: green; float: left;font-weight: normal;
     margin: 0px 0px 10px 0px;
 }
