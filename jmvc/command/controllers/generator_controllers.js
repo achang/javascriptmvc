@@ -13,7 +13,7 @@ AbstractGeneratorController = MVC.Controller.extend('abstract',{
         Mozilla.saveFile(MVC.file_base+params.generated_file_path, res)
 		
 		// write the include back to the app file
-		MVC.Path.add_path(params.generating_file.pluralize(), MVC.file_base+"\\apps\\"+this.application_name+params.including_file_suffix+".js", 
+		MVC.Path.add_path(params.generating_file.pluralize(), MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+params.including_file_suffix+".js", 
 			params.including_file);
 		
 		// reload the app
@@ -27,18 +27,18 @@ ControllerGeneratorController = AbstractGeneratorController.extend('controller_g
         this.name = MVC.String.classize(this.class_name)+'Controller';
 		this.application_name = document.getElementById('application').innerHTML;
 		params.generating_file = 'controller';
-		params.generated_file_path = "\\controllers\\"+this.class_name+"_controller.js";
+		params.generated_file_path = Mozilla.slash+"controllers"+Mozilla.slash+this.class_name+"_controller.js";
 		params.including_file_suffix = '';
 		
 		// create the functional test file
         var res = new MVC.View({absolute_url: 'command/generators/controller_test.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+"\\test\\functional\\"+this.class_name+"_controller_test.js", res  );
+        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"test"+Mozilla.slash+"functional"+Mozilla.slash+this.class_name+"_controller_test.js", res  );
 		
 		// write the controller test include back to the test file
-		MVC.Path.add_path('functional_tests', MVC.file_base+"\\apps\\"+this.application_name+"_test.js", this.class_name+'_controller');
+		MVC.Path.add_path('functional_tests', MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+"_test.js", this.class_name+'_controller');
 		
 		// create the view folder
-		Mozilla.createDirectory(MVC.file_base+"\\views\\"+this.class_name);
+		Mozilla.createDirectory(MVC.file_base+Mozilla.slash+"views"+Mozilla.slash+this.class_name);
 		
 		this._super(params);
     }

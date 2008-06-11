@@ -15,7 +15,7 @@ if(typeof include != 'undefined' && typeof include.end != 'undefined'){
 MVC = {
 	OPTIONS: {},
 	Test: {},
-	Included: {controllers: [], resources: [], models: [], plugins: []},
+	Included: {controllers: [], resources: [], models: [], plugins: [], views: [], functional_tests: [], unit_tests: []},
 	_no_conflict: false,
 	no_conflict: function(){ MVC._no_conflict = true  },
 	File: function(path){ this.path = path; },

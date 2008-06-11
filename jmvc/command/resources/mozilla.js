@@ -109,14 +109,19 @@ Mozilla = {
 	    var ds = Components.classes["@mozilla.org/file/directory_service;1"];
 	    var ss = ds.getService(Components.interfaces.nsIDirectoryServiceProvider);
 	    var cwd = ss.getFile("CurWorkD", {})
-	    var convert = cwd.path.indexOf("\\") != -1;
 	    
-	    var base = window.location.pathname.match(/\/(.*)\/jmvc\/command.html/)[1];
+	    var convert = cwd.path.indexOf(Mozilla.slash) != -1;
+	    
+	    // changed here
+	    var base = window.location.pathname.match(/(\/.*)\/jmvc\/command.html/)[1];
 	    
 	    if (convert) {
-	        base = base.replace(/\//g, "\\")
+	        base = base.replace(/\//g, Mozilla.slash)
 	    }
 		
 		return base;
 	}
 }
+
+Mozilla.slash = "/";
+if (navigator.appVersion.indexOf("Win")!=-1) Mozilla.slash = "\\";

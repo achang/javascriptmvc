@@ -11,7 +11,7 @@ AbstractIncludesController = MVC.Controller.extend('abstract_includes',{
 		var including_file_suffix = (params.controller.match(/test/)? '_test' : '');
 		var class_name = params.controller.replace(/_includes/,'');
 		MVC.Path.remove_path(class_name+'s', 
-			MVC.file_base+"\\apps\\"+application_name+including_file_suffix+".js", 
+			MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+application_name+including_file_suffix+".js", 
 			file_name);
 		MVC.Appcreator.Iframe.load_iframe(application_name);
 	}
@@ -32,10 +32,10 @@ AddDependencyController = MVC.Controller.extend('add_dependency',{
 		this.application_name = document.getElementById('application').innerHTML;
 		this.checked = params.element.firstChild.checked;
 		if(this.checked)
-			MVC.Path.add_path(this.Class.className, MVC.file_base+"\\apps\\"+this.application_name+params.including_file_suffix+".js", 
+			MVC.Path.add_path(this.Class.className, MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+params.including_file_suffix+".js", 
 				params.including_path);
 		else
-			MVC.Path.remove_path(this.Class.className, MVC.file_base+"\\apps\\"+this.application_name+params.including_file_suffix+".js", 
+			MVC.Path.remove_path(this.Class.className, MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+params.including_file_suffix+".js", 
 				params.including_path);
 		// reload the app
 		MVC.Appcreator.Iframe.load_iframe(this.application_name);
