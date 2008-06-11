@@ -1,36 +1,3 @@
-AbstractIncludesController = MVC.Controller.extend('abstract_includes',{
-	mouseover: function(params){
-		params.element.childNodes[1].style.visibility='visible';
-	},
-	mouseout: function(params){
-		params.element.childNodes[1].style.visibility='hidden';
-	},
-	'# img click': function(params){
-		var application_name = MVC.current_application;
-		var file_name = params.element.nextSibling.nodeValue.replace(/\'/g,'');
-		var including_file_suffix = (params.controller.match(/test/)? '_test' : '');
-		var class_name = params.controller.replace(/_includes/,'');
-		
-		// write the include back to the app file
-		if(including_file_suffix == '_test')
-			MVC.Path.remove_path(class_name+'s', MVC.testfile_path, 
-				file_name);
-		else
-			MVC.Path.remove_path(class_name+'s', MVC.appfile_path, 
-				file_name);
-		
-		MVC.Appcreator.Iframe.load_iframe(application_name);
-	}
-});
-
-ControllerIncludesController = AbstractIncludesController.extend('controller_includes');
-ModelIncludesController = AbstractIncludesController.extend('model_includes');
-ResourceIncludesController = AbstractIncludesController.extend('resource_includes');
-ViewIncludesController = AbstractIncludesController.extend('view_includes');
-FunctionalTestIncludesController = AbstractIncludesController.extend('functional_test_includes');
-UnitTestIncludesController = AbstractIncludesController.extend('unit_test_includes');
-PluginIncludesController = AbstractIncludesController.extend('plugin_includes');
-
 AddDependencyController = MVC.Controller.extend('add_dependency',{
     change: function(params){
 		params.including_file_suffix = params.including_file_suffix || '';
