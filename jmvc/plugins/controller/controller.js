@@ -8,13 +8,14 @@ MVC.Controller = MVC.Class.extend({
         if(!this.className) return;
         MVC.Controller.controllers.push(this);
         var val, act;
+        this.actions = {};
         for(var action_name in this.prototype){
     		val = this.prototype[action_name];
     		if( typeof val == 'function' && action_name != 'Class'){
                 for(var a = 0 ; a < MVC.Controller.actions.length; a++){
                     act = MVC.Controller.actions[a];
                     if(act.matches(action_name)){
-                        new act(action_name, val, this);
+                        this.actions[action_name] =new act(action_name, val, this);
                     }
                 }
             }
@@ -22,6 +23,21 @@ MVC.Controller = MVC.Class.extend({
         this.modelName = MVC.String.classize(
             MVC.String.is_singular(this.className) ? this.className : MVC.String.singularize(this.className)
         );
+        //load tests
+        if(include.get_env() == 'test'){
+            var path = MVC.root.join('test/functional/'+this.className+'_controller_test.js');
+    		var exists = include.checkExists(path);
+    		if(exists)
+    			MVC.Console.log('Loading: "test/functional/'+this.className+'_controller_test.js"');
+    		else {
+    			MVC.Console.log('Test Controller not found at "test/functional/'+this.className+'_controller_test.js"');
+    			return;
+    		}
+    		var p = include.get_path();
+    		include.set_path(MVC.root.path);
+    		include('test/functional/'+ this.className+'_controller_test.js');
+    		include.set_path(p);
+        }
     },
     add_kill_event: function(event){ //this should really be in event
 		if(!event.kill){
@@ -157,11 +173,13 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
             MVC.Event.observe(window, this.event_type, MVC.Controller.event_closure(this.controller, this.event_type, window) );
             return;
         }
-
-        if(this.controller.className == 'main') return this.main_controller();
-        return MVC.String.is_singular(this.controller.className) ? 
-            this.singular_selector() :
-            this.plural_selector();
+        
+        if(this.controller.className == 'main') 
+            this.css_selector = this.main_controller();
+        else
+            this.css_selector = MVC.String.is_singular(this.controller.className) ? 
+                this.singular_selector() : this.plural_selector();
+        return this.css_selector;
     }
 });
 

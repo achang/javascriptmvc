@@ -17,13 +17,13 @@
 				return false;
 	    return true;
 	}
-	if(include.checkExists(MVC.apps_root+'/'+MVC.app_name+'_test.js')){
+	if(include.checkExists(MVC.apps_root+'/'+MVC.app_name+'/test.js')){
 		var path = include.get_path();
 		include.set_path(MVC.apps_root)
-		include(MVC.app_name+'_test')
+		include(MVC.app_name+'/test')
 		include.set_path(path)
 	}else{
-		MVC.Console.log("There is no application test file at:\n    \"apps/"+MVC.app_name+"_test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests('product')\n    include.functional_tests('widget')")
+		MVC.Console.log("There is no application test file at:\n    \"apps/"+MVC.app_name+"/test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests('product')\n    include.functional_tests('widget')")
 	}
 })();
 
@@ -401,17 +401,17 @@ MVC.Test.Controller = MVC.Test.Functional.extend({
 	},
 	helpers : function(){
 		var helpers = this._super();
-		var actions = MVC.Object.extend({}, this.controller.actions()) ;
+		var actions = MVC.Object.extend({}, this.controller.actions) ;
 		this.added_helpers = {};
 		for(var action_name in actions){
 			if(!actions.hasOwnProperty(action_name) || 
 				!actions[action_name].event_type || 
-				!actions[action_name].selector) 
+				!actions[action_name].css_selector) 
 					continue;
 			var event_type = actions[action_name].event_type;
-			var cleaned_name = actions[action_name].selector.replace(/\.|#/g, '')+' '+event_type;
+			var cleaned_name = actions[action_name].css_selector.replace(/\.|#/g, '')+' '+event_type;
 			var helper_name = cleaned_name.replace(/(\w*)/g, function(m,part){ return MVC.String.capitalize(part)}).replace(/ /g, '');
-			helpers[helper_name] = helpers[MVC.String.capitalize(event_type)].curry(actions[action_name].selector);
+			helpers[helper_name] = helpers[MVC.String.capitalize(event_type)].curry(actions[action_name].css_selector);
 			this.added_helpers[helper_name] = helpers[helper_name];
 		}
 		return helpers;
@@ -444,12 +444,12 @@ MVC.Included.functional_tests = [];
 include.unit_tests = function(){
 	for(var i=0; i< arguments.length; i++)
 		MVC.Console.log('Trying to load: test/unit/'+arguments[i]+'_test.js');
-	include.app(function(i){ return '../test/unit/'+i+'_test'}, MVC.Included.unit_tests).apply(null, arguments);
+	include.app(function(i){ return '../../test/unit/'+i+'_test'}, MVC.Included.unit_tests).apply(null, arguments);
 }
 include.functional_tests = function(){
 	for(var i=0; i< arguments.length; i++)
 		MVC.Console.log('Trying to load: test/functional/'+arguments[i]+'_test.js');
-	include.app(function(i){ return '../test/functional/'+i+'_test'}, MVC.Included.functional_tests).apply(null, arguments);
+	include.app(function(i){ return '../../test/functional/'+i+'_test'}, MVC.Included.functional_tests).apply(null, arguments);
 }
 
 if(!MVC._no_conflict) Test = MVC.Test;
