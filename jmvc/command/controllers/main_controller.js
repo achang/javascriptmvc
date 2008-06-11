@@ -6,5 +6,8 @@ MainController = MVC.Controller.extend('main',{
 		// reload the project tabs
 		var res = new MVC.View({absolute_url: 'command/views/projects.ejs'}).render(this);
 	    document.getElementById('projects').innerHTML = res;
+		
+		if(location.hash)
+			MVC.Appcreator.select(location.hash.split('#')[1]);
     }
 });

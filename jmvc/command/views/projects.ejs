@@ -1,7 +1,7 @@
 <% for (var f = 0; f < files.length; f++) {
     var name = files[f]; 
     if (name.indexOf('_production') == -1 && name.indexOf('_test') == -1) { %>
-        <li id="<%= name %>" class="project"><%= name %></li>
+        <li class="project"><%= name %></li>
     <% } %>
 <% } %>
 <li id='new_app'>+new</li>

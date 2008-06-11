@@ -13,7 +13,8 @@ MVC.Appcreator = {
 		MVC.current_application = app_name;
 		MVC.appfile_path = MVC.Path.join(MVC.file_base,'apps',app_name+".js");
 		MVC.testfile_path = MVC.Path.join(MVC.file_base,'apps',app_name,app_name+"_test.js");
-		MVC.Appcreator.Iframe.load_iframe(this.application_name);
+		MVC.Appcreator.Iframe.load_iframe(app_name);
+		location.hash = '#'+app_name;
 	}
 };
 MVC.Appcreator.Iframe = {
