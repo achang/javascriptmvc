@@ -112,8 +112,10 @@ Mozilla = {
 	    
 	    var convert = cwd.path.indexOf(Mozilla.slash) != -1;
 	    
-	    // changed here
-	    var base = window.location.pathname.match(/(\/.*)\/jmvc\/command.html/)[1];
+	    if(MVC.Windows)
+	    	var base = window.location.pathname.match(/\/(.*)\/jmvc\/command.html/)[1];
+		else
+	    	var base = window.location.pathname.match(/(\/.*)\/jmvc\/command.html/)[1];
 	    
 	    if (convert) {
 	        base = base.replace(/\//g, Mozilla.slash)
@@ -123,5 +125,10 @@ Mozilla = {
 	}
 }
 
-Mozilla.slash = "/";
-if (navigator.appVersion.indexOf("Win")!=-1) Mozilla.slash = "\\";
+if (navigator.appVersion.indexOf("Win")!=-1){
+	Mozilla.slash = "\\";
+	MVC.Windows = true;
+} else {
+	Mozilla.slash = "/";
+	MVC.Windows = false;
+}
