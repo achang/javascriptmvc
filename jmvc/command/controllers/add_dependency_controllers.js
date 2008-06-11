@@ -9,7 +9,7 @@ AddDependencyController = MVC.Controller.extend('add_dependency',{
 			MVC.Path.add_path(this.Class.className, MVC.testfile_path, 
 				params.including_path);
 		else
-			MVC.Path.add_path(params.generating_file.pluralize(), MVC.appfile_path, 
+			MVC.Path.add_path(this.Class.className, MVC.appfile_path, 
 				params.including_path);
 			
 		// reload the app

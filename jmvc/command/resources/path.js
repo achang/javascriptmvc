@@ -52,5 +52,20 @@ MVC.Path = {
 	            name_arr.push(match_arr[1]);
 	    }
 	    return name_arr;
+	},
+	join: function(){
+		var path_arr = [];
+		for(var i=0; i<arguments.length; i++){
+			path_arr.push(arguments[i]);
+		}
+		return path_arr.join(MVC.Path.slash);
 	}
+}
+
+if (navigator.appVersion.indexOf("Win")!=-1){
+	MVC.Path.slash = "\\";
+	MVC.Windows = true;
+} else {
+	MVC.Path.slash = "/";
+	MVC.Windows = false;
 }

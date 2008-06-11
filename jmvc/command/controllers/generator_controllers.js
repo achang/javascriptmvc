@@ -11,7 +11,7 @@ AbstractGeneratorController = MVC.Controller.extend('abstract',{
 		
 		// generates the file
         var res = new MVC.View({absolute_url: 'command/generators/'+params.generating_file+'.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+params.generated_file_path, res)
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,params.generated_file_path), res)
 		
 		// write the include back to the app file
 		if(params.including_file_suffix == '_test')
@@ -32,17 +32,17 @@ ControllerGeneratorController = AbstractGeneratorController.extend('controller_g
         this.name = MVC.String.classize(this.class_name)+'Controller';
 		this.application_name = MVC.current_application;
 		params.generating_file = 'controller';
-		params.generated_file_path = Mozilla.slash+"controllers"+Mozilla.slash+this.class_name+"_controller.js";
+		params.generated_file_path = MVC.Path.join("controllers",this.class_name+"_controller.js");
 		
 		// create the functional test file
         var res = new MVC.View({absolute_url: 'command/generators/controller_test.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"test"+Mozilla.slash+"functional"+Mozilla.slash+this.class_name+"_controller_test.js", res  );
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"test","functional",this.class_name+"_controller_test.js"), res  );
 		
 		// write the controller test include back to the test file
 		MVC.Path.add_path('functional_tests', MVC.testfile_path, this.class_name+'_controller');
 		
 		// create the view folder
-		Mozilla.createDirectory(MVC.file_base+Mozilla.slash+"views"+Mozilla.slash+this.class_name);
+		Mozilla.createDirectory(MVC.Path.join(MVC.file_base,"views",this.class_name));
 		
 		this._super(params);
     }
@@ -52,7 +52,7 @@ UnitTestGeneratorController = AbstractGeneratorController.extend('unit_test_gene
     submit: function(params){
         this.class_name = params.element.unit_test_name.value;
 		params.generating_file = 'unit_test';
-		params.generated_file_path = Mozilla.slash+"test"+Mozilla.slash+"unit"+Mozilla.slash+this.class_name+"_test.js";
+		params.generated_file_path = MVC.Path.join("test","unit",this.class_name+"_test.js");
 		params.including_file_suffix = '_test';
 		this._super(params);
     }
@@ -64,7 +64,7 @@ ModelGeneratorController = AbstractGeneratorController.extend('model_generator',
         this.name = MVC.String.classize(this.class_name);
 		this.type = params.element.model_type.value;
 		params.generating_file = 'model';
-		params.generated_file_path = Mozilla.slash+"models"+Mozilla.slash+this.class_name+".js";
+		params.generated_file_path = MVC.Path.join("models",this.class_name+".js");
 		this._super(params);
     }
 });
@@ -73,7 +73,7 @@ FunctionalTestGeneratorController = AbstractGeneratorController.extend('function
     submit: function(params){
         this.class_name = params.element.functional_test_name.value;
 		params.generating_file = 'functional_test';
-		params.generated_file_path = Mozilla.slash+"test"+Mozilla.slash+"functional"+Mozilla.slash+this.class_name+"_test.js";
+		params.generated_file_path = MVC.Path.join("test","functional",this.class_name+"_test.js");
 		params.including_file_suffix = '_test';
 		this._super(params);
     }
@@ -89,8 +89,8 @@ PageGeneratorController = MVC.Controller.extend('page_generator',{
 		
 		// if no file is chosen, skip creating the html file
 		if (html_location) {
-			var absolute_path_to_include = MVC.file_base + Mozilla.slash + "jmvc" + Mozilla.slash + "include.js";
-			this.path_to_jmvc = new MVC.File(html_location).path_to_file(MVC.file_base + Mozilla.slash + "jmvc" + Mozilla.slash + "include.js");
+			var absolute_path_to_include = MVC.Path.join(MVC.file_base,"jmvc","include.js");
+			this.path_to_jmvc = new MVC.File(html_location).path_to_file(MVC.Path.join(MVC.file_base,"jmvc","include.js"));
 			
 			// save the html file
 			var res = new MVC.View({
@@ -108,26 +108,26 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		
 		// save the application file
 		var res = new MVC.View({absolute_url: 'command/generators/application.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+".js", res  );
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name+".js"), res  );
 		
 		// save the main controller
 		var res = new MVC.View({absolute_url: 'command/generators/main_controller.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"controllers"+Mozilla.slash+"main_controller.js", res  );
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"controllers","main_controller.js"), res  );
 		
 		// create the compression folder
-		Mozilla.createDirectory(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name);
+		Mozilla.createDirectory(MVC.Path.join(MVC.file_base,"apps",this.application_name));
 		
 		// save the compression script
 		var res = new MVC.View({absolute_url: 'command/generators/compress_script.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+Mozilla.slash+"compress.js", res  );
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name,"compress.js"), res  );
 		
 		// save the compression page
 		var res = new MVC.View({absolute_url: 'command/generators/compress_page.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+Mozilla.slash+"index.html", res  );
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name,"index.html"), res  );
 		
 		// save the test file
 		var res = new MVC.View({absolute_url: 'command/generators/test.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+Mozilla.slash+this.application_name+"_test.js", res  );
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name,this.application_name+"_test.js"), res  );
 		
 		// reload the project tabs
 		MVC.Controller.dispatch('main','load',{});

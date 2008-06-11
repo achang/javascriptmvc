@@ -127,8 +127,6 @@ Mozilla = {
 
 if (navigator.appVersion.indexOf("Win")!=-1){
 	Mozilla.slash = "\\";
-	MVC.Windows = true;
 } else {
 	Mozilla.slash = "/";
-	MVC.Windows = false;
 }

@@ -11,8 +11,8 @@ MVC.Appcreator = {
 				uls[i].className = uls[i].className.replace(/selected/, '');
 		}
 		MVC.current_application = app_name;
-		MVC.appfile_path = MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+app_name+".js";
-		MVC.testfile_path = MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+app_name+Mozilla.slash+app_name+"_test.js";
+		MVC.appfile_path = MVC.Path.join(MVC.file_base,'apps',app_name+".js");
+		MVC.testfile_path = MVC.Path.join(MVC.file_base,'apps',app_name,app_name+"_test.js");
 		MVC.Appcreator.Iframe.load_iframe(this.application_name);
 	}
 };
