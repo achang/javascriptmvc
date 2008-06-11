@@ -14,9 +14,21 @@ MVC.Path = {
 	remove_include: function(include_type, file, file_to_remove){
 	    return this.modify_includes(include_type, file, file_to_remove, false);
 	},
+	add_to_include_file: function(include_type, file){
+		if(include_type == 'resources' || include_type == 'plugins' || 
+		include_type == 'unit_tests' || include_type == 'functional_tests')
+			return ("include."+include_type+"();\n"+file);
+		else if(include_type == 'views' || include_type == 'controllers' || include_type == 'models'){
+			return file.replace(/MVC\.Initializer\(function\(\)\{/, 
+				"MVC.Initializer(function(){\ninclude."+include_type+"();\n");
+		}
+		return file;
+	},
 	modify_includes: function(include_type, file, file_to_check, add){
 		file_to_check = file_to_check.replace(/\s+/g,'');
 	    var regexp_include = new RegExp("include\\." + include_type + "\\((.*)\\)");
+		if(!file.match(regexp_include))
+			file = this.add_to_include_file(include_type,file);
 	    var str = "include." + include_type + "(";
 	    var items = this.list_of_items(include_type, file);
 	    var name_arr = [];

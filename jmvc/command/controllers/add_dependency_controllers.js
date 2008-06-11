@@ -20,7 +20,13 @@ AddDependencyController = MVC.Controller.extend('add_dependency',{
 ControllersController = AddDependencyController.extend('controllers');
 ModelsController = AddDependencyController.extend('models');
 ResourcesController = AddDependencyController.extend('resources');
-PluginsController = AddDependencyController.extend('plugins');
+PluginsController = AddDependencyController.extend('plugins',{
+	change: function(params){
+		if(params.element.childNodes.length > 2)
+			params.including_path = params.element.childNodes[2].innerHTML;
+		this._super(params);
+	}
+});
 
 ViewsController = AddDependencyController.extend('views',{
     change: function(params){
