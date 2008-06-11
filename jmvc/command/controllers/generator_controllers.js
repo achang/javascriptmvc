@@ -5,6 +5,7 @@
 AbstractGeneratorController = MVC.Controller.extend('abstract',{
     submit: function(params){
         params.event.kill();
+		params.including_file_suffix = params.including_file_suffix || '';
 		this.application_name = MVC.current_application;
 		if(!params.including_file) params.including_file = this.class_name;
 		
@@ -13,8 +14,12 @@ AbstractGeneratorController = MVC.Controller.extend('abstract',{
         Mozilla.saveFile(MVC.file_base+params.generated_file_path, res)
 		
 		// write the include back to the app file
-		MVC.Path.add_path(params.generating_file.pluralize(), MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+params.including_file_suffix+".js", 
-			params.including_file);
+		if(params.including_file_suffix == '_test')
+			MVC.Path.add_path(params.generating_file.pluralize(), MVC.testfile_path, 
+				params.including_file);
+		else
+			MVC.Path.add_path(params.generating_file.pluralize(), MVC.appfile_path, 
+				params.including_file);
 		
 		// reload the app
 		MVC.Appcreator.Iframe.load_iframe(this.application_name);
@@ -28,14 +33,13 @@ ControllerGeneratorController = AbstractGeneratorController.extend('controller_g
 		this.application_name = MVC.current_application;
 		params.generating_file = 'controller';
 		params.generated_file_path = Mozilla.slash+"controllers"+Mozilla.slash+this.class_name+"_controller.js";
-		params.including_file_suffix = '';
 		
 		// create the functional test file
         var res = new MVC.View({absolute_url: 'command/generators/controller_test.ejs'}).render(this);
         Mozilla.saveFile(MVC.file_base+Mozilla.slash+"test"+Mozilla.slash+"functional"+Mozilla.slash+this.class_name+"_controller_test.js", res  );
 		
 		// write the controller test include back to the test file
-		MVC.Path.add_path('functional_tests', MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+"_test.js", this.class_name+'_controller');
+		MVC.Path.add_path('functional_tests', MVC.testfile_path, this.class_name+'_controller');
 		
 		// create the view folder
 		Mozilla.createDirectory(MVC.file_base+Mozilla.slash+"views"+Mozilla.slash+this.class_name);
@@ -61,7 +65,6 @@ ModelGeneratorController = AbstractGeneratorController.extend('model_generator',
 		this.type = params.element.model_type.value;
 		params.generating_file = 'model';
 		params.generated_file_path = Mozilla.slash+"models"+Mozilla.slash+this.class_name+".js";
-		params.including_file_suffix = '';
 		this._super(params);
     }
 });
@@ -72,18 +75,6 @@ FunctionalTestGeneratorController = AbstractGeneratorController.extend('function
 		params.generating_file = 'functional_test';
 		params.generated_file_path = Mozilla.slash+"test"+Mozilla.slash+"functional"+Mozilla.slash+this.class_name+"_test.js";
 		params.including_file_suffix = '_test';
-		this._super(params);
-    }
-});
-
-ViewGeneratorController = AbstractGeneratorController.extend('view_generator',{
-    submit: function(params){
-        this.class_name = params.element.view_name.value;
-        var folder_name = params.element.view_folder.value;
-		params.including_file = folder_name+'/'+this.class_name;
-		params.generating_file = 'view';
-		params.generated_file_path = Mozilla.slash+"views"+Mozilla.slash+folder_name+Mozilla.slash+this.class_name+".ejs";
-		params.including_file_suffix = '';
 		this._super(params);
     }
 });
@@ -123,10 +114,6 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		var res = new MVC.View({absolute_url: 'command/generators/main_controller.ejs'}).render(this);
         Mozilla.saveFile(MVC.file_base+Mozilla.slash+"controllers"+Mozilla.slash+"main_controller.js", res  );
 		
-		// save the test file
-		var res = new MVC.View({absolute_url: 'command/generators/test.ejs'}).render(this);
-        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+"_test.js", res  );
-		
 		// create the compression folder
 		Mozilla.createDirectory(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name);
 		
@@ -137,6 +124,10 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		// save the compression page
 		var res = new MVC.View({absolute_url: 'command/generators/compress_page.ejs'}).render(this);
         Mozilla.saveFile(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+Mozilla.slash+"index.html", res  );
+		
+		// save the test file
+		var res = new MVC.View({absolute_url: 'command/generators/test.ejs'}).render(this);
+        Mozilla.saveFile(MVC.file_base+Mozilla.slash+"apps"+Mozilla.slash+this.application_name+Mozilla.slash+this.application_name+"_test.js", res  );
 		
 		// reload the project tabs
 		MVC.Controller.dispatch('main','load',{});

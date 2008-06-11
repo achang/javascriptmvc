@@ -135,19 +135,11 @@
     <div class='includes'>
     <% var partial = (new MVC.View({absolute_url: 'command/views/_included.ejs'}).render({
     	iter: included.views, 
-    	end_with_comma: true,
+    	end_with_comma: false,
     	type: 'view'})); %>
     <%= partial %>
     </div>
-    <form id='view_generator'>&nbsp;<input name='view_name' class='text'/>
-    	<input type='submit' value='generate'> 
-		<select name="view_folder">
-		<% for(var i=0; i<view_dirs.length; i++) { %>
-			<option value="<%= view_dirs[i] %>"><%= view_dirs[i] %></option>
-		<% } %>
-		</select>
-        <span>)</span>
-    </form>
+    <span>)</span>
     <div class='clear'></div>
     <div class='indent'>
 	    <% var partial = (new MVC.View({absolute_url: 'command/views/_unincluded.ejs'}).render({
