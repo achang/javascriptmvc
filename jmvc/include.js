@@ -25,7 +25,7 @@ MVC = {
 		include('framework');
 	},
 	Runner: function(f){
-		if(!window.in_command_window)
+		if(!window.in_command_window && !window._rhino)
 			f();
 	},
 	Ajax: {},

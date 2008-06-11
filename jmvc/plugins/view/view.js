@@ -93,7 +93,7 @@ MVC.View.prototype = {
 	// called with options being a string, uses that as a url
 	// called with options as an object
 	update : function(element, options){
-		if(typeof element == 'string'){
+        if(typeof element == 'string'){
 			element = MVC.$E(element);
 		}
 		if(options == null){
@@ -110,7 +110,8 @@ MVC.View.prototype = {
 				var object = eval( "("+ request.responseText+")" );
 				MVC.View.prototype.update.call(_template, element, object);
 			};
-			new MVC.Ajax(params.url, params)
+            if(!MVC.Ajax) alert('You must include the Ajax plugin to use this feature');
+			new MVC.Ajax(params.url, params);
 		}else
 		{
 			element.innerHTML = this.render(options);

@@ -1,4 +1,4 @@
-include.plugins('ajax');
+include.plugins('helpers');
 include('view');
 if(include.get_env() == 'development')	include('fulljslint');
 
