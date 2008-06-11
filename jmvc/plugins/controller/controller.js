@@ -215,7 +215,7 @@ MVC.Controller.Params.prototype = {
 	},
 	class_element : function(){
 		var start = this.element, controller = this.controller;
-		var className = MVC.String.is_singular(controller.className) ? controller.className : MVC.String.singularize(controller.className);
+		var className = MVC.String.is_singular(controller) ? controller : MVC.String.singularize(controller);
 		while(start && start.className.indexOf(className) == -1 ){
 			start = start.parentNode;
 			if(start == document) return null;

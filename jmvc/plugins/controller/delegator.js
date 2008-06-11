@@ -47,7 +47,7 @@ MVC.DelegationEvent = function(selector, event, f){
     this._selector = selector;
     this._func = f;
 
-    if(event == 'submit' /*&& MVC.Browser.IE*/) return this.submit_for_ie();
+    if(event == 'submit' && MVC.Browser.IE) return this.submit_for_ie();
 	if(event == 'change' && MVC.Browser.IE) return this.change_for_ie();
 	if(event == 'change' && MVC.Browser.WebKit) return this.change_for_webkit();
 	
