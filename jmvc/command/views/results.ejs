@@ -168,7 +168,14 @@
 		if(included.plugins.indexOf(files.plugins[j]) == -1)
 			disabled = false; %>
 		
-		<li class='plugin'><input type='checkbox' <%= disabled? "disabled='true'": "" %> <%= disabled? "checked='true'": "" %> /> <%= files.plugins[j] %></li>
+		<li class='plugin'><input type='checkbox' <%= disabled? "disabled='true'": "" %> <%= disabled? "checked='true'": "" %> /> 
+		<% if(MVC.PluginDescriptions[files.plugins[j]]){ %>
+			<a href='<%= MVC.PluginDescriptions[files.plugins[j]].url %>'><%= files.plugins[j] %></a> - 
+			<%= MVC.PluginDescriptions[files.plugins[j]].description %>
+		<% } else { %>
+			<%= files.plugins[j] %>
+		<% } %>
+		</li>
 	<% } %>
 	</ul>
 </div>
