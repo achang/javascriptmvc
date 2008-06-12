@@ -14,11 +14,13 @@
         <ul id='projects'></ul>
 	</div>
         
-    <div id='content' class='indent'></div>
+    <div id='content' class='indent'>
+        
+    </div>
         
     <script type='text/javascript' src='include.js'></script>
     <script type='text/javascript'>
-        include.plugins('controller','view');
+        include.plugins('controller','view','element');
         include('command/controllers/generator_controllers',
 				'command/controllers/projects_controllers',
 				'command/controllers/add_dependency_controllers',

@@ -68,7 +68,7 @@ h3 {
 h4 {color: green; float: left;font-weight: normal;
     margin: 0px 0px 10px 0px;
 }
-
+.normal h4 {float: none;}
 .include_type {margin-bottom: 20px;}
 .include_type form {position: relative; top: -2px;display:inline; }
 .include_type form input {font-size: 10pt; padding: 0px;}

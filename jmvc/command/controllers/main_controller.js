@@ -9,5 +9,12 @@ MainController = MVC.Controller.extend('main',{
 		
 		if(location.hash)
 			MVC.Appcreator.select(location.hash.split('#')[1]);
+        else{
+            if(this.files.length == 0){
+                $E('content').innerHTML = new View({absolute_url: 'command/views/start.ejs'}).render(this);
+            }else{
+                $E('content').innerHTML = "Please select a project or create a new application."
+            }
+        }
     }
 });
