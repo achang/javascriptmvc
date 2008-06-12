@@ -5,8 +5,8 @@ if(typeof Prototype == 'undefined') {
 			"../inflector/inflector",
 			"../event/standard",
 			"../ajax/ajax",
-			"../class2/setup");
-	MVC.Included.plugins.push('helpers','inflector','ajax','event','class2');
+			"../class/setup");
+	MVC.Included.plugins.push('helpers','inflector','ajax','event','class');
 }else{
 	MVC.Event = Event;
 	include({path: '../helpers/prototype_helpers.js', shrink_variables: false},

@@ -1,2 +1,2 @@
-include.plugins('class2');
+include.plugins('class');
 include('model');
