@@ -1,43 +1,47 @@
 MVC.ModelViewHelper = MVC.Class.extend(
 {
     init: function(){
-        if(this.className){
-            //add yourself to your model
-            var modelClass;
-            if(!this.className) return;
-            
-            if(!(this.modelClass = window[MVC.String.classize(this.className)]) ) 
-                throw "ModelViewHelpers can't find class "+this.className;
-            var viewClass = this;
-            this.modelClass.View = function(){ return viewClass};
-            this.modelClass.prototype.View = function(){
-                return new viewClass(this);
-            };
-            if(this.modelClass.attributes){
-                this._view = new MVC.View.Helpers({});
-                var type;
-                for(var attr in this.modelClass.attributes){
-                    if(! this.modelClass.attributes.hasOwnProperty(attr) || typeof this.modelClass.attributes[attr] != 'string') continue;
-                    var h = this._helper(attr);
-                    this.helpers[attr+"_field"] = h ;
-                }
+        if(!this.className) return;
+        //add yourself to your model
+        var modelClass;
+        if(!this.className) return;
+        
+        if(!(modelClass = this.modelClass = window[MVC.String.classize(this.className)]) ) 
+            throw "ModelViewHelpers can't find class "+this.className;
+        var viewClass = this;
+        this.modelClass.View = function(){ 
+            return viewClass;
+        };
+        
+        
+        this.modelClass.prototype.View = function(){
+            return new viewClass(this);
+        };
+        if(this.modelClass.attributes){
+            this._view = new MVC.View.Helpers({});
+            var type;
+            for(var attr in this.modelClass.attributes){
+                if(! this.modelClass.attributes.hasOwnProperty(attr) || typeof this.modelClass.attributes[attr] != 'string') continue;
+                this.add_helper(attr);
             }
         }
     },
+    form_helper: function(attr){
+        if(! this.helpers[attr]+"_field" ){
+            this.add_helper(attr);
+        }
+        var f = this.helpers[attr+"_field"];
+        var args = MVC.Array.from(arguments);
+        args.shift();
+        return f.apply(this._view, args);
+    },
+    add_helper : function(attr){
+        var h = this._helper(attr);
+        this.helpers[attr+"_field"] = h;
+    },
     helpers : {},
     _helper: function(attr){
-        var helper;
-        switch(this.modelClass.attributes[attr].toLowerCase()) {
-				case 'boolean': 
-                    helper = this._view.check_box_tag;
-                    break;
-                case 'text':
-                    helper = this._view.text_area_tag;
-                    break;
-				default:
-					helper = this._view.text_field_tag;
-					break;
-	    }
+        var helper = this._view_helper(attr);
         var modelh = this;
         var name = this.modelClass.className+'['+attr+']';
         var id = this.modelClass.className+'_'+attr;
@@ -48,6 +52,43 @@ MVC.ModelViewHelper = MVC.Class.extend(
             args[2].id = id;
             return helper.apply(modelh._view, args);
         }
+    },
+    _view_helper: function(attr){
+         switch(this.modelClass.attributes[attr].toLowerCase()) {
+				case 'boolean': 
+                    return this._view.check_box_tag;
+                case 'text':
+                    return this._view.text_area_tag;
+				default:
+					return this._view.text_field_tag;
+	    }
+    },
+    clear: function(){
+        var mname = this.modelClass.className, el;
+        for(var attr in this.modelClass.attributes){
+            if( (el = MVC.$E(mname+"_"+attr)) ){
+                el.value = '';
+            }
+        }
+    },
+    from_html: function(element_or_id){
+        var el =MVC.$E(element_or_id);
+        
+        var el_class = this.modelClass ? this.modelClass : window[ MVC.String.classize(el.getAttribute('type')) ];
+        
+        if(! el_class) return null;
+        //get data here
+        var attributes = {};
+        attributes[el_class.id] = this.element_id_to_id(el.id);
+        //for(var attr in modelClass.attributes){
+        //    if(MVC.$E(  ) )
+        //}
+        
+        return el_class.create_as_existing(attributes);
+    },
+    element_id_to_id: function(element_id){
+        var re = new RegExp(this.className+'_', "");
+        return element_id.replace(re, '');
     }
 },
 {
@@ -101,6 +142,35 @@ MVC.ModelViewHelper = MVC.Class.extend(
         }
         var bigel = MVC.$E(cn+"_error");
         if(bigel) bigel.innerHTML = '';
+    },
+    edit: function(attr){
+        //get the helper function, add args, return
+         var args = MVC.Array.from(arguments);
+         var name = this._className+'['+attr+']'
+         args.shift();
+         args.unshift( {id: this.edit_id(attr)} ); //change to ID
+         args.unshift(this._inst[attr]); //value
+         args.unshift(name); //name
+         var helper =this.Class._view_helper(attr)
+         return helper.apply(this.Class._view, args);
+    },
+    edit_values: function(){
+        var values = {};
+        var cn = this._className, p, el;
+        for(var i =0; i < this._inst._properties.length; i++){
+            p = this._inst._properties[i];
+            el = MVC.$E(this.edit_id(p));
+            if(el) values[p] = el.value;
+            
+        }
+        return values;
+    },
+    edit_id: function(attr){
+        return this._className+'_'+this._inst.id+'_'+attr+'_edit';
+    },
+    destroy: function(){
+        var el = this.element();
+        el.parentNode.removeChild(el);
     }
 }
 );

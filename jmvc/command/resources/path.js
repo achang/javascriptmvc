@@ -46,12 +46,12 @@ MVC.Path = {
 	add_path : function(include_type, file_path, file_to_add){
 	    var file = Mozilla.readFile(file_path);
 	    var str = this.add_include(include_type, file, file_to_add);
-	    Mozilla.saveFile(file_path, str);
+	    Mozilla.saveFile(file_path, str, true);
 	},
 	remove_path : function(include_type, file_path, file_to_remove){
 	    var file = Mozilla.readFile(file_path);
 	    var str = this.remove_include(include_type, file, file_to_remove);
-	    Mozilla.saveFile(file_path, str);
+	    Mozilla.saveFile(file_path, str, true);
 	},
 	list_of_items : function(include_type, file){
 	    var name_arr = [];

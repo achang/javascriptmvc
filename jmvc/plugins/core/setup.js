@@ -14,7 +14,7 @@ if(typeof Prototype == 'undefined') {
 			"../ajax/prototype_ajax");
 	MVC.Included.plugins.push('helpers','inflector','ajax');
 }
-include('../ajax/debug');
+//include('../ajax/debug');
 
 if(include.get_env() == 'test') include('test')
 

@@ -59,9 +59,14 @@ MVC.Model = MVC.Class.extend(
     element_id_to_id: function(element_id){
         var re = new RegExp(this.className+'_', "");
         return element_id.replace(re, '');
-    }
+    },
+    add_attribute : function(property, type){
+        if(! this.attributes[property])
+            this.attributes[property] = type;
+    },
+    attributes: {}
 },
-{
+{   //Prototype functions
     init : function(attributes){
         this._properties = [];
         this.errors = [];
@@ -91,6 +96,8 @@ MVC.Model = MVC.Class.extend(
         this[property] = MVC.Array.include(['created_at','updated_at'], property) ? MVC.Date.parse(value) :  value;
 
         if (!(MVC.Array.include(this._properties,property))) this._properties.push(property);  
+        
+        this.Class.add_attribute(property, MVC.Object.guess_type(value)  )
     },
     _setAssociation : function(association, values) {
         this[association] = function(){
@@ -118,10 +125,36 @@ MVC.Model = MVC.Class.extend(
         this.is_new_record = this.Class.new_record_func;
         return true;
     },
-    destroy : function(){
-        this.Class.destroy(this[this.Class.id]);
+    destroy : function(callback){
+        this.Class.destroy(this[this.Class.id], callback);
     },
     add_errors : function(errors){
         if(errors) this.errors = this.errors.concat(errors);
+    },
+    _resetAttributes : function(attributes) {
+        this._clear();
+        /*for (var attr in attributes){
+    		if(attributes.hasOwnProperty(attr)){
+    			this._setAttribute(attr, attributes[attr]);
+    		}
+    	}*/
+    },
+    _clear : function() {
+        for (var i=0; i<this._properties.length; i++)
+          this[this._properties[i]] = null;
+        this._properties = [];
     }
 });
+
+
+MVC.Object.guess_type = function(object){
+    if(typeof object != 'string'){
+        if( object.constructor == Date ) return 'date';
+        if(object.constructor == Array) return 'array';
+        return typeof object;
+    }
+    //check if true or false
+    if(object == 'true' || object == 'false') return 'boolean';
+    if(!isNaN(object)) return 'number'
+    return typeof object;
+}

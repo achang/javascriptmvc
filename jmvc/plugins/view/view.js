@@ -47,7 +47,7 @@ MVC.View = function( options ){
         this.text = include.request(url+(this.cache || window._rhino ? '' : '?'+Math.random() ));
 		
 		if(this.text == null){
-			throw 'There is no template at '+url;
+			alert('There is no template at '+url) ;
 		}
 		this.name = options.url;
 	}else if(options.hasOwnProperty('element'))

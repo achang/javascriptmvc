@@ -1,11 +1,11 @@
 Mozilla = {
-    chooseFile: function(filePath){
+    chooseFile: function(defaultString){
         netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
         var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker)
         
         fp.init(window, "", fp.modeSave);
         fp.defaultExtension = "html";
-        fp.defaultString = "index.html";
+        fp.defaultString = defaultString || "index.html";
         fp.appendFilters(fp.filterHTML);
         fp.appendFilters(fp.filterAll);
         
@@ -20,23 +20,22 @@ Mozilla = {
         }
         return path
     },
-    saveFile: function(filePath, content){
-        if (window.Components) {
+    saveFile: function(filePath, content, overwrite){
+        overwrite = overwrite || false;
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        file.initWithPath(filePath);
+        if(!overwrite && file.exists()) return false;
         
-            netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-            var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-            file.initWithPath(filePath);
-            if (!file.exists()) 
-                file.create(0, 0664);
-            var out = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-            out.init(file, 0x20 | 0x02, 00004, null);
-            out.write(content, content.length);
-            out.flush();
-            out.close();
-            return true;
-            
-        }
-        return null;
+        if (!file.exists()) 
+            file.create(0, 0664);
+        var out = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+        out.init(file, 0x20 | 0x02, 00004, null);
+        out.write(content, content.length);
+        out.flush();
+        out.close();
+        return true;
+
     },
     createDirectory: function(path){
         netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
@@ -88,6 +87,7 @@ Mozilla = {
         netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
         var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
         file.initWithPath(filePath);
+        if(!file.exists()) return null;
         var data = "";
         var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
         var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);

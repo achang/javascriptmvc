@@ -1,4 +1,4 @@
-AddDependencyController = MVC.Controller.extend('add_dependency',{
+AddDependencyController = MVC.Controller.extend({
     change: function(params){
 		params.including_file_suffix = params.including_file_suffix || '';
 		params.including_path = params.including_path || params.element.lastChild.nodeValue;

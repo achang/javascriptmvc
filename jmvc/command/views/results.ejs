@@ -1,6 +1,6 @@
 <h3>add page. <input id='page_generator' type='submit' value='Browse'/></h3>
 <p class='indent gray'>Creates a page for your application at the specified location.</p>
-
+<p class='indent'><span class='gray'>Pages</span>: <%= pages %></p>
 <h3>include.</h3>
 <div class='include_type'>
     <h4>controllers</h4>
@@ -12,7 +12,7 @@
     	type: 'controller'})); %>
     <%= partial %>
     </div>
-    <form id='controller_generator'>&nbsp;<input name='controller_name' class='text'/><input type='submit' value='generate'> 
+    <form id='controller_generator'>&nbsp;<input name='controller_name' class='text'/><input type='submit' value='generate'  class='generate'> 
         <span>)</span>
     </form>
     <div class='clear'></div>
@@ -41,7 +41,7 @@
 			<option value="Ajax">Ajax</option>
 			<option value="Remote">Remote</option>
 			<option value="Cookie">Cookie</option>
-		</select><input type='submit' value='generate'> 
+		</select><input type='submit' value='generate' class='generate'> 
         <span>)</span>
     </form>
     <div class='clear'></div>
@@ -88,7 +88,7 @@
     	type: 'unit_test'})); %>
     <%= partial %>
     </div>
-    <form id='unit_test_generator'>&nbsp;<input name='unit_test_name' class='text'/><input type='submit' value='generate'> 
+    <form id='unit_test_generator'>&nbsp;<input name='unit_test_name' class='text'/><input type='submit' value='generate'  class='generate'> 
         <span>)</span>
     </form>
     <div class='clear'></div>
@@ -112,7 +112,7 @@
     	type: 'functional_test'})); %>
     <%= partial %>
     </div>
-    <form id='functional_test_generator'>&nbsp;<input name='functional_test_name' class='text'/><input type='submit' value='generate'> 
+    <form id='functional_test_generator'>&nbsp;<input name='functional_test_name' class='text'/><input type='submit' value='generate'  class='generate'> 
         <span>)</span>
     </form>
     <div class='clear'></div>

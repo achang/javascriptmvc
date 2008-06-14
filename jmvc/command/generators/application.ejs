@@ -3,6 +3,6 @@ include.plugins('core');
 
 MVC.Initializer(function(){
   include.models();
-  include.controllers('main');
+  include.controllers('<%= application_name%>');
   include.views();
 });

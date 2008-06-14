@@ -1,4 +1,4 @@
-RemoveDependencyController = MVC.Controller.extend('remove_dependency',{
+RemoveDependencyController = MVC.Controller.extend({
 	mouseover: function(params){
 		params.element.childNodes[1].style.visibility='visible';
 	},

@@ -2,7 +2,7 @@
 // generates the file
 // includes the generated file
 // reloads the application
-AbstractGeneratorController = MVC.Controller.extend('abstract',{
+AbstractGeneratorController = MVC.Controller.extend({
     submit: function(params){
         params.event.kill();
 		params.including_file_suffix = params.including_file_suffix || '';
@@ -85,7 +85,7 @@ PageGeneratorController = MVC.Controller.extend('page_generator',{
 		this.application_name = this.application_name || MVC.current_application;
 		
 		// calculate the path to jmvc/include.js from the html file
-		var html_location = Mozilla.chooseFile();
+		var html_location = Mozilla.chooseFile(this.application_name+".html");
 		
 		// if no file is chosen, skip creating the html file
 		if (html_location) {
@@ -97,6 +97,11 @@ PageGeneratorController = MVC.Controller.extend('page_generator',{
 				absolute_url: 'command/generators/page.ejs'
 			}).render(this);
 			Mozilla.saveFile(html_location, res);
+            var pages = MVC.Path.join(MVC.file_base,"apps",this.application_name,"pages.html");
+            var old =  Mozilla.readFile(pages)
+            
+            Mozilla.saveFile(pages, old+"<a href='"+html_location+"'>"+html_location.substr(-20)+"</a>\n" , true );
+            
 		}
     }
 });
@@ -104,7 +109,7 @@ PageGeneratorController = MVC.Controller.extend('page_generator',{
 ApplicationGeneratorController = PageGeneratorController.extend('application_generator',{
     submit: function(params){
 		this.application_name = params.element.application_name.value;
-		this._super(params);
+		
 		
 		// save the application file
 		var res = new MVC.View({absolute_url: 'command/generators/application.ejs'}).render(this);
@@ -112,7 +117,7 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		
 		// save the main controller
 		var res = new MVC.View({absolute_url: 'command/generators/main_controller.ejs'}).render(this);
-        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"controllers","main_controller.js"), res  );
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"controllers",this.application_name+"_controller.js"), res  );
 		
 		// create the compression folder
 		Mozilla.createDirectory(MVC.Path.join(MVC.file_base,"apps",this.application_name));
@@ -123,12 +128,17 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
 		
 		// save the compression page
 		var res = new MVC.View({absolute_url: 'command/generators/compress_page.ejs'}).render(this);
-        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name,"index.html"), res  );
+        var loc = MVC.Path.join(MVC.file_base,"apps",this.application_name,"index.html")
+        Mozilla.saveFile(loc, res  );
 		
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name,"pages.html"), "<a href='"+loc+"'>"+loc.substr(-20)+"</a>\n"  );
+        
 		// save the test file
 		var res = new MVC.View({absolute_url: 'command/generators/test.ejs'}).render(this);
         Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name,this.application_name+"_test.js"), res  );
 		
+        
+        this._super(params);
 		// reload the project tabs
 		MVC.Controller.dispatch('main','load',{});
 		

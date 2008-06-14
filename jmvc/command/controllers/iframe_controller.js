@@ -41,6 +41,8 @@ MVC.Appcreator.Iframe = {
 				view_dirs.push(dir);
 		}
 		
+
+        var pages =  Mozilla.readFile(MVC.Path.join(MVC.file_base,"apps",frames['demo_iframe'].MVC.app_name,"pages.html"));
 	    
 	    var res = new MVC.View({
 	        absolute_url: 'command/views/results.ejs'
@@ -50,7 +52,8 @@ MVC.Appcreator.Iframe = {
 	        app_name: frames['demo_iframe'].MVC.app_name,
 			view_dirs: view_dirs,
 	        // get the list of plugins being included from the app file (the rest are dependencies)
-	        plugins_in_app_file: MVC.Appcreator.Iframe.plugins_from_app_file(frames['demo_iframe'].MVC.app_name)
+	        plugins_in_app_file: MVC.Appcreator.Iframe.plugins_from_app_file(frames['demo_iframe'].MVC.app_name),
+            pages: pages
 	    });
 	    document.getElementById('content').innerHTML = res;
 	},
