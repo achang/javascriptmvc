@@ -2,22 +2,8 @@
 
 //adds check exist
 (function() {
-	include.checkExists = function(path){		
-		var xhr=MVC.Ajax.factory();
-		xhr.open("HEAD", path, false);
-		try{ 
-			xhr.send(null); 
-		} catch(e) {
-			if ( xhr.status > 505 || xhr.status == 404 || 
-				xhr.status == 2 || xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) 
-			return false;
-		}
-		if ( xhr.status > 505 || xhr.status == 404 || xhr.status == 2 || 
-			xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) 
-				return false;
-	    return true;
-	}
-	if(include.checkExists(MVC.apps_root+'/'+MVC.app_name+'/test.js')){
+	
+	if(include.check_exists(MVC.apps_root+'/'+MVC.app_name+'/test.js')){
 		var path = include.get_path();
 		include.set_path(MVC.apps_root)
 		include(MVC.app_name+'/test')

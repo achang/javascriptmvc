@@ -331,6 +331,19 @@ include.request = function(path){
    if ( request.status == 404 || request.status == 2 ||(request.status == 0 && request.responseText == '') ) return null;
    return request.responseText;
 };
+include.check_exists = function(path){		
+	var xhr=MVC.Ajax.factory();
+	xhr.open("HEAD", path, false);
+	try{ 
+		xhr.send(null); 
+	} catch(e) { return false; }
+	if ( xhr.status > 505 || xhr.status == 404 || xhr.status == 2 || 
+		xhr.status == 3 ||(xhr.status == 0 && xhr.responseText == '') ) 
+			return false;
+    return true;
+}
+
+
 
 include.controllers = include.app(function(i){return '../controllers/'+i+'_controller'}, MVC.Included.controllers);
 include.models = include.app(function(i){return '../models/'+i}, MVC.Included.models);

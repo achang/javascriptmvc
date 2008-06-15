@@ -85,6 +85,7 @@ MVC.Controller = MVC.Class.extend({
 		var instance = new controller();
 		instance.params = params;
 		instance.action_name = action_name;
+        instance.controller_name = controller.className;
 		return MVC.Controller._dispatch_action(instance,action_name, params );
 	},
 	_dispatch_action: function(instance, action_name, params){

@@ -1,5 +1,5 @@
 MVC.Controller.prototype.render = function(options) {
-		var result, render_to_id = MVC.RENDER_TO;
+		var result, render_to_id = MVC.RENDER_TO, plugin_url;
 		var controller_name = this.Class.className;
 		var action_name = this.action_name;
         if(!options) options = {};
@@ -24,15 +24,18 @@ MVC.Controller.prototype.render = function(options) {
 				var url = url + '.ejs';
 				return url;
 			};
-			
+			if(options.plugin){
+                plugin_url = 'jmvc/plugins/'+options.plugin;
+            }
+            
 			if(options.action) {
-				var url = convert(options.action);
+				var url = 'views/'+convert(options.action);
             }
 			else if(options.partial) {
-                var url = convert(options.partial);
-			}
-            else {
-                var url = controller_name+'/'+action_name.replace(/\.|#/g, '').replace(/ /g,'_')+'.ejs';
+                var url = 'views/'+convert(options.partial);
+			}else
+            {
+                var url = 'views/'+controller_name+'/'+action_name.replace(/\.|#/g, '').replace(/ /g,'_')+'.ejs';
             }
 			var data_to_render = this;
 			if(options.locals) {
@@ -40,7 +43,19 @@ MVC.Controller.prototype.render = function(options) {
 					data_to_render[local_var] = options.locals[local_var];
 				}
 			}
-			result = new MVC.View({url:  url  }).render(data_to_render, helpers);
+            var view;
+            if(!plugin_url){
+                view = new MVC.View({url:  url  });
+            }else{
+                //load plugin if it has been included
+                try{
+                    var view = new MVC.View({url:  MVC.View.get(plugin_url) ? plugin_url :  url  });
+                }catch(e){
+                    if(e.type !='JMVC') throw e;
+                    var view = new MVC.View({url:  plugin_url  });
+                }
+            }
+            result = view.render(data_to_render, helpers);
 		}
 		//return result;
 		var locations = ['to', 'before', 'after', 'top', 'bottom'];

@@ -39,7 +39,7 @@ MVC.View = function( options ){
 		return;
 	}
 	if(options.url || options.absolute_url){
-        var url = options.absolute_url || MVC.root.join('views/'+options.url+ (options.url.match(/\.ejs/) ? '' : '.ejs' )) ;
+        var url = options.absolute_url || MVC.root.join(options.url+ (options.url.match(/\.ejs/) ? '' : '.ejs' )) ;
         options.url = options.absolute_url || options.url;
 		var template = MVC.View.get(options.url, this.cache);
 		if (template) return template;
@@ -47,7 +47,7 @@ MVC.View = function( options ){
         this.text = include.request(url+(this.cache || window._rhino ? '' : '?'+Math.random() ));
 		
 		if(this.text == null){
-			alert('There is no template at '+url) ;
+			throw( {type: 'JMVC', message: 'There is no template at '+url}  );
 		}
 		this.name = options.url;
 	}else if(options.hasOwnProperty('element'))
@@ -78,7 +78,7 @@ MVC.View.prototype = {
 		object = object || {};
 		var v = new MVC.View.Helpers(object);
         MVC.Object.extend(v, extra_helpers || {} );
-		return this.template.process.call(v, object,v);
+		return this.template.process.call(object, object,v);
 	},
 	out : function(){
 		return this.template.out;
@@ -442,7 +442,7 @@ include.view = function(path){
 		new MVC.View({url: path});
 	}else if(include.get_env() == 'compress'){
 		var oldp = include.get_path();
-        include.set_path(MVC.root.join('views'));
+        include.set_path(MVC.root);
         include({path: path, process: MVC.View.process_include, ignore: true});
 		include.set_path(oldp);
 		new MVC.View({url: path});
