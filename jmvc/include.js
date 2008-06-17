@@ -356,7 +356,21 @@ if(MVC.script_options){
         MVC.script_options[1] = 'compress'
 	if(MVC.script_options.length > 1)	include.setup({env: MVC.script_options[1], production: MVC.apps_root+'/'+MVC.script_options[0]+'/production'});
 	include(MVC.apps_root+'/'+MVC.script_options[0]);
-	include.opera();
+	
+    if(MVC.script_options[1] == 'test'){
+         if(include.check_exists(MVC.apps_root+'/'+MVC.app_name+'/test.js')){
+    		var path = include.get_path();
+    		include.set_path(MVC.apps_root)
+    		include(MVC.app_name+'/test')
+    		include.set_path(path)
+    	}else{
+    		MVC.Console.log("There is no application test file at:\n    \"apps/"+MVC.app_name+"/test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests('product')\n    include.functional_tests('widget')")
+    	}
+    }
+   
+    
+    
+    include.opera();
 }
 if(MVC.Browser.Opera) setTimeout(function(){ if(!include.opera_called){ alert("You forgot include.opera().")}}, 10000);
 

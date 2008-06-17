@@ -10,7 +10,7 @@ MVC.Controller.scaffold = function(){
         this.prototype[action_name] = MVC.Controller.scaffold.functions[action_name]
     }
     if(! window[class_name+'ViewHelper']   )
-        this.scaffold_view_helper = window[class_name+'ViewHelper'] = MVC.ModelViewHelper.extend(this.className);
+        this.scaffold_view_helper = window[class_name+'ViewHelper'] = MVC.ModelViewHelper.extend(this.singular_name);
     else{
         this.scaffold_view_helper = window[class_name+'ViewHelper']
     }

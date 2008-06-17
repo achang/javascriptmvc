@@ -135,7 +135,7 @@ ApplicationGeneratorController = PageGeneratorController.extend('application_gen
         
 		// save the test file
 		var res = new MVC.View({absolute_url: 'command/generators/test.ejs'}).render(this);
-        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name,this.application_name+"_test.js"), res  );
+        Mozilla.saveFile(MVC.Path.join(MVC.file_base,"apps",this.application_name,"test.js"), res  );
 		
         
         this._super(params);

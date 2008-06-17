@@ -26,7 +26,7 @@ MVC.Controller = MVC.Class.extend({
         //load tests
         if(include.get_env() == 'test'){
             var path = MVC.root.join('test/functional/'+this.className+'_controller_test.js');
-    		var exists = include.checkExists(path);
+    		var exists = include.check_exists(path);
     		if(exists)
     			MVC.Console.log('Loading: "test/functional/'+this.className+'_controller_test.js"');
     		else {
