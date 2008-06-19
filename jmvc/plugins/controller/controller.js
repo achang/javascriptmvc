@@ -156,7 +156,11 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
         this.event_type = this.parts[2];
     },
     main_controller: function(){
-	    return this.css;
+	    if(!this.css && MVC.Array.include(['blur','focus'],this.event_type)){
+            MVC.Event.observe(window, this.event_type, MVC.Controller.event_closure(this.controller, this.event_type, window) );
+            return;
+        }
+        return this.css;
     },
     plural_selector : function(){
 		if(this.css == "#" || this.css.substring(0,2) == "# "){
@@ -174,6 +178,7 @@ MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
             MVC.Event.observe(window, this.event_type, MVC.Controller.event_closure(this.controller, this.event_type, window) );
             return;
         }
+        
         
         if(this.controller.className == 'main') 
             this.css_selector = this.main_controller();

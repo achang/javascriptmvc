@@ -19,12 +19,15 @@ if(document.addEventListener) {
         if (MVC.Event._find(element, eventType, handler) != -1) return;
         var wrappedHandler = function(e) {
             if (!e) e = window.event;
+            
+            
+            
             var event = {
                 _event: e, 
                 type: e.type, 
                 target: e.srcElement,  
                 currentTarget: element, 
-                relatedTarget: e.fromElement?e.fromElement:e.toElement,
+                relatedTarget: eventType == 'mouseover' ?e.fromElement : e.toElement, //mouseout gets toElement
                 eventPhase: (e.srcElement==element)?2:3,
                 clientX: e.clientX, clientY: e.clientY,
                 screenX: e.screenX, screenY: e.screenY,
@@ -33,6 +36,9 @@ if(document.addEventListener) {
                 stopPropagation: function() {this._event.cancelBubble = true;},
                 preventDefault: function() {this._event.returnValue = false;}
             };
+
+            
+            
             if (Function.prototype.call) 
                 handler.call(element, event);
             else {

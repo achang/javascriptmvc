@@ -149,6 +149,7 @@ MVC.Model = MVC.Class.extend(
 
 MVC.Object.guess_type = function(object){
     if(typeof object != 'string'){
+        if(object == null) return typeof object;
         if( object.constructor == Date ) return 'date';
         if(object.constructor == Array) return 'array';
         return typeof object;
