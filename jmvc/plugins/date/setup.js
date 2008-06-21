@@ -13,13 +13,11 @@
 		month_names: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 		parse: function(data) {
 			if(typeof data != "string") return null;
-			var f1 = /\d{4}-\d{1,2}-\d{1,2}/, f2 = /\d{4}\/\d{1,2}\/\d{1,2}/, f3 = /\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}/;
-			
-			if(data.match(f3)) {
-				var timeArr = data.match(f3)[0].split(' ')[1].split(':');
-				var dateArr = data.match(f3)[0].split(' ')[0].split('-');
-				return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10),
-					parseInt(timeArr[0], 10), parseInt(timeArr[1], 10), parseInt(timeArr[2], 10)) );
+			var f1 = /\d{4}-\d{1,2}-\d{1,2}/, f2 = /\d{4}\/\d{1,2}\/\d{1,2}/, f3 = /(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/;
+			var match_data;
+			if((match_data =  data.match(f3) ) ) {
+				return new Date( Date.UTC(parseInt(match_data[1], 10), (parseInt(match_data[2], 10)-1), parseInt(match_data[3], 10),
+					parseInt(match_data[4], 10), parseInt(match_data[5], 10), parseInt(match_data[6], 10)) );
 			}
 			if(data.match(f1)) {
 				var dateArr = data.match(date_format_1)[0].split('-');
