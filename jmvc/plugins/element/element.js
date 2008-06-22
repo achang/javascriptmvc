@@ -115,6 +115,11 @@ MVC.Object.extend(MVC.$E, {
       if (!child.parentNode || child == element) return false;
       if (child.parentNode == element) return true;
       return MVC.Element.isParent(child.parentNode, element);
+    },
+    has: function(element, b){
+      return element.contains ?
+        element != b && element.contains(b) :
+        !!(element.compareDocumentPosition(b) & 16);
     }
 });
 
