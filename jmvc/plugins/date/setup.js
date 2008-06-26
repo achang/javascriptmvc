@@ -20,11 +20,11 @@
 					parseInt(match_data[4], 10), parseInt(match_data[5], 10), parseInt(match_data[6], 10)) );
 			}
 			if(data.match(f1)) {
-				var dateArr = data.match(date_format_1)[0].split('-');
+				var dateArr = data.match(f1)[0].split('-');
 				return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10)) );
 			}
 			if(data.match(f2)) {
-				var dateArr = data.match(date_format_2)[0].split('/');
+				var dateArr = data.match(f2)[0].split('/');
 				return new Date( Date.UTC(parseInt(dateArr[0], 10), (parseInt(dateArr[1], 10)-1), parseInt(dateArr[2], 10)) );
 			}
 			return parse(data);

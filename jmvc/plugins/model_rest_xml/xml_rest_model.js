@@ -20,9 +20,9 @@ MVC.XMLRestModel = MVC.Model.extend(
             if(!doc[this.plural_name]) return callback([]);
             
             //check if there is only one.  If there is create it in an array
-            if (!this.elementHasMany(doc[this.plural_name])){
-        		doc[this.plural_name][this.singular_name] = [doc[this.plural_name][this.singular_name]];
-        	}
+            //if (!this.elementHasMany(doc[this.plural_name])){
+        	//	doc[this.plural_name][this.singular_name] = [doc[this.plural_name][this.singular_name]];
+        	//}
           
             collection = [];
         	var attrs = doc[this.plural_name][this.singular_name];
@@ -211,7 +211,7 @@ MVC.XMLRestModel = MVC.Model.extend(
             // has_one or belongs_to
             else {
               singular = attr;
-              var name = MVC.String.classize(capitalize);
+              var name = MVC.String.classize(singular);
               
               // if the association hasn't been modeled, do a default modeling here
               // hosted object's prefix and format are inherited, singular is set from the XML
