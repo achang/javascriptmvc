@@ -21,8 +21,9 @@ MVC.XMLRestModel = MVC.Model.extend(
             
             //check if there is only one.  If there is create it in an array
             //if (!this.elementHasMany(doc[this.plural_name])){
-        	//	doc[this.plural_name][this.singular_name] = [doc[this.plural_name][this.singular_name]];
-        	//}
+			if(!(doc[this.plural_name][this.singular_name] instanceof Array)){
+        		doc[this.plural_name][this.singular_name] = [doc[this.plural_name][this.singular_name]];
+        	}
           
             collection = [];
         	var attrs = doc[this.plural_name][this.singular_name];
@@ -36,7 +37,8 @@ MVC.XMLRestModel = MVC.Model.extend(
         //we need to create
         //
         var params = {}
-        params[this.singular_name] = attributes;
+        //params[this.singular_name] = attributes;
+		params = attributes;
 
         var instance = new this(attributes);
         var url = '/'+this.plural_name+'.xml';
