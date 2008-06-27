@@ -60,10 +60,10 @@ MVC.Object.extend(MVC.$E, {
 		var next = element.nextSibling;
 		while(next && next.nodeType != 1)
 			next = next.nextSibling;
-		return next;
+		return MVC.$E(next);
 	},
 	toggle : function(element){
-		element.style.display == 'none' ? element.style.display = '' : element.style.display = 'none';
+		return element.style.display == 'none' ? element.style.display = '' : element.style.display = 'none';
 	},
     makePositioned: function(element) {
         element = MVC.$E(element);
