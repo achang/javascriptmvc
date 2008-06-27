@@ -111,7 +111,7 @@ MVC.Object.extend(MVC.$E, {
         } while (element);
         return new MVC.Vector( valueL, valueT );
     },
-    isParent: function(child, element) {
+    isParent: function(element,child ) {
       if (!child.parentNode || child == element) return false;
       if (child.parentNode == element) return true;
       return MVC.Element.isParent(child.parentNode, element);
@@ -133,10 +133,10 @@ MVC.$E.extend = function(el){
 		if(!MVC.$E.hasOwnProperty(f)) continue;
 		var func = MVC.$E[f];
 		if(typeof func == 'function'){
-			var names = MVC.Function.params(func);
-			if( names.length == 0) continue;
-			var first_arg = names[0];
-			if( first_arg.match('element') ) MVC.$E._extend(func, f, el);
+			//var names = MVC.Function.params(func);
+			//if( names.length == 0) continue;
+			//var first_arg = names[0];
+			if( f[0] != "_" ) MVC.$E._extend(func, f, el);
 		}
 	}
 	el._mvcextend = true;
