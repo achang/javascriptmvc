@@ -17,6 +17,24 @@ MVC.XMLRestModel = MVC.Model.extend(
             if(transport.status == 500) return callback(null);
             
             var doc = MVC.Tree.parseXML(transport.responseText);
+			
+			// convert dashes to underscores for second and third level hash keys
+			for(var key in doc) {
+				if(key.match(/-/) && typeof doc[key] == 'object' ){
+					doc[key.replace(/-/,'_')] = doc[key];
+					delete doc[key];
+				}
+			}
+			for(var key in doc) {
+				if (typeof doc[key] == 'object') {
+					for (var second_key in doc[key]) {
+						if (second_key.match(/-/) && typeof doc[key][second_key] == 'object') {
+							doc[key][second_key.replace(/-/, '_')] = doc[key][second_key];
+							delete doc[key][second_key];
+						}
+					}
+				}
+			}
             if(!doc[this.plural_name]) return callback([]);
             
             //check if there is only one.  If there is create it in an array
