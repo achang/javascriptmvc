@@ -86,6 +86,10 @@ MVC.Model = MVC.Class.extend(
     valid : function() {
       	return  this.errors.length == 0;
     },
+    validate : function(){
+        //run validate function and any error functions  
+        
+    },
     _setAttribute : function(attribute, value) {
         if (value && typeof(value) == "object" && value.constructor != Date)
           this._setAssociation(attribute, value);
@@ -118,6 +122,10 @@ MVC.Model = MVC.Class.extend(
     is_new_record : function(){ return true;},
     save: function(callback){
         var result;
+        this.errors = [];
+        this.validate();
+        if(!this.valid()) return false;
+        
         if(this.is_new_record())
             result = this.Class.create(this.attributes(), callback);
         else

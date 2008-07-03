@@ -372,6 +372,6 @@ if(MVC.script_options){
     
     include.opera();
 }
-if(MVC.Browser.Opera) setTimeout(function(){ if(!include.opera_called){ alert("You forgot include.opera().")}}, 10000);
-
+if(MVC.Browser.Opera) 
+    setTimeout(function(){ if(!include.opera_called && !options.remote){ alert("You forgot include.opera().")}}, 10000);
 })();
