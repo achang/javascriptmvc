@@ -120,7 +120,24 @@ MVC.Object.extend(MVC.$E, {
       return element.contains ?
         element != b && element.contains(b) :
         !!(element.compareDocumentPosition(b) & 16);
-    }
+    },
+    update: function(element, content){
+        element = MVC.$E(element);
+        var tagName = element.tagName.toUpperCase();
+        if ( ( !MVC.Browser.IE && !MVC.Browser.Opera  )|| !( tagName in MVC.$E._insertionTranslations.tags) ){
+            element.innerHTML = content;
+        }else{
+          //remove children
+          var node;
+          while( (node =  element.childNodes[0]) ){ element.removeChild(node) }
+          
+          var children = MVC.$E._getContentFromAnonymousElement(tagName, content);
+          for(var c=0; c < children.length; c++){
+              element.appendChild(children[c]);
+          }
+        }
+        return element;
+   }
 });
 
 

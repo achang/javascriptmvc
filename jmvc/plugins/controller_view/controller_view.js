@@ -71,7 +71,10 @@ MVC.Controller.prototype.render = function(options) {
 			if(options[locations[l]]){
 				element = options[locations[l]];
 				if(locations[l] == 'to'){
-					options.to.innerHTML = result;
+                    if(MVC.$E.update)
+                        MVC.$E.update(options.to , result);
+                    else
+					    options.to.innerHTML = result;
 				}else{
 					if(!MVC.$E.insert ) throw {message: "Include can't insert "+locations[l]+" without the element plugin.", name: 'ControllerView: Missing Plugin'};
 					var opt = {};
