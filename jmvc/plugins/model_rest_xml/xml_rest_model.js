@@ -228,17 +228,20 @@ MVC.XMLRestModel = MVC.Model.extend(
                 value.push(base);
               },this));
             }
-            // has_one or belongs_to
+            // has_one or belongs_to, or nothing
             else {
               singular = attr;
               var name = MVC.String.classize(singular);
               
               // if the association hasn't been modeled, do a default modeling here
               // hosted object's prefix and format are inherited, singular is set from the XML
-              if (eval("typeof(" + name + ")") == "undefined") {
-                MVC.Resource.model(name, {prefix: this._prefix, singular: singular, format: this._format});
+              if (eval("typeof(" + name + ")") != "undefined") {
+                value = eval(name + ".create_as_existing(this._attributesFromTree(value))");
+                //MVC.Resource.model(name, {prefix: this._prefix, singular: singular, format: this._format});
+              }else{
+                  value = null;
               }
-              value = eval(name + ".create_as_existing(this._attributesFromTree(value))");
+              
             }
           }
           
