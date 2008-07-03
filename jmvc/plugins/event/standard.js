@@ -96,6 +96,6 @@ if(document.addEventListener) {
   };
 };
 
-if(!MVC._no_conflict){
+if(!MVC._no_conflict && typeof Event == 'undefined'){
 	Event = MVC.Event;
 }

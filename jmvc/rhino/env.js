@@ -82,7 +82,10 @@ var self = window;
             },
 			toString: function(){
 				return this.href;
-			}
+			},
+            get pathname(){
+                return window.location.href.substr(window.location.protocol.length);
+            }
 		};
 	});
 	window.Image = function(width,height){

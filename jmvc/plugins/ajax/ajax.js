@@ -28,8 +28,10 @@
 	    }
 		
 	
-		if (this.options.method == 'get' && this.options.parameters != '' )
-		   this.url += (MVC.String.include(this.url,'?') ? '&' : '?') + MVC.Object.to_query_string(this.options.parameters);
+		if (this.options.method == 'get' && this.options.parameters != '' ){
+            this.url += (MVC.String.include(this.url,'?') ? '&' : '?') + MVC.Object.to_query_string(this.options.parameters);
+            delete this.options.parameters;
+        }
 		//else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
 		//   params += '&_=';
 	    
