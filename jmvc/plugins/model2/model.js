@@ -68,10 +68,14 @@ MVC.Model = MVC.Class.extend(
 },
 {   //Prototype functions
     init : function(attributes){
-        this._properties = [];
+        //this._properties = [];
         this.errors = [];
+        
         this.set_attributes(this.Class._attributes || {});
         this.set_attributes(attributes);
+    },
+    setup : function(){
+        
     },
     set_attributes : function(attributes)
     {
@@ -99,9 +103,9 @@ MVC.Model = MVC.Class.extend(
     _setProperty : function(property, value) {  
         this[property] = MVC.Array.include(['created_at','updated_at'], property) ? MVC.Date.parse(value) :  value;
 
-        if (!(MVC.Array.include(this._properties,property))) this._properties.push(property);  
+        //if (!(MVC.Array.include(this._properties,property))) this._properties.push(property);  
         
-        this.Class.add_attribute(property, MVC.Object.guess_type(value)  )
+        this.Class.add_attribute(property, MVC.Object.guess_type(value)  );
     },
     _setAssociation : function(association, values) {
         this[association] = function(){
@@ -116,7 +120,11 @@ MVC.Model = MVC.Class.extend(
     },
     attributes : function() {
         var attributes = {};
-        for (var i=0; i<this._properties.length; i++) attributes[this._properties[i]] = this[this._properties[i]];
+        var cas = this.Class.attributes;
+        for(var attr in cas){
+            if(cas.hasOwnProperty(attr) ) attributes[attr] = this[attr];
+        }
+        //for (var i=0; i<this.attributes.length; i++) attributes[this._properties[i]] = this[this._properties[i]];
         return attributes;
     },
     is_new_record : function(){ return true;},
@@ -148,9 +156,10 @@ MVC.Model = MVC.Class.extend(
     	}*/
     },
     _clear : function() {
-        for (var i=0; i<this._properties.length; i++)
-          this[this._properties[i]] = null;
-        this._properties = [];
+        var cas = this.Class.attributes;
+        for(var attr in cas){
+            if(cas.hasOwnProperty(attr) ) this[attr] = null;
+        }
     }
 });
 
