@@ -8,7 +8,6 @@ MVC.RemoteModel = MVC.Model.extend(
     },
     find_all: function(params, callback){
         params.callback = MVC.String.classize(this.className)+'.listCallback';
-		var klass = this;
 		//make callback function create new and call the callback with them
 		if(!callback) callback = (function(){});
         
@@ -21,49 +20,48 @@ MVC.RemoteModel = MVC.Model.extend(
     },
     create : function(params, callback) {
 		this.add_standard_params(params, 'create');
-		var klass = this;
-		var className = this.className;
-		
-		if(!callback) callback = (function(){});
-		
-		var tll = this.top_level_length(params, this.domain+'/'+this.plural_controller_name+'.json?');
+		var klass = this, className = this.className, url = this.domain+'/'+this.plural_controller_name+'.json?';
+		var tll = this.top_level_length(params, url);
 		var result = this.seperate(params[this.controller_name], tll,this.controller_name );
-		
-		var postpone_params = result.postpone;
-		var send_params = result.send;
+        var postpone_params = result.postpone, send_params = result.send;
+        
+		if(!callback) callback = (function(){});
+        
 		params['_method'] = 'POST';
-		
-		var url = this.domain+'/'+this.plural_controller_name+'.json?';
-		
+
 		if(result.send_in_parts){
-			klass.createCallback = function(callback_params){
-				if(! callback_params.id) throw 'Your server must callback with the id of the object.  It is used for the next request';
-                
-                params[this.controller_name] = postpone_params;
-				params.id = callback_params.id;
-				klass.create(params, callback);
-			};
+			klass.createCallback = this.parts_create_callback(params, callback);
 			params[this.controller_name] = send_params;
 			params['_mutlirequest'] = 'true';
-			include(url+MVC.Object.to_query_string(params)+'&'+Math.random());
+			include(url+MVC.Object.to_query_string(params));
 		}else{
-			klass.createCallback = function(callback_params){
-				if(callback_params[className]){
-					var inst = new klass(callback_params[className]);
-					inst.add_errors(callback_params.errors);
-					callback(inst);
-				}else{
-					callback(new klass(callback_params)+'&'+Math.random());
-				}
-			};
+			klass.createCallback = this.single_create_callback(callback);
 			params['_mutlirequest'] = null;
 			include(url+MVC.Object.to_query_string(params));
 		}
 	},
+    parts_create_callback : function(params, callback){
+        return function(callback_params){
+			if(! callback_params.id) throw 'Your server must callback with the id of the object.  It is used for the next request';
+            params[this.controller_name] = postpone_params;
+			params.id = callback_params.id;
+			this.create(params, callback);
+		};
+    },
+    single_create_callback : function(callback){
+        return function(callback_params){
+				if(callback_params[this.className]){
+					var inst = new this(callback_params[this.className]);
+					inst.add_errors(callback_params.errors);
+					callback(inst);
+				}else{
+					callback(new this(callback_params));
+				}
+		};
+    },
 	add_standard_params : function(params, callback_name){
-		if(typeof APPLICATION_KEY != 'undefined') params.user_crypted_key = APPLICATION_KEY;
-		params.referer = window.location.href;
-		params.callback = MVC.String.capitalize(MVC.String.camelize(this.className))+'.'+callback_name+'Callback';
+		if(!params.referer) params.referer = window.location.href;
+		params.callback = MVC.String.classize(this.className)+'.'+callback_name+'Callback';
 	},
     callback_name : 'callback',
     domain: null,
