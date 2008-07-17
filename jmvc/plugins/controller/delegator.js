@@ -121,12 +121,13 @@ MVC.DelegationEvent.prototype = {
 			}
 		};
 	},
+    regexp_patterns:  {tag :    		/^\s*(\*|[\w\-]+)(\b|$)?/,
+        				id :            /^#([\w\-\*]+)(\b|$)/,
+    					className :     /^\.([\w\-\*]+)(\b|$)/},
     selector_order : function(){
 		if(this.order) return this.order;
 		var selector_parts = this._selector.split(/\s+/);
-		var patterns = {tag :    		/^\s*(\*|[\w\-]+)(\b|$)?/,
-        				id :            /^#([\w\-\*]+)(\b|$)/,
-    					className :     /^\.([\w\-\*]+)(\b|$)/};
+		var patterns = this.regexp_patterns;
 		var order = [];
 		for(var i =0; i< selector_parts.length; i++){
 			var v = {}, r, p =selector_parts[i];
