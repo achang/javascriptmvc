@@ -228,6 +228,11 @@ MVC.Object.extend(include,{
 		if(!latest) {
 			first_wave_done = true;
 			if(include.get_env()=='compress') setTimeout( include.compress, 10 );
+            if(include.close){ 
+                setTimeout(function(){
+                    document.close(); 
+                },10)
+            }
 			return;
 		};
 		total.push( latest);
@@ -364,7 +369,10 @@ if(MVC.script_options){
     		include(MVC.app_name+'/test')
     		include.set_path(path)
     	}else{
-    		MVC.Console.log("There is no application test file at:\n    \"apps/"+MVC.app_name+"/test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests('product')\n    include.functional_tests('widget')")
+    		setTimeout(function(){
+                MVC.Console.log("There is no application test file at:\n    \"apps/"+MVC.app_name+"/test.js\"\nUse it to include your test files.\n\nTest includes:\n    include.unit_tests('product')\n    include.functional_tests('widget')")
+            },1000)
+            
     	}
     }
    
