@@ -30,7 +30,7 @@ MVC.RemoteModel = MVC.Model.extend(
 		params['_method'] = 'POST';
 
 		if(result.send_in_parts){
-			klass.createCallback = this.parts_create_callback(params, callback);
+			klass.createCallback = this.parts_create_callback(params, callback,postpone_params);
 			params[this.controller_name] = send_params;
 			params['_mutlirequest'] = 'true';
 			include(url+MVC.Object.to_query_string(params));
@@ -40,7 +40,7 @@ MVC.RemoteModel = MVC.Model.extend(
 			include(url+MVC.Object.to_query_string(params));
 		}
 	},
-    parts_create_callback : function(params, callback){
+    parts_create_callback : function(params, callback,postpone_params){
         return function(callback_params){
 			if(! callback_params.id) throw 'Your server must callback with the id of the object.  It is used for the next request';
             params[this.controller_name] = postpone_params;
