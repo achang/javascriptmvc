@@ -1,39 +1,38 @@
-MVC.AjaxModel = MVC.Model.extend(
+MVC.AjaxModel = MVC.Class.extend(
 //class methods
 {
-    _send_and_get : function(params, callback, url){
-        var url =  this._interpolate(url, params);
-        new MVC.Ajax(url, {parameters: params, onComplete: callback, method: 'get'});
+    request : function(){
+        
     },
-    _interpolate: function(string, params) {
-        var result = string;
-        for(var val in params) {
-          if(params.hasOwnProperty(val)) {
-    		  var re = new RegExp(":" + val, "g");
-    	      if(result.match(re))
-    	      {
-    	        result = result.replace(re, params[val]);
-    	        delete params[val];
-    	      }
-    	  }
+    init: function(){
+        if(!this.className) return;
+        var val, act;
+        this.actions = {};
+        for(var action_name in this){
+    		val = this[action_name];
+    		if( typeof val == 'function' && action_name != 'Class' && action_name.match(/_request$/)){
+                this.add_request(action_name, val)
+            }
+	    }
+    },
+    add_request : function(action_name, func){
+        var cleaned_name = action_name.replace(/_request$/,'');
+        this[cleaned_name] = function(args, callback){
+            //setup request, first save old one
+            var oldrequest = this.request;
+            this.request = function(url, options){
+                var params = {};
+                if(this[cleaned_name+'_complete'] ) params.onComplete = 
+                    MVC.Function.bind(function(response){ this[cleaned_name+'_complete'](response, callback);}, this);
+                
+                options = MVC.Object.extend(params, options);
+                
+                new MVC.Ajax(url, options );
+            }
+            //call request
+            this[action_name].call(this, args, callback);
+            this.request = oldrequest;
         }
-        return result;
-    },
-    prefix: function(){ return this.className },
-    _prefix : function(){
-        return typeof this.prefix == 'function' ? this.prefix() : this.prefix;
-    },
-    find_one_url : ':id',
-    _find_one_url: function(){
-        return '/'+[this._prefix(),this.find_one_url].join('/');
-    },
-    find_one : function(params, callback){
-        //needs to call after_find_one
-        newcallback = MVC.Function.bind(function(response){
-            var res = this.after_find_one(response, params);
-            if(callback) callback(res);
-		}, this);
-        this._send_and_get(params, newcallback, this._find_one_url());
     }
 },
 //prototype methods

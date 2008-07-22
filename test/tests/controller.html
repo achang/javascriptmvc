@@ -13,48 +13,36 @@
 		the input element (mousover, click, focus, blur, mouseout), the event's
 		corresponding action logs the event and indicates successful event handling.
 		</p>
+        
+        <div id='scroll' style='height: 100px; overflow: auto; border: solid'>
+            <p>one</p><p>one</p><p>one</p><p>one</p><p>one</p><p>one</p><p>one</p><p>one</p>
+            
+            
+        </div>
+        
 		<form id='tests'>
 			<select class='test' id='sel'><option value='one'>one</option><option>two</option></select>
 			<input class='test' value='mouseover, mouseout, click, focus, and blur me' id='input' size='50' />
 			<input type='submit' value='submit me'/>
 		</form>
-		<div id='load' class='failure'>
-			Test load
-		</div>
-		<div id='mouseover' class='failure'>
-			Test mousover
-		</div>
-		<div id='mouseout' class='failure'>
-			Test mousout
-		</div>
-		<div id='click' class='failure'>
-			Test click
-		</div>
-		<div id='focus' class='failure'>
-			Test focus
-		</div>
-		<div id='blur' class='failure'>
-			Test blur
-		</div>
-		<div id='submit' class='failure'>
-			Test submit
-		</div>
-		<div id='resize' class='failure'>
-			Test resize
-		</div>
-		<div id='scroll' class='failure'>
-			Test scroll
-		</div>
-		<div id='unload' class='failure'>
-			Test unload
-		</div>
-		
-		<div id='mousedown' class='failure'>
-			Test mousedown
-		</div>
-		<div id='mousemove' class='failure'>
-			Test mousemove
-		</div>
+		<table>
+		    <tr>
+		        <td id='load' class='failure'>Test load</td>
+                <td id='mouseover' class='failure'>Test mousover</td>
+                <td id='focus' class='failure'>Test focus</td>
+                <td id='blur' class='failure'>Test blur</td>
+                <td id='submit' class='failure'>Test submit</td>
+		    </tr>
+            <tr>
+                <td id='resize' class='failure'>Test resize</td>
+                <td id='scroll' class='failure'>Test scroll</td>
+                <td id='unload' class='failure'>Test unload</td>
+                <td id='mousedown' class='failure'>Test mousedown</td>
+                <td id='mousemove' class='failure'>Test mousemove</td>
+            </tr>
+		</table>
+
+
 		<div id='mouseup' class='failure'>
 			Test mouseup
 		</div>
@@ -69,7 +57,7 @@
 		</div>
 
          <br />
-		<div id='output'>
+		<div id='output' style='height: 100px; border: solid; overflow: auto'>
 			
 		</div>
 
@@ -117,7 +105,7 @@
 				log(id)
 			};
 			log = function(text){
-				document.getElementById('output').innerHTML = '<p>'+text+'</p>'
+				document.getElementById('output').innerHTML = '<p>'+text+'</p>'+document.getElementById('output').innerHTML
 			};
 		</script>
 		

@@ -1,4 +1,4 @@
-MainController = MVC.Controller.extend('main',{
+/*MainController = MVC.Controller.extend('main',{
 	load : function(){
 		success('load');
 	},
@@ -64,4 +64,26 @@ TestsController = MVC.Controller.extend('tests',{
 		this.data = 'HelloWorld'
 		this.render({after: 'render_here'});
 	}
+});*/
+
+ScrollController = MVC.Controller.extend('scroll',{
+    scroll : function(){
+        alert('s')
+    }
 });
+(function(){
+    
+    MVC.Event.observe(MVC.$E('scroll'), 'scroll', function(event){
+        //log('scroll'+Math.random())
+    });
+    
+    MVC.Event.observe(document.documentElement, 'scroll', function(event){
+        log('doc el'+Math.random())
+    }, true);
+    MVC.Event.observe(document.documentElement, 'click', function(event){
+        log('click'+Math.random())
+    });
+    MVC.Event.observe(window, 'scroll', function(event){
+        log('window '+Math.random())
+    }, true);
+})()
