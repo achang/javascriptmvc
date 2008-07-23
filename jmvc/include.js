@@ -222,16 +222,21 @@ MVC.Object.extend(include,{
 		}
 		return path;
 	},
+    close_time : function(){
+        setTimeout(function(){ document.close(); },10)
+    },
+    close : function(){
+        if(include.get_env()=='production') include.close_time();
+        else    include._close= true;
+    },
 	end: function(){
         includes = includes.concat(current_includes);
 		var latest = includes.pop();
 		if(!latest) {
 			first_wave_done = true;
 			if(include.get_env()=='compress') setTimeout( include.compress, 10 );
-            if(include.close){ 
-                setTimeout(function(){
-                    document.close(); 
-                },10)
+            if(include._close){ 
+                this.close_time();
             }
 			return;
 		};

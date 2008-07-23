@@ -96,6 +96,9 @@ MVC.ModelViewHelper = MVC.Class.extend(
         this._inst = model_instance;
         this._className = this._inst.Class.className;
     },
+    id : function(){
+        return this._inst[this._inst.Class.id];
+    },
     element : function(){
         if(this._element) return this._element;
         this._element = MVC.$E(this.element_id());

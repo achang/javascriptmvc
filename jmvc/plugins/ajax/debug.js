@@ -3,7 +3,12 @@
 
 	MVC.Ajax = function(url,options){
 		if( options.use_fixture == null || options.use_fixture == true  ){
-			var match = url.match(/^(?:https?:\/\/[^\/]*)?\/?([^\?]*)\??(.*)?/);
+		    var testurl = url;
+            if(options.parameters) 
+                testurl += (MVC.String.include(testurl,'?') ? '&' : '?') + MVC.Object.to_query_string(options.parameters)
+            
+            
+            var match = testurl.match(/^(?:https?:\/\/[^\/]*)?\/?([^\?]*)\??(.*)?/);
 			var left = match[1];
 			
 			var right = options.method ? '.'+options.method.toLowerCase() : '.post';

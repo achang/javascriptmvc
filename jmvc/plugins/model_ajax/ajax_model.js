@@ -1,4 +1,4 @@
-MVC.AjaxModel = MVC.Class.extend(
+MVC.AjaxModel = MVC.Model.extend(
 //class methods
 {
     request : function(){
@@ -11,22 +11,41 @@ MVC.AjaxModel = MVC.Class.extend(
         for(var action_name in this){
     		val = this[action_name];
     		if( typeof val == 'function' && action_name != 'Class' && action_name.match(/_request$/)){
-                this.add_request(action_name, val)
+                this.add_req(action_name, val)
             }
 	    }
     },
-    add_request : function(action_name, func){
+    add_req : function(action_name, func){
         var cleaned_name = action_name.replace(/_request$/,'');
         this[cleaned_name] = function(args, callback){
             //setup request, first save old one
             var oldrequest = this.request;
-            this.request = function(url, options){
-                var params = {};
-                if(this[cleaned_name+'_complete'] ) params.onComplete = 
-                    MVC.Function.bind(function(response){ this[cleaned_name+'_complete'](response, callback);}, this);
+            this.request = function(url, params, options){
+                params = params || {};
+                options = options || {};
+                if(typeof url != 'string'){
+                    options = params;
+                    params = url;
+                    url = this.base_url+"/"+cleaned_name
+                }
+                var defaultOptions = {};
                 
-                options = MVC.Object.extend(params, options);
+                //if there is a complete
+                if(this[cleaned_name+'_complete'] ) defaultOptions.onComplete = 
+                    MVC.Function.bind(function(response){ 
+                        var cb_called = false;
+                        var cb = function(){
+                            cb_called = true;
+                            callback.apply(arguments);
+                        }
+                        var result = this[cleaned_name+'_complete'](response, callback);
+                        if(!cb_called){
+                            callback(result);
+                        }
+                    }, this);
                 
+                options = MVC.Object.extend(defaultOptions, options);
+                options.parameters = MVC.Object.extend(params, options.parameters);
                 new MVC.Ajax(url, options );
             }
             //call request
