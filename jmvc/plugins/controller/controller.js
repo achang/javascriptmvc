@@ -215,7 +215,7 @@ MVC.Controller.Params.prototype = {
 					value = el.value;
 					break;
 			}
-			if( MVC.Object.is_number(value) ) value = parseFloat(value);
+			//if( MVC.Object.is_number(value) ) value = parseFloat(value);
 			if( key_components.length > 1 ) {
 				var last = key_components.length - 1;
 				var nested_key = key_components[0].toString();
