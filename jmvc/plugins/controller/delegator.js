@@ -95,14 +95,14 @@ MVC.DelegationEvent.prototype = {
 	},
 	change_for_ie : function(){
 		this.add_to_delegator(null, 'click');
-        this.filters= {
+        this.end_filters= {
 			click : function(el, event){
-				if(typeof el.selectedIndex == 'undefined') return false; //sometimes it won't exist yet
+				if(typeof el.selectedIndex == 'undefined' || el.nodeName.toUpperCase() != 'SELECT') return false; //sometimes it won't exist yet
 				var old = el.getAttribute('_old_value');
-				if(el.nodeName.toUpperCase() == 'SELECT' && old == null){
+				if( old == null){
 					el.setAttribute('_old_value', el.selectedIndex);
 					return false;
-				}else if(el.nodeName.toUpperCase() == 'SELECT'){
+				}else{
 					if(old == el.selectedIndex.toString()) return false;
 					el.setAttribute('_old_value', null);
 					return true;
@@ -112,7 +112,7 @@ MVC.DelegationEvent.prototype = {
 	},
 	change_for_webkit : function(){
 		this.controller.add_register_action(this,document.documentElement, 'change');
-		this.filters= {
+		this.end_filters= {
 			change : function(el, event){
 				if(typeof el.value == 'undefined') return false; //sometimes it won't exist yet
 				var old = el.getAttribute('_old_value');
@@ -164,7 +164,10 @@ MVC.DelegationEvent.prototype = {
 			}
 			if(matched){
 				matching++;
-				if(matching >= this.selector_order().length) return {node: node.element, order: n, delegation_event: this};
+                if(matching >= this.selector_order().length) {
+                    if(this.end_filters && !this.end_filters[event.type](el, event)) return null;
+                    return {node: node.element, order: n, delegation_event: this};
+                }
 			}
 		}
 		return null;
