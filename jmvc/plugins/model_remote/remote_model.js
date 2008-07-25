@@ -1,5 +1,20 @@
 MVC.RemoteModel = MVC.Model.extend(
 {
+    removes_scripts : true,
+    remove_scripts : function(){
+        clearTimeout(this.remove_scripts_timer);
+        if(this.removes_scripts) 
+            this.remove_scripts_timer = setTimeout(MVC.Function.bind(this._remove_scripts,this), 2000 )  
+    },
+    _remove_scripts : function(){
+        var scripts = document.getElementsByTagName('script');
+        var search = new RegExp(this.domain+'/'+this.plural_controller_name+'.json?');
+        for(var s = 0; s < scripts.length; s++){
+            var script = scripts[s];
+            if(script.src.match(search)) script.parentNode.removeChild(script);
+        }
+    },
+    remove_scripts_timer: null,
     init: function(){
         if(!this.className) return;
         if(!this.domain) throw('a domain must be provided for remote model');
@@ -10,13 +25,17 @@ MVC.RemoteModel = MVC.Model.extend(
         params.callback = MVC.String.classize(this.className)+'.listCallback';
 		//make callback function create new and call the callback with them
 		if(!callback) callback = (function(){});
-        
+        var n = parseInt(Math.random()*1000000);
 		this.listCallback = function(callback_params){
             var newObjects = this.create_many_as_existing( callback_params);
-			callback(newObjects);
+			this.remove_scripts();
+            callback(newObjects);
+            
 		};
 		params['_method'] = 'GET';
-		include(this.domain+'/'+this.plural_controller_name+'.json?'+MVC.Object.to_query_string(params)+'&'+Math.random());
+        
+        clearTimeout(this.remove_scripts_timer);
+		include(this.domain+'/'+this.plural_controller_name+'.json?'+MVC.Object.to_query_string(params)+'&'+n);
     },
     create : function(params, callback) {
 		this.add_standard_params(params, 'create');
@@ -33,10 +52,13 @@ MVC.RemoteModel = MVC.Model.extend(
 			klass.createCallback = this.parts_create_callback(params, callback,postpone_params);
 			params[this.controller_name] = send_params;
 			params['_mutlirequest'] = 'true';
+            clearTimeout(this.remove_scripts_timer);
 			include(url+MVC.Object.to_query_string(params)+'&'+Math.random());
+            
 		}else{
 			klass.createCallback = this.single_create_callback(callback);
 			params['_mutlirequest'] = null;
+            clearTimeout(this.remove_scripts_timer);
 			include(url+MVC.Object.to_query_string(params)+'&'+Math.random());
 		}
 	},
@@ -50,7 +72,8 @@ MVC.RemoteModel = MVC.Model.extend(
     },
     single_create_callback : function(callback){
         return function(callback_params){
-				if(callback_params[this.className]){
+				this.remove_scripts();
+                if(callback_params[this.className]){
 					var inst = new this(callback_params[this.className]);
 					inst.add_errors(callback_params.errors);
 					callback(inst);
