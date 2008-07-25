@@ -33,11 +33,11 @@ MVC.RemoteModel = MVC.Model.extend(
 			klass.createCallback = this.parts_create_callback(params, callback,postpone_params);
 			params[this.controller_name] = send_params;
 			params['_mutlirequest'] = 'true';
-			include(url+MVC.Object.to_query_string(params));
+			include(url+MVC.Object.to_query_string(params)+'&'+Math.random());
 		}else{
 			klass.createCallback = this.single_create_callback(callback);
 			params['_mutlirequest'] = null;
-			include(url+MVC.Object.to_query_string(params));
+			include(url+MVC.Object.to_query_string(params)+'&'+Math.random());
 		}
 	},
     parts_create_callback : function(params, callback,postpone_params){
@@ -61,7 +61,7 @@ MVC.RemoteModel = MVC.Model.extend(
     },
 	add_standard_params : function(params, callback_name){
 		if(!params.referer) params.referer = window.location.href;
-		params.callback = MVC.String.classize(this.className)+'.'+callback_name+'Callback';
+        params.callback = MVC.String.classize(this.className)+'.'+callback_name+'Callback';
 	},
     callback_name : 'callback',
     domain: null,
