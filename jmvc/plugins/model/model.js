@@ -2,14 +2,14 @@ MVC.Model = MVC.Class.extend(
 {
     //determines which find to pick, calls find_all or find_one which should be overwritten
     
-    find : function(id, params, callback){
+    find : function(id, params, callback, error_callback){
         if(!params)  params = {};
         if(typeof params == 'function') {
             callback = params;
             params = {};
         }
         if(id == 'all'){
-            return this.create_many_as_existing( this.find_all(params, callback)  );
+            return this.create_many_as_existing( this.find_all(params, callback, error_callback)  );
         }else{
             if(!params[this.id] && id != 'first')
                 params[this.id] = id;

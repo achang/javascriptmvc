@@ -1,5 +1,14 @@
 MVC.RemoteModel = MVC.Model.extend(
 {
+    error_timeout: 4000,
+    check_error : function(url, error_callback){
+        return setTimeout(function(){
+            if(error_callback)
+                error_callback(url);
+            else
+                throw "URL:"+url+" timedout!";
+        }, this.error_timeout)
+    },
     removes_scripts : true,
     remove_scripts : function(){
         clearTimeout(this.remove_scripts_timer);
@@ -21,21 +30,24 @@ MVC.RemoteModel = MVC.Model.extend(
         this.controller_name = this.className;
         this.plural_controller_name = MVC.String.pluralize(this.controller_name);
     },
-    find_all: function(params, callback){
-        params.callback = MVC.String.classize(this.className)+'.listCallback';
+    find_all: function(params, callback, error_callback){
+        var n = parseInt(Math.random()*100000);
+        params.callback = MVC.String.classize(this.className)+'.listCallback'+n;
+        var url = this.domain+'/'+this.plural_controller_name+'.json?'+MVC.Object.to_query_string(params)+'&'+n
 		//make callback function create new and call the callback with them
 		if(!callback) callback = (function(){});
-        var n = parseInt(Math.random()*1000000);
-		this.listCallback = function(callback_params){
+        
+		var error_timer = this.check_error(url, error_callback);
+        this['listCallback'+n] = function(callback_params){
+            clearTimeout(error_timer);
             var newObjects = this.create_many_as_existing( callback_params);
 			this.remove_scripts();
             callback(newObjects);
-            
+            delete this['listCallback'+n];
 		};
 		params['_method'] = 'GET';
-        
         clearTimeout(this.remove_scripts_timer);
-		include(this.domain+'/'+this.plural_controller_name+'.json?'+MVC.Object.to_query_string(params)+'&'+n);
+        include(url);
     },
     create : function(params, callback) {
 		this.add_standard_params(params, 'create');
