@@ -9,9 +9,8 @@ MVC.XMLRestModel = MVC.AjaxModel.extend(
         this.singular_name =  this.className;
         this._super();
     },
-    find_all_request: function(params){
-        var url = '/'+this.plural_name+'.xml';
-        this.request(url, {},{method: 'get'});
+    find_all_get: function(params){
+        this.request('/'+this.plural_name+'.xml', {},{method: 'get'});
     },
     find_all_success : function(transport){  //error is either success, complete or error
         var doc = MVC.Tree.parseXML(transport.responseText);
