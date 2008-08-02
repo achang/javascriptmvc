@@ -38,10 +38,9 @@
 		
 		this.transport = MVC.Ajax.factory();
 		
-		
 		if(this.options.asynchronous == false){
 		   this.transport.open(this.options.method, this.url, this.options.asynchronous);
-		   this.set_request_headers();
+		   this.set_request_headers(options.headers);
 		   try{this.transport.send(this.options.parameters ? MVC.Object.to_query_string(this.options.parameters) : null);}
 		   catch(e){return null;}
 		   return;
@@ -59,7 +58,7 @@
 			},this);
 			
 			this.transport.open(this.options.method, this.url, true);
-			this.set_request_headers();
+		    this.set_request_headers(options.headers);
 			this.transport.send(MVC.Object.to_query_string(this.options.parameters));
 		}
 	};
@@ -80,7 +79,7 @@ MVC.Ajax.prototype = {
       return this.transport.status || 0;
     } catch (e) { return 0 }
   },
-  set_request_headers: function() {
+  set_request_headers: function(user_headers) {
     var headers = {'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'};
 
     if (this.options.method == 'post') {
@@ -97,7 +96,12 @@ MVC.Ajax.prototype = {
 			this.transport.setRequestHeader(name, headers[name]);
 		}
 	}
-}
+	
+	if(user_headers) {
+		for(var header in user_headers) 
+			this.transport.setRequestHeader(header, user_headers[header]);
+		}
+	}
 };
 
 if(!MVC._no_conflict) Ajax = MVC.Ajax;
