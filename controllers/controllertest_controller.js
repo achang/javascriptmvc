@@ -1,4 +1,4 @@
-/*MainController = MVC.Controller.extend('main',{
+MainController = MVC.Controller.extend('main',{
 	load : function(){
 		success('load');
 	},
@@ -64,7 +64,7 @@ TestsController = MVC.Controller.extend('tests',{
 		this.data = 'HelloWorld'
 		this.render({after: 'render_here'});
 	}
-});*/
+});
 
 ScrollController = MVC.Controller.extend('scroll',{
     scroll : function(){
