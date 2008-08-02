@@ -133,7 +133,7 @@ MVC.Controller.Action = MVC.Class.extend(
 });
 
 MVC.Controller.DelegateAction = MVC.Controller.Action.extend({
-    match: new RegExp("(.*?)\\s?(change|click|contextmenu|dblclick|keydown|keyup|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload)$"),
+    match: new RegExp("^([^\\S_]*)[^\\S_]?(change|click|contextmenu|dblclick|keydown|keyup|keypress|mousedown|mousemove|mouseout|mouseover|mouseup|reset|resize|scroll|select|submit|dblclick|focus|blur|load|unload)$"),
     matches: function(action_name){
         return this.match.exec(action_name);
     }
