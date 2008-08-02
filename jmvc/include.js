@@ -343,8 +343,8 @@ include.request = function(path){
 };
 include.check_exists = function(path){		
 	var xhr=MVC.Ajax.factory();
-	xhr.open("HEAD", path, false);
 	try{ 
+		xhr.open("HEAD", path, false);
 		xhr.send(null); 
 	} catch(e) { return false; }
 	if ( xhr.status > 505 || xhr.status == 404 || xhr.status == 2 || 
