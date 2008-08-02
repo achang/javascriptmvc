@@ -9,10 +9,8 @@ MVC.XMLRestModel = MVC.AjaxModel.extend(
         this.singular_name =  this.className;
         this._super();
     },
-    find_all_get: function(params){
-        this.request('/'+this.plural_name+'.xml', {},{method: 'get'});
-    },
-    find_all_success : function(transport){  //error is either success, complete or error
+    find_all_get_url : function(){ return '/'+this.plural_name+'.xml'},
+    find_all_get_success : function(transport){  //error is either success, complete or error
         var doc = MVC.Tree.parseXML(transport.responseText);
 		
 		// convert dashes to underscores for second and third level hash keys
@@ -34,11 +32,10 @@ MVC.XMLRestModel = MVC.AjaxModel.extend(
 		}
         if(!doc[this.plural_name]) return [];
         
-        //check if there is only one.  If there is create it in an array
-        //if (!this.elementHasMany(doc[this.plural_name])){
-		if(!(doc[this.plural_name][this.singular_name] instanceof Array)){
+
+		if(!(doc[this.plural_name][this.singular_name] instanceof Array))
     		doc[this.plural_name][this.singular_name] = [doc[this.plural_name][this.singular_name]];
-    	}
+    	
       
         collection = [];
     	var attrs = doc[this.plural_name][this.singular_name];
