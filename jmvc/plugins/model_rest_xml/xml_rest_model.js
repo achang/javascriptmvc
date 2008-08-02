@@ -1,150 +1,123 @@
 MVC.Tree = new XML.ObjTree();
 MVC.Tree.attr_prefix = "@";
 
-MVC.XMLRestModel = MVC.Model.extend(
+MVC.XMLRestModel = MVC.AjaxModel.extend(
 {
     init: function(){
         if(!this.className) return;
         this.plural_name = MVC.String.pluralize(this.className);
         this.singular_name =  this.className;
+        this._super();
     },
-    find_all: function(params, callback){
+    find_all_request: function(params){
         var url = '/'+this.plural_name+'.xml';
-        new MVC.Ajax(url, {parameters: params, method: 'get', onComplete: this.find_callback(callback)} );
+        this.request(url, {},{method: 'get'});
     },
-    find_callback : function(callback){
-        return MVC.Function.bind( function(transport){
-            if(transport.status == 500) return callback(null);
-            
-            var doc = MVC.Tree.parseXML(transport.responseText);
-			
-			// convert dashes to underscores for second and third level hash keys
-			for(var key in doc) {
-				if(key.match(/-/) && typeof doc[key] == 'object' ){
-					doc[key.replace(/-/,'_')] = doc[key];
-					delete doc[key];
-				}
+    find_all_success : function(transport){  //error is either success, complete or error
+        var doc = MVC.Tree.parseXML(transport.responseText);
+		
+		// convert dashes to underscores for second and third level hash keys
+		for(var key in doc) {
+			if(key.match(/-/) && typeof doc[key] == 'object' ){
+				doc[key.replace(/-/,'_')] = doc[key];
+				delete doc[key];
 			}
-			for(var key in doc) {
-				if (typeof doc[key] == 'object') {
-					for (var second_key in doc[key]) {
-						if (second_key.match(/-/) && typeof doc[key][second_key] == 'object') {
-							doc[key][second_key.replace(/-/, '_')] = doc[key][second_key];
-							delete doc[key][second_key];
-						}
+		}
+		for(var key in doc) {
+			if (typeof doc[key] == 'object') {
+				for (var second_key in doc[key]) {
+					if (second_key.match(/-/) && typeof doc[key][second_key] == 'object') {
+						doc[key][second_key.replace(/-/, '_')] = doc[key][second_key];
+						delete doc[key][second_key];
 					}
 				}
 			}
-            if(!doc[this.plural_name]) return callback([]);
-            
-            //check if there is only one.  If there is create it in an array
-            //if (!this.elementHasMany(doc[this.plural_name])){
-			if(!(doc[this.plural_name][this.singular_name] instanceof Array)){
-        		doc[this.plural_name][this.singular_name] = [doc[this.plural_name][this.singular_name]];
-        	}
-          
-            collection = [];
-        	var attrs = doc[this.plural_name][this.singular_name];
-        	for(var i = 0; i < attrs.length; i++){
-        		collection.push(this.create_as_existing(this._attributesFromTree(attrs[i])))
-        	}
-            callback( collection );
-        }, this);
-    },
-    create: function(attributes, callback){
-        //we need to create
-        //
-        var params = {}
-        //params[this.singular_name] = attributes;
-		params = attributes;
-
-        var instance = new this(attributes);
-        var url = '/'+this.plural_name+'.xml';
-        new MVC.Ajax(url, {parameters: params, method: 'post', onComplete: this.create_callback(callback, instance)} );
-    },
-    create_callback: function(callback, instance){
-        return MVC.Function.bind( function(transport){
-            var saved = false;
-              if (/\w+/.test(transport.responseText)) {
-                var errors = this._errorsFromXML(transport.responseText);
-                if (errors)
-                  this.add_errors(errors);
-                else {
-                    var attributes;
-                    var doc = MVC.Tree.parseXML(transport.responseText);
-                    
-                    if (doc && doc[this.Class.singular_name])
-                      attributes = this.Class._attributesFromTree(doc[this.Class.singular_name]);
-
-                    if (attributes)
-                      this._resetAttributes(attributes);
-                }
-              }
+		}
+        if(!doc[this.plural_name]) return [];
         
-              // Get ID from the location header if it's there
-              if (this.is_new_record() && transport.status == 201) {
-        	  	loc = transport.responseText;
-        	  	try{loc = transport.getResponseHeader("location");}catch(e){};
-                if (loc) {
-                  //todo check this with prototype
-        		  var mtcs = loc.match(/\/[^\/]*?(\w+)?$/);
-        		  
-        		  if(mtcs){
-        		  	var id = parseInt(mtcs[1]);
-        			if (!isNaN(id))
-                    	this._setProperty("id", id);
-        		  }
-                }
-              }
-        	  callback(this);
-        	  //return (this.errors.length == 0);
-              //return (transport.status >= 200 && transport.status < 300 && this.errors.length == 0);
-            
-        }, instance);
+        //check if there is only one.  If there is create it in an array
+        //if (!this.elementHasMany(doc[this.plural_name])){
+		if(!(doc[this.plural_name][this.singular_name] instanceof Array)){
+    		doc[this.plural_name][this.singular_name] = [doc[this.plural_name][this.singular_name]];
+    	}
+      
+        collection = [];
+    	var attrs = doc[this.plural_name][this.singular_name];
+    	for(var i = 0; i < attrs.length; i++){
+    		collection.push(this.create_as_existing(this._attributesFromTree(attrs[i])))
+    	}
+        return collection;
     },
-    update: function(id, attributes, callback){
+    create_request: function(attributes){
+        var instance = new this(attributes);
+        instance.validate()
+        if( !instance.valid() ) return instance;
+        var params = {};
+        params[this.singular_name] = attributes;
+        this.request('/'+this.plural_name+'.xml', params, {method: 'post'}, instance );
+        return instance;
+    },
+    create_success: function(transport, callback, instance){
+          if (/\w+/.test(transport.responseText)) {
+            var errors = instance._errorsFromXML(transport.responseText);
+            if (errors)
+            	instance.add_errors(errors);
+            else {
+                var attributes;
+                var doc = MVC.Tree.parseXML(transport.responseText);
+                if(doc && doc[this.singular_name]) attributes = this._attributesFromTree(doc[this.singular_name]);
+                if(attributes) instance._resetAttributes(attributes);
+            }
+          }
+    
+          // Get ID from the location header if it's there
+          if (instance.is_new_record() && transport.status == 201) {
+    	  	loc = transport.responseText;
+    	  	try{loc = transport.getResponseHeader("location");}catch(e){};
+            if (loc) {
+              //todo check this with prototype
+    		  var mtcs = loc.match(/\/[^\/]*?(\w+)?$/);
+    		  if(mtcs){
+    		  	var id = parseInt(mtcs[1]);
+    			if (!isNaN(id)) instance._setProperty("id", id);
+    		  }
+            }
+          }
+    	  return instance;
+    },
+    update_request: function(id, attributes){
         delete attributes.id
         var params = {};
         params[this.singular_name] = attributes;
         var instance = this.create_as_existing(attributes);
         instance.id = id;
         
-        var url = '/'+this.plural_name+'/'+id+'.xml';
-        new MVC.Ajax(url, {parameters: params, method: 'put', onComplete: this.update_callback(callback, instance)} );
+        instance.validate()
+        if( !instance.valid() ) return instance;
+        
+        this.request('/'+this.plural_name+'/'+id+'.xml', params, {method: 'put'}, instance );
     },
-    update_callback: function(callback, instance){
-        return MVC.Function.bind( function(transport){
-            var saved = false;
-              if (/\w+/.test(transport.responseText)) {
-                var errors = this._errorsFromXML(transport.responseText);
-                if (errors)
-                  this.add_errors(errors);
-                else {
-                    var attributes;
-                    var doc = MVC.Tree.parseXML(transport.responseText);
-                    
-                    if (doc && doc[this.Class.singular_name])
-                      attributes = this.Class._attributesFromTree(doc[this.Class.singular_name]);
-
-                    if (attributes)
-                      this._resetAttributes(attributes);
-                }
-              }
-        	  callback(this);
-        }, instance);
+    update_success: function(transport, callback, instance){
+        if (/\w+/.test(transport.responseText)) {
+            var errors = instance._errorsFromXML(transport.responseText);
+            if (errors)
+              instance.add_errors(errors);
+            else {
+                var attributes;
+                var doc = MVC.Tree.parseXML(transport.responseText);
+                
+                if (doc && doc[this.singular_name]) attributes = this._attributesFromTree(doc[this.singular_name]);
+            
+                if (attributes) instance._resetAttributes(attributes);
+            }
+        }
+        return instance;
     },
-    destroy: function(id, callback){
-        var url = '/'+this.plural_name+'/'+id+'.xml';
-        new MVC.Ajax(url, { method: 'delete', onComplete: this.destroy_callback(callback)} );
+    destroy_request: function(id){
+        this.request('/'+this.plural_name+'/'+id+'.xml', {}, {method: 'delete'} );
     },
-    destroy_callback: function(callback){
-        return MVC.Function.bind( function(transport){
-            if (transport.status == 200)
-                callback(true);
-            else
-                callback(false);
-        }, this);
-    },
+    destroy_error: function(){ return false;},
+    destroy_success: function(transport){ return transport.status == 200},
     elementHasMany: function(element) {
           if(!element)
           	return false;

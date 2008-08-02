@@ -95,6 +95,7 @@ MVC.ModelViewHelper = MVC.Class.extend(
     init: function(model_instance){
         this._inst = model_instance;
         this._className = this._inst.Class.className;
+        this._Class = this._inst.Class;
     },
     id : function(){
         return this._inst[this._inst.Class.id];
@@ -136,13 +137,15 @@ MVC.ModelViewHelper = MVC.Class.extend(
     clear_errors: function(){
         var p;
         var cn = this._className;
-        for(var i =0; i < this._inst._properties.length; i++){
-            p = this._inst._properties[i];
-            var el = MVC.$E(cn+"_"+p);
-            if(el) el.className = el.className.replace(/(^|\\s+)error(\\s+|$)/, ' '); //from prototype
-            var er_el = MVC.$E(cn+"_"+p+"_error" );
-		    if(er_el) er_el.innerHTML = '&nbsp;';
+        for(var attribute in this._Class.attributes){
+            if(this._Class.attributes.hasOwnProperty(attribute)){
+                var el = MVC.$E(cn+"_"+p);
+                if(el) el.className = el.className.replace(/(^|\\s+)error(\\s+|$)/, ' '); //from prototype
+                var er_el = MVC.$E(cn+"_"+attribute+"_error" );
+    		    if(er_el) er_el.innerHTML = '&nbsp;';
+            }
         }
+        
         var bigel = MVC.$E(cn+"_error");
         if(bigel) bigel.innerHTML = '';
     },

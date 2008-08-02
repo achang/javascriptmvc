@@ -24,7 +24,7 @@ MVC.Controller.scaffold.functions = {
             var div = document.createElement('div')
             div.id = this.controller_name;
             document.body.appendChild(div);
-        }
+        };
         this.Class.scaffold_model.find('all', {} , this.continue_to('list'))
     },
     list: function(objects){
