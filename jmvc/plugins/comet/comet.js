@@ -4,7 +4,7 @@ Comet = function(url, options) {
 	this.options = options || {};
 	new Ajax(url, {
 		method: options.method || "get",
-		onSuccess: this.callback,
+		onSuccess: MVC.Function.bind(this.callback, this),
 		parameters: options.parameters || {},
 		headers: options.headers || {}
 	})
