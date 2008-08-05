@@ -1,25 +1,46 @@
 // new Comet("http://127.0.0.1/GetEvents", {onSuccess: myfunc, headers: {"Cookie": User.sessionID}})
-Comet = function(url, options) {
+MVC.Comet = function(url, options) {
 	this.url = url;
 	this.options = options || {};
-	new Ajax(url, {
-		method: options.method || "get",
-		onSuccess: MVC.Function.bind(this.callback, this),
-		parameters: options.parameters || {},
-		headers: options.headers || {}
-	})
+	this.onSuccess = options.onSuccess;
+    this.onComplete = options.onComplete;
+    this.onFailure = options.onFailure;
+    
+    delete this.options.onSuccess;
+    delete this.options.onComplete;
+    delete this.options.onFailure;
+    
+    this.options.onComplete = MVC.Function.bind(this.callback, this);
+
+    
+    //setup function to keep calling
+     new Ajax(url, this.options)
+}
+MVC.Comet.send = true;
+MVC.Comet.prototype = {
+	callback : function(transport) {
+		if (this.onSuccess && transport.responseText != "" && this.onSuccess(transport) == false) return false;
+
+        //we should check if there is a failure
+        if(this.onComplete) if(this.onComplete(transport) == false) return false;
+        
+        
+        var url = this.url;
+        var options = this.options;
+        
+        if(MVC.Comet.send)
+            setTimeout(function(){ new Ajax(url, options) },0) 
+        
+	}
 }
 
-Comet.prototype = {
-	callback : function(transport) {
-		try {
-			if (this.options.onSuccess && transport.responseText != "")
-				var response = this.options.onSuccess(transport);
-		} catch(e){
-			throw(e);
-		} finally {
-			if(response != false) 
-				new Comet(this.url, this.options);
-		}
-	}
+
+//Setup onunload to kill future requests
+MVC.Event.observe(window, 'unload', function(){
+    MVC.Comet.send = false;
+});
+
+
+if(!MVC._no_conflict && typeof Comet == 'undefined'){
+	Comet = MVC.Comet;
 }

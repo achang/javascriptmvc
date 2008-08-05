@@ -1,2 +1,2 @@
-include.plugins('ajax');
+include.plugins('ajax','event');
 include('comet');
