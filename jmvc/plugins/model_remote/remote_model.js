@@ -30,7 +30,10 @@ MVC.RemoteModel = MVC.Model.extend(
         this.controller_name = this.className;
         this.plural_controller_name = MVC.String.pluralize(this.controller_name);
     },
-    find_all: function(params, callback, error_callback){
+    find_all: function(params, cbs){
+        var callbacks = this._clean_callbacks(cbs);
+        var callback = callbacks.onSuccess;
+        var error_callback = callbacks.onError;
         var n = parseInt(Math.random()*100000);
         params.callback = MVC.String.classize(this.className)+'.listCallback'+n;
         var url = this.domain+'/'+this.plural_controller_name+'.json?'+MVC.Object.to_query_string(params)+'&'+n

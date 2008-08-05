@@ -16,14 +16,6 @@ MVC.AjaxModel = MVC.Model.extend(
             }
 	    }
     },
-    _clean_callbacks : function(callbacks){
-        if(!callbacks) throw "You must supply a callback!";
-        if(typeof callbacks == 'function')
-            return {onSuccess: callbacks, onError: callbacks};
-        if(!callbacks.onSuccess && !callbacks.onComplete) throw "You must supply a positive callback!";
-        if(!callbacks.onSuccess) callbacks.onSuccess = callbacks.onComplete;
-        if(!callbacks.onError && callbacks.onComplete) callbacks.onError = callbacks.onComplete;
-    },
     _default_options: function(cleaned_name, method, remaining_args, callbacks){
         var defaultOptions = {};
         this._add_default_callback(defaultOptions, 'success', method, cleaned_name, remaining_args, callbacks);

@@ -160,6 +160,18 @@ MVC.Model = MVC.Class.extend(
         for(var attr in cas){
             if(cas.hasOwnProperty(attr) ) this[attr] = null;
         }
+    },
+    /**
+     * Used for converting callbacks to to seperate error and succcess
+     * @param {Object} callbacks
+     */
+    _clean_callbacks : function(callbacks){
+        if(!callbacks) throw "You must supply a callback!";
+        if(typeof callbacks == 'function')
+            return {onSuccess: callbacks, onError: callbacks};
+        if(!callbacks.onSuccess && !callbacks.onComplete) throw "You must supply a positive callback!";
+        if(!callbacks.onSuccess) callbacks.onSuccess = callbacks.onComplete;
+        if(!callbacks.onError && callbacks.onComplete) callbacks.onError = callbacks.onComplete;
     }
 });
 
