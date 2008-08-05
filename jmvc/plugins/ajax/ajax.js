@@ -13,8 +13,6 @@
 	    };
 		this.url = url;
 	    MVC.Object.extend(this.options, options || { });
-	    
-		//var params = Object.clone(this.options.parameters);
 		
 		this.options.method = this.options.method.toLowerCase();
 		
@@ -26,7 +24,6 @@
 		  	this.options.parameters['_method'] = this.options.method;
 	      this.options.method = 'post';
 	    }
-		
 	
 		if (this.options.method == 'get' && this.options.parameters != '' ){
             this.url += (MVC.String.include(this.url,'?') ? '&' : '?') + MVC.Object.to_query_string(this.options.parameters);
@@ -35,15 +32,21 @@
 		//else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
 		//   params += '&_=';
 	    
+		if(!this.options.parameters)
+			var parameters = null;
+		else if(options.json_string)
+			var parameters = MVC.Object.to_json(this.options.parameters);
+		else
+			var parameters = MVC.Object.to_query_string(this.options.parameters)
 		
 		this.transport = MVC.Ajax.factory();
 		
 		if(this.options.asynchronous == false){
 		   this.transport.open(this.options.method, this.url, this.options.asynchronous);
 		   this.set_request_headers(options.headers);
-		   try{this.transport.send(this.options.parameters ? MVC.Object.to_query_string(this.options.parameters) : null);}
+		   try{this.transport.send(parameters);}
 		   catch(e){return null;}
-		   return;
+		   return this.transport;
 		}else{
 		   this.transport.onreadystatechange = MVC.Function.bind(function(){
 				var state = MVC.Ajax.Events[this.transport.readyState];
@@ -59,7 +62,8 @@
 			
 			this.transport.open(this.options.method, this.url, true);
 		    this.set_request_headers(options.headers);
-			this.transport.send(MVC.Object.to_query_string(this.options.parameters));
+			
+			this.transport.send(parameters);
 		}
 	};
 	MVC.Ajax.factory = factory;
@@ -80,7 +84,7 @@ MVC.Ajax.prototype = {
     } catch (e) { return 0 }
   },
   set_request_headers: function(user_headers) {
-    var headers = {'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'};
+    var headers = {};//{'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'};
 
     if (this.options.method == 'post') {
       headers['Content-type'] = this.options.contentType +

@@ -38,7 +38,7 @@ MVC.Object.extend(MVC.Array,{
         var results = [];
         for(var i=0; i < array.length; i++){
             var val =  MVC.Object.to_json(array[i],true);
-            if(typeof val != 'undefined') results.push(value);
+            if(typeof val != 'undefined') results.push(val);
         }
         return '[' + results.join(', ') + ']';
     }
