@@ -1,3 +1,6 @@
+//Almost all code and technique comes from Kris Zyp's/Dojo's window.name Transport
+//http://www.sitepen.com/blog/2008/07/22/windowname-transport/
+
 MVC.WindowName = function(url, params){
     this.url = url;
     this.params = params || {};
@@ -76,11 +79,11 @@ MVC.WindowName.prototype = {
 			if(frame.contentWindow){
 				frame.contentWindow.location.replace(this.url);
 			}
-		}else if(this.params.method.match(/POST|PUT|DELETE/i)){
+		}else if(this.params.method.match(/PUT|DELETE/i)){
 			// if it is a POST we will build a form to post it
 			this.frame_container.appendChild(frame);
 			var form = document.createElement("form");
-			dojo.body.appendChild(form);
+			document.body.appendChild(form);
             
             if(this.params.method.match(/POST|PUT|DELETE/i)) this.params.parameters._method = this.params.method;
             
