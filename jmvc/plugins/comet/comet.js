@@ -14,8 +14,10 @@ MVC.Comet = function(url, options) {
 
     
     //setup function to keep calling
-     new Ajax(url, this.options)
+     new MVC.Comet.transport(url, this.options)
 }
+//Change this to other transports (MVC.WindowName)
+MVC.Comet.transport = MVC.Ajax;
 MVC.Comet.send = true;
 MVC.Comet.prototype = {
 	callback : function(transport) {
@@ -29,7 +31,7 @@ MVC.Comet.prototype = {
         var options = this.options;
         
         if(MVC.Comet.send)
-            setTimeout(function(){ new Ajax(url, options) },0) 
+            setTimeout(function(){ new MVC.Comet.transport(url, options) },0) 
         
 	}
 }

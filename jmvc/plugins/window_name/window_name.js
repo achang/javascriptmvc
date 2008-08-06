@@ -1,12 +1,12 @@
-WindowName = function(url, params){
+MVC.WindowName = function(url, params){
     this.url = url;
     this.params = params || {};
     this.params.method = this.params.method || 'post';
-    this.frameNum = WindowName.frameNum++;
+    this.frameNum = MVC.WindowName.frameNum++;
     this.send();
 }
-WindowName.frameNum = 0;
-WindowName.prototype = {
+MVC.WindowName.frameNum = 0;
+MVC.WindowName.prototype = {
     cleanup : function(){
         try{
 			var innerDoc = this.frame.contentWindow.document;
@@ -54,10 +54,10 @@ WindowName.prototype = {
         if(MVC.Browser.Gecko && ![].reduce)
             this.protectFF2()
         var frame = this.frame = document.createElement(MVC.Browser.IE ? 
-            '<iframe name="' + frameName + '" onload="WindowName['+this.frameNum+']()">' :
+            '<iframe name="' + frameName + '" onload="MVC.WindowName['+this.frameNum+']()">' :
             'iframe'
         )
-		WindowName.styleFrame(this.frame);
+		MVC.WindowName.styleFrame(this.frame);
 		this.outerFrame = this.outerFrame || this.frame;
 
 		this.outerFrame.style.display='none';
@@ -65,7 +65,7 @@ WindowName.prototype = {
 		this.state = 0;
 		
         var self = this;
-		WindowName[this.frameName] = this.frame.onload = MVC.Function.bind(this.onload, this);
+		MVC.WindowName[this.frameName] = this.frame.onload = MVC.Function.bind(this.onload, this);
 		
         frame.name = this.frameName;
 		if(this.params.method.match(/GET/i)){
@@ -104,7 +104,7 @@ WindowName.prototype = {
 			form.submit();
 			form.parentNode.removeChild(form);
 		}else{
-			throw new Error("Method " + method + " not supported with the windowName transport");
+			throw new Error("Method " + method + " not supported with the WindowName transport");
 		}
 		if(frame.contentWindow){
 			frame.contentWindow.name = this.frameName; // IE likes it afterwards
@@ -116,7 +116,7 @@ WindowName.prototype = {
 		// FF2 allows unsafe sibling frame modification,
 		// the fix for this is to create nested frames with getters and setters to protect access
 		this.outerFrame = document.createElement("iframe");
-		WindowName.styleFrame(this.outerFrame);
+		MVC.WindowName.styleFrame(this.outerFrame);
 	    this.outerFrame.style.display='none';
 
 		this.frame_container.appendChild(this.outerFrame);
@@ -136,8 +136,12 @@ WindowName.prototype = {
     
     
 }
-WindowName.styleFrame = function(frame){
+MVC.WindowName.styleFrame = function(frame){
 	frame.style.width="100%";
 	frame.style.height="100%";
 	frame.style.border="0px";
+}
+
+if(!MVC._no_conflict && typeof WindowName == 'undefined'){
+	WindowName = MVC.WindowName;
 }
