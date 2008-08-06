@@ -1,0 +1,143 @@
+WindowName = function(url, params){
+    this.url = url;
+    this.params = params || {};
+    this.params.method = this.params.method || 'post';
+    this.frameNum = WindowName.frameNum++;
+    this.send();
+}
+WindowName.frameNum = 0;
+WindowName.prototype = {
+    cleanup : function(){
+        try{
+			var innerDoc = this.frame.contentWindow.document;
+			innerDoc.write(" ");
+			innerDoc.close();
+		}catch(e){}
+		document.body.removeChild(this.outerFrame); // clean up
+    },
+    get_data : function(){
+        var data = this.frame.contentWindow.name;
+		if(typeof data == 'string'){
+			if(data != this.frameName){
+				this.state = 2; // we are done now
+                //dfd.ioArgs.hash = frame.contentWindow.location.hash;
+				this.cleanup();
+                this.params.onComplete(data);
+			}
+		}
+    },
+    onload: function(){
+        try{
+			if(!MVC.Browser.Gecko && this.frame.contentWindow.location =='about:blank'){
+				// opera and safari will do an onload for about:blank first, we can ignore this first onload
+				return;
+			}
+		}catch(e){
+			// if we are in the target domain, frame.contentWindow.location will throw an ignorable error 
+		}
+		if(!this.state){
+			// we have loaded the target resource, now time to navigate back to our domain so we can read the frame name
+			this.state=1;
+			this.frame.contentWindow.location = this.domain_page;
+		}
+		// back to our domain, we should be able to access the frame name now
+		try{
+			if(this.state<2) this.get_data();
+		}catch(e){
+		}
+    },
+    send : function(){
+        this.domain = window.location.protocol+"//"+window.location.hostname;
+        this.domain_page = this.domain+"/blank.html"+"#" +this.frameNum;
+        this.frameName = window.location +this.domain_page;
+        this.frame_container = document.body;
+        if(MVC.Browser.Gecko && ![].reduce)
+            this.protectFF2()
+        var frame = this.frame = document.createElement(MVC.Browser.IE ? 
+            '<iframe name="' + frameName + '" onload="WindowName['+this.frameNum+']()">' :
+            'iframe'
+        )
+		WindowName.styleFrame(this.frame);
+		this.outerFrame = this.outerFrame || this.frame;
+
+		this.outerFrame.style.display='none';
+
+		this.state = 0;
+		
+        var self = this;
+		WindowName[this.frameName] = this.frame.onload = MVC.Function.bind(this.onload, this);
+		
+        frame.name = this.frameName;
+		if(this.params.method.match(/GET/i)){
+			// if it is a GET we can just the iframe our src url
+            this.url += (MVC.String.include(this.url,'?') ? '&' : '?') + MVC.Object.to_query_string(this.params.parameters);
+			frame.src = this.url;
+			this.frame_container.appendChild(frame);
+			if(frame.contentWindow){
+				frame.contentWindow.location.replace(this.url);
+			}
+		}else if(this.params.method.match(/POST|PUT|DELETE/i)){
+			// if it is a POST we will build a form to post it
+			this.frame_container.appendChild(frame);
+			var form = document.createElement("form");
+			dojo.body.appendChild(form);
+            
+            if(this.params.method.match(/POST|PUT|DELETE/i)) this.params.parameters._method = this.params.method;
+            
+            
+			for(var attr in this.params.parameters){
+				var values = this.params.parameters[attr];
+				values = values instanceof Array ? values : [values];
+				for(j = 0; j < values.length; j++){
+					// create hidden inputs for all the parameters
+					var input = doc.createElement("input");
+					input.type = 'hidden';
+					input.name = attr;
+					input.value = values[j];				
+					form.appendChild(input);	
+				}
+			}
+			form.method = 'POST';
+			form.action = this.url;
+			form.target = this.frameName;// connect the form to the iframe
+			
+			form.submit();
+			form.parentNode.removeChild(form);
+		}else{
+			throw new Error("Method " + method + " not supported with the windowName transport");
+		}
+		if(frame.contentWindow){
+			frame.contentWindow.name = this.frameName; // IE likes it afterwards
+		}
+        
+        
+    },
+    protectFF2 : function(){
+		// FF2 allows unsafe sibling frame modification,
+		// the fix for this is to create nested frames with getters and setters to protect access
+		this.outerFrame = document.createElement("iframe");
+		WindowName.styleFrame(this.outerFrame);
+	    this.outerFrame.style.display='none';
+
+		this.frame_container.appendChild(this.outerFrame);
+		
+		var firstWindow = this.outerFrame.contentWindow;
+		doc = firstWindow.document;
+		doc.write("<html><body margin='0px'><iframe style='width:100%;height:100%;border:0px' name='protectedFrame'></iframe></body></html>");
+		doc.close();
+		var secondWindow = firstWindow[0]; 
+		firstWindow.__defineGetter__(0,function(){});
+		firstWindow.__defineGetter__("protectedFrame",function(){});
+		doc = secondWindow.document;
+		doc.write("<html><body margin='0px'></body></html>");
+		doc.close();
+		this.frame_container = doc.body;
+    }
+    
+    
+}
+WindowName.styleFrame = function(frame){
+	frame.style.width="100%";
+	frame.style.height="100%";
+	frame.style.border="0px";
+}
