@@ -24,7 +24,10 @@ MVC.WindowName.prototype = {
 			if(data != this.frameName){
 				this.state = 2; // we are done now
                 //dfd.ioArgs.hash = frame.contentWindow.location.hash;
-				this.cleanup();
+				
+                this.cleanup();
+                if(data == 'null\n') data = '';
+                
                 this.params.onComplete(data);
 			}
 		}
@@ -79,35 +82,35 @@ MVC.WindowName.prototype = {
 			if(frame.contentWindow){
 				frame.contentWindow.location.replace(this.url);
 			}
-		}else if(this.params.method.match(/PUT|DELETE/i)){
-			// if it is a POST we will build a form to post it
-			this.frame_container.appendChild(frame);
-			var form = document.createElement("form");
-			document.body.appendChild(form);
+		}else if(this.params.method.match(/POST|PUT|DELETE/i)){
+            // if it is a POST we will build a form to post it
+            this.frame_container.appendChild(frame);
+            var form = document.createElement("form");
+            document.body.appendChild(form);
             
-            if(this.params.method.match(/POST|PUT|DELETE/i)) this.params.parameters._method = this.params.method;
+            if(this.params.method.match(/PUT|DELETE/i)) this.params.parameters._method = this.params.method;
             
             
-			for(var attr in this.params.parameters){
-				var values = this.params.parameters[attr];
-				values = values instanceof Array ? values : [values];
-				for(j = 0; j < values.length; j++){
-					// create hidden inputs for all the parameters
-					var input = doc.createElement("input");
-					input.type = 'hidden';
-					input.name = attr;
-					input.value = values[j];				
-					form.appendChild(input);	
-				}
-			}
-			form.method = 'POST';
-			form.action = this.url;
-			form.target = this.frameName;// connect the form to the iframe
-			
-			form.submit();
-			form.parentNode.removeChild(form);
+            for(var attr in this.params.parameters){
+                var values = this.params.parameters[attr];
+                values = values instanceof Array ? values : [values];
+                for(j = 0; j < values.length; j++){
+                    // create hidden inputs for all the parameters
+                    var input = doc.createElement("input");
+                    input.type = 'hidden';
+                    input.name = attr;
+                    input.value = values[j];				
+                    form.appendChild(input);	
+                }
+            }
+            form.method = 'POST';
+            form.action = this.url;
+            form.target = this.frameName;// connect the form to the iframe
+            
+            form.submit();
+            form.parentNode.removeChild(form);
 		}else{
-			throw new Error("Method " + method + " not supported with the WindowName transport");
+			throw new Error("Method " + this.params.method + " not supported with the WindowName transport");
 		}
 		if(frame.contentWindow){
 			frame.contentWindow.name = this.frameName; // IE likes it afterwards
