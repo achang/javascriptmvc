@@ -1,10 +1,17 @@
-MVC.CometController = MVC.Class.extend(
+/**
+ * This class is used to 
+ *    handle starting a comet response
+ *    handling when there are errors
+ *    dispatching the callback to other controllers for handling
+ */
+MVC.CometController = MVC.Controller.extend(
 {
-    start : function(){
-        this.comet = new MVC.Comet(this.domain+"/"+this.className, 
-            {method: 'get', onSuccess: MVC.Function.bind(this.dispatch, this),
-             parameters: this.parameters }
-            )
+    init : function(){
+         //cancels matching controller actions  
+    },
+    run: function(){
+        var instance = new this();
+        instance.run();
     },
     convert : function(response){
         return response;
@@ -18,7 +25,10 @@ MVC.CometController = MVC.Class.extend(
             
             for(var action in classHappenings){
                 var objects = classHappenings[action];
-                if(window[className]){
+                if(this.models_map[className] != null){
+                    if(this.models_map[className] != false)
+                        objects = this.models_map[className].create_many_as_existing(objects);
+                }else if(window[className]){
                     objects = window[className].create_many_as_existing(objects);
                 }
                 //now pass to controller
@@ -28,8 +38,34 @@ MVC.CometController = MVC.Class.extend(
             }
         } 
     },
-    controller_map :{}
+    controller_map :{},
+    error_mode: false
 },
 {
-    
+    run : function(){
+        this.start_polling();
+    },
+    start_polling : function(){
+        new MVC.Comet(this.Class.domain+"/"+this.Class.className, 
+            {method: 'get', 
+                onComplete: this.continue_to('complete'),
+                onSuccess: this.continue_to('success'),
+                onFailure: this.continue_to('failure'),
+             parameters: this.Class.parameters,
+             session: this.Class.session }
+            )
+    },
+    failure : function(){
+        this.error_mode = true;
+        this.run(); //start over
+    },
+    success : function(response){
+        this.Class.dispatch(response);
+    },
+    complete : function(){
+        if(this.error_mode && this.restore_from_failure){
+            this.restore_from_failure();
+        }
+        this.error_mode = false;
+    }
 })

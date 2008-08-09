@@ -36,7 +36,8 @@ MVC.RemoteModel = MVC.Model.extend(
         var error_callback = callbacks.onError;
         var n = parseInt(Math.random()*100000);
         params.callback = MVC.String.classize(this.className)+'.listCallback'+n;
-        var url = this.domain+'/'+this.plural_controller_name+'.json?'+MVC.Object.to_query_string(params)+'&'+n
+        var url = this.find_url ? this.find_url+"?" : this.domain+'/'+this.plural_controller_name+'.json?';
+        var url = url + MVC.Object.to_query_string(params)+'&'+n;
 		//make callback function create new and call the callback with them
 		if(!callback) callback = (function(){});
         
@@ -54,7 +55,8 @@ MVC.RemoteModel = MVC.Model.extend(
     },
     create : function(params, callback) {
 		this.add_standard_params(params, 'create');
-		var klass = this, className = this.className, url = this.domain+'/'+this.plural_controller_name+'.json?';
+		var klass = this, className = this.className, 
+            url = this.create_url ? this.create_url+"?" : this.domain+'/'+this.plural_controller_name+'.json?';
 		var tll = this.top_level_length(params, url);
 		var result = this.seperate(params[this.controller_name], tll,this.controller_name );
         var postpone_params = result.postpone, send_params = result.send;

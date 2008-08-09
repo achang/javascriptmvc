@@ -82,8 +82,11 @@ MVC.CookieModel = MVC.Model.extend(
         this.create_cookie(this.className, MVC.Object.to_json(cd), this.days );
         return attrs;
     },
+    destroy_cookie : function(cookie){
+        this.create_cookie(cookie,"",-1);
+    },
     destroy_all : function(){
-        this.create_cookie(this.className,"",-1);
+        this.destroy_cookie(this.className)
         return true;
     }
 },

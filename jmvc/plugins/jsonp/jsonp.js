@@ -2,7 +2,8 @@ MVC.JsonP = function(url, options){
     this.url = url;
     this.options = options || {};
     this.remove_script = this.options.remove_script == false ? false : true;
-    this.options.parameters = this.options.parameters || {}
+    this.options.parameters = this.options.parameters || {};
+    this.error_timeout = this.options.error_timeout*1000 || 1000*70; 
     this.send();
     
 }
@@ -10,23 +11,29 @@ MVC.JsonP = function(url, options){
 MVC.JsonP.prototype = {
     send : function(){
         var n = parseInt(Math.random()*100000);
-        
+
+        if(this.options.session){
+            var session = typeof this.options.session == 'function' ? this.options.session() : this.options.session;
+            this.url += (MVC.String.include(this.url,';') ? '&' : ';') + MVC.Object.to_query_string(session);
+        }
+
         var params  = typeof this.options.parameters == 'function' ? this.options.parameters() : this.options.parameters; //will eval everytime
         
+
         this.url += (MVC.String.include(this.url,'?') ? '&' : '?') + MVC.Object.to_query_string(params);
         this.add_method();
         var callback_name = this.callback_and_random(n);
         
         
-        //var error_timer = this.check_error(this.url, this.options.onFailure);
+        var error_timer = this.check_error(this.url, this.options.onFailure);
         
         window[callback_name] = MVC.Function.bind(function(callback_params){
-            //clearTimeout(error_timer);
-			//this.remove_scripts();
+            clearTimeout(error_timer);
+			this.remove_scripts();
             //convert to a transport
             var transport = {};
             if(callback_params == null){
-            	transport.responseText = ""
+            	transport.responseText = "";
             }else if(typeof callback_params == 'string'){
             	transport.responseText = callback_params
             }else{
@@ -53,7 +60,6 @@ MVC.JsonP.prototype = {
         this.url += "&callback=" +this.options.callback;
         return this.options.callback;
     },
-    error_timeout: 120000, //2 min
     check_error : function(url, error_callback){
         return setTimeout(function(){
             if(error_callback)

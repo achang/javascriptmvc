@@ -10,12 +10,23 @@ MainController = MVC.Controller.extend('main',{
 	},
 	unload : function(){
 		success('unload')
-		//alert('unload')
+		alert('unload')
 	},
 	click: function(){
 		success('mainclick')
 	}
 });
+
+if(MVC.Browser.Opera){
+	alert('o')
+	window.unlock = false; 
+	opera.setOverrideHistoryNavigationMode('compatible');
+	history.navigationMode = 'compatible';	
+	
+}
+window.onunload = function(){
+	alert('your window is being unloaded sucka');
+}
 
 TestsController = MVC.Controller.extend('tests',{
 	change: function(){

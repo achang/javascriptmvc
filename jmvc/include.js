@@ -41,7 +41,16 @@ MVC = {
 	root: null,
 	Object:  { extend: function(d, s) { for (var p in s) d[p] = s[p]; return d;} },
 	$E: function(id){ return typeof id == 'string' ? document.getElementById(id): id },
-	app_name: 'app'
+	app_name: 'app',
+    get_random: function(length){
+    	var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+    	var randomstring = '';
+    	for (var i=0; i<length; i++) {
+    		var rnum = Math.floor(Math.random() * chars.length);
+    		randomstring += chars.substring(rnum,rnum+1);
+    	}
+        return randomstring;
+    }
 };
 	
 var File = MVC.File;
@@ -317,21 +326,22 @@ var insert = function(src){
     }else if(MVC.Browser.Opera||MVC.Browser.Webkit){
 		if(src) {
 			var script = script_tag();
-			script.src=src+MVC.random;
+			script.src=src+'?'+MVC.random;
 			document.body.appendChild(script);
 		}
 		var start = script_tag();
-		start.src = MVC.include_path+MVC.random;
+		start.src = MVC.include_path+'?'+MVC.random;
 		document.body.appendChild(start);
 	}else{
         document.write(
-			(src? '<script type="text/javascript" src="'+src+(true ? '': MVC.random )+'"></script>':'')+
-			'<script type="text/javascript" src="'+MVC.include_path+(MVC.Browser.Gecko ? '': MVC.random )+'"></script>'
+			(src? '<script type="text/javascript" src="'+src+(true ? '': '?'+MVC.random )+'"></script>':'')+
+			'<script type="text/javascript" src="'+MVC.include_path+(MVC.Browser.Gecko ? '': '?'+MVC.random )+'"></script>'
 		);
 	}
 };
 
-MVC.random = '?'+Math.random();
+MVC.random = MVC.get_random(6);
+
 MVC.Ajax.factory = function(){ return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();};
 include.request = function(path){
    var request = MVC.Ajax.factory();

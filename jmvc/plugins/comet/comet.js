@@ -8,9 +8,9 @@ MVC.Comet = function(url, options) {
     
     delete this.options.onSuccess;
     delete this.options.onComplete;
-    delete this.options.onFailure;
+    //delete this.options.onFailure;
     
-    this.options.onComplete = MVC.Function.bind(this.callback, this);
+    this.options.onComplete = MVC.Function.bind(this.callback, this); // going to call this every time.
 
     
     //setup function to keep calling
@@ -24,12 +24,13 @@ MVC.Comet.prototype = {
 		if (this.onSuccess && transport.responseText != "" && this.onSuccess(transport) == false) return false;
 
         //we should check if there is a failure
-        if(this.onComplete) if(this.onComplete(transport) == false) return false;
+        if(this.onComplete) if(this.onComplete(transport) == false) return false; //if onComplete returns false, teminates cycle.
         
         
         var url = this.url;
         var options = this.options;
-        
+        //options.onComplete = this.onComplete;
+        //options.onSuccess = this.onSuccess;
         if(MVC.Comet.send)
             setTimeout(function(){ new MVC.Comet.transport(url, options) },0) 
         
