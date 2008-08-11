@@ -13,6 +13,10 @@ MVC.CometController = MVC.Controller.extend(
         var instance = new this();
         instance.run();
     },
+    kill: function(){
+        var instance = new this();
+        instance.kill();
+    },
     convert : function(response){
         return response;
     },
@@ -46,7 +50,7 @@ MVC.CometController = MVC.Controller.extend(
         this.start_polling();
     },
     start_polling : function(){
-        new MVC.Comet(this.Class.domain+"/"+this.Class.className, 
+        this.Class._comet = new MVC.Comet(this.Class.domain+"/"+this.Class.className, 
             {method: 'get', 
                 onComplete: this.continue_to('complete'),
                 onSuccess: this.continue_to('success'),
@@ -67,5 +71,8 @@ MVC.CometController = MVC.Controller.extend(
             this.restore_from_failure();
         }
         this.error_mode = false;
+    },
+    kill : function(){
+        this.Class._comet.kill();  
     }
 })

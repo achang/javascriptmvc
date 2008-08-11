@@ -11,17 +11,27 @@ MVC.Comet = function(url, options) {
     //delete this.options.onFailure;
     
     this.options.onComplete = MVC.Function.bind(this.callback, this); // going to call this every time.
-
     
+    //check in options for stop function, if there, use it, otherwise replace it
+    
+    
+    if(!this.options.is_killed){  //if we don't have an is killed, it doesn't exist yet
+        var killed = false;
+        
+        this.kill = function(){killed = true;}
+        this.options.is_killed = function(){return killed};
+    }
     //setup function to keep calling
      new MVC.Comet.transport(url, this.options)
 }
 //Change this to other transports (MVC.WindowName)
 MVC.Comet.transport = MVC.Ajax;
-MVC.Comet.send = true;
+
 MVC.Comet.prototype = {
 	callback : function(transport) {
-		if (this.onSuccess && transport.responseText != "" && this.onSuccess(transport) == false) return false;
+		if(this.options.is_killed()) return; //ignore new data if killed
+        
+        if (this.onSuccess && transport.responseText != "" && this.onSuccess(transport) == false) return false;
 
         //we should check if there is a failure
         if(this.onComplete) if(this.onComplete(transport) == false) return false; //if onComplete returns false, teminates cycle.
@@ -31,8 +41,7 @@ MVC.Comet.prototype = {
         var options = this.options;
         //options.onComplete = this.onComplete;
         //options.onSuccess = this.onSuccess;
-        if(MVC.Comet.send)
-            setTimeout(function(){ new MVC.Comet.transport(url, options) },0) 
+            setTimeout(function(){ new MVC.Comet.transport(url, options) },0);
         
 	}
 }

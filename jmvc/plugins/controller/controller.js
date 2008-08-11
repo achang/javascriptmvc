@@ -78,7 +78,7 @@ MVC.Controller = MVC.Class.extend({
 		if(!action_name) action_name = 'index';
 		
 		if(typeof action_name == 'string'){
-			if(!(action_name in controller.prototype) ) throw 'No action named '+action+' was found for '+c_name+'.';
+			if(!(action_name in controller.prototype) ) throw 'No action named '+action_name+' was found for '+c_name+'.';
 		}else{ //action passed
 			action_name = action_name.name;
 		}
