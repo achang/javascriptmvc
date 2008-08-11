@@ -8,7 +8,6 @@ var SelectableRow = function(params){
 	window[controller_name] = MVC.Controller.extend(pluralized_selectable_row_class,{
 		click: function(params){
 			this.select_row(params.element);
-			params.element.focus();
 		},
 		select_row: function(el){
 			var rows = this.get_selectable_elements();
@@ -20,7 +19,11 @@ var SelectableRow = function(params){
 					MVC.$E.toggle_class(row, selected_row_class);
 			}
 			if(!MVC.String.include(el.className,selected_row_class))
-				MVC.$E.toggle_class(el, selected_row_class);
+				this.make_selected_row(el)
+		},
+		make_selected_row: function(el){
+			MVC.$E.toggle_class(el, selected_row_class);
+			el.focus();
 		},
 		mouseover: function(params){
 			if (mouseover) {
@@ -40,7 +43,7 @@ var SelectableRow = function(params){
 			if (selected.length > 0) return;
 			var rows = this.get_selectable_elements();
 			if(rows.length > 0)
-				rows[0].className += ' '+selected_row_class;
+				this.make_selected_row(rows[0]);
 		},
 		// remove a row and select another
 		remove_row: function(el){
@@ -53,11 +56,11 @@ var SelectableRow = function(params){
 			if(!selected) return;
 			var prev_sibling = MVC.$E.previous_sibling_in_class(el, selectable_row_class);
 			if(prev_sibling)
-				MVC.$E.toggle_class(prev_sibling, selected_row_class);
+				this.make_selected_row(prev_sibling);
 			else {
 				var els = this.get_selectable_elements();
 				if(MVC.$E.elements_match(els[0], el))
-					MVC.$E.toggle_class(els[els.length-1], selected_row_class);
+					this.make_selected_row(els[els.length-1]);
 			}
 		},
 		keydown: function(params){
@@ -86,6 +89,12 @@ var SelectableRow = function(params){
 				var selectable_rows = this.get_selectable_elements();
 				this.select_row(selectable_rows[0]);
 			}
+		},
+		make_selectable: function(){
+			var selectable_rows = this.get_selectable_elements();
+			for(var i=0; i<selectable_rows.length; i++){
+				selectable_rows[i].setAttribute('tabIndex', '0');
+			}
 		}
 	});
 	this.select_row_if_nothing_selected = function() {
@@ -99,6 +108,10 @@ var SelectableRow = function(params){
 	this.select_another_row = function(element) {
 		MVC.Controller.dispatch(pluralized_selectable_row_class.classize(), 
 			'select_another_row', element);
+	}
+	this.make_selectable = function(){
+		MVC.Controller.dispatch(pluralized_selectable_row_class.classize(), 
+			'make_selectable');
 	}
 }
 
