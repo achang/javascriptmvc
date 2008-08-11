@@ -64,7 +64,7 @@ var SelectableRow = function(params){
 			}
 		},
 		keydown: function(params){
-			var keycode = params.event.keyCode;
+			var keycode = params.event.keyCode || params.event.charCode;
 			if(keycode == 38)
 				return this.select_row_above();
 			if(keycode == 40)
