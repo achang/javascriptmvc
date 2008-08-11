@@ -8,6 +8,7 @@ var SelectableRow = function(params){
 	window[controller_name] = MVC.Controller.extend(pluralized_selectable_row_class,{
 		click: function(params){
 			this.select_row(params.element);
+			params.element.focus();
 		},
 		select_row: function(el){
 			var rows = this.get_selectable_elements();
@@ -22,7 +23,10 @@ var SelectableRow = function(params){
 				MVC.$E.toggle_class(el, selected_row_class);
 		},
 		mouseover: function(params){
-			if(mouseover) this.select_row(params.element);
+			if (mouseover) {
+				params.element.focus();
+				this.select_row(params.element);
+			}
 		},
 		get_selectable_elements: function(){
 			return MVC.Query('.'+selectable_row_class);
@@ -54,6 +58,33 @@ var SelectableRow = function(params){
 				var els = this.get_selectable_elements();
 				if(MVC.$E.elements_match(els[0], el))
 					MVC.$E.toggle_class(els[els.length-1], selected_row_class);
+			}
+		},
+		keydown: function(params){
+			var keycode = params.event.keyCode;
+			if(keycode == 38)
+				return this.select_row_above();
+			if(keycode == 40)
+				return this.select_row_below();
+		},
+		select_row_above: function(){
+			var selected_row = this.get_selected_elements()[0];
+			var prev_sibling = MVC.$E.previous_sibling_in_class(selected_row, selectable_row_class);
+			if (prev_sibling) 
+				this.select_row(prev_sibling);
+			else {
+				var selectable_rows = this.get_selectable_elements();
+				this.select_row(selectable_rows[selectable_rows.length-1]);
+			}
+		},
+		select_row_below: function(){
+			var selected_row = this.get_selected_elements()[0];
+			var next_sibling = MVC.$E.next_sibling_in_class(selected_row, selectable_row_class);
+			if (next_sibling) 
+				this.select_row(next_sibling);
+			else {
+				var selectable_rows = this.get_selectable_elements();
+				this.select_row(selectable_rows[0]);
 			}
 		}
 	});
@@ -108,4 +139,19 @@ MVC.$E.previous_sibling_in_class = function(el, class_name){
 		var prev_el = els[i];
 	}
 	return prev_el;
+}
+
+MVC.$E.next_sibling_in_class = function(el, class_name){
+	var els = MVC.Query('.'+class_name);
+	if(els.length == 0 || 
+		(els.length == 1 && MVC.$E.elements_match(els[0], el)) ||
+		(MVC.$E.elements_match(els[els.length-1], el)))
+			return null;
+	var next_el = els[els.length-1];
+	for(var i=els.length-2; i>-1; i--){
+		if(MVC.$E.elements_match(els[i], el))
+			return next_el;
+		var next_el = els[i];
+	}
+	return next_el;
 }
