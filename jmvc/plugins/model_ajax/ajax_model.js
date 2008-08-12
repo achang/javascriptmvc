@@ -1,6 +1,8 @@
 MVC.AjaxModel = MVC.Model.extend(
 //class methods
 {
+    transport: MVC.Ajax,
+    
     request : function(){
         
     },
@@ -84,7 +86,7 @@ MVC.AjaxModel = MVC.Model.extend(
                 var defaultOptions = this._default_options(cleaned_name, method, remaining_args, callbacks);
                 options = MVC.Object.extend(defaultOptions, options);
                 options.parameters = MVC.Object.extend(request_params, options.parameters);
-                new MVC.Ajax(url, options );
+                new this.transport(url, options );
             }
             var result;
             //check if (name)_(method)_request exists
