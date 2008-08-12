@@ -1,2 +1,2 @@
-include.plugins('model','date');
+include.plugins('model','date','jsonp');
 include('remote_model');

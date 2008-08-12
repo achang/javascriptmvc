@@ -40,8 +40,13 @@ MVC.JsonP.prototype = {
             	transport = callback_params;
             	transport.responseText = callback_params.toString();
             }
-            if(this.options.onComplete)
+            var success = true;
+            if(this.options.onSuccess)
+                success = this.options.onSuccess(transport);
+            
+            if(this.options.onComplete && success)
                 this.options.onComplete(transport);
+            
             delete window[callback_name];
 		},this);
         include({path: this.url});
