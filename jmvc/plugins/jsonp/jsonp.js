@@ -10,7 +10,7 @@ MVC.JsonP = function(url, options){
 
 MVC.JsonP.prototype = {
     send : function(){
-        var n = parseInt(Math.random()*100000);
+        var n = 'c'+MVC.get_random(5);
 
         if(this.options.session){
             var session = typeof this.options.session == 'function' ? this.options.session() : this.options.session;
@@ -27,7 +27,7 @@ MVC.JsonP.prototype = {
         
         var error_timer = this.check_error(this.url, this.options.onFailure);
         
-        window[callback_name] = MVC.Function.bind(function(callback_params){
+        MVC.JsonP._cbs[callback_name] = MVC.Function.bind(function(callback_params){
             clearTimeout(error_timer);
 			this.remove_scripts();
             //convert to a transport
@@ -47,7 +47,7 @@ MVC.JsonP.prototype = {
             if(this.options.onComplete && success)
                 this.options.onComplete(transport);
             
-            delete window[callback_name];
+            delete MVC.JsonP._cbs[callback_name];
 		},this);
         include({path: this.url});
     },
@@ -57,13 +57,13 @@ MVC.JsonP.prototype = {
     callback_and_random : function(n){
         
         
-        if(this.options.callback){
-            this.url += "&callback=" +this.options.callback+"&"+n
-            return this.options.callback;
-        }
-        this.options.callback = "MVCJsonP"+n;
+        //if(this.options.callback){
+        //    this.url += "&callback=" +this.options.callback+"&"+n
+        //    return this.options.callback;
+        //}
+        this.options.callback = "MVC.JsonP._cbs."+n;
         this.url += "&callback=" +this.options.callback;
-        return this.options.callback;
+        return n;
     },
     check_error : function(url, error_callback){
         return setTimeout(function(){
@@ -86,3 +86,4 @@ MVC.JsonP.prototype = {
         }
     }
 }
+MVC.JsonP._cbs = {};
