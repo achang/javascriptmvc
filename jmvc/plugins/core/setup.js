@@ -2,16 +2,16 @@
 if(typeof Prototype == 'undefined') {
 	include({path: '../lang/standard_helpers.js', shrink_variables: false},
 			"../lang/inflector/inflector",
-			"../event/standard",
+			"../dom/event/standard",
 			"../io/ajax/ajax",
 			"../lang/class/setup");
-	MVC.Included.plugins.push('helpers','inflector','ajax','event','class');
+	MVC.Included.plugins.push('lang','lang/inflector','io/ajax','dom/event','lang/class');
 }else{
 	MVC.Event = Event;
 	include({path: '../lang/prototype_helpers.js', shrink_variables: false},
 			"../lang/inflector/inflector",
 			"../io/ajax/prototype_ajax");
-	MVC.Included.plugins.push('helpers','inflector','ajax');
+	MVC.Included.plugins.push('lang','lang/inflector','io/ajax');
 }
 //include('../ajax/debug');
 
