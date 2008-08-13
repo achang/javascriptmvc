@@ -1,2 +1,2 @@
-include.plugins('model','json');
+include.plugins('model','lang/json');
 include('cookie_model');
