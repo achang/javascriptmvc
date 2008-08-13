@@ -1,2 +1,2 @@
-include.plugins('class');
+include.plugins('lang/class');
 include('model');
