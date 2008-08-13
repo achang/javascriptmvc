@@ -1,4 +1,4 @@
-include.plugins('helpers');
+include.plugins('lang');
 if(typeof jQuery != 'undefined'){
 	include('jquery_ajax')	
 }else if( typeof Prototype != 'undefined' ){

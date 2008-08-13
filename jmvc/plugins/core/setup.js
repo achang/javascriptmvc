@@ -1,30 +1,30 @@
 
 if(typeof Prototype == 'undefined') {
-	include({path: '../helpers/standard_helpers.js', shrink_variables: false},
-			"../inflector/inflector",
+	include({path: '../lang/standard_helpers.js', shrink_variables: false},
+			"../lang/inflector/inflector",
 			"../event/standard",
-			"../ajax/ajax",
-			"../class/setup");
+			"../io/ajax/ajax",
+			"../lang/class/setup");
 	MVC.Included.plugins.push('helpers','inflector','ajax','event','class');
 }else{
 	MVC.Event = Event;
-	include({path: '../helpers/prototype_helpers.js', shrink_variables: false},
-			"../inflector/inflector",
-			"../ajax/prototype_ajax");
+	include({path: '../lang/prototype_helpers.js', shrink_variables: false},
+			"../lang/inflector/inflector",
+			"../io/ajax/prototype_ajax");
 	MVC.Included.plugins.push('helpers','inflector','ajax');
 }
 //include('../ajax/debug');
 
 if(include.get_env() == 'test') include('test')
 
-MVC.Included.plugins.push('view','controller','controller_view');
+MVC.Included.plugins.push('view','controller','controller/view');
 
 include('../view/view', 
 		'../controller/controller',
 		'../controller/delegator',
-		'../controller_view/controller_view');
+		'../controller/view/controller_view');
 
-MVC.Included.plugins.push('view','controller','controller_view');
+MVC.Included.plugins.push('view','controller','controller/view');
 	
     
 include.plugins('element', 'controller_scaffold','model_view_helper','view_helpers')

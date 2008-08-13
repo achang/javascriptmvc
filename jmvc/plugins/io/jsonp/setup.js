@@ -1,2 +1,2 @@
-include.plugins('helpers');
+include.plugins('lang');
 include('jsonp');
