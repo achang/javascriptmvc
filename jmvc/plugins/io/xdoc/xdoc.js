@@ -41,8 +41,13 @@ if(MVC.Browser.Opera){
              
         },
         handle: function(event){
-            eval("var data = "+event.data);
-            data.responseText = event.data;
+            if(event.data != "null"){
+                eval("var data = "+event.data);
+                data.responseText = event.data;
+            }else{
+                data = {responseText: ''}
+            }
+                
             this.options.onComplete(data);
         }
     }
