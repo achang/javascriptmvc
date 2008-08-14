@@ -76,7 +76,7 @@ MVC.XDoc.frame_loaded = function(){
 	MVC.XDoc.styleFrame(frame);
     document.body.appendChild(frame);
     frame.onload = MVC.Function.bind(MVC.XDoc.frame_loaded, MVC.XDoc);
-    frame.contentWindow.location = "http://scaffuld.com:8080/test.html";
+    frame.contentWindow.location = Jabbify.comet_domain+"/crossdomain.html";
     MVC.XDoc._frame = frame;
 })();
 
