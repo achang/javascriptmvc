@@ -50,13 +50,15 @@ MVC.CometController = MVC.Controller.extend(
         this.start_polling();
     },
     start_polling : function(){
+        
         this.Class._comet = new MVC.Comet(this.Class.domain+"/"+this.Class.className, 
-            {method: 'get', 
+                {method: 'get', 
                 onComplete: this.continue_to('complete'),
                 onSuccess: this.continue_to('success'),
                 onFailure: this.continue_to('failure'),
-             parameters: this.Class.parameters,
-             session: this.Class.session }
+                parameters: this.Class.parameters,
+                session: this.Class.session,
+                transport: this.Class.transport }
             )
     },
     failure : function(){

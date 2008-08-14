@@ -21,15 +21,17 @@ MVC.Comet = function(url, options) {
         this.kill = function(){killed = true;}
         this.options.is_killed = function(){return killed};
     }
+    this.transport = this.options.transport || MVC.Comet.transport;
+    
     //setup function to keep calling
-     new MVC.Comet.transport(url, this.options)
+    new this.transport(url, this.options)
 }
 //Change this to other transports (MVC.WindowName)
 MVC.Comet.transport = MVC.Ajax;
 
 MVC.Comet.prototype = {
 	callback : function(transport) {
-		if(this.options.is_killed()) return; //ignore new data if killed
+        if(this.options.is_killed()) return; //ignore new data if killed
         
         if (this.onSuccess && transport.responseText != "" && this.onSuccess(transport) == false) return false;
 
