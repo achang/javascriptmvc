@@ -16,8 +16,6 @@ MVC.XDoc.waiting_requests = [];
 
 MVC.XDoc.prototype = {
     send: function(){
-          
-          
          if(this.options.session){
             var session = typeof this.options.session == 'function' ? this.options.session() : this.options.session;
             this.url += (MVC.String.include(this.url,';') ? '&' : ';') + MVC.Object.to_query_string(session);
@@ -56,6 +54,7 @@ MVC.XDoc.styleFrame = function(frame){
 	frame.style.width="100%";
 	frame.style.height="100%";
 	frame.style.border="0px";
+    frame.style.display = 'none';
 }
 //waiters
 

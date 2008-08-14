@@ -43,7 +43,8 @@ MVC.Comet.prototype = {
         var options = this.options;
         //options.onComplete = this.onComplete;
         //options.onSuccess = this.onSuccess;
-            setTimeout(function(){ new MVC.Comet.transport(url, options) },0);
+        var transport=  this.transport;
+            setTimeout(function(){ new transport(url, options) },0);
         
 	}
 }
