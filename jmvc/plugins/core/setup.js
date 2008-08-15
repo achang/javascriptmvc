@@ -27,7 +27,7 @@ include('../view/view',
 MVC.Included.plugins.push('view','controller','controller/view');
 	
     
-include.plugins('element', 'controller_scaffold','model_view_helper','view_helpers')
+include.plugins('dom/element', 'controller/scaffold','model/view_helper','view/helpers')
     
 if(include.get_env() == 'development')	include('../view/fulljslint');
 

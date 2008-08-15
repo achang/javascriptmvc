@@ -1,2 +1,2 @@
-include.plugins('model','ajax');
+include.plugins('model','io/ajax');
 include('ajax_model');
