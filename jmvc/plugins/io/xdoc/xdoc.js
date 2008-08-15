@@ -33,7 +33,7 @@ if(MVC.Browser.Opera){
               
                     
              var frame = MVC.XDoc._frame;
-             var receiver = frame.contentWindow;
+             var receiver = frame.contentDocument;
              
              
              MVC.XDoc.requesting = this;
