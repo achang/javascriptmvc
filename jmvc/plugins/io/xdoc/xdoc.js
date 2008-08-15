@@ -71,7 +71,7 @@ if(MVC.Browser.Opera){
     MVC.XDoc._can_request = false;
     MVC.XDoc.frame_loaded = function(){
         MVC.XDoc._can_request = true;
-        
+        MVC.XDoc.next();
     };
 
 
