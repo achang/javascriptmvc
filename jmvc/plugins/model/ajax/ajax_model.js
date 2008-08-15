@@ -6,7 +6,7 @@ MVC.AjaxModel = MVC.Model.extend(
     request : function(){
         
     },
-    _matching : /(\w*?)_?(get|post|delete|update|)_success$/, 
+    _matching : /(\w+?)_?(get|post|delete|update|)_success$/, 
     init: function(){
         if(!this.className) return;
         var val, act, matches;
@@ -106,7 +106,18 @@ MVC.AjaxModel = MVC.Model.extend(
        var method = matches[2] || 'post'
 
        this[cleaned_name] = this._make_public(cleaned_name, method)
+    },
+    get_id : function(transport){
+        var loc = transport.responseText;
+	  	try{loc = transport.getResponseHeader("location");}catch(e){};
+        if (loc) {
+          //todo check this with prototype
+		  var mtcs = loc.match(/\/[^\/]*?(\w+)?$/);
+		  if(mtcs) return parseInt(mtcs[1]);
+        }
+        return null;
     }
+    
 },
 //prototype methods
 {}

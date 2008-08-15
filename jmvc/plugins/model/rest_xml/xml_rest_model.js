@@ -68,16 +68,8 @@ MVC.XMLRestModel = MVC.AjaxModel.extend(
     
           // Get ID from the location header if it's there
           if (instance.is_new_record() && transport.status == 201) {
-    	  	loc = transport.responseText;
-    	  	try{loc = transport.getResponseHeader("location");}catch(e){};
-            if (loc) {
-              //todo check this with prototype
-    		  var mtcs = loc.match(/\/[^\/]*?(\w+)?$/);
-    		  if(mtcs){
-    		  	var id = parseInt(mtcs[1]);
-    			if (!isNaN(id)) instance._setProperty("id", id);
-    		  }
-            }
+    	  	var id = this.get_id(transport);
+            if (!isNaN(id)) instance._setProperty("id", id );
           }
     	  return instance;
     },

@@ -163,10 +163,10 @@ MVC.ModelViewHelper = MVC.Class.extend(
     edit_values: function(){
         var values = {};
         var cn = this._className, p, el;
-        for(var i =0; i < this._inst._properties.length; i++){
-            p = this._inst._properties[i];
-            el = MVC.$E(this.edit_id(p));
-            if(el) values[p] = el.value;
+        for(var attr in this._Class.attributes){
+            if(this._Class.attributes.hasOwnProperty( attr ) )
+            el = MVC.$E(this.edit_id(attr));
+            if(el) values[attr] = el.value;
             
         }
         return values;
