@@ -158,8 +158,10 @@ var is_included = function(path){
 
 var add_with_defaults = function(inc){
 	if(typeof inc == 'string') inc = {path: inc.indexOf('.js') == -1  ? inc+'.js' : inc};
-	inc.original_path = inc.path;
-    inc = MVC.Object.extend( MVC.Object.extend({},options), inc);
+	if(typeof inc != 'function'){
+        inc.original_path = inc.path;
+        inc = MVC.Object.extend( MVC.Object.extend({},options), inc);
+    }
 	include.add(inc);
 };
 
@@ -198,8 +200,16 @@ MVC.Object.extend(include,{
 		return fwd.relative() ? fwd.join_from(MVC.page_dir+'/', true) : cwd;
 	},
 	add: function(newInclude){
-		var path = newInclude.path;
+		if(typeof newInclude == 'function'){
+            current_includes.unshift(  newInclude );
+            return;
+        }
+        
+        var path = newInclude.path;
         if(first_wave_done) return insert_head(path);
+        
+        
+        
 		var pf = new File(newInclude.path);
 		newInclude.path = include.normalize(  path  );
 		
@@ -251,12 +261,22 @@ MVC.Object.extend(include,{
 		};
 		total.push( latest);
 		current_includes = [];
-		include.set_path(latest.start);
-		include.current = latest.path;
-		if(include.get_env()=='compress'){
-            latest.text = include.request(latest.path);
+        if(typeof latest == 'function'){
+            latest();
+            insert();
+        }else{
+            include.set_path(latest.start);
+    		include.current = latest.path;
+    		if(include.get_env()=='compress'){
+                if(latest.ignore && typeof print != 'undefined'){
+                    var parts = latest.path.split("/")
+                     if(parts.length > 4) parts = parts.slice(parts.length - 4);
+                     print("   "+parts.join("/"));
+                }
+                latest.text = include.request(latest.path);
+            }
+    		latest.ignore ? insert() : insert(latest.path);
         }
-		latest.ignore ? insert() : insert(latest.path);
 	},
 	end_of_production: function(){ first_wave_done = true; },
 	compress: function(){
@@ -288,11 +308,17 @@ MVC.Object.extend(include,{
 	},
 	app: function(f, included_array){
 		return function(){
-			for (var i = 0; i < arguments.length; i++) {
+			
+            
+            var current_path = include.get_path();
+		    include.set_path(MVC.apps_root);
+
+            for (var i = 0; i < arguments.length; i++) {
 				arguments[i] = f(arguments[i]);
 				included_array.push(arguments[i].match(/[^\/\\]*$/)[0].replace(/_controller/,''));
 			}
-			return include.apply(null, arguments);
+			include.apply(null, arguments);
+            include.set_path(current_path);
 		}
 	}
 });

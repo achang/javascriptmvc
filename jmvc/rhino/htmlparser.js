@@ -308,7 +308,15 @@
                     if(oldCurParent.getAttribute('src')){
 
                         var xhr = new XMLHttpRequest();
-            		    xhr.open("GET", oldCurParent.getAttribute('src').match(/([^\?#]*)/)[1], false);
+            		    var newLocation = oldCurParent.getAttribute('src').match(/([^\?#]*)/)[1];
+                        if(! newLocation.match(/include\.js$/) ){
+                            //lets break it up by / and only show the last 3 levels
+                            var parts = newLocation.split("/")
+                            if(parts.length > 4) parts = parts.slice(parts.length - 4);
+
+                            print("   "+parts.join("/"));
+                        }
+                        xhr.open("GET", newLocation, false);
                         xhr.send(null);
                         js = xhr.responseText;
 

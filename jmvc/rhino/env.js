@@ -202,6 +202,8 @@ var self = window;
         this._file = file;
 		var DB = Packages.javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder();
         if(file){
+            var dh = new Packages.org.xml.sax.helpers.DefaultHandler();
+            DB.setErrorHandler(dh);            
             this._dom = DB.parse(file);
         }else{
             
