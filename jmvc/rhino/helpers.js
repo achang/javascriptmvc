@@ -11,8 +11,16 @@ MVCOptions.compress = function(src, path){
 MVCOptions.collect = function(total){
     var collection = '', txt;
 	for(var s=0; s < total.length; s++){
-		txt = total[s].process ? total[s].process(total[s]) : total[s].text
-		collection += "include.set_path('"+total[s].start+"')"+";\n"+txt + ";\n";
+		var includer = total[s];
+        
+        if(typeof includer == 'function'){
+            collection += "include.next_function();\n"
+        }else{
+            txt = includer.process ? includer.process(includer) : includer.text
+		    collection += "include.set_path('"+includer.start+"')"+";\n"+txt + ";\n";
+        }
+        
+        
 	}
 	collection += "include.end_of_production();";
     return collection;
@@ -23,9 +31,13 @@ MVCOptions.collect_and_compress = function(total){
     var collection = '', script, txt, compressed;
 	for(var s=0; s < total.length; s++){
 		script = total[s];
-        txt = script.process ? script.process(total[s]) : script.text;
-		compressed = script.compress == false ? txt : MVCOptions.compress(txt, script.path);
-        collection += "include.set_path('"+script.start+"')"+";\n"+compressed + ";\n";
+        if(typeof script == 'function'){
+            collection += "include.next_function();\n"
+        }else{
+            txt = script.process ? script.process(total[s]) : script.text;
+    		compressed = script.compress == false ? txt : MVCOptions.compress(txt, script.path);
+            collection += "include.set_path('"+script.start+"')"+";\n"+compressed + ";\n";
+        }
 	}
 	collection += "include.end_of_production();";
     return collection;

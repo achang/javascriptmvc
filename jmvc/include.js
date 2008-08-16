@@ -201,6 +201,7 @@ MVC.Object.extend(include,{
 	},
 	add: function(newInclude){
 		if(typeof newInclude == 'function'){
+            include.functions.push(newInclude);
             current_includes.unshift(  newInclude );
             return;
         }
@@ -263,6 +264,11 @@ MVC.Object.extend(include,{
 		current_includes = [];
         if(typeof latest == 'function'){
             latest();
+            
+            //if(include.get_env()=='compress'){
+            //    latest.text = "include.next_function();"
+            //}
+            
             insert();
         }else{
             include.set_path(latest.start);
@@ -320,7 +326,12 @@ MVC.Object.extend(include,{
 			include.apply(null, arguments);
             include.set_path(current_path);
 		}
-	}
+	},
+    functions: [],
+    next_function : function(){
+        var func = include.functions.pop();
+        if(func) func();
+    }
 });
 	
 var head = function(){
