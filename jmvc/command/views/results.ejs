@@ -165,17 +165,26 @@
     <div class='clear'></div>
     <ul id='plugins'>
 	<% for(var j=0; j<files.plugins.length; j++) { %>
-		<% var disabled = true;
-		if(included.plugins.indexOf(files.plugins[j]) == -1)
+		<% 
+        var plugin_name = files.plugins[j];
+        var disabled = true;
+		var plugin_data = MVC.PluginDescriptions[plugin_name] || {};
+		if(plugin_data.hidden ==  true) 
+				continue;
+		if(included.plugins.indexOf(plugin_name) == -1)
 			disabled = false; %>
 		
-		<li class='plugin'><input type='checkbox' <%= disabled? "disabled='true'": "" %> <%= disabled? "checked='true'": "" %> /> 
-		<% if(MVC.PluginDescriptions[files.plugins[j]]){ %>
-			<a href='<%= MVC.PluginDescriptions[files.plugins[j]].url %>'><%= files.plugins[j] %></a> - 
-			<%= MVC.PluginDescriptions[files.plugins[j]].description %>
+		<li class='plugin'>
+		    <input type='checkbox' <%= disabled? "disabled='true'": "" %> <%= disabled? "checked='true'": "" %> /> 
+            
+        <% if(plugin_data.url){ %>
+            <a href='<%= plugin_data.url %>'><%= plugin_name %></a> 
 		<% } else { %>
-			<%= files.plugins[j] %>
+			<%= plugin_name %>
 		<% } %>
+        <%if(plugin_data.description){%>
+            - <%= plugin_data.description %>
+        <%}%>
 		</li>
 	<% } %>
 	</ul>

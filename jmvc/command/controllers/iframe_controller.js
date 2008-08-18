@@ -31,7 +31,7 @@ MVC.Appcreator.Iframe = {
 	        views: MVC.Appcreator.Iframe.get_views(),
 	        functional_tests: MVC.Appcreator.Iframe.get_functional_tests(),
 	        unit_tests: MVC.Appcreator.Iframe.get_unit_tests(),
-	        plugins: Mozilla.getDirectoryAndFileNames(MVC.Path.join(MVC.file_base,"jmvc","plugins"))
+	        plugins: Mozilla.get_recursive_folder_names(MVC.Path.join(MVC.file_base,"jmvc","plugins"))
 	    }
 		
 		var view_dirs = [];

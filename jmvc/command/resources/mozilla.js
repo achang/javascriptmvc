@@ -122,5 +122,38 @@ Mozilla = {
 	    }
 		
 		return base;
-	}
+	},
+    /**
+     * returns a list of folder names in the given folder
+     */
+    get_folder_names: function(filePath){
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        var files = Mozilla.getFiles(filePath);
+        var file_names = [];
+        for (var f = 0; f < files.length; f++) {
+            var file = files[f];
+            var name = file.path.match(/[^\/\\]*$/)[0];
+            if (name != '' && name.indexOf('.') == -1) 
+                file_names.push(name);
+        }
+        return file_names;
+    },
+    /**
+     * DFS of all folder names in a folder
+     * @param {Object} filePath
+     */
+    get_recursive_folder_names : function(filePath, precusor){
+        var folder_names = this.get_folder_names(filePath);
+        var total = [];
+        
+        var adjusted_precusor = precusor ? precusor+"/" : "";
+        
+        for(var f = 0 ; f < folder_names.length; f++){
+            var fname = folder_names[f];
+            total.push( adjusted_precusor + fname);
+            var inside = this.get_recursive_folder_names(filePath+MVC.Path.slash+fname, adjusted_precusor + fname );
+            total = total.concat(inside);
+        }
+        return total;
+    }
 }
