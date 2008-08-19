@@ -317,7 +317,7 @@ MVC.Object.extend(include,{
 			
             
             var current_path = include.get_path();
-		    include.set_path(MVC.apps_root);
+		    include.set_path(MVC.apps_root || MVC.root.join('apps') );
 
             for (var i = 0; i < arguments.length; i++) {
 				arguments[i] = f(arguments[i]);
