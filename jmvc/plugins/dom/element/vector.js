@@ -2,6 +2,15 @@ MVC.Vector = function(){
     this.update( MVC.Array.from(arguments) );
 };
 MVC.Vector.prototype = {
+    //apply function to every part of this vector
+    app: function(f){
+          var newArr = [];
+          
+          for(var i=0; i < this.array.length; i++)
+              newArr.push( f(  this.array[i] ) );
+          var vec = new MVC.Vector();
+          return vec.update(newArr);
+    },
     plus: function(){
         var args = arguments[0] instanceof MVC.Vector ? 
                  arguments[0].array : 
