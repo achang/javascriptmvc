@@ -6,6 +6,7 @@ MVC.Object.is_number = function(o){
 MVC.Controller = MVC.Class.extend({
     init: function(){
         if(!this.className) return;
+        this.singularName =  MVC.String.singularize(this.className);
         MVC.Controller.controllers.push(this);
         var val, act;
         this.actions = {};

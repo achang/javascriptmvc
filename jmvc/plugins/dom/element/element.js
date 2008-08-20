@@ -56,11 +56,31 @@ MVC.Object.extend(MVC.$E, {
 	  }else div.innerHTML = html;
 	  return MVC.Array.from(div.childNodes);
 	},
-	next : function(element){
+    first : function(element){
+        var next = element.firstChild;
+		while(next && next.nodeType != 1)
+			next = next.nextSibling;
+        return MVC.$E(next);
+    },
+    last : function(element){
+        var previous = element.lastChild;
+		while(previous && previous.nodeType != 1)
+			previous = previous.previousSibling;
+        return MVC.$E(previous);
+    },
+	next : function(element, wrap){
 		var next = element.nextSibling;
 		while(next && next.nodeType != 1)
 			next = next.nextSibling;
+        if(!next && wrap) return MVC.$E( element.parentNode ).first();
 		return MVC.$E(next);
+	},
+    previous : function(element, wrap){
+		var previous = element.previousSibling;
+		while(previous && previous.nodeType != 1)
+			previous = previous.previousSibling;
+        if(!previous && wrap) return MVC.$E( element.parentNode ).last();
+        return MVC.$E(previous);
 	},
 	toggle : function(element){
 		return element.style.display == 'none' ? element.style.display = '' : element.style.display = 'none';
