@@ -46,7 +46,7 @@ MVC.DelegationEvent = function(selector, event, f){
     this._event = event;
     this._selector = selector;
     this._func = f;
-
+    if(event == 'contextmenu' && MVC.Browser.Opera) return this.context_for_opera();
     if(event == 'submit' && MVC.Browser.IE) return this.submit_for_ie();
 	if(event == 'change' && MVC.Browser.IE) return this.change_for_ie();
 	if(event == 'change' && MVC.Browser.WebKit) return this.change_for_webkit();
@@ -121,6 +121,14 @@ MVC.DelegationEvent.prototype = {
 			}
 		};
 	},
+    context_for_opera : function(){
+        this.add_to_delegator(null, 'click');
+        this.end_filters= {
+			click : function(el, event){
+				return event.shiftKey;
+			}
+        }
+    },
     regexp_patterns:  {tag :    		/^\s*(\*|[\w\-]+)(\b|$)?/,
         				id :            /^#([\w\-\*]+)(\b|$)/,
     					className :     /^\.([\w\-\*]+)(\b|$)/},
