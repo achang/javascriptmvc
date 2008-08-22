@@ -91,7 +91,10 @@ MVC.Model = MVC.Class.extend(
     },
     set_attributes : function(attributes)
     {
-        for(key in attributes){ if(attributes.hasOwnProperty(key)) this._setAttribute(key, attributes[key]);}
+        for(var key in attributes){ 
+			if(attributes.hasOwnProperty(key)) 
+				this._setAttribute(key, attributes[key]);
+		}
         return attributes;
     }, 
     update_attributes : function(attributes, callback)
