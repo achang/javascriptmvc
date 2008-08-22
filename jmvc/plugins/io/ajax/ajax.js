@@ -52,7 +52,8 @@
 				var state = MVC.Ajax.Events[this.transport.readyState];
 				
 				if(state == 'Complete'){
-					if(this.success() && this.options.onSuccess) this.options.onSuccess(this.transport);
+					if(!this.options.onSuccess) ; // do nothing
+					else if(this.success()) this.options.onSuccess(this.transport);
 					else if(this.options.onFailure) this.options.onFailure(this.transport);
 				}
 				if(this.options['on'+state]){

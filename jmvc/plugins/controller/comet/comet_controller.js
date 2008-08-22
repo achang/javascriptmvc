@@ -56,8 +56,8 @@ MVC.CometController = MVC.Controller.extend(
                 onComplete: this.continue_to('complete'),
                 onSuccess: this.continue_to('success'),
                 onFailure: this.continue_to('failure'),
-                parameters: this.Class.parameters,
-                session: this.Class.session,
+                parameters: this.Class.parameters || null,
+                session: this.Class.session || null,
                 transport: this.Class.transport }
             )
     },
