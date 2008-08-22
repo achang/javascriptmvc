@@ -161,6 +161,9 @@ MVC.Object.extend(MVC.$E, {
         }
         return element;
    },
+   remove: function(element){
+   		return element.parentNode.removeChild(element);
+   },
    dimensions: function(element){
         var display = element.style.display;
         if (display != 'none' && display != null) // Safari bug
