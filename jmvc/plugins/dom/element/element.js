@@ -56,6 +56,12 @@ MVC.Object.extend(MVC.$E, {
 	  }else div.innerHTML = html;
 	  return MVC.Array.from(div.childNodes);
 	},
+    children : function(element){
+            var els = [];
+            var el = element.first();
+            while(el){ el = els.push(el).next(); }
+            return els;
+    },
     first : function(element, check){
         check = check || function(){return true;}
         var next = element.firstChild;
