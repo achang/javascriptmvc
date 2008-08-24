@@ -70,6 +70,7 @@ MVC.Object.extend(MVC.$E, {
         return MVC.$E(next);
     },
     last : function(element, check){
+        check = check || function(){return true;}
         var previous = element.lastChild;
 		while(previous && previous.nodeType != 1  || (previous && ! check(previous))  )
 			previous = previous.previousSibling;
