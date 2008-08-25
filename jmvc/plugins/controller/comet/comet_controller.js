@@ -20,6 +20,15 @@ MVC.CometController = MVC.Controller.extend(
     convert : function(response){
         return response;
     },
+    set_wait_time : function(val){
+        this._wait_time = val*1000;
+        if(this._comet)
+            this._comet.poll_now();
+    },
+    _wait_time : 0,
+    wait_time : function(){
+        return this._wait_time;
+    },
     dispatch : function(response){
         var responseJSON = this.convert(response);
         for(var className in response){
@@ -58,7 +67,8 @@ MVC.CometController = MVC.Controller.extend(
                 onFailure: this.continue_to('failure'),
                 parameters: this.Class.parameters || null,
                 session: this.Class.session || null,
-                transport: this.Class.transport }
+                transport: this.Class.transport,
+                wait_time: MVC.Function.bind(this.Class.wait_time, this.Class) }
             )
     },
     failure : function(){
