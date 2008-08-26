@@ -55,7 +55,7 @@ MVC.Path = {
 	},
 	list_of_items : function(include_type, file){
 	    var name_arr = [];
-	    var regexp_include = new RegExp("include\\." + include_type + "\\((.*)\\)");
+	    var regexp_include = new RegExp("include\\." + include_type + "\\(([^\)]*)\\)");
 	    var regexp_items = /\'([\w|\/]+)\'/g;
 	    var match_arr = [];
 	    var match = file.match(regexp_include);
