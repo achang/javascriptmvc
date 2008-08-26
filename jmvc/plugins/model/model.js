@@ -1,7 +1,24 @@
+/*
+ * Provides abstract functionality for a wide variety of models.  It provides a base which 
+ * one can assume all other models must have.  A model must provide:
+ * <ul>
+ *     <li>Model.find_one</li>
+ *     <li>Model.find_all</li>
+ *     <li>Model.create</li>
+ *     <li>Model.update</li>
+ * </ul>
+ * Model is also designed to work with ModelViewHelper.
+ */
 MVC.Model = MVC.Class.extend(
+/*Static*/
 {
-    //determines which find to pick, calls find_all or find_one which should be overwritten
-    
+    /**
+     * Finds objects in this class
+     * @param {Object} id the id of a object
+     * @param {Object} params params passed to the 
+     * @param {Object} callbacks a single onComplete callback or a hash of callbacks
+     * @return {Model} will return instances of the model if syncronous
+     */
     find : function(id, params, callbacks){
         if(!params)  params = {};
         if(typeof params == 'function') {
@@ -16,7 +33,11 @@ MVC.Model = MVC.Class.extend(
             return this.create_as_existing( this.find_one(id == 'first'? null : params, callbacks) );
         }
     },
-    // Called after creating something
+    /**
+     * Used to create an existing object from attributes
+     * @param {Object} attributes
+     * @return {Model} an instance of the model
+     */
     create_as_existing : function(attributes){
         if(!attributes) return null;
         if(attributes.attributes) attributes = attributes.attributes;
@@ -24,7 +45,11 @@ MVC.Model = MVC.Class.extend(
         inst.is_new_record = this.new_record_func;
         return inst;
     },
-    // Called after creating many
+    /**
+     * Creates many instances
+     * @param {Object} instances
+     * @return {Array} an array of instances of the model
+     */
     create_many_as_existing : function(instances){
         if(!instances) return null;
         var res = [];
@@ -32,6 +57,9 @@ MVC.Model = MVC.Class.extend(
             res.push( this.create_as_existing(instances[i]) );  
         return res;
     },
+    /**
+     * The name of the id field.  Defaults to 'id'
+     */
     id : 'id', //if null, maybe treat as an array?
     new_record_func : function(){return false;},
     validations: [],
@@ -78,7 +106,9 @@ MVC.Model = MVC.Class.extend(
         if(!callbacks.onError && callbacks.onComplete) callbacks.onError = callbacks.onComplete;
     }
 },
-{   //Prototype functions
+/*Prototype*/
+{   
+    
     init : function(attributes){
         //this._properties = [];
         this.errors = [];
@@ -143,6 +173,10 @@ MVC.Model = MVC.Class.extend(
         return attributes;
     },
     is_new_record : function(){ return true;},
+    /**
+     * Saves the instance
+     * @param {optional:Function} callback or object of callbacks
+     */
     save: function(callback){
         var result;
         this.errors = [];
@@ -156,6 +190,10 @@ MVC.Model = MVC.Class.extend(
         this.is_new_record = this.Class.new_record_func;
         return true;
     },
+    /**
+     * Destroys the instance
+     * @param {Object} {optional:Function} callback or object of callbacks
+     */
     destroy : function(callback){
         this.Class.destroy(this[this.Class.id], callback);
     },
