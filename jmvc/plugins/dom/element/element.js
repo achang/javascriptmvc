@@ -1,15 +1,59 @@
-// Much of the code in this plugin is adapated from Prototype
-//  Prototype JavaScript framework, version 1.6.0.1
-//  (c) 2005-2007 Sam Stephenson
+//Much of the code in this plugin is adapated from Prototype
+// Prototype JavaScript framework, version 1.6.0.1
+// (c) 2005-2007 Sam Stephenson
 
-MVC.$E = function(element){
+
+/* Constructor
+ * The Element API provides useful functions for manipulating and traversing the DOM. 
+ * All of these elements are classed under $E. When using the Element or $E function, 
+ * all Element functions that have their first argument as element are added to the element.
+ * 
+ * <h3>Examples</h3>
+ * <pre><code>Element('element_id') -> HTMLElement
+$E('element_id') -> HTMLElement
+
+$E('element_id').next() -> HTMLElement
+Element.next('element_id') -> HTMLElement
+
+$E('element_id').insert({after: '&lt;p&gt;inserted text&lt;/p&gt;'})</code></pre>
+ * @constructor the HTML Element for the given id with functions in Element.
+ * @param {String/HTMLElement} element Either an HTMLElement or a string describing the element's id.
+ * @return {HTMLElement} the HTML Element for the given id with functions in Element.
+ */
+MVC.Element = function(element){
 	if(typeof element == 'string')
 		element = document.getElementById(element);
     if (!element) return element;
-	return element._mvcextend ? element : MVC.$E.extend(element);
+	return element._mvcextend ? element : MVC.Element.extend(element);
 };
-//From Prototype
-MVC.Object.extend(MVC.$E, {
+/*Static*/
+MVC.Object.extend(MVC.Element, {
+    /**
+     * Inserts HTML into the page relative to the given element.
+     * @param {String/HTMLElement} element Either an HTML Element or a string describing the element's id. 
+     * @param {Object} insertions Is an object with one of the following attributes:
+     *     <table class="options">
+					<tbody><tr><th>Option</th><th>Description</th></tr>
+					<tr>
+						<td>after</td>
+						<td>Inserts the given HTML after the given element.</td>
+					</tr>
+					<tr>
+						<td>before</td>
+						<td>Inserts the given HTML before the given element.</td>
+					</tr>
+					<tr>
+						<td>bottom</td>
+						<td>Inserts the given HTML at the bottom of the given element's children.</td>
+					</tr>
+					<tr>
+						<td>top</td>
+						<td>Inserts the given HTML at the top of the given element's children.</td>
+					</tr>
+				</tbody>
+			</table>
+     * 
+     */
 	insert: function(element, insertions) {
 		element = MVC.$E(element);
 		if(typeof insertions == 'string'){insertions = {bottom: insertions};};
@@ -56,12 +100,18 @@ MVC.Object.extend(MVC.$E, {
 	  }else div.innerHTML = html;
 	  return MVC.Array.from(div.childNodes);
 	},
+    /*
+     * Returns children with nodeType = 1
+     */
     get_children : function(element){
-            var els = [];
-            var el = element.first();
-            while(el){ el = els.push(el).next(); }
-            return els;
+        var els = [];
+        var el = element.first();
+        while(el){ el = els.push(el).next(); }
+        return els;
     },
+    /*
+     * Returns the first child with nodeType = 1
+     */
     first : function(element, check){
         check = check || function(){return true;}
         var next = element.firstChild;
@@ -69,6 +119,9 @@ MVC.Object.extend(MVC.$E, {
 			next = next.nextSibling;
         return MVC.$E(next);
     },
+    /*
+     * returns the last child element with nodeType = 1
+     */
     last : function(element, check){
         check = check || function(){return true;}
         var previous = element.lastChild;
@@ -76,6 +129,9 @@ MVC.Object.extend(MVC.$E, {
 			previous = previous.previousSibling;
         return MVC.$E(previous);
     },
+    /*
+     * Returns the next sibling with nodeType = 1
+     */
 	next : function(element, wrap, check){
 		check = check || function(){return true;}
         var next = element.nextSibling;
@@ -84,6 +140,9 @@ MVC.Object.extend(MVC.$E, {
         if(!next && wrap) return MVC.$E( element.parentNode ).first(check);
 		return MVC.$E(next);
 	},
+    /*
+     * Returns the previous sibling with nodeType = 1
+     */
     previous : function(element, wrap, check){
 		check = check || function(){return true;}
         var previous = element.previousSibling;
@@ -92,9 +151,17 @@ MVC.Object.extend(MVC.$E, {
         if(!previous && wrap) return MVC.$E( element.parentNode ).last(check);
         return MVC.$E(previous);
 	},
+    /*
+     * Toggles the style display.  It is assumed that no css is already being used to 
+     * hide the element.  If you want to have the element hidden to start, write
+     * style="display:none" in your html.
+     */
 	toggle : function(element){
 		return element.style.display == 'none' ? element.style.display = '' : element.style.display = 'none';
 	},
+    /*
+     * Makes an element position ('relative', 'absolute', or 'static')
+     */
     makePositioned: function(element) {
         element = MVC.$E(element);
         var pos = MVC.Element.getStyle(element, 'position');
@@ -110,6 +177,9 @@ MVC.Object.extend(MVC.$E, {
         }
         return element;
     },
+    /*
+     * Returns the style for a given element.
+     */
     getStyle:  function(element, style) {
         element = MVC.$E(element);
         style = style == 'float' ? 'cssFloat' : MVC.String.camelize(style);
@@ -123,6 +193,10 @@ MVC.Object.extend(MVC.$E, {
         if (style == 'opacity') return value ? parseFloat(value) : 1.0;
         return value == 'auto' ? null : value;
     },
+    /*
+     * Returns the vector
+     * @return {Vector} a vector
+     */
     cumulativeOffset: function(element) {
         var valueT = 0, valueL = 0;
         do {
@@ -146,11 +220,17 @@ MVC.Object.extend(MVC.$E, {
       if (child.parentNode == element) return true;
       return MVC.Element.isParent(child.parentNode, element);
     },
+    /*
+     * Returns true or false if one element is inside another element.
+     */
     has: function(element, b){
       return element.contains ?
         element != b && element.contains(b) :
         !!(element.compareDocumentPosition(b) & 16);
     },
+    /*
+     * Updates an element with content.  This works for IE's table elements.
+     */
     update: function(element, content){
         element = MVC.$E(element);
         var tagName = element.tagName.toUpperCase();
@@ -168,9 +248,15 @@ MVC.Object.extend(MVC.$E, {
         }
         return element;
    },
+   /*
+    * Removes an element
+    */
    remove: function(element){
    		return element.parentNode.removeChild(element);
    },
+   /*
+    * Returns a vector with the dimensions of the element
+    */
    dimensions: function(element){
         var display = element.style.display;
         if (display != 'none' && display != null) // Safari bug
@@ -198,28 +284,28 @@ MVC.Object.extend(MVC.$E, {
 
 
 
-MVC.$E.extend = function(el){
-	for(var f in MVC.$E){
-		if(!MVC.$E.hasOwnProperty(f)) continue;
-		var func = MVC.$E[f];
+MVC.Element.extend = function(el){
+	for(var f in MVC.Element){
+		if(!MVC.Element.hasOwnProperty(f)) continue;
+		var func = MVC.Element[f];
 		if(typeof func == 'function'){
 			//var names = MVC.Function.params(func);
 			//if( names.length == 0) continue;
 			//var first_arg = names[0];
-			if( f[0] != "_" ) MVC.$E._extend(func, f, el);
+			if( f[0] != "_" ) MVC.Element._extend(func, f, el);
 		}
 	}
 	el._mvcextend = true;
 	return el;
 };
-MVC.$E._extend = function(f,name,el){
+MVC.Element._extend = function(f,name,el){
 	el[name] = function(){
 		var arg = MVC.Array.from(arguments);
 		arg.unshift(el);
 		return f.apply(el, arg); 
 	};
 };
-MVC.Element = MVC.$E;
+MVC.$E = MVC.Element;
 if(!MVC._no_conflict){
 	$E = MVC.$E;
 }
