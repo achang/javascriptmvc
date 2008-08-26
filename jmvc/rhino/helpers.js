@@ -37,6 +37,8 @@ MVCOptions.collect_and_compress = function(total){
             txt = script.process ? script.process(total[s]) : script.text;
     		compressed = script.compress == false ? txt : MVCOptions.compress(txt, script.path);
             collection += "include.set_path('"+script.start+"')"+";\n"+compressed + ";\n";
+            
+            
         }
 	}
 	collection += "include.end_of_production();";

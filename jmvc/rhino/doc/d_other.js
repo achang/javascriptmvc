@@ -2,12 +2,13 @@ MVCObject.DStatic = MVCObject.DPair.extend('static',
 {starts_scope: true},
 {
     toHTML: function(){
-        var ret = "<h2>Static</h2>"
+        var ret = "<h2>Static Methods</h2>"
         ret+= this.make(this.children.sort(MVCObject.DPair.sort_by_name)  );
         return ret;
     },
     add_parent : function(scope){
-        this.parent = scope.Class.className == 'class' ? scope : scope.parent
+        var scope_class=  scope.Class.className;
+        this.parent = scope_class == 'class' || scope_class == 'constructor' ? scope : scope.parent
         this.parent.add(this);
     },
     name: 'static'
@@ -16,7 +17,7 @@ MVCObject.DStatic = MVCObject.DPair.extend('static',
 MVCObject.DPrototype = MVCObject.DStatic.extend('prototype',
 {
     toHTML: function(){
-        var ret = "<h2>Prototype</h2>"
+        var ret = "<h2>Prototype Methods</h2>"
         ret+= this.make(this.children);
         return ret;
     },
@@ -78,7 +79,7 @@ MVCObject.DFile = MVCObject.DPair.extend('file',
         if(!pairs) return;
         for(var i = 0; i < pairs.length ; i ++){
             var splits = pairs[i].match(this.Class.splitter);
-            var comment = splits[1].replace(/\/\*+|\*\//,'').replace(/\r?\n\s*\**\s*/g,'\n');
+            var comment = splits[1].replace(/^ +|\/\*+|\*\//g,'').replace(/\r?\n\s*\**\s*/g,'\n');
             var code = splits[2];
             var pair = MVCObject.DPair.create( comment , code, scope);
             if(pair)

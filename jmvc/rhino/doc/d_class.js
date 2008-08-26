@@ -2,7 +2,18 @@ MVCObject.DClass = MVCObject.DPair.extend('class',
 {
     code_match: /(\w+)\s*=\s*([\w\.]+?).extend\(/,
     starts_scope: true,
-    listing: []
+    listing: [],
+    create_index : function(){
+        var res = '<html><head><link rel="stylesheet" href="../style.css" type="text/css">'+
+            '<title>Classes<title></head><body>'
+        res += '<h1>Classes <label>LIST</label></h1>'
+        for(var i = 0; i < this.listing.length; i++){
+            var name = this.listing[i].name;
+            res += "<a href='"+name+".html'>"+name+"</a> "
+        }
+        res +="</body></html>"
+        MVCOptions.save('docs/classes/index.html', res)
+    }
 },
 {
     init: function(comment, code, scope ){
@@ -23,11 +34,8 @@ MVCObject.DClass = MVCObject.DPair.extend('class',
     },
     toHTML : function(){
         //get children
-        
         var ret = "<div><h1>"+this.name+" <label>API</label></h1>"
         ret+= "<div id='shortcuts'>"+this.get_quicklinks()+"</div>";
-        
-        
         ret += "<div class='group'>"+this.comment+"</div>\n"
         ret+= this.make(this.children);
 

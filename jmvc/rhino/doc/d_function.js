@@ -1,6 +1,6 @@
 MVCObject.DFunction = MVCObject.DPair.extend('function',
     {
-        code_match: /(\w+)\s*[:=]\s*function\(([^\)]*)/
+        code_match: /([\w\.]+)\s*[:=]\s*function\(([^\)]*)/
         
         
     },
@@ -9,7 +9,7 @@ MVCObject.DFunction = MVCObject.DPair.extend('function',
             var parts = this.Class.code_match(this.code);
             this.name = parts[1];
             this.params = {};
-            this.ret = {name: 'undefined'}
+            this.ret = {type: 'undefined'}
             var params = parts[2].match(/\w+/);
             if(!params) return;
             
@@ -22,17 +22,29 @@ MVCObject.DFunction = MVCObject.DPair.extend('function',
             var i = 0;
             var lines = this.comment.split("\n");
             this.real_comment = '';
+            
+            var last, last_data;
+
             for(var l=0; l < lines.length; l++){
                 var line = lines[l];
                 var match = line.match(/@(\w+)/)
-                if(match)
-                    this[match[1]+'_add'](line);
-                else if(!line.match(/^function/i))
-                    this.real_comment+= line
+                if(match){
+                    last_data = this[match[1]+'_add'](line);
+                    if(last_data) last = match[1]; else last = null;
+                }
+                else if(!line.match(/^constructor/i) && !last )
+                    this.real_comment+= line+"\n"
+                else if(last && this[last+'_add_more']){
+                    this[last+'_add_more'](line, last_data);
+                }
             }
         },
+        param_add_more : function(line, last){
+            if(last);
+                last.description += "\n"+line;
+        },
         param_add: function(line){
-            var parts = line.match(/@param (?:\{(?:(optional):)?([\w\.]+)\})? ?([\w\.]+) (.*)/);
+            var parts = line.match(/@param (?:\{(?:(optional):)?([\w\.\/]+)\})? ?([\w\.]+) ?(.*)?/);
             if(!parts) return;
             var description = parts.pop();
             var n = parts.pop();
@@ -40,16 +52,16 @@ MVCObject.DFunction = MVCObject.DPair.extend('function',
             var type =  parts.pop();
             var optional = parts.pop() ? true : false;
             
-            this.params[n] = {description: description, type: type, optional: optional}
+            this.params[n] = {description: description || "", type: type|| "", optional: optional};
+            return this.params[n];
         },
         return_add: function(line){
             var parts = line.match(/@return (?:\{([\w\.]+)\})? ?([\w\.]+)/);
             if(!parts) return;
             var description = parts.pop();
             var type = parts.pop();
-            
-            
-            this.ret = {description: description, type: type}
+            this.ret = {description: description, type: type};
+            return this.ret;
         },
         
         toHTML: function(){
