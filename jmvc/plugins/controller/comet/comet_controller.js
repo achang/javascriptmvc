@@ -85,6 +85,6 @@ MVC.CometController = MVC.Controller.extend(
         this.error_mode = false;
     },
     kill : function(){
-        this.Class._comet.kill();  
+        if(this.Class._comet) this.Class._comet.kill();  
     }
 })
